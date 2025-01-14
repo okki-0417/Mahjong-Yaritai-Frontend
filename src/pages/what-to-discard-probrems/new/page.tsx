@@ -81,8 +81,6 @@ export default function NewWhatToDiscardProblems() {
   const [resErrors, setResErrors] = useState<Errors[]>([]);
   const navigate = useNavigate();
 
-
-
   type WhatToDiscardProblem = {
     round: string;
     turn: string;

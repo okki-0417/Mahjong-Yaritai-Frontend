@@ -4,10 +4,10 @@ import { useParams } from "react-router";
 import { WhatToDiscardProblem } from "../index/page";
 import { HandKeys, TILES_NUM } from "../new/page";
 
-export const tiles = import.meta.glob<{ default: string }>('/src/assets/tiles/*.png');
+export const tileImages = import.meta.glob<{ default: string }>('/src/assets/tiles/*.png');
 
 export const loadTile = async (id: number) => {
-  const image = await tiles[`/src/assets/tiles/${id}.png`]();
+  const image = await tileImages[`/src/assets/tiles/${id}.png`]();
   return image.default
 };
 
