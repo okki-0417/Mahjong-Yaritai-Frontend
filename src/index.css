@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-base font-serif overflow-x-hidden text-white
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    translate: 0 20px;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 2s ease-in-out;
+}
+
+.delayed-fade-in {
+  animation: fadeIn 1.5s ease-in-out 1.25s;
+  animation-fill-mode: both;
+}
+
+@layer components {
+  .btn {
+    @apply max-w-full py-2 lg:px-8 px-8 lg:text-2xl text-xl rounded-full font-semibold hover:cursor-pointer text-center;
+  }
+
+  .btn-main {
+    @apply text-white bg-pink-400 hover:bg-pink-300 border-none;
+  }
+
+  .btn-base {
+    @apply text-black border border-slate-700 hover:bg-slate-200;
+  }
+
+  .bg-base {
+    @apply bg-slate-700;
+  }
+
+  .bg-secondary {
+    @apply bg-slate-900;
+  }
+
+  .bg-main {
+    @apply bg-pink-500;
+  }
+}
