@@ -1,7 +1,21 @@
+import { useEffect, useState } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { Link } from "react-router";
 
+const getMainVisualPathFuncObj = import.meta.glob<{ default: string }>('/src/assets/main-visual.jpg');
+
 export default function Home() {
+  const [mainVisualPath, setMainVisualPath] = useState<string>("");
+
+  useEffect(() => {
+    const getMainVisualPath = async () => {
+      const path = await getMainVisualPathFuncObj[`/src/assets/main-visual.jpg`]();
+      setMainVisualPath(path.default);
+    }
+
+    getMainVisualPath();
+  })
+
   return (
     <div>
       <div className="w-full h-[500px] relative">
@@ -15,7 +29,7 @@ export default function Home() {
           </h2>
         </div>
         <div className="absolute top-0 left-0 w-full h-full bg-blue-900 opacity-[0.5] z-10"></div>
-        <img src="./main-visual.jpg" alt="麻雀をやりたい人が語らう場所" className="w-full h-full object-cover contrast-125" />
+        <img src={mainVisualPath} alt="麻雀をやりたい人が語らう場所" className="w-full h-full object-cover contrast-125" />
       </div>
 
       <section className="mt-24 md:px-[20vw] px-6 text-slate-100">

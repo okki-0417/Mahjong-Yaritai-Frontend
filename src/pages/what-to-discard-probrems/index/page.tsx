@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { BASEURL } from "../../../api-config";
-import { HandKeys, TILES_NUM } from "../new/page";
+import { HandKeys, TILE_TYPES_NUM, TILES_NUM } from "../new/page";
 import { Link } from "react-router";
 import NoContent from "./no-content";
+import { loadTile } from "../[:id]/page";
 
 export type WhatToDiscardProblem = {
   id: number,
@@ -32,23 +33,25 @@ export type WhatToDiscardProblem = {
 
 export default function IndexWhatToDiscardProblems() {
   const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<WhatToDiscardProblems>([])
+  const [tileImagePaths, setTileImagePaths] = useState<string[]>([]);
 
   type WhatToDiscardProblems = WhatToDiscardProblem[];
 
   const drawTile = (id: number) => {
+    const path = tileImagePaths[Number(id) - 1];
     return (
-      <img src={`/dist/tiles/${Number(id)}.png`} />
+      <img src={path} />
     )
   };
 
   useEffect(() => {
     const getWhatToDiscardProblems = async () => {
       const response = await fetch(`${BASEURL}/what_to_discard_problems`)
-
       const data = await response.json();
-      console.log(`DATA: ${JSON.stringify(data)}`);
-
       setWhatToDiscardProblems(data.what_to_discard_problems)
+
+      const paths = await Promise.all(Array(TILE_TYPES_NUM).fill(null).map(async (_, index) => await loadTile(index + 1)))
+      setTileImagePaths(paths);
     }
 
     getWhatToDiscardProblems();

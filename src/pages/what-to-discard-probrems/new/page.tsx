@@ -1,10 +1,12 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BASEURL } from "../../../api-config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Errors } from "../../../components/render-errors";
 import { useNavigate } from "react-router";
+import { loadTile } from "../[:id]/page";
 
 export const TILES_NUM = 13;
+export const TILE_TYPES_NUM = 34;
 export const MAX_ROUND = 18;
 export type HandKeys = `hand${ 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 }`;
 
@@ -108,9 +110,21 @@ export default function NewWhatToDiscardProblems() {
     tsumo: string;
   };
 
+  const [tileImagePaths, setTileImagePaths] = useState<string[]>([]);
+
+  useEffect(() => {
+    const getTileImagePaths = async () => {
+      const paths = await Promise.all(Array(TILE_TYPES_NUM).fill(null).map(async (_, index) => await loadTile(index + 1)))
+      setTileImagePaths(paths);
+    }
+
+    getTileImagePaths();
+  }, []);
+
   const drawTile = (id: string) => {
+    const path = tileImagePaths[Number(id) - 1];
     return (
-      <img src={`/dist/tiles/${Number(id)}.png`} />
+      <img src={path} />
     )
   };
 

@@ -1,15 +1,27 @@
-import { memo, useContext, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router";
 import { AuthContext } from "../App";
 import { BASEURL } from "../api-config";
 import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
 import { FaAngleRight } from "react-icons/fa6";
 
+const getLogoPathFuncObj = import.meta.glob<{ default: string }>('/src/assets/logo.png');
+
 export default function Navigation() {
   const { auth, setAuth } = useContext(AuthContext);
   const [ checked, setChecked ] = useState<boolean>(false);
+  const [ logoPath, setLogoPath ] = useState<string>("");
 
-  const ImageComponent = () => <img src="./logo.png" alt="麻雀をやりたい人たちが集まる場所です" className="lg:h-10 h-8 aspect-square rounded-full contrast-75 text-gray-300 text-sm" />
+  useEffect(() => {
+    const getLogoPath = async () => {
+      const path = await getLogoPathFuncObj[`/src/assets/logo.png`]();
+      setLogoPath(path.default);
+    }
+
+    getLogoPath();
+  })
+
+  const ImageComponent = () => <img src={logoPath} alt="麻雀をやりたい人たちが集まる場所です" className="lg:h-10 h-8 aspect-square rounded-full contrast-75 text-gray-300 text-sm" />
   const Logo = memo(ImageComponent);
 
   const logout = async () => {
