@@ -4,27 +4,47 @@ import { useParams } from "react-router";
 import { WhatToDiscardProblem } from "../index/page";
 import { HandKeys, TILES_NUM } from "../new/page";
 
+export const tiles = import.meta.glob<{ default: string }>('/src/assets/tiles/*.png');
+
+export const loadTile = async (id: number) => {
+  const image = await tiles[`/src/assets/tiles/${id}.png`]();
+  return image.default
+};
+
 export default function ShowWhatToDiscardProblems() {
-  const [whatToDiscardProblem, setWhatToDiscardProblem] = useState<WhatToDiscardProblem>()
+  const [whatToDiscardProblem, setWhatToDiscardProblem] = useState<WhatToDiscardProblem>();
+  const [handImageUrls, setHandImageUrls] = useState<string[]>([]);
+  const [doraImageUrl, setDoraImageUrl] = useState<string>("");
+  const [tsumoImageUrl, setTsumoImageUrl] = useState<string>("");
   const { id } = useParams();
-  const drawTile = (id: number) => {
-    return (
-      <img src={`/dist/tiles/${Number(id)}.png`} />
-    )
-  };
 
   useEffect(() => {
     const getWhatToDiscardProblems = async () => {
       const response = await fetch(`${BASEURL}/what_to_discard_problems/${id}`)
 
       const data = await response.json();
-      console.log(`DATA: ${JSON.stringify(data)}`);
 
       setWhatToDiscardProblem(data.what_to_discard_problem)
+
+      if(whatToDiscardProblem) {
+        const tileUrls = await Promise.all(Array(TILES_NUM).fill(null).map( async (_, index) => {
+          const id = whatToDiscardProblem[`hand${index + 1}` as HandKeys]
+          const tileUrl = await loadTile(Number(id))
+          return tileUrl;
+        }))
+
+        setHandImageUrls(tileUrls);
+
+        const doraId = whatToDiscardProblem.dora
+        setDoraImageUrl(await loadTile(doraId));
+
+        const tsumoId = whatToDiscardProblem.dora
+        setTsumoImageUrl(await loadTile(tsumoId))
+      }
     }
 
     getWhatToDiscardProblems();
-  }, []);
+  }, [JSON.stringify(whatToDiscardProblem)]);
 
   return (
     <div>
@@ -35,7 +55,7 @@ export default function ShowWhatToDiscardProblems() {
           <span>{`${whatToDiscardProblem?.wind}家`}</span>
           <div className="flex gap-2">
             <span>ドラ:</span>
-            {whatToDiscardProblem?.dora && drawTile(whatToDiscardProblem.dora)}
+            <img src={doraImageUrl} />
           </div>
         </div>
         <div className="md:text-2xl text-lg md:flex grid grid-cols-2 md:gap-4">
@@ -45,17 +65,15 @@ export default function ShowWhatToDiscardProblems() {
           <span>{`北家:${whatToDiscardProblem?.point_north}00点`}</span>
         </div>
         <div className="flex justify-center items-end mt-6">
-          {Array(TILES_NUM).fill(null).map((_, index) => {
+          {handImageUrls.map((url, index) => {
             return (
-              <div key={index} className="w-12">
-                {whatToDiscardProblem && whatToDiscardProblem[`hand${index + 1}` as HandKeys]
-                  && drawTile(whatToDiscardProblem[`hand${index + 1}` as HandKeys])}
-              </div>
+              <img src={url} key={index} />
             )
-          })}
+          })
+          }
           <div  className="w-12 ml-4 flex flex-col">
             <span className="font-bold text-center md:text-base text-[10px]">ツモ</span>
-            {whatToDiscardProblem?.tsumo && drawTile(whatToDiscardProblem?.tsumo)}
+            <img src={tsumoImageUrl} />
           </div>
         </div>
       </div>
