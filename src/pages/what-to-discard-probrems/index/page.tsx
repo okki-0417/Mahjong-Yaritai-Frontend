@@ -37,7 +37,7 @@ export default function IndexWhatToDiscardProblems() {
 
   const drawTile = (id: number) => {
     return (
-      <img src={`/public/tiles/${Number(id)}.png`} />
+      <img src={`/dist/tiles/${Number(id)}.png`} />
     )
   };
 

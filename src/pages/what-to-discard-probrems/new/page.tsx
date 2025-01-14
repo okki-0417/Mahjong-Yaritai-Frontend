@@ -112,7 +112,7 @@ export default function NewWhatToDiscardProblems() {
 
   const drawTile = (id: string) => {
     return (
-      <img src={`/public/tiles/${Number(id)}.png`} />
+      <img src={`/dist/tiles/${Number(id)}.png`} />
     )
   };
 
