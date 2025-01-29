@@ -8,5 +8,5 @@ export default function AlreadyLoggedIn() {
         ダッシュボードに戻る
       </Link>
     </div>
-  )
+  );
 }

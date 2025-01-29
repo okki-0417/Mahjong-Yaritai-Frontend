@@ -14,29 +14,34 @@ import { BASEURL } from "./api-config";
 import IndexWhatToDiscardProblems from "./pages/what-to-discard-probrems/index/page";
 import NewWhatToDiscardProblems from "./pages/what-to-discard-probrems/new/page";
 import ShowWhatToDiscardProblems from "./pages/what-to-discard-probrems/[:id]/page";
+import About from "./pages/about/page";
 
 type AuthContext = {
-  auth: boolean | undefined
-  setAuth: React.Dispatch<React.SetStateAction<boolean | undefined>> | (() => {})
-}
+  auth: boolean | undefined;
+  setAuth:
+    | React.Dispatch<React.SetStateAction<boolean | undefined>>
+    | (() => {});
+};
 
 type CsrfTokenContext = {
-  csrfToken: string | undefined
-  setCsrfToken: React.Dispatch<React.SetStateAction<string | undefined>> | (() => {})
-}
+  csrfToken: string | undefined;
+  setCsrfToken:
+    | React.Dispatch<React.SetStateAction<string | undefined>>
+    | (() => {});
+};
 
 export const AuthContext = createContext<AuthContext>({
   auth: undefined,
   setAuth: () => {},
-})
+});
 
 export const CsrfTokenContext = createContext<CsrfTokenContext>({
   csrfToken: undefined,
   setCsrfToken: () => {},
-})
+});
 
 export default function App() {
-  const [auth, setAuth] = useState<boolean | undefined>()
+  const [auth, setAuth] = useState<boolean | undefined>();
 
   useEffect(() => {
     const isAuthenticated = async () => {
@@ -46,7 +51,7 @@ export default function App() {
 
       const data = await response.json();
 
-      if(data.auth != true) {
+      if (data.auth != true) {
         setAuth(false);
         return;
       }
@@ -68,17 +73,17 @@ export default function App() {
         newMeta.content = csrfData.csrf_token;
         document.head.appendChild(newMeta);
       }
-    }
+    };
 
-    if(auth === undefined) {
+    if (auth === undefined) {
       isAuthenticated();
     }
 
-    console.log(`App: ${auth}`)
+    console.log(`App: ${auth}`);
   }, [auth]);
 
   return (
-    <AuthContext.Provider value={{auth, setAuth}}>
+    <AuthContext.Provider value={{ auth, setAuth }}>
       <BrowserRouter>
         <Routes>
           <Route element={<DefaultLayout />}>
@@ -86,6 +91,7 @@ export default function App() {
             <Route path="/auth/login" element={<Login />} />
             <Route path="/users/new" element={<UserCreate />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/about" element={<About />} />
 
             <Route path="/forum-threads">
               <Route index element={<IndexForumThreads />} />
@@ -105,5 +111,5 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </AuthContext.Provider>
-  )
+  );
 }

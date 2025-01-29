@@ -40,7 +40,10 @@ export default function Footer() {
                 </li>
               </Link>
 
-              <Link to="/what-to-discard-problems/new" className="hover:text-white">
+              <Link
+                to="/what-to-discard-problems/new"
+                className="hover:text-white"
+              >
                 <li className="flex items-center gap-1 lg:pl-0 pl-4">
                   <FaAngleRight size={12} />
                   <span>新規作成</span>
@@ -50,7 +53,9 @@ export default function Footer() {
           </li>
         </ul>
       </nav>
-      <p className="text-center py-2 bg-gray-900">&copy; <span>2025</span></p>
+      <p className="text-center py-2 bg-gray-900">
+        &copy; <span>2025</span>
+      </p>
     </footer>
-  )
+  );
 }

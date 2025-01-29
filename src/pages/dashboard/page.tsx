@@ -7,16 +7,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(auth === false) {
+    if (auth === false) {
       navigate("/auth/login");
     }
-    console.log(`Dashboard: ${auth}`)
+    console.log(`Dashboard: ${auth}`);
   }, [auth]);
 
-  return (
-    <div className="bg-red-200">
-      
-    </div>
-
-  );
+  return <div className="bg-red-200"></div>;
 }

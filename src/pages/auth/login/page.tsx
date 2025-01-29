@@ -21,10 +21,10 @@ export default function Login() {
   const [passVisible, setPassVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    if(auth === true) {
+    if (auth === true) {
       navigate("/dashboard");
     }
-    console.log(`Login: ${auth}`)
+    console.log(`Login: ${auth}`);
   }, [auth]);
 
   const [resErrors, setResErrors] = useState<Errors[]>([]);
@@ -47,7 +47,6 @@ export default function Login() {
     if (!response.ok) {
       setResErrors([...resErrors, (await response.json())?.errors]);
     } else {
-
       setAuth(true);
       navigate("/dashboard");
     }
@@ -55,10 +54,12 @@ export default function Login() {
 
   return (
     <>
-      { auth === false &&
+      {auth === false && (
         <div className="lg:w-1/2 mx-auto bg-white py-8 lg:px-16 px-4  mt-16 rounded-md text-gray-800">
           <div>
-            <h1 className="lg:text-3xl text-2xl text-gray-800 font-semibold">ログインする</h1>
+            <h1 className="lg:text-3xl text-2xl text-gray-800 font-semibold">
+              ログインする
+            </h1>
             <div className="w-full mt-4">
               {resErrors[0] && (
                 <RenderErrors errors={resErrors[resErrors.length - 1]} />
@@ -82,7 +83,9 @@ export default function Login() {
                       })}
                     />
                     {errors.email && (
-                      <span className="text-red-500">{errors.email.message}</span>
+                      <span className="text-red-500">
+                        {errors.email.message}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -97,16 +100,22 @@ export default function Login() {
                         type={passVisible ? "text" : "password"}
                         autoComplete="password"
                         className={`border border-black rounded-sm h-8 w-full p-2 ${errors.password ? "bg-red-200" : ""}`}
-                        {...register("password", {required: "必須です"})}
+                        {...register("password", { required: "必須です" })}
                       />
                       {errors.password && (
-                        <span className="text-red-500">{errors.password.message}</span>
+                        <span className="text-red-500">
+                          {errors.password.message}
+                        </span>
                       )}
                     </div>
                   </div>
 
                   <div className="text-end text-gray-800">
-                    <button type="button" className="bg-gray-300 text-sm py-1 px-3 rounded-full" onClick={()=>setPassVisible(!passVisible)}>
+                    <button
+                      type="button"
+                      className="bg-gray-300 text-sm py-1 px-3 rounded-full"
+                      onClick={() => setPassVisible(!passVisible)}
+                    >
                       パスワードを{passVisible && "非"}表示
                     </button>
                   </div>
@@ -124,13 +133,18 @@ export default function Login() {
               </form>
               <div className="mt-6">
                 <p className="text-lg">
-                <Link to="/users/new" className="text-blue-500 hover:text-blue-300 underline">新規会員登録はこちら</Link>
+                  <Link
+                    to="/users/new"
+                    className="text-blue-500 hover:text-blue-300 underline"
+                  >
+                    新規会員登録はこちら
+                  </Link>
                 </p>
               </div>
             </div>
           </div>
         </div>
-      }
+      )}
     </>
   );
 }

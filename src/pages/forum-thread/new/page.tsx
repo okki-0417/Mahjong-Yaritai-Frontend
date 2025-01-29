@@ -6,14 +6,14 @@ import { useNavigate } from "react-router";
 import { BASEURL } from "../../../api-config";
 
 type ForumThread = {
-  topic: string
-}
+  topic: string;
+};
 
 export default function NewForumThread() {
   const { auth } = useContext(AuthContext);
   const [resErrors, setResErrors] = useState<Errors[]>([]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const {
     register,
@@ -22,14 +22,16 @@ export default function NewForumThread() {
   } = useForm<ForumThread>({ mode: "onChange" });
 
   useEffect(() => {
-    if(auth === false) {
+    if (auth === false) {
       navigate("/auth/login");
     }
-    console.log(`ForumThreadNew: ${auth}`)
+    console.log(`ForumThreadNew: ${auth}`);
   }, [auth]);
 
   const onSubmit: SubmitHandler<ForumThread> = async (formData) => {
-    const csrfToken = document.querySelector("meta[name='csrf-token']")?.getAttribute("content");
+    const csrfToken = document
+      .querySelector("meta[name='csrf-token']")
+      ?.getAttribute("content");
 
     const response = await fetch(`${BASEURL}/forum_threads`, {
       method: "POST",
@@ -90,5 +92,5 @@ export default function NewForumThread() {
         </div>
       </div>
     </div>
-  )
+  );
 }

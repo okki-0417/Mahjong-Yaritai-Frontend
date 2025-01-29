@@ -8,17 +8,17 @@ import AlreadyLoggedIn from "../../../components/already-logged-in";
 import { FaAngleRight } from "react-icons/fa6";
 
 export default function UserCreate() {
-  const navigate = useNavigate()
-  const {auth, setAuth} = useContext(AuthContext);
-  const [passVisible, setPassVisible] = useState<boolean>(false)
-  const [passConfVisible, setPassConfVisible] = useState<boolean>(false)
+  const navigate = useNavigate();
+  const { auth, setAuth } = useContext(AuthContext);
+  const [passVisible, setPassVisible] = useState<boolean>(false);
+  const [passConfVisible, setPassConfVisible] = useState<boolean>(false);
 
   type UserForm = {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
-  }
+  };
 
   const [resErrors, setResErrors] = useState<Errors[]>([]);
   const {
@@ -51,10 +51,12 @@ export default function UserCreate() {
 
   return (
     <>
-      { auth === false ?
+      {auth === false ? (
         <div className="lg:w-1/2 mx-auto bg-white py-8 lg:px-16 px-4  mt-16 rounded-md text-gray-800">
           <div className="mt-2">
-            <h1 className="lg:text-3xl text-2xl font-semibold">新規ユーザー登録</h1>
+            <h1 className="lg:text-3xl text-2xl font-semibold">
+              新規ユーザー登録
+            </h1>
 
             <div className="w-full mt-6">
               {resErrors[0] && (
@@ -72,14 +74,16 @@ export default function UserCreate() {
                         autoComplete="name"
                         className={`border border-black rounded-sm h-8 w-full p-2 ${errors.email ? "bg-red-200" : ""}`}
                         {...register("name", {
-                          required: "必須です"
+                          required: "必須です",
                         })}
                       />
                     </div>
                   </div>
                   {errors.name && (
-                      <div className="text-red-500 w-full text-sm text-end">{errors.name.message}</div>
-                    )}
+                    <div className="text-red-500 w-full text-sm text-end">
+                      {errors.name.message}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -104,7 +108,9 @@ export default function UserCreate() {
                   </div>
 
                   {errors.email && (
-                    <div className="text-red-500 w-full text-sm text-end">{errors.email.message}</div>
+                    <div className="text-red-500 w-full text-sm text-end">
+                      {errors.email.message}
+                    </div>
                   )}
                 </div>
 
@@ -115,19 +121,25 @@ export default function UserCreate() {
                     </div>
                     <div className="col-span-4 p-2 h-full flex flex-col items-center">
                       <input
-                        type={ passVisible ? "text" : "password" }
+                        type={passVisible ? "text" : "password"}
                         autoComplete="password"
                         className={`border border-black rounded-sm h-8 w-full p-2 ${errors.password ? "bg-red-200" : ""}`}
-                        {...register("password", {required: "必須です"})}
+                        {...register("password", { required: "必須です" })}
                       />
                       {errors.password && (
-                        <div className="text-red-500 w-full text-sm text-end">{errors.password.message}</div>
+                        <div className="text-red-500 w-full text-sm text-end">
+                          {errors.password.message}
+                        </div>
                       )}
                     </div>
                   </div>
 
                   <div className="text-end">
-                    <button type="button" className="bg-gray-300 text-sm py-1 px-3 rounded-full" onClick={()=>setPassVisible(!passVisible)}>
+                    <button
+                      type="button"
+                      className="bg-gray-300 text-sm py-1 px-3 rounded-full"
+                      onClick={() => setPassVisible(!passVisible)}
+                    >
                       パスワードを{passVisible && "非"}表示
                     </button>
                   </div>
@@ -140,19 +152,27 @@ export default function UserCreate() {
                     </div>
                     <div className="col-span-4 p-2 h-full flex flex-col items-center">
                       <input
-                        type={ passConfVisible ? "text" : "password" }
+                        type={passConfVisible ? "text" : "password"}
                         autoComplete="password-confirmation"
                         className={`border border-black rounded-sm h-8 w-full p-2 ${errors.password ? "bg-red-200" : ""}`}
-                        {...register("password_confirmation", {required: "必須です"})}
+                        {...register("password_confirmation", {
+                          required: "必須です",
+                        })}
                       />
                       {errors.password_confirmation && (
-                        <div className="text-red-500 w-full text-sm text-end">{errors.password_confirmation.message}</div>
+                        <div className="text-red-500 w-full text-sm text-end">
+                          {errors.password_confirmation.message}
+                        </div>
                       )}
                     </div>
                   </div>
 
                   <div className="text-end">
-                    <button type="button" className="bg-gray-300 text-sm py-1 px-3 rounded-full" onClick={()=>setPassConfVisible(!passConfVisible)}>
+                    <button
+                      type="button"
+                      className="bg-gray-300 text-sm py-1 px-3 rounded-full"
+                      onClick={() => setPassConfVisible(!passConfVisible)}
+                    >
                       パスワードを{passConfVisible && "非"}表示
                     </button>
                   </div>
@@ -171,16 +191,21 @@ export default function UserCreate() {
 
               <div className="mt-6">
                 <p className="text-lg text-gray-800">
-                <Link to="/auth/login" className="text-blue-500 hover:text-blue-300 underline flex items-center">
-                  <span>ログインはこちら</span>
-                  <FaAngleRight size={16} />
-                </Link>
+                  <Link
+                    to="/auth/login"
+                    className="text-blue-500 hover:text-blue-300 underline flex items-center"
+                  >
+                    <span>ログインはこちら</span>
+                    <FaAngleRight size={16} />
+                  </Link>
                 </p>
               </div>
             </div>
           </div>
         </div>
-      : <AlreadyLoggedIn />}
+      ) : (
+        <AlreadyLoggedIn />
+      )}
     </>
-  )
+  );
 }

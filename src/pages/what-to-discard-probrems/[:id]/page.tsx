@@ -4,14 +4,9 @@ import { useParams } from "react-router";
 import { WhatToDiscardProblem } from "../index/page";
 import { HandKeys, TILES_NUM } from "../new/page";
 
-const getTileImagePathFuncObj = import.meta.glob<{ default: string }>('/src/assets/tiles/*.png');
-export const loadTile = async (id: number) => {
-  const image = await getTileImagePathFuncObj[`/src/assets/tiles/${id}.png`]();
-  return image.default
-};
-
 export default function ShowWhatToDiscardProblems() {
-  const [whatToDiscardProblem, setWhatToDiscardProblem] = useState<WhatToDiscardProblem>();
+  const [whatToDiscardProblem, setWhatToDiscardProblem] =
+    useState<WhatToDiscardProblem>();
   const [handImageUrls, setHandImageUrls] = useState<string[]>([]);
   const [doraImageUrl, setDoraImageUrl] = useState<string>("");
   const [tsumoImageUrl, setTsumoImageUrl] = useState<string>("");
@@ -19,28 +14,32 @@ export default function ShowWhatToDiscardProblems() {
 
   useEffect(() => {
     const getWhatToDiscardProblems = async () => {
-      const response = await fetch(`${BASEURL}/what_to_discard_problems/${id}`)
+      const response = await fetch(`${BASEURL}/what_to_discard_problems/${id}`);
 
       const data = await response.json();
 
-      setWhatToDiscardProblem(data.what_to_discard_problem)
+      setWhatToDiscardProblem(data.what_to_discard_problem);
 
-      if(whatToDiscardProblem) {
-        const tileUrls = await Promise.all(Array(TILES_NUM).fill(null).map( async (_, index) => {
-          const id = whatToDiscardProblem[`hand${index + 1}` as HandKeys]
-          const tileUrl = await loadTile(Number(id))
-          return tileUrl;
-        }))
+      if (whatToDiscardProblem) {
+        const tileUrls = await Promise.all(
+          Array(TILES_NUM)
+            .fill(null)
+            .map(async (_, index) => {
+              const id = whatToDiscardProblem[`hand${index + 1}` as HandKeys];
+              const tileUrl = `/tiles/${id}.png`;
+              return tileUrl;
+            }),
+        );
 
         setHandImageUrls(tileUrls);
 
-        const doraId = whatToDiscardProblem.dora
-        setDoraImageUrl(await loadTile(doraId));
+        const doraId = whatToDiscardProblem.dora;
+        setDoraImageUrl(`/tiles/${doraId}.png`);
 
-        const tsumoId = whatToDiscardProblem.dora
-        setTsumoImageUrl(await loadTile(tsumoId))
+        const tsumoId = whatToDiscardProblem.dora;
+        setTsumoImageUrl(`/tiles/${tsumoId}.png`);
       }
-    }
+    };
 
     getWhatToDiscardProblems();
   }, [JSON.stringify(whatToDiscardProblem)]);
@@ -65,17 +64,16 @@ export default function ShowWhatToDiscardProblems() {
         </div>
         <div className="flex justify-center items-end mt-6">
           {handImageUrls.map((url, index) => {
-            return (
-              <img src={url} key={index} />
-            )
-          })
-          }
-          <div  className="w-12 ml-4 flex flex-col">
-            <span className="font-bold text-center md:text-base text-[10px]">ツモ</span>
+            return <img src={url} key={index} />;
+          })}
+          <div className="w-12 ml-4 flex flex-col">
+            <span className="font-bold text-center md:text-base text-[10px]">
+              ツモ
+            </span>
             <img src={tsumoImageUrl} />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

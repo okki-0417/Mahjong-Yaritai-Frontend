@@ -1,5 +1,3 @@
 export default function EditForumTread() {
-  return (
-    <div></div>
-  )
+  return <div></div>;
 }

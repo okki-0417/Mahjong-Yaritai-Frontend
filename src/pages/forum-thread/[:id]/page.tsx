@@ -9,24 +9,20 @@ export default function ShowForumThread() {
   const { id } = useParams();
 
   useEffect(() => {
-    if(auth === false) {
+    if (auth === false) {
       navigate("/auth/login");
     }
-    console.log(`ForumThreadNew: ${auth}`)
+    console.log(`ForumThreadNew: ${auth}`);
 
     const getForumThread = async () => {
-      const response = await fetch(`${BASEURL}/forum_threads/${id}`)
+      const response = await fetch(`${BASEURL}/forum_threads/${id}`);
 
       const data = await response.json();
       console.log(`DATA: ${JSON.stringify(data)}`);
-    }
+    };
 
-  getForumThread();
+    getForumThread();
   }, [auth]);
 
-  return (
-    <div>
-      
-    </div>
-  )
+  return <div></div>;
 }
