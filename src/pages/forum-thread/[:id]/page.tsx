@@ -1,10 +1,10 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../../../App";
 import { useNavigate, useParams } from "react-router";
 import { BASEURL } from "../../../api-config";
+import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 export default function ShowForumThread() {
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthStateContext);
   const navigate = useNavigate();
   const { id } = useParams();
 

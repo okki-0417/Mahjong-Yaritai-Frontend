@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import { NavLink } from "react-router";
-import { AuthContext } from "../App";
 import { BASEURL } from "../api-config";
 import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
 import { FaAngleRight } from "react-icons/fa6";
+import { AuthStateContext } from "../contexts/AuthStateContextProvider";
 
 export default function Navigation() {
-  const { auth, setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthStateContext);
   const [checked, setChecked] = useState<boolean>(false);
 
   const logout = async () => {

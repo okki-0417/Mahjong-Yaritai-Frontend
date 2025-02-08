@@ -1,5 +1,6 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { Practice2 } from "./practice2";
+import { CsrfTokenContext } from "../contexts/CsrfTokenContextProvider";
 
 type ContextType = {
   count: number;
@@ -10,13 +11,14 @@ type ContextType = {
 export const CountContext = createContext<ContextType>(null);
 
 export const Practice = () => {
-  const [count, setCount] = useState<number>(0);
+  // const [count, setCount] = useState<number>(0);
+
+  const csrfToken = useContext(CsrfTokenContext);
+  if(!csrfToken) return;
 
   return (
     <div>
-      <CountContext.Provider value={{ count, setCount }}>
-        <Practice2 />
-      </CountContext.Provider>
+      {csrfToken}
     </div>
   );
 };

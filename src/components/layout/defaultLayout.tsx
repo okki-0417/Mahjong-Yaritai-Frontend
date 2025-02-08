@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
-import Navigation from "../components/navigation";
-import Footer from "../components/footer";
-import BottomNavigation from "../components/bottom-navigation";
+import Navigation from "../navigation";
+import Footer from "../footer";
+import BottomNavigation from "../bottom-navigation";
 
 export default function DefaultLayout() {
   return (

@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router";
 import { BASEURL } from "../../../api-config";
 import RenderErrors, { Errors } from "../../../components/render-errors";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthContext } from "../../../App";
 import AlreadyLoggedIn from "../../../components/already-logged-in";
 import { FaAngleRight } from "react-icons/fa6";
+import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 export default function UserCreate() {
   const navigate = useNavigate();
-  const { auth, setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthStateContext);
   const [passVisible, setPassVisible] = useState<boolean>(false);
   const [passConfVisible, setPassConfVisible] = useState<boolean>(false);
 
@@ -88,34 +88,6 @@ export default function UserCreate() {
 
                 <div>
                   <div className="grid grid-cols-6 lg:gap-8 gap-1">
-                    <div className="col-span-2 h-full flex items-center lg:text-xl">
-                      <label htmlFor="name">Email</label>
-                    </div>
-                    <div className="col-span-4 p-2 h-full flex flex-col items-center ">
-                      <input
-                        type="email"
-                        autoComplete="email"
-                        className={`border border-black rounded-sm h-8 w-full p-2 ${errors.email ? "bg-red-200" : ""}`}
-                        {...register("email", {
-                          required: "必須です",
-                          pattern: {
-                            value: /[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: "不正なパターンです",
-                          },
-                        })}
-                      />
-                    </div>
-                  </div>
-
-                  {errors.email && (
-                    <div className="text-red-500 w-full text-sm text-end">
-                      {errors.email.message}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <div className="grid grid-cols-6 lg:gap-8 gap-1">
                     <div className="col-span-2 h-full flex items-center lg:text-xl text-gray-800">
                       <label htmlFor="name">パスワード</label>
                     </div>
@@ -182,7 +154,7 @@ export default function UserCreate() {
                   <div>
                     <input
                       type="submit"
-                      value="確認メールを送信する"
+                      value="ユーザー登録する"
                       className="btn btn-main"
                     />
                   </div>

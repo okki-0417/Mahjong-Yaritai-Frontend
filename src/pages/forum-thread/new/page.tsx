@@ -1,16 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import RenderErrors, { Errors } from "../../../components/render-errors";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AuthContext } from "../../../App";
 import { useNavigate } from "react-router";
 import { BASEURL } from "../../../api-config";
+import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 type ForumThread = {
   topic: string;
 };
 
 export default function NewForumThread() {
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthStateContext);
   const [resErrors, setResErrors] = useState<Errors[]>([]);
 
   const navigate = useNavigate();

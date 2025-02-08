@@ -1,9 +1,9 @@
 import { Link } from "react-router";
-import { AuthContext } from "../../../App";
 import { useContext } from "react";
+import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 export default function NoContent() {
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthStateContext);
   return (
     <div className="px-4 lg:text-2xl text-lg w-fit mx-auto text-center flex flex-col items-center mt-24">
       <p>

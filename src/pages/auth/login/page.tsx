@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import RenderErrors, { Errors } from "../../../components/render-errors";
-import { AuthContext } from "../../../App";
 import { BASEURL } from "../../../api-config";
+import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 export type Session = {
   id: number;
@@ -17,7 +17,7 @@ type LoginForm = {
 
 export default function Login() {
   const navigate = useNavigate();
-  const { auth, setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthStateContext);
   const [passVisible, setPassVisible] = useState<boolean>(false);
 
   useEffect(() => {

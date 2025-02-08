@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../../App";
 import { useNavigate } from "react-router";
+import { AuthStateContext } from "../../contexts/AuthStateContextProvider";
 
 export default function Dashboard() {
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthStateContext);
   const navigate = useNavigate();
 
   useEffect(() => {

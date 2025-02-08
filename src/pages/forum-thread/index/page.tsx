@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../App";
 import { Link, useNavigate } from "react-router";
 import { BASEURL } from "../../../api-config";
+import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 type ForumThread = {
   id: number;
@@ -9,7 +9,7 @@ type ForumThread = {
 };
 
 export default function IndexForumThreads() {
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(AuthStateContext);
   const navigate = useNavigate();
   const [forumThreads, setForumThreads] = useState<ForumThread[]>();
 
