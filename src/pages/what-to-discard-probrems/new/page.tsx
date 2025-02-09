@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { BASEURL } from "../../../api-config";
+import { BASEURL } from "../../../ApiConfig";
 import { useEffect, useState } from "react";
-import { Errors } from "../../../components/render-errors";
+import { Errors } from "../../../components/RenderErrors";
 import { useNavigate } from "react-router";
 
 export const TILES_NUM = 13;

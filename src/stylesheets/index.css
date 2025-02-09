@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-base font-serif overflow-x-hidden text-white;
+  @apply bg-base font-serif overflow-x-hidden text-slate-100;
 }
 
 @keyframes fadeIn {

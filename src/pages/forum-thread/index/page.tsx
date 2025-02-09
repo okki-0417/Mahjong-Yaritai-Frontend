@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { BASEURL } from "../../../api-config";
+import { BASEURL } from "../../../ApiConfig";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 type ForumThread = {

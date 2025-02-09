@@ -1,6 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form"
-import { BASEURL } from "../../api-config";
-import AuthorizationSessionForm from "./components/authorizationSessionForm";
+import { BASEURL } from "../../ApiConfig";
 import { useNavigate } from "react-router";
 
 type AuthorizationSessionForm = {

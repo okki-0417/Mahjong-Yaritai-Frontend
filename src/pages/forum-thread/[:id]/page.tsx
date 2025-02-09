@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import { BASEURL } from "../../../api-config";
+import { BASEURL } from "../../../ApiConfig";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 export default function ShowForumThread() {

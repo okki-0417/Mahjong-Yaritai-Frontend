@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BASEURL } from "../../../api-config";
+import { BASEURL } from "../../../ApiConfig";
 import { useParams } from "react-router";
 import { WhatToDiscardProblem } from "../index/page";
 import { HandKeys, TILES_NUM } from "../new/page";

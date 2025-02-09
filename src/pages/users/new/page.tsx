@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { BASEURL } from "../../../api-config";
-import RenderErrors, { Errors } from "../../../components/render-errors";
+import { BASEURL } from "../../../ApiConfig";
+import RenderErrors, { Errors } from "../../../components/RenderErrors";
 import { SubmitHandler, useForm } from "react-hook-form";
-import AlreadyLoggedIn from "../../../components/already-logged-in";
+import AlreadyLoggedIn from "../../../components/AlreadyLoggedIn";
 import { FaAngleRight } from "react-icons/fa6";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 

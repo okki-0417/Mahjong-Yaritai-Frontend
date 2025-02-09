@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react"
-import { BASEURL } from "../api-config";
+import { BASEURL } from "../ApiConfig";
 
 type AuthStateContext = {
   auth: boolean;

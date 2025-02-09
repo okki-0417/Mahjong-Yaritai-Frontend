@@ -14,10 +14,10 @@ import ShowWhatToDiscardProblems from "./pages/what-to-discard-probrems/[:id]/pa
 import About from "./pages/about/page";
 import UserVerification from "./pages/users/verification/page";
 import UserVerificationToken from "./pages/users/verification/token/page";
-import DefaultLayout from "./components/layout/defaultLayout";
+import DefaultLayout from "./components/layout/DefaultLayout";
 import CsrfTokenContextProvider from "./contexts/CsrfTokenContextProvider";
 import AuthStateContextProvider from "./contexts/AuthStateContextProvider";
-import AuthorizationSession from "./pages/authorization_session/page";
+import AuthorizationSession from "./pages/authorization-session/page";
 import Authorization from "./pages/authorization/page";
 
 export default function App() {

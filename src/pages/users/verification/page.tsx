@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { BASEURL } from "../../../api-config";
+import { BASEURL } from "../../../ApiConfig";
 import { useNavigate } from "react-router";
 
 export default function UserVerification() {

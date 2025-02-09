@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { NavLink } from "react-router";
-import { BASEURL } from "../api-config";
+import { BASEURL } from "../ApiConfig";
 import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
 import { FaAngleRight } from "react-icons/fa6";
 import { AuthStateContext } from "../contexts/AuthStateContextProvider";
@@ -28,7 +28,7 @@ export default function Navigation() {
       <header className="w-full overflow-x-hidden relative">
         <nav className="bg-gray-900 h-20 flex items-center">
           <div className="w-4/5  mx-auto px-4 sm:px-6 relative flex md:justify-between justify-center items-center">
-            <div className="flex items-center">
+            <div className="flex items-center pr-8">
               <NavLink
                 to="/"
                 className="font-bold text-2xl flex items-center gap-4"
@@ -37,7 +37,7 @@ export default function Navigation() {
                   <img
                     src="/logo.webp"
                     alt="麻雀好きが集まる場所"
-                    className="w-12 h-12 object-contain"
+                    className="lg:w-12 lg:h-12 w-10 h-10 object-contain"
                   />
                 </div>
                 <span className="lg:text-3xl text-2xl font-bold text-gray-300 hover:text-white">

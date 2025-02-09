@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import RenderErrors, { Errors } from "../../../components/render-errors";
+import RenderErrors, { Errors } from "../../../components/RenderErrors";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { BASEURL } from "../../../api-config";
+import { BASEURL } from "../../../ApiConfig";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
 type ForumThread = {
