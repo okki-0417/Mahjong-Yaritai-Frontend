@@ -8,9 +8,6 @@ import NewForumThread from "./pages/forum-thread/new/page";
 import IndexForumThreads from "./pages/forum-thread/index/page";
 import ShowForumThread from "./pages/forum-thread/[:id]/page";
 import EditForumTread from "./pages/forum-thread/edit/page";
-import IndexWhatToDiscardProblems from "./pages/what-to-discard-probrems/index/page";
-import NewWhatToDiscardProblems from "./pages/what-to-discard-probrems/new/page";
-import ShowWhatToDiscardProblems from "./pages/what-to-discard-probrems/[:id]/page";
 import About from "./pages/about/page";
 import UserVerification from "./pages/users/verification/page";
 import UserVerificationToken from "./pages/users/verification/token/page";
@@ -19,6 +16,7 @@ import CsrfTokenContextProvider from "./contexts/CsrfTokenContextProvider";
 import AuthStateContextProvider from "./contexts/AuthStateContextProvider";
 import AuthorizationSession from "./pages/authorization-session/page";
 import Authorization from "./pages/authorization/page";
+import WhatToDiscardProblems from "./pages/what-to-discard-probrems/page";
 
 export default function App() {
   return (
@@ -50,11 +48,7 @@ export default function App() {
                 <Route path=":id/edit" element={<EditForumTread />} />
               </Route>
 
-              <Route path="/what-to-discard-problems">
-                <Route index element={<IndexWhatToDiscardProblems />} />
-                <Route path="new" element={<NewWhatToDiscardProblems />} />
-                <Route path=":id" element={<ShowWhatToDiscardProblems />} />
-              </Route>
+              <Route path="/what-to-discard-problems" element={<WhatToDiscardProblems />} />
 
               <Route path="/practice" element={<Practice />} />
             </Route>

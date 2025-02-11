@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
-import { BASEURL } from "../../../ApiConfig";
-import NoContent from "../components/NoContent";
-import WhatToDiscardProblemCard from "../components/WhatToDiscardProblemCard";
+import { BASEURL } from "../../ApiConfig";
+import NoContent from "./components/NoContent";
+import WhatToDiscardProblemCard from "./components/WhatToDiscardProblemCard";
+import { Likes } from "../../features/what-to-discard-problems/WhatToDiscardProblemLikeButton";
+import PopButton from "../../components/PopButton";
 
 export type WhatToDiscardProblem = {
   id: number;
   round: number;
   turn: number;
-  wind: string;
+  wind: number;
   dora: number;
   point_east: number;
   point_south: number;
   point_west: number;
   point_north: number;
+
   hand1: number;
   hand2: number;
   hand3: number;
@@ -27,26 +30,45 @@ export type WhatToDiscardProblem = {
   hand12: number;
   hand13: number;
   tsumo: number;
+  created_at: string;
+
+  user: {
+    id: number;
+    name: string;
+  }
+
+  likes: Likes;
 };
 
-export default function IndexWhatToDiscardProblems() {
-  const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<WhatToDiscardProblems>([]);
-
-  type WhatToDiscardProblems = WhatToDiscardProblem[];
+export default function WhatToDiscardProblems() {
+  const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<WhatToDiscardProblem[]>([]);
+  const [createFormOpen, setCreateFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const getWhatToDiscardProblems = async () => {
+    const fetchWhatToDiscardProblems = async () => {
       try {
-        const response = await fetch(`${BASEURL}/what_to_discard_problems`);
-        const data = await response.json();
+        const response = await fetch(`${BASEURL}/what_to_discard_problems`, {
+          headers: {
+            "Accept": "application/json",
+          },
+          credentials: "include",
+        });
+
+        const data: {what_to_discard_problems: WhatToDiscardProblem[]} = await response.json();
+
         setWhatToDiscardProblems(data.what_to_discard_problems);
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error);
       }
     };
 
-    getWhatToDiscardProblems();
+    fetchWhatToDiscardProblems();
   }, []);
+
+  const openCreateForm = () => {
+
+  }
 
   return (
     <div className="max-w-4xl lg:mx-auto mx-4">
@@ -57,6 +79,14 @@ export default function IndexWhatToDiscardProblems() {
         <span>ここでは様々な状況での最適な選択を考えながら、他のプレイヤーと意見を交換したり、自分の判断力を磨いたりできます。</span>
         <span>麻雀の奥深さを学びながら、より良い打牌選択を身につけましょう。</span>
       </p>
+
+      <div className="mt-6">
+        <PopButton
+          value="＋"
+          defaultClassName="btn-circle btn-main"
+          onClick={openCreateForm}
+        />
+      </div>
 
       {whatToDiscardProblems.length ? (
         whatToDiscardProblems.map((problem, index) => (

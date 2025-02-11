@@ -17,6 +17,20 @@ body {
   }
 }
 
+@keyframes pop {
+  0% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
 .fade-in {
   animation: fadeIn 2s ease-in-out;
 }
@@ -26,9 +40,17 @@ body {
   animation-fill-mode: both;
 }
 
+.pop {
+  animation: pop 0.2s ease-in-out;
+}
+
 @layer components {
   .btn {
-    @apply max-w-full py-2 lg:px-8 px-8 lg:text-xl text-base rounded-full font-semibold hover:cursor-pointer text-center;
+    @apply max-w-full py-2 lg:px-8 px-8 lg:text-xl text-base rounded-full font-semibold hover:cursor-pointer text-center hover:scale-105 transition-all;
+  }
+
+  .btn-circle {
+    @apply w-12 h-12 flex items-center justify-center rounded-full lg:text-3xl text-xl font-bold hover:cursor-pointer hover:scale-105 transition-all;
   }
 
   .btn-main {
@@ -48,7 +70,7 @@ body {
   }
 
   .bg-main {
-    @apply bg-pink-500;
+    @apply bg-pink-400;
   }
 
   .label {
