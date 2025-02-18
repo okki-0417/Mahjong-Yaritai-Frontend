@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { BASEURL } from "../../ApiConfig";
-import NoContent from "./components/NoContent";
-import WhatToDiscardProblemCard from "./components/WhatToDiscardProblemCard";
+import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
 import { Likes } from "../../features/what-to-discard-problems/WhatToDiscardProblemLikeButton";
 import PopButton from "../../components/PopButton";
+import ToggleWrapper from "../../components/ToggleWrapper";
+import WhatToDiscardProblemCreateForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateForm";
 
 export type WhatToDiscardProblem = {
   id: number;
@@ -42,7 +43,7 @@ export type WhatToDiscardProblem = {
 
 export default function WhatToDiscardProblems() {
   const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<WhatToDiscardProblem[]>([]);
-  const [createFormOpen, setCreateFormOpen] = useState<boolean>(false);
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchWhatToDiscardProblems = async () => {
@@ -64,11 +65,13 @@ export default function WhatToDiscardProblems() {
     };
 
     fetchWhatToDiscardProblems();
+
+    if(localStorage.getItem("isCreateFormOpen") === "open") setIsCreateFormOpen(true);
   }, []);
 
-  const openCreateForm = () => {
-
-  }
+  useEffect(() => {
+    isCreateFormOpen ? localStorage.setItem("isCreateFormOpen", "open") : localStorage.removeItem("isCreateFormOpen");
+  }, [isCreateFormOpen])
 
   return (
     <div className="max-w-4xl lg:mx-auto mx-4">
@@ -84,17 +87,22 @@ export default function WhatToDiscardProblems() {
         <PopButton
           value="＋"
           defaultClassName="btn-circle btn-main"
-          onClick={openCreateForm}
+          onClick={() => setIsCreateFormOpen(!isCreateFormOpen)}
         />
       </div>
 
-      {whatToDiscardProblems.length ? (
-        whatToDiscardProblems.map((problem, index) => (
+      <div>
+        <ToggleWrapper
+          flag={isCreateFormOpen}
+          children={
+            <WhatToDiscardProblemCreateForm setIsCreateFormOpen={setIsCreateFormOpen} />
+            }
+        />
+      </div>
+
+      {whatToDiscardProblems.map((problem, index) => (
           <WhatToDiscardProblemCard key={index} problem={problem} />
-        ))
-      ) : (
-        <NoContent />
-      )}
+        ))}
     </div>
   );
 }

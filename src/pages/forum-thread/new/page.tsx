@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import RenderErrors, { Errors } from "../../../components/RenderErrors";
+import RenderErrors, { Errors } from "../../../components/ErrorMessage";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { BASEURL } from "../../../ApiConfig";

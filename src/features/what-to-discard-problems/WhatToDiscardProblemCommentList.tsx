@@ -1,16 +1,26 @@
 import { useEffect, useState } from "react";
-import { BASEURL } from "../../../ApiConfig";
+import { BASEURL } from "../../ApiConfig";
 import WhatToDiscardProblemParentCommentCard from "./WhatToDiscardProblemParentCommentCard";
-import { WhatToDiscardProblemParentCommentReply } from "./WhatToDiscardProblemReplyCard";
 
 export type WhatToDiscardProblemParentComment = {
+  id: string;
   content: string;
   created_at: string;
+
   user: {
     id: number;
     name: string;
   }
-  replies: WhatToDiscardProblemParentCommentReply[]
+
+  replies: {
+    id: number;
+    content: string;
+    created_at: string;
+    user: {
+      id: number;
+      name: string;
+    }
+  }[]
 };
 
 export default function WhatToDiscardProblemCommentList({problemId}: {problemId: number}) {

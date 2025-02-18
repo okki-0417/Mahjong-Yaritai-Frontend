@@ -50,7 +50,7 @@ export default function AuthorizationSession() {
               type="email"
               placeholder="test@mahjong-yaritai.com"
               autoComplete="email"
-              className="input mt-1"
+              className="input w-full mt-1"
               required={true}
               {...register("email", {
                 required: "メールアドレスを入力してください"

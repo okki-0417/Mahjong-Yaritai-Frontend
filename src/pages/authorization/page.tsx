@@ -47,7 +47,7 @@ export default function Authorization() {
             <input
               type="number"
               autoComplete="number"
-              className="input mt-1 font-sans text-lg tracking-widest"
+              className="input w-full mt-1 font-sans text-lg tracking-widest"
               required={true}
               {...register("token", {
                 required: "メールアドレスを入力してください",

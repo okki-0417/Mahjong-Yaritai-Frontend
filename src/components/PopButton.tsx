@@ -1,6 +1,13 @@
 import { ReactNode, useState } from "react"
 
-export default function PopButton({value, defaultClassName = "", onClick = () => {}}: {value: string | ReactNode, defaultClassName?: string, onClick?: () => any}) {
+type PopButtonType = {
+  value: string | ReactNode;
+  defaultClassName?: string;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset"
+}
+
+export default function PopButton({value, defaultClassName = "", onClick = () => {}, type  = "button"}: PopButtonType) {
   const [animate, setAnimate] = useState<boolean>(false)
 
   const handleClick = () => {
@@ -12,8 +19,9 @@ export default function PopButton({value, defaultClassName = "", onClick = () =>
 
   return (
     <button
+      type={type}
       onClick={handleClick}
-      className={`${defaultClassName} ${animate ? "pop" : ""}`}
+      className={`${defaultClassName} ${animate ? "pop" : ""} hover:scale-105`}
     >
     {value}
     </button>

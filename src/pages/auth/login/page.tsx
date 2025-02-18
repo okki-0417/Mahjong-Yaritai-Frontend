@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import RenderErrors, { Errors } from "../../../components/RenderErrors";
+import RenderErrors, { Errors } from "../../../components/ErrorMessage";
 import { BASEURL } from "../../../ApiConfig";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 

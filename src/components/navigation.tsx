@@ -47,15 +47,16 @@ export default function Navigation() {
             </div>
 
             <div className="md:flex hidden space-x-4 text-xl">
-              {auth ? (
+            {/* (
                 <button
                   onClick={logout}
                   className="text-gray-300 hover:text-white"
                 >
                   ログアウト
                 </button>
-              ) : (
-                <>
+              ) : ( */}
+              {!auth && (
+                <div>
                   <NavLink
                     to="/auth/login"
                     className="text-gray-300 hover:text-white"
@@ -68,7 +69,7 @@ export default function Navigation() {
                   >
                     ユーザー登録
                   </NavLink>
-                </>
+                </div>
               )}
               <NavLink
                 to="/what-to-discard-problems"
