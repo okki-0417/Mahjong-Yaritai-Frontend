@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import ErrorMessage, { Error } from "../../../components/ErrorMessage";
+import ErrorMessage, { ErrorMessageType } from "../../../components/ErrorMessage";
 import { BASEURL } from "../../../ApiConfig";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
@@ -27,7 +27,7 @@ export default function Login() {
     console.log(`Login: ${auth}`);
   }, [auth]);
 
-  const [resErrors, setResErrors] = useState<Error[]>([]);
+  const [resErrors, setResErrors] = useState<ErrorMessageType[]>([]);
   const {
     register,
     handleSubmit,

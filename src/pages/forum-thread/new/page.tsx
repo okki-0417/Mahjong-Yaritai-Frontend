@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import  ErrorMessage, { Error } from "../../../components/ErrorMessage";
+import  ErrorMessage, { ErrorMessageType } from "../../../components/ErrorMessage";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { BASEURL } from "../../../ApiConfig";
@@ -11,7 +11,7 @@ type ForumThread = {
 
 export default function NewForumThread() {
   const { auth } = useContext(AuthStateContext);
-  const [resErrors, setResErrors] = useState<Error[]>([]);
+  const [resErrors, setResErrors] = useState<ErrorMessageType[]>([]);
 
   const navigate = useNavigate();
 

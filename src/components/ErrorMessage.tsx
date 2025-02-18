@@ -1,8 +1,8 @@
-export type Error = {
-  message: string | undefined;
+export type ErrorMessageType = {
+  message: string | undefined
 }
 
-export default function ErrorMessage({ message }: Error) {
+export default function ErrorMessage({ message }: ErrorMessageType) {
   if(!message) return;
 
   return (
