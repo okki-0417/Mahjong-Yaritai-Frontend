@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import RenderErrors, { Errors } from "../../../components/ErrorMessage";
+import ErrorMessage, { Error } from "../../../components/ErrorMessage";
 import { BASEURL } from "../../../ApiConfig";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 
@@ -27,7 +27,7 @@ export default function Login() {
     console.log(`Login: ${auth}`);
   }, [auth]);
 
-  const [resErrors, setResErrors] = useState<Errors[]>([]);
+  const [resErrors, setResErrors] = useState<Error[]>([]);
   const {
     register,
     handleSubmit,
@@ -62,7 +62,7 @@ export default function Login() {
             </h1>
             <div className="w-full mt-4">
               {resErrors[0] && (
-                <RenderErrors errors={resErrors[resErrors.length - 1]} />
+                <ErrorMessage message={resErrors[resErrors.length - 1]?.message} />
               )}
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-cols-6 lg:gap-8 gap-1">

@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
-import { Practice2 } from "./practice2";
+import React, { createContext, useContext } from "react";
 import { CsrfTokenContext } from "../contexts/CsrfTokenContextProvider";
 
 type ContextType = {

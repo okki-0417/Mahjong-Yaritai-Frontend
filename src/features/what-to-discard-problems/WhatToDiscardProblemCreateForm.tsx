@@ -5,7 +5,6 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { HandKeys, TILES_NUM } from "./WhatToDiscardProblemCard";
 import { BASEURL } from "../../ApiConfig";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useNavigate } from "react-router";
 
 type WhatToDiscardProblemCreateFormType = {
   round: string;

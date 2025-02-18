@@ -15,7 +15,7 @@ export type HandKeys = `hand${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 
 export default function WhatToDiscardProblemCard({problem}: {problem: WhatToDiscardProblem}) {
   const [commentVisible, setCommentVisible] = useState<boolean>(false);
-  const [voted, setVoted] = useState<boolean>(false);
+  const [voted, ] = useState<boolean>(false);
   const [voteResultVisible, setVoteResultVisible] = useState<boolean>(false);
 
   const ref = useRef<HTMLDivElement>(null);

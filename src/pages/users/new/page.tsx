@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { BASEURL } from "../../../ApiConfig";
-import RenderErrors, { Errors } from "../../../components/ErrorMessage";
+import ErrorMessage, { Error } from "../../../components/ErrorMessage";
 import { SubmitHandler, useForm } from "react-hook-form";
 import AlreadyLoggedIn from "../../../components/AlreadyLoggedIn";
 import { FaAngleRight } from "react-icons/fa6";
@@ -20,7 +20,7 @@ export default function UserCreate() {
     password_confirmation: string;
   };
 
-  const [resErrors, setResErrors] = useState<Errors[]>([]);
+  const [resErrors, setResErrors] = useState<Error[]>([]);
   const {
     register,
     handleSubmit,
@@ -60,7 +60,7 @@ export default function UserCreate() {
 
             <div className="w-full mt-6">
               {resErrors[0] && (
-                <RenderErrors errors={resErrors[resErrors.length - 1]} />
+                <ErrorMessage message={resErrors[resErrors.length - 1]?.message} />
               )}
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div>

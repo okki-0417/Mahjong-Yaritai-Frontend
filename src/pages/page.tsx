@@ -1,31 +1,31 @@
-import { useEffect, useRef } from "react";
+// import { useEffect, useRef } from "react";
 import { BsGraphUpArrow } from "react-icons/bs";
-import { FaAngleRight, FaQuestion } from "react-icons/fa";
+import { FaAngleRight } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
 import { MdOutlineQuestionMark } from "react-icons/md";
 import { RiArticleFill } from "react-icons/ri";
 import { Link } from "react-router";
 
 export default function Home() {
-  const ref = useRef(null);
+  // const ref = useRef(null);
 
-  const fadeIn = (
-    entries: IntersectionObserverEntry[],
-    observer: IntersectionObserver,
-  ) => {
-    if (ref.current) {
-      observer.unobserve(ref.current);
-    }
-  };
+  // const fadeIn = (
+  //   entries: IntersectionObserverEntry[],
+  //   observer: IntersectionObserver,
+  // ) => {
+  //   if (ref.current) {
+  //     observer.unobserve(ref.current);
+  //   }
+  // };
 
-  const options = { threshold: 1 };
-  const observer = new IntersectionObserver(fadeIn, options);
+  // const options = { threshold: 1 };
+  // const observer = new IntersectionObserver(fadeIn, options);
 
-  useEffect(() => {
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-  });
+  // useEffect(() => {
+  //   if (ref.current) {
+  //     observer.observe(ref.current);
+  //   }
+  // });
 
   return (
     <div>

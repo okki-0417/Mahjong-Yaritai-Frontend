@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import RenderErrors, { Errors } from "../../../components/ErrorMessage";
+import  ErrorMessage, { Error } from "../../../components/ErrorMessage";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { BASEURL } from "../../../ApiConfig";
@@ -11,7 +11,7 @@ type ForumThread = {
 
 export default function NewForumThread() {
   const { auth } = useContext(AuthStateContext);
-  const [resErrors, setResErrors] = useState<Errors[]>([]);
+  const [resErrors, setResErrors] = useState<Error[]>([]);
 
   const navigate = useNavigate();
 
@@ -58,7 +58,7 @@ export default function NewForumThread() {
         <h1 className="lg:text-3xl text-2xl font-semibold">スレッドを作る</h1>
         <div className="w-full mt-4">
           {resErrors[0] && (
-            <RenderErrors errors={resErrors[resErrors.length - 1]} />
+            <ErrorMessage message={resErrors[resErrors.length - 1]?.message} />
           )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-6 lg:gap-8 gap-1">
