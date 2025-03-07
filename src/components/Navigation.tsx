@@ -2,8 +2,12 @@ import { useContext, useState } from "react";
 import { NavLink } from "react-router";
 import { BASEURL } from "../ApiConfig";
 import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
-import { FaAngleRight } from "react-icons/fa6";
+import { FaAngleRight, FaGear } from "react-icons/fa6";
 import { AuthStateContext } from "../contexts/AuthStateContextProvider";
+import { GiThink } from "react-icons/gi";
+import { RiArticleFill } from "react-icons/ri";
+import { MdOutlineQuestionMark } from "react-icons/md";
+import { BsGraphUpArrow } from "react-icons/bs";
 
 export default function Navigation() {
   const { auth, setAuth } = useContext(AuthStateContext);
@@ -25,7 +29,7 @@ export default function Navigation() {
 
   return (
     <>
-      <header className="w-full overflow-x-hidden relative">
+      <header className="w-full overflow-x-hidden fixed z-50">
         <nav className="bg-gray-900 h-20 flex items-center">
           <div className="w-4/5  mx-auto px-4 sm:px-6 relative flex md:justify-between justify-center items-center">
             <div className="flex items-center pr-8">
@@ -40,13 +44,35 @@ export default function Navigation() {
                     className="lg:w-12 lg:h-12 w-10 h-10 object-contain"
                   />
                 </div>
-                <span className="lg:text-3xl text-2xl font-bold text-gray-300 hover:text-white">
+                <span className="lg:text-3xl text-2xl font-bold text-white text-shadow">
                   麻雀ヤリタイ
                 </span>
               </NavLink>
             </div>
 
-            <div className="md:flex hidden space-x-4 text-xl">
+            <div className="md:flex hidden space-x-4 text-xl items-center">
+              <NavLink to="/what-to-discard-problems" className="text-white">
+                <GiThink size={40} color="white" />
+              </NavLink>
+
+              <NavLink to="/articles" className="text-white">
+                <RiArticleFill size={30} color="white" />
+              </NavLink>
+
+              <NavLink to="/learning" className="text-white">
+                <MdOutlineQuestionMark size={30} color="white" />
+              </NavLink>
+
+              <NavLink to="/records" className="text-white">
+                <BsGraphUpArrow size={30} color="white" />
+              </NavLink>
+
+              <NavLink to="/settings" className="text-white">
+                <FaGear size={30} color="white" />
+              </NavLink>
+            </div>
+
+            {/* <div className="md:flex hidden space-x-4 text-xl">
               {auth ? (
                 <button
                   onClick={logout}
@@ -54,29 +80,17 @@ export default function Navigation() {
                 >
                   ログアウト
                 </button>
-                ) : (
-                <div>
-                  <NavLink
-                    to="/auth/login"
-                    className="text-gray-300 hover:text-white"
-                  >
+              ) : (
+                <div className="flex gap-3">
+                  <NavLink to="/auth/login" className="text-white">
                     ログイン
                   </NavLink>
-                  <NavLink
-                    to="/users/new"
-                    className="text-gray-300 hover:text-white"
-                  >
+                  <NavLink to="/authorization-session" className="text-white">
                     ユーザー登録
                   </NavLink>
                 </div>
               )}
-              <NavLink
-                to="/what-to-discard-problems"
-                className="text-gray-300 hover:text-white"
-              >
-                何切る問題
-              </NavLink>
-            </div>
+            </div>*/}
 
             <button
               className="flex flex-col gap-[7px] md:hidden z-50 absolute top-1/2 -right-5 -translate-y-1/2"

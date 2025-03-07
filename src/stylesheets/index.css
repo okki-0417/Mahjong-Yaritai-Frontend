@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-base font-serif overflow-x-hidden text-slate-100;
+  @apply bg-base font-serif overflow-x-hidden text-white;
 }
 
 @keyframes fadeIn {
@@ -40,6 +40,10 @@ body {
   animation-fill-mode: both;
 }
 
+.fast-fade-in {
+  animation: fadeIn 0.5s linear;
+}
+
 .pop {
   animation: pop 0.2s ease-in-out;
 }
@@ -74,15 +78,19 @@ body {
   }
 
   .label {
-    @apply text-lg font-bold;
+    @apply text-2xl;
   }
 
   .input {
-    @apply py-2 px-2 text-base border border-gray-700 rounded-md focus:outline-none invalid:border-red-400 font-sans;
+    @apply p-3 border border-white bg-gray-600 w-full text-lg rounded-md font-sans;
+  }
+
+  .form-button {
+    @apply py-1 px-2 border border-black bg-white text-lg rounded-md font-sans;
   }
 
   .input-sm {
-    @apply py-1 px-2 text-base border border-gray-700 rounded-md focus:outline-none invalid:border-red-400 font-sans;
+    @apply py-1 px-2 border border-white bg-base w-full text-lg rounded-md font-sans;
   }
 
   .input-error {

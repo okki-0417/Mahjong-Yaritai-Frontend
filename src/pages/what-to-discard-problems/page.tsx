@@ -36,13 +36,15 @@ export type WhatToDiscardProblem = {
   user: {
     id: number;
     name: string;
-  }
+  };
 
   likes: Likes;
 };
 
 export default function WhatToDiscardProblems() {
-  const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<WhatToDiscardProblem[]>([]);
+  const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<
+    WhatToDiscardProblem[]
+  >([]);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -50,37 +52,44 @@ export default function WhatToDiscardProblems() {
       try {
         const response = await fetch(`${BASEURL}/what_to_discard_problems`, {
           headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
           },
           credentials: "include",
         });
 
-        const data: {what_to_discard_problems: WhatToDiscardProblem[]} = await response.json();
+        const data: { what_to_discard_problems: WhatToDiscardProblem[] } =
+          await response.json();
 
         setWhatToDiscardProblems(data.what_to_discard_problems);
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error);
       }
     };
 
     fetchWhatToDiscardProblems();
 
-    if(localStorage.getItem("isCreateFormOpen") === "open") setIsCreateFormOpen(true);
+    if (localStorage.getItem("isCreateFormOpen") === "open")
+      setIsCreateFormOpen(true);
   }, []);
 
   useEffect(() => {
-    isCreateFormOpen ? localStorage.setItem("isCreateFormOpen", "open") : localStorage.removeItem("isCreateFormOpen");
-  }, [isCreateFormOpen])
+    isCreateFormOpen
+      ? localStorage.setItem("isCreateFormOpen", "open")
+      : localStorage.removeItem("isCreateFormOpen");
+  }, [isCreateFormOpen]);
 
   return (
-    <div className="max-w-4xl lg:mx-auto mx-4">
+    <div className="max-w-4xl lg:mx-auto mx-4 mt-36">
       <h1 className="lg:text-5xl text-xl mt-12 font-bold">何切る問題</h1>
       <hr className="mt-3" />
 
       <p className="mt-6 lg:text-lg leading-relaxed flex flex-col gap-2">
-        <span>ここでは様々な状況での最適な選択を考えながら、他のプレイヤーと意見を交換したり、自分の判断力を磨いたりできます。</span>
-        <span>麻雀の奥深さを学びながら、より良い打牌選択を身につけましょう。</span>
+        <span>
+          ここでは様々な状況での最適な選択を考えながら、他のプレイヤーと意見を交換したり、自分の判断力を磨いたりできます。
+        </span>
+        <span>
+          麻雀の奥深さを学びながら、より良い打牌選択を身につけましょう。
+        </span>
       </p>
 
       <div className="mt-6">
@@ -95,14 +104,16 @@ export default function WhatToDiscardProblems() {
         <ToggleWrapper
           flag={isCreateFormOpen}
           children={
-            <WhatToDiscardProblemCreateForm setIsCreateFormOpen={setIsCreateFormOpen} />
-            }
+            <WhatToDiscardProblemCreateForm
+              setIsCreateFormOpen={setIsCreateFormOpen}
+            />
+          }
         />
       </div>
 
       {whatToDiscardProblems.map((problem, index) => (
-          <WhatToDiscardProblemCard key={index} problem={problem} />
-        ))}
+        <WhatToDiscardProblemCard key={index} problem={problem} />
+      ))}
     </div>
   );
 }
