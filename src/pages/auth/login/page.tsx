@@ -57,7 +57,7 @@ export default function Login() {
   return (
     <>
       {auth === false && (
-        <div className="max-w-screen-sm mx-auto mt-40">
+        <div className="max-w-screen-sm mx-auto mt-40 px-4">
           <div>
             <div className="w-full mt-8">
               <h1 className="lg:text-4xl text-2xl font-semibold mb-3">

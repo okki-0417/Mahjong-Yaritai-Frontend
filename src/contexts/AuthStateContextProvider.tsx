@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useState } from "react"
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { BASEURL } from "../ApiConfig";
 
 type AuthStateContext = {
@@ -8,10 +8,16 @@ type AuthStateContext = {
 
 export const AuthStateContext = createContext<AuthStateContext>({
   auth: false,
-  setAuth: () => {throw new Error("SetAuth is empty.")},
+  setAuth: () => {
+    throw new Error("SetAuth is empty.");
+  },
 });
 
-export default function AuthStateContextProvider({children}: {children: ReactNode}) {
+export default function AuthStateContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [auth, setAuth] = useState<boolean>(false);
 
   useEffect(() => {
@@ -29,9 +35,8 @@ export default function AuthStateContextProvider({children}: {children: ReactNod
         }
 
         setAuth(true);
-        console.log(`You are ${auth ? "LOGGED IN" : "NOT LOGGED IN"}`)
-      }
-      catch (error) {
+        console.log(`You are ${auth ? "LOGGED IN" : "NOT LOGGED IN"}`);
+      } catch (error) {
         console.error("Failed to fetch authentication state:", error);
       }
     };
@@ -40,8 +45,8 @@ export default function AuthStateContextProvider({children}: {children: ReactNod
   }, [auth]);
 
   return (
-    <AuthStateContext.Provider value={{auth, setAuth}}>
+    <AuthStateContext.Provider value={{ auth, setAuth }}>
       {children}
     </AuthStateContext.Provider>
-  )
+  );
 }

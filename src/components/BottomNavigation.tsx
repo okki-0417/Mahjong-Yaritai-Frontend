@@ -6,7 +6,7 @@ import { Link } from "react-router";
 
 export default function BottomNavigation() {
   return (
-    <nav className="md:hidden block w-full h-16 bg-gray-900 fixed bottom-0">
+    <nav className="md:hidden block w-full h-16 bg-gray-900 fixed z-50 bottom-0">
       <ul className="flex justify-around items-center h-full">
         <Link to="/">
           <li className="flex items-center flex-col">

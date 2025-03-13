@@ -40,7 +40,7 @@ export default function AuthorizationSession() {
   };
 
   return (
-    <div className="max-w-screen-sm mx-auto mt-40">
+    <div className="max-w-screen-sm mx-auto mt-40 px-4">
       <h1 className="lg:text-4xl text-2xl font-semibold mb-3">ユーザー登録</h1>
       <hr />
 

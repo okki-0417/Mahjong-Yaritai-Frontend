@@ -2,7 +2,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import PopButton from "../../components/PopButton";
 import TileImage from "../../components/TileImage";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { HandKeys, TILES_NUM } from "./WhatToDiscardProblemCard";
 import { BASEURL } from "../../ApiConfig";
 import ErrorMessage from "../../components/ErrorMessage";
 
@@ -36,7 +35,23 @@ type WhatToDiscardProblemCreateFormType = {
   tsumo: TileId;
 };
 
-type TileInputs = HandKeys | "dora" | "tsumo";
+type TileInputs =
+  | "hand1"
+  | "hand2"
+  | "hand3"
+  | "hand4"
+  | "hand5"
+  | "hand6"
+  | "hand7"
+  | "hand8"
+  | "hand9"
+  | "hand10"
+  | "hand11"
+  | "hand12"
+  | "hand13"
+  | "tsumo"
+  | "dora";
+
 type PointInputs = "point_east" | "point_south" | "point_west" | "point_north";
 type TileId =
   | 1
@@ -74,15 +89,23 @@ type TileId =
   | 33
   | 34;
 
-export default function WhatToDiscardProblemCreateForm({
+export const TILES_NUM = 13;
+export const TILE_TYPES_NUM = 34;
+export const MAX_ROUND = 18;
+export type HandKeys =
+  `hand${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13}`;
+
+export default function WhatToDiscardProblemForm({
   setIsCreateFormOpen,
 }: {
-  setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreateFormOpen: Dispatch<SetStateAction<boolean | null>>;
 }) {
   const [focussedTileInput, setFocussedTileInput] =
     useState<TileInputs>("dora");
+
   const [focussedPointInput, setFocussedPointInput] =
     useState<PointInputs | null>("point_east");
+
   const [sameIdTilesCount, setSameIdTilesCount] = useState({
     1: 0,
     2: 0,
@@ -364,9 +387,10 @@ export default function WhatToDiscardProblemCreateForm({
             { value: "南二", onClick: () => setValue("round", "南二") },
             { value: "南三", onClick: () => setValue("round", "南三") },
             { value: "南四", onClick: () => setValue("round", "南四") },
-          ].map((obj) => {
+          ].map((obj, index) => {
             return (
               <PopButton
+                key={index}
                 value={obj.value}
                 onClick={obj.onClick}
                 defaultClassName="form-button"
@@ -444,9 +468,10 @@ export default function WhatToDiscardProblemCreateForm({
             { value: "南", onClick: () => setValue("wind", "南") },
             { value: "西", onClick: () => setValue("wind", "西") },
             { value: "北", onClick: () => setValue("wind", "北") },
-          ].map((obj) => {
+          ].map((obj, index) => {
             return (
               <PopButton
+                key={index}
                 value={obj.value}
                 onClick={obj.onClick}
                 defaultClassName="form-button"
@@ -707,6 +732,7 @@ export default function WhatToDiscardProblemCreateForm({
                       value={<TileImage tile={tileId} hover={false} />}
                       onClick={() => {
                         setValue(focussedTileInput, tileId);
+
                         tileInputs.some((fieldName) => {
                           if (!watch(fieldName)) {
                             setFocussedTileInput(fieldName);

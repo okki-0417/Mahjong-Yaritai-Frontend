@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { BASEURL } from "../../ApiConfig";
 import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
 import { Likes } from "../../features/what-to-discard-problems/WhatToDiscardProblemLikeButton";
-import PopButton from "../../components/PopButton";
-import ToggleWrapper from "../../components/ToggleWrapper";
-import WhatToDiscardProblemCreateForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateForm";
+import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
 
 export type WhatToDiscardProblem = {
   id: number;
@@ -17,19 +15,10 @@ export type WhatToDiscardProblem = {
   point_west: number;
   point_north: number;
 
-  hand1: number;
-  hand2: number;
-  hand3: number;
-  hand4: number;
-  hand5: number;
-  hand6: number;
-  hand7: number;
-  hand8: number;
-  hand9: number;
-  hand10: number;
-  hand11: number;
-  hand12: number;
-  hand13: number;
+  hands: {
+    value: number;
+  }[];
+
   tsumo: number;
   created_at: string;
 
@@ -45,7 +34,6 @@ export default function WhatToDiscardProblems() {
   const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<
     WhatToDiscardProblem[]
   >([]);
-  const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchWhatToDiscardProblems = async () => {
@@ -67,23 +55,14 @@ export default function WhatToDiscardProblems() {
     };
 
     fetchWhatToDiscardProblems();
-
-    if (localStorage.getItem("isCreateFormOpen") === "open")
-      setIsCreateFormOpen(true);
   }, []);
-
-  useEffect(() => {
-    isCreateFormOpen
-      ? localStorage.setItem("isCreateFormOpen", "open")
-      : localStorage.removeItem("isCreateFormOpen");
-  }, [isCreateFormOpen]);
 
   return (
     <div className="max-w-4xl lg:mx-auto mx-4 mt-36">
-      <h1 className="lg:text-5xl text-xl mt-12 font-bold">何切る問題</h1>
+      <h1 className="lg:text-5xl text-3xl mt-12 font-bold">何切る問題</h1>
       <hr className="mt-3" />
 
-      <p className="mt-6 lg:text-lg leading-relaxed flex flex-col gap-2">
+      <p className="mt-6 text-lg leading-relaxed flex flex-col gap-2">
         <span>
           ここでは様々な状況での最適な選択を考えながら、他のプレイヤーと意見を交換したり、自分の判断力を磨いたりできます。
         </span>
@@ -92,24 +71,7 @@ export default function WhatToDiscardProblems() {
         </span>
       </p>
 
-      <div className="mt-6">
-        <PopButton
-          value="＋"
-          defaultClassName="btn-circle btn-main"
-          onClick={() => setIsCreateFormOpen(!isCreateFormOpen)}
-        />
-      </div>
-
-      <div>
-        <ToggleWrapper
-          flag={isCreateFormOpen}
-          children={
-            <WhatToDiscardProblemCreateForm
-              setIsCreateFormOpen={setIsCreateFormOpen}
-            />
-          }
-        />
-      </div>
+      <WhatToDiscardProblemToggleForm />
 
       {whatToDiscardProblems.map((problem, index) => (
         <WhatToDiscardProblemCard key={index} problem={problem} />

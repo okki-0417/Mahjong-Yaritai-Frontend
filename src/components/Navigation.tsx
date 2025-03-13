@@ -6,26 +6,10 @@ import { FaAngleRight, FaGear } from "react-icons/fa6";
 import { AuthStateContext } from "../contexts/AuthStateContextProvider";
 import { GiThink } from "react-icons/gi";
 import { RiArticleFill } from "react-icons/ri";
-import { MdOutlineQuestionMark } from "react-icons/md";
 import { BsGraphUpArrow } from "react-icons/bs";
 
 export default function Navigation() {
-  const { auth, setAuth } = useContext(AuthStateContext);
   const [checked, setChecked] = useState<boolean>(false);
-
-  const logout = async () => {
-    confirm("ログアウトしますか？");
-    const response = await fetch(`${BASEURL}/session`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("ログアウトに失敗しました");
-    }
-
-    setAuth(false);
-  };
 
   return (
     <>
@@ -44,53 +28,53 @@ export default function Navigation() {
                     className="lg:w-12 lg:h-12 w-10 h-10 object-contain"
                   />
                 </div>
-                <span className="lg:text-3xl text-2xl font-bold text-white text-shadow">
+                <span className="lg:text-3xl text-2xl font-bold text-white">
                   麻雀ヤリタイ
                 </span>
               </NavLink>
             </div>
 
-            <div className="md:flex hidden space-x-4 text-xl items-center">
-              <NavLink to="/what-to-discard-problems" className="text-white">
-                <GiThink size={40} color="white" />
+            <div className="md:flex hidden gap-5 items-center text-lg">
+              <NavLink
+                to="/learning"
+                className="text-white flex gap-1 items-center"
+              >
+                <img src="/beginner-icon.webp" alt="" className="w-6" />
+                <div>ハジメタイ</div>
               </NavLink>
 
-              <NavLink to="/articles" className="text-white">
-                <RiArticleFill size={30} color="white" />
+              <NavLink
+                to="/what-to-discard-problems"
+                className="text-white flex gap-1 items-center"
+              >
+                <GiThink size={25} color="white" />
+                <div className="tracking-widest">何切る問題</div>
               </NavLink>
 
-              <NavLink to="/learning" className="text-white">
-                <MdOutlineQuestionMark size={30} color="white" />
+              <NavLink
+                to="/articles"
+                className="text-white flex gap-1 items-center"
+              >
+                <RiArticleFill size={20} color="white" />
+                <div>ブログ</div>
               </NavLink>
 
-              <NavLink to="/records" className="text-white">
-                <BsGraphUpArrow size={30} color="white" />
+              <NavLink
+                to="/records"
+                className="text-white flex gap-2 items-center"
+              >
+                <BsGraphUpArrow size={20} color="white" />
+                <div>戦績の記録</div>
               </NavLink>
 
-              <NavLink to="/settings" className="text-white">
-                <FaGear size={30} color="white" />
+              <NavLink
+                to="/settings"
+                className="text-white flex gap-2 items-center"
+              >
+                <FaGear size={20} color="white" />
+                <div>設定</div>
               </NavLink>
             </div>
-
-            {/* <div className="md:flex hidden space-x-4 text-xl">
-              {auth ? (
-                <button
-                  onClick={logout}
-                  className="text-gray-300 hover:text-white"
-                >
-                  ログアウト
-                </button>
-              ) : (
-                <div className="flex gap-3">
-                  <NavLink to="/auth/login" className="text-white">
-                    ログイン
-                  </NavLink>
-                  <NavLink to="/authorization-session" className="text-white">
-                    ユーザー登録
-                  </NavLink>
-                </div>
-              )}
-            </div>*/}
 
             <button
               className="flex flex-col gap-[7px] md:hidden z-50 absolute top-1/2 -right-5 -translate-y-1/2"

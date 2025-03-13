@@ -14,38 +14,49 @@ import Learning from "./pages/learning/page";
 import Articles from "./pages/articles/page";
 import Settings from "./pages/settings/page";
 import Records from "./pages/records/page";
+import ErrorPage from "./components/ErrorPage";
+import ToastContextProvider from "./contexts/ToastContextProvider";
+import ModalContextProvider from "./contexts/ModalContextProvider";
+import LearningDetail from "./pages/learning/[:id]/page";
 
 export default function App() {
   return (
     <CsrfTokenContextProvider>
       <AuthStateContextProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<DefaultLayout />}>
-              "
-              <Route path="/" element={<Home />} />
-              <Route
-                path="/authorization-session"
-                element={<AuthorizationSession />}
-              />
-              <Route path="/authorization" element={<Authorization />} />
-              <Route path="/auth/login" element={<Login />} />
-              <Route path="/users">
-                <Route path="new" element={<UserCreate />} />
-              </Route>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/about" element={<About />} />
-              <Route
-                path="/what-to-discard-problems"
-                element={<WhatToDiscardProblems />}
-              />
-              <Route path="/learning" element={<Learning />} />
-              <Route path="/articles" element={<Articles />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/records" element={<Records />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <ToastContextProvider>
+          <ModalContextProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<DefaultLayout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route
+                    path="/authorization-session"
+                    element={<AuthorizationSession />}
+                  />
+                  <Route path="/authorization" element={<Authorization />} />
+                  <Route path="/auth/login" element={<Login />} />
+                  <Route path="/users">
+                    <Route path="new" element={<UserCreate />} />
+                  </Route>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/about" element={<About />} />
+                  <Route
+                    path="/what-to-discard-problems"
+                    element={<WhatToDiscardProblems />}
+                  />
+                  <Route path="/learning">
+                    <Route index element={<Learning />} />
+                    <Route path=":id" element={<LearningDetail />} />
+                  </Route>
+                  <Route path="/articles" element={<Articles />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/records" element={<Records />} />
+                  <Route path="*" element={<ErrorPage status={404} />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </ModalContextProvider>
+        </ToastContextProvider>
       </AuthStateContextProvider>
     </CsrfTokenContextProvider>
   );

@@ -8,12 +8,6 @@ import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page"
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
 import PopButton from "../../components/PopButton";
 
-export const TILES_NUM = 13;
-export const TILE_TYPES_NUM = 34;
-export const MAX_ROUND = 18;
-export type HandKeys =
-  `hand${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13}`;
-
 export default function WhatToDiscardProblemCard({
   problem,
 }: {
@@ -33,7 +27,7 @@ export default function WhatToDiscardProblemCard({
         </span>
       </div>
 
-      <div className="bg-green-700 rounded-md overflow-hidden mt-2 shadow-xl shadow-gray-800">
+      <div className="bg-green-700 rounded-md mt-2 drop-shadow shadow-gray-800">
         <div className="lg:mt-2 mt-1 lg:h-10 h-9 lg:pl-4 pl-3 pt-2 flex justify-between items-center">
           <Link to={`/users/${problem.user.id}`} className="h-full">
             <div className="h-full font-bold text-lg flex items-center gap-2">
@@ -52,11 +46,14 @@ export default function WhatToDiscardProblemCard({
           <div onClick={() => setVoteResultVisible(!voteResultVisible)}>
             <div className="md:text-2xl text-lg font-bold flex gap-2 md:h-8 h-6">
               <span>{`${problem.round}局`}</span>
-              <span>
+
+              <div>
                 <span className="font-sans font-normal">{problem.turn}</span>
                 <span>巡目</span>
-              </span>
+              </div>
+
               <span>{`${problem.wind}家`}</span>
+
               <div className="flex gap-2">
                 <span>ドラ:</span>
                 <TileImage tile={problem.dora} hover={false} />
@@ -64,34 +61,20 @@ export default function WhatToDiscardProblemCard({
             </div>
 
             <div className="mt-2 md:text-2xl text-lg md:flex grid grid-cols-2 md:gap-4">
-              <div className="flex gap-1">
-                <span>東家</span>
-                <span className="font-sans font-normal">
-                  {problem.point_east}
-                </span>
-                <span>点</span>
-              </div>
-              <div className="flex gap-1">
-                <span>南家</span>
-                <span className="font-sans font-normal">
-                  {problem.point_south}
-                </span>
-                <span>点</span>
-              </div>
-              <div className="flex gap-1">
-                <span>西家</span>
-                <span className="font-sans font-normal">
-                  {problem.point_south}
-                </span>
-                <span>点</span>
-              </div>
-              <div className="flex gap-1">
-                <span>北家</span>
-                <span className="font-sans font-normal">
-                  {problem.point_north}
-                </span>
-                <span>点</span>
-              </div>
+              {[
+                { label: "東家", point: problem.point_east },
+                { label: "南家", point: problem.point_west },
+                { label: "西家", point: problem.point_west },
+                { label: "北家", point: problem.point_north },
+              ].map((obj) => {
+                return (
+                  <div className="flex gap-1" key={obj.label}>
+                    <span>{obj.label}</span>
+                    <span className="font-sans font-normal">{obj.point}</span>
+                    <span>点</span>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="flex lg:flex-row-reverse flex-col justify-center gap-4 mt-4">
@@ -111,22 +94,14 @@ export default function WhatToDiscardProblemCard({
               </div>
 
               <div className="flex justify-center items-end">
-                {Array(TILES_NUM)
-                  .fill(null)
-                  .map((_, index) => {
-                    return (
-                      <PopButton
-                        value={
-                          <div className="w-12">
-                            <TileImage
-                              tile={problem[`hand${index + 1}` as HandKeys]}
-                            />
-                          </div>
-                        }
-                        key={index}
-                      />
-                    );
-                  })}
+                {problem.hands.map((hand, index) => {
+                  return (
+                    <PopButton
+                      value={<TileImage tile={hand.value} />}
+                      key={index}
+                    />
+                  );
+                })}
               </div>
             </div>
 
@@ -134,7 +109,7 @@ export default function WhatToDiscardProblemCard({
               <div
                 className={`${voteResultVisible && "opacity-0"} lg:text-xl flex items-center justify-center gap-1 font-medium`}
               >
-                <button className="w-fit animate-bounce flex items-center gap-1">
+                <button className="w-fit animate-bounce flex items-center gap-1 z-0">
                   <span>投票結果</span>
                   <FaAngleDown />
                 </button>
@@ -148,30 +123,26 @@ export default function WhatToDiscardProblemCard({
             >
               <div className="flex justify-center">
                 <div className="max-w-fit flex lg:flex-row flex-col lg:justify-center items-start gap-2">
-                  {Array(TILES_NUM)
-                    .fill(null)
-                    .map((_, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="flex lg:flex-col flex-row-reverse items-center gap-2"
-                        >
-                          <div className="lg:block flex flex-row-reverse items-center gap-2">
-                            <span className="font-sans">23</span>
-                            <div className="lg:h-32 h-4 lg:w-4 w-32 bg-white"></div>
-                          </div>
-                          <PopButton
-                            value={
-                              <div className="lg:h-12 h-8">
-                                <TileImage
-                                  tile={problem[`hand${index + 1}` as HandKeys]}
-                                />
-                              </div>
-                            }
-                          />
+                  {problem.hands.map((hand, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="flex lg:flex-col flex-row-reverse items-center gap-2"
+                      >
+                        <div className="lg:block flex flex-row-reverse items-center gap-2">
+                          <span className="font-sans">23</span>
+                          <div className="lg:h-32 h-4 lg:w-4 w-32 bg-white"></div>
                         </div>
-                      );
-                    })}
+                        <PopButton
+                          value={
+                            <div className="lg:h-12 h-8">
+                              <TileImage tile={hand.value} />
+                            </div>
+                          }
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -188,7 +159,7 @@ export default function WhatToDiscardProblemCard({
           </div>
         </div>
 
-        <div className="mt-4 py-1 overflow-hidden bg-slate-100 text-gray-700">
+        <div className="mt-4 py-1 rounded-b-md bg-slate-100 text-gray-700">
           <div className="font-bold py-2 flex items-center gap-3 lg:pl-4 pl-2">
             <WhatToDiscardProblemLikeButton likes={problem.likes} />
 
