@@ -1,9 +1,7 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router";
-import { BASEURL } from "../ApiConfig";
 import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
 import { FaAngleRight, FaGear } from "react-icons/fa6";
-import { AuthStateContext } from "../contexts/AuthStateContextProvider";
 import { GiThink } from "react-icons/gi";
 import { RiArticleFill } from "react-icons/ri";
 import { BsGraphUpArrow } from "react-icons/bs";
@@ -40,7 +38,7 @@ export default function Navigation() {
                 className="text-white flex gap-1 items-center"
               >
                 <img src="/beginner-icon.webp" alt="" className="w-6" />
-                <div>ハジメタイ</div>
+                <span>ハンディガイド</span>
               </NavLink>
 
               <NavLink

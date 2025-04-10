@@ -4,7 +4,6 @@ import Login from "./pages/auth/login/page";
 import UserCreate from "./pages/users/new/page";
 import Dashboard from "./pages/dashboard/page";
 import About from "./pages/about/page";
-import DefaultLayout from "./components/layout/DefaultLayout";
 import CsrfTokenContextProvider from "./contexts/CsrfTokenContextProvider";
 import AuthStateContextProvider from "./contexts/AuthStateContextProvider";
 import AuthorizationSession from "./pages/authorization-session/page";
@@ -18,6 +17,7 @@ import ErrorPage from "./components/ErrorPage";
 import ToastContextProvider from "./contexts/ToastContextProvider";
 import ModalContextProvider from "./contexts/ModalContextProvider";
 import LearningDetail from "./pages/learning/[:id]/page";
+import DefaultLayout from "./components/layout/defaultLayout";
 
 export default function App() {
   return (
