@@ -10,8 +10,9 @@ export default function TileImage({
       className={`h-full transition-all bg-white rounded overflow-hidden ${hover && "hover:scale-110"}`}
     >
       <img
-        src={`/tiles/${tile}.png`}
-        alt="牌"
+        src={`/tiles/${tile}.webp`}
+        alt=""
+        draggable="false"
         className={`h-full object-contain ${hover && "hover:opacity-80"}`}
       />
     </div>
