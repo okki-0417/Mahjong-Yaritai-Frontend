@@ -28,7 +28,7 @@ export default function LearningDetail() {
             headers: {
               Accept: "application/json",
             },
-          }
+          },
         );
 
         if (!response.ok) {

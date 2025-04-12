@@ -20,7 +20,7 @@ export default function WhatToDiscardProblemLikeButton({
 
   const [likeCount, setLikeCount] = useState<number>(likes.count);
   const [likeId, setLikeId] = useState<number | null>(
-    likes.current_user_like_id
+    likes.current_user_like_id,
   );
   const [liked, setLiked] = useState<boolean>(!!likes.current_user_like_id);
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,7 +48,7 @@ export default function WhatToDiscardProblemLikeButton({
               "Content-Type": "application/json",
             },
             credentials: "include",
-          }
+          },
         );
 
         if (!response.ok) {
@@ -70,7 +70,7 @@ export default function WhatToDiscardProblemLikeButton({
               "Content-Type": "application/json",
             },
             credentials: "include",
-          }
+          },
         );
 
         if (!response.ok) {

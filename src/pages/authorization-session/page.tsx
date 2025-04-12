@@ -16,7 +16,7 @@ export default function AuthorizationSession() {
   } = useForm<AuthorizationSessionForm>();
 
   const onSubmit: SubmitHandler<AuthorizationSessionForm> = async (
-    formData: AuthorizationSessionForm
+    formData: AuthorizationSessionForm,
   ) => {
     try {
       const response = await fetch(`${BASEURL}/authorization_session`, {

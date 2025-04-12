@@ -79,9 +79,8 @@ body {
 .slide-down {
   display: relative;
   z-index: 20;
-  animation: slideDown 0.2s ease-out
+  animation: slideDown 0.2s ease-out;
 }
-
 
 .parent-list {
   counter-reset: parent;
@@ -116,11 +115,11 @@ body {
 
 @layer components {
   .marquee-container {
-    @apply flex gap-4 overflow-hidden
+    @apply flex gap-4 overflow-hidden;
   }
 
   .marquee-inner {
-    @apply h-full  shrink-0 marquee
+    @apply h-full  shrink-0 marquee;
   }
 
   .btn {

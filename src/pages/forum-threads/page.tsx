@@ -26,7 +26,7 @@ export default function ForumThreads() {
   useEffect(() => {
     const fetchForumThreads = async () => {
       const response = await pageApiClient.get(
-        `/forum_threads?page=${page || 1}`
+        `/forum_threads?page=${page || 1}`,
       );
       setForumThreads(response.data.forum_threads);
       setPagination(response.data.pagination);

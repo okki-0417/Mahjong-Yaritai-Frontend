@@ -1,6 +1,10 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
-export default function FadeInSection({ children }: {children: ReactElement}) {
+export default function FadeInSection({
+  children,
+}: {
+  children: ReactElement;
+}) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -12,7 +16,7 @@ export default function FadeInSection({ children }: {children: ReactElement}) {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     if (ref.current) observer.observe(ref.current);
@@ -25,4 +29,4 @@ export default function FadeInSection({ children }: {children: ReactElement}) {
       {children}
     </section>
   );
-};
+}

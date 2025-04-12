@@ -225,7 +225,7 @@ export default function WhatToDiscardProblemForm({
 
   const updateTileUsage = () => {
     const selectedTilesValue = Object.values(selectedTiles).filter(
-      (value) => typeof value == "number"
+      (value) => typeof value == "number",
     );
 
     const tally: Record<number, number> = selectedTilesValue.reduce(
@@ -233,7 +233,7 @@ export default function WhatToDiscardProblemForm({
         duplicateTilesCount[tileId] = (duplicateTilesCount[tileId] || 0) + 1;
         return duplicateTilesCount;
       },
-      {} as Record<number, number>
+      {} as Record<number, number>,
     );
 
     setSameIdTilesCount((prev) => {
@@ -249,7 +249,7 @@ export default function WhatToDiscardProblemForm({
 
   const isTooManyDuplicateTiles = () => {
     return Object.values(sameIdTilesCount).some(
-      (count) => count > MAX_DUPLICATE_TILES_NUM
+      (count) => count > MAX_DUPLICATE_TILES_NUM,
     );
   };
 
@@ -307,7 +307,7 @@ export default function WhatToDiscardProblemForm({
 
     localStorage.setItem(
       "WhatToDiscardProblemCreateForm",
-      JSON.stringify(allInputs)
+      JSON.stringify(allInputs),
     );
   }, [...Object.values(allInputs)]);
 
@@ -320,14 +320,14 @@ export default function WhatToDiscardProblemForm({
       Object.keys(formData).forEach((key) => {
         setValue(
           key as keyof WhatToDiscardProblemCreateFormType,
-          formData[key]
+          formData[key],
         );
       });
     }
   }, []);
 
   const onSubmit: SubmitHandler<WhatToDiscardProblemCreateFormType> = async (
-    formData
+    formData,
   ) => {
     try {
       const response = await fetch(`${BASEURL}/what_to_discard_problems`, {
@@ -541,7 +541,7 @@ export default function WhatToDiscardProblemForm({
                     value={
                       watch(obj.inputName as PointInputs) &&
                       new Intl.NumberFormat("en-US").format(
-                        watch(obj.inputName as PointInputs)
+                        watch(obj.inputName as PointInputs),
                       )
                     }
                     onClick={() => {
@@ -573,7 +573,7 @@ export default function WhatToDiscardProblemForm({
                   if (!focussedPointInput) return;
                   setValue(
                     focussedPointInput,
-                    Number(watch(focussedPointInput)) + value
+                    Number(watch(focussedPointInput)) + value,
                   );
                 }}
               />
