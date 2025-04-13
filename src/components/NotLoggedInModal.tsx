@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import { Link } from "react-router";
-import { ModalContext } from "../contexts/ModalContextProvider";
+import { useSetModal } from "../hooks/useSetModal";
 
 export default function NotLoggedInModal() {
-  const { setModalName } = useContext(ModalContext);
+  const setModalName = useSetModal();
 
   return (
     <div className="transition-all fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center justify-center z-10 fast-fade-in lg:px-0 px-4">

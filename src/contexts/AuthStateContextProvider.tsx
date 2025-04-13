@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { BASEURL } from "../ApiConfig";
+import { apiClient } from "../ApiConfig";
 
 type AuthStateContext = {
   auth: boolean;
@@ -8,9 +8,7 @@ type AuthStateContext = {
 
 export const AuthStateContext = createContext<AuthStateContext>({
   auth: false,
-  setAuth: () => {
-    throw new Error("SetAuth is empty.");
-  },
+  setAuth: () => {},
 });
 
 export default function AuthStateContextProvider({
@@ -23,21 +21,14 @@ export default function AuthStateContextProvider({
   useEffect(() => {
     const isAuthenticated = async () => {
       try {
-        const response = await fetch(`${BASEURL}/session/state`, {
-          credentials: "include",
-        });
+        const response = await apiClient.get(`/session/state`);
 
-        const data = await response.json();
+        const data = response.data;
 
-        if (data.auth != true) {
-          setAuth(false);
-          return;
-        }
-
-        setAuth(true);
+        data.auth ? setAuth(true) : setAuth(false);
         console.log(`You are ${auth ? "LOGGED IN" : "NOT LOGGED IN"}`);
       } catch (error) {
-        console.error("Failed to fetch authentication state:", error);
+        console.error(error);
       }
     };
 

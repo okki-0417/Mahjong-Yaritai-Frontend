@@ -1,39 +1,47 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useSetToast } from "../hooks/useSetToast";
 
-export type ToastType = "error" | "success";
+export type ToastType = {
+  type: ToastTypeType;
+  message: string;
+};
 
-export default function Toast({
-  toast,
-}: {
-  toast: { type: ToastType; message: string } | null;
-}) {
+export type ToastTypeType = "error" | "success";
+
+export default function Toast({ toast }: { toast: ToastType | null }) {
   if (!toast) return;
 
-  const [bgColor, setBgColor] = useState<string>("");
+  const setToast = useSetToast();
 
-  switch (toast.type) {
-    case "error":
-      setBgColor("bg-red-500");
-      break;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setToast(null);
+    }, 3000);
 
-    case "success":
-      setBgColor("bg-green-400");
-      break;
+    return () => clearTimeout(timer);
+  }, [toast]);
 
-    default:
-      setBgColor("");
-      break;
-  }
+  const bgColor = provideBgColor(toast.type);
 
   return (
     <div
-      className={`${toast ? "opacity-100" : "opacity-0"} duration-500 transition-all`}
+      className={`${bgColor} fixed sm:bottom-6 sm:right-6 bottom-24 right-5 rounded min-w-56 h-16 px-4 text-white flex items-center z-50 drop-shadow`}
     >
-      <div
-        className={`${bgColor} fixed sm:bottom-6 sm:right-6 bottom-24 right-5 rounded min-w-56 h-16 px-4 text-white flex items-center z-50 drop-shadow text-lg`}
-      >
-        <span>{toast.message}</span>
+      <div className="flex items-center text-lg text-center">
+        {toast.message}
       </div>
     </div>
   );
 }
+const provideBgColor = (type: string) => {
+  switch (type) {
+    case "error":
+      return "bg-red-500";
+
+    case "success":
+      return "bg-green-400";
+
+    default:
+      return "bg-slate-500";
+  }
+};

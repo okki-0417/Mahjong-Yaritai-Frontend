@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { pageApiClient } from "../../ApiConfig";
 import ThreadCard from "../../features/forum-threads/ThreadCard";
 import { useSearchParams } from "react-router";
 import Pagination, { PaginationType } from "../../components/Pagination";
+import axios from "axios";
+import { apiClient } from "../../ApiConfig";
 
 export type ForumThread = {
   id: number;
@@ -25,11 +26,15 @@ export default function ForumThreads() {
 
   useEffect(() => {
     const fetchForumThreads = async () => {
-      const response = await pageApiClient.get(
-        `/forum_threads?page=${page || 1}`,
-      );
-      setForumThreads(response.data.forum_threads);
-      setPagination(response.data.pagination);
+      try {
+        const response = await apiClient.get(
+          `/forum_threads?page=${page || 1}`
+        );
+        setForumThreads(response.data.forum_threads);
+        setPagination(response.data.pagination);
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     fetchForumThreads();

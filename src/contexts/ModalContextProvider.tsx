@@ -1,8 +1,9 @@
 import { createContext, ReactNode, useState } from "react";
+import { ModalName } from "../components/ModalProvider";
 
 type ModalContext = {
-  modalName: string | null;
-  setModalName: (modalVisible: string | null) => void;
+  modalName: ModalName | null;
+  setModalName: (modalVisible: ModalName | null) => void;
 };
 
 export const ModalContext = createContext<ModalContext>({
@@ -15,7 +16,7 @@ export default function ModalContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const [modalName, setModalName] = useState<string | null>(null);
+  const [modalName, setModalName] = useState<ModalName | null>(null);
 
   return (
     <ModalContext.Provider value={{ modalName, setModalName }}>

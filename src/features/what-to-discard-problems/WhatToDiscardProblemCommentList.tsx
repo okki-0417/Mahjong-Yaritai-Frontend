@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { BASEURL } from "../../ApiConfig";
+import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemParentCommentCard from "./WhatToDiscardProblemParentCommentCard";
+import axios from "axios";
 
 export type WhatToDiscardProblemParentComment = {
   id: string;
@@ -34,14 +35,18 @@ export default function WhatToDiscardProblemCommentList({
   useEffect(() => {
     const fetchWhatToDiscardProblemsComments = async () => {
       try {
-        const response = await fetch(
-          `${BASEURL}/what_to_discard_problems/${problemId}/comments`,
+        const response = await apiClient.get(
+          `/what_to_discard_problems/${problemId}/comments`
         );
-        const data = await response.json();
 
-        setWhatToDiscardProblemComments(data.what_to_discard_problem_comments);
+        const comments = response.data.what_to_discard_problem_comments;
+
+        setWhatToDiscardProblemComments(comments);
       } catch (error) {
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+          console.error(error.response?.status);
+          console.error(error.message);
+        }
       }
     };
 

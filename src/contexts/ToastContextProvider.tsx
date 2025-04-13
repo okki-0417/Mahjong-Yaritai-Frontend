@@ -1,10 +1,9 @@
-import { createContext, ReactNode } from "react";
-import { Toast, useToast } from "../hooks/useToast";
-import { ToastType } from "../components/toast";
+import { createContext, ReactNode, useState } from "react";
+import { ToastType } from "../components/Toast";
 
 type ToastContext = {
-  toast: { type: ToastType; message: string } | null;
-  setToast: (toast: Toast | null) => void;
+  toast: ToastType | null;
+  setToast: (toast: ToastType | null) => void;
 };
 
 export const ToastContext = createContext<ToastContext>({
@@ -17,7 +16,7 @@ export default function ToastContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const { toast, setToast } = useToast();
+  const [toast, setToast] = useState<ToastType | null>(null);
 
   return (
     <ToastContext.Provider value={{ toast, setToast }}>

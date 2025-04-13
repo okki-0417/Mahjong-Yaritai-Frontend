@@ -2,13 +2,13 @@ import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import PopButton from "./PopButton";
 
 type LikeButtonType = {
-  liked: boolean;
+  isLiked: boolean;
   likeCount: number;
   handleClick: () => void;
 };
 
 export default function LikeButton({
-  liked,
+  isLiked,
   likeCount,
   handleClick,
 }: LikeButtonType) {
@@ -16,7 +16,7 @@ export default function LikeButton({
     <PopButton
       value={
         <div className="flex items-center gap-1">
-          {liked ? (
+          {isLiked ? (
             <FaThumbsUp color="#f765d6" size={24} />
           ) : (
             <FaRegThumbsUp color="#333" size={24} />

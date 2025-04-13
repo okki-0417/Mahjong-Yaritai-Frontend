@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BASEURL } from "../../ApiConfig";
+import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
 import { Likes } from "../../features/what-to-discard-problems/WhatToDiscardProblemLikeButton";
 import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
@@ -38,15 +38,9 @@ export default function WhatToDiscardProblems() {
   useEffect(() => {
     const fetchWhatToDiscardProblems = async () => {
       try {
-        const response = await fetch(`${BASEURL}/what_to_discard_problems`, {
-          headers: {
-            Accept: "application/json",
-          },
-          credentials: "include",
-        });
+        const response = await apiClient.get(`/what_to_discard_problems`);
 
-        const data: { what_to_discard_problems: WhatToDiscardProblem[] } =
-          await response.json();
+        const data = response.data;
 
         setWhatToDiscardProblems(data.what_to_discard_problems);
       } catch (error) {

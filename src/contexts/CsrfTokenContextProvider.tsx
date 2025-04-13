@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState, createContext } from "react";
+import { apiClient } from "../ApiConfig";
 
 export const CsrfTokenContext = createContext<string | null>(null);
 
@@ -12,16 +13,9 @@ export default function CsrfTokenContextProvider({
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/csrf_token`,
-          {
-            credentials: "include",
-          },
-        );
+        const response = await apiClient(`/csrf_token`);
 
-        if (!response.ok) return;
-
-        const data = await response.json();
+        const data = await response.data;
 
         setCsrfToken(data.csrf_token);
       } catch (error) {

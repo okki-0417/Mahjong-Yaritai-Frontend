@@ -6,7 +6,7 @@ import { ModalContext } from "../../contexts/ModalContextProvider";
 import ModalProvider from "../ModalProvider";
 import { ToastContext } from "../../contexts/ToastContextProvider";
 import Toast from "../Toast";
-import Navigation from "../navigation";
+import Navigation from "../Navigation";
 
 export default function DefaultLayout() {
   const { modalName } = useContext(ModalContext);
