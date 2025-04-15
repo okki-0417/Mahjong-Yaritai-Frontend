@@ -60,8 +60,6 @@ export default function WhatToDiscardProblemCommentForm({
     if (loading) return;
     setLoading(true);
 
-    console.log(JSON.stringify(formData));
-
     try {
       await apiClient.post(`/what_to_discard_problems/${problemId}/comments`, {
         what_to_discard_problem_comment: formData,
