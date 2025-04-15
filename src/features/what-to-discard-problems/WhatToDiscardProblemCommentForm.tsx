@@ -5,13 +5,16 @@ import {
   FormErrorMessage,
   Input,
   Textarea,
+  VisuallyHiddenInput,
 } from "@chakra-ui/react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import {
-  whatToDiscardProblemCommentSchema,
-  WhatToDiscardProblemCommentSchemaType,
-} from "../../schemas/WhatToDiscardProblemCommentSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
+  FieldErrors,
+  SubmitHandler,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormWatch,
+} from "react-hook-form";
+import { WhatToDiscardProblemCommentSchemaType } from "../../schemas/WhatToDiscardProblemCommentSchema";
 import { apiClient } from "../../ApiConfig";
 import axios from "axios";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
@@ -21,31 +24,46 @@ import { useSetToast } from "../../hooks/useSetToast";
 
 export default function WhatToDiscardProblemCommentForm({
   problemId,
+  CommentContentRef,
+  form,
 }: {
   problemId: number;
+  CommentContentRef: any;
+  form: {
+    register: UseFormRegister<{
+      content: string;
+      parent_comment_id?: string | undefined;
+    }>;
+    handleSubmit: UseFormHandleSubmit<{
+      content: string;
+      parent_comment_id?: string | undefined;
+    }>;
+    errors: FieldErrors<{
+      content: string;
+      parent_comment_id?: string | undefined;
+    }>;
+    watch: UseFormWatch<{
+      content: string;
+      parent_comment_id?: string | undefined;
+    }>;
+  };
 }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<WhatToDiscardProblemCommentSchemaType>({
-    resolver: zodResolver(whatToDiscardProblemCommentSchema),
-  });
-
   const [loading, setLoading] = useState(false);
   const auth = useIsLoggedIn();
   const setModal = useSetModal();
   const setToast = useSetToast();
 
-  const onSubmit: SubmitHandler<WhatToDiscardProblemCommentSchemaType> = (
+  const onSubmit: SubmitHandler<WhatToDiscardProblemCommentSchemaType> = async (
     formData
   ) => {
     if (!auth) return setModal("NotLoggedIn");
     if (loading) return;
     setLoading(true);
 
+    console.log(JSON.stringify(formData));
+
     try {
-      apiClient.post(`/what_to_discard_problems/${problemId}/comments`, {
+      await apiClient.post(`/what_to_discard_problems/${problemId}/comments`, {
         what_to_discard_problem_comment: formData,
       });
 
@@ -54,7 +72,9 @@ export default function WhatToDiscardProblemCommentForm({
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(error.status);
+        console.error(error.message);
       }
+      setToast({ type: "error", message: "コメントの投稿に失敗しました" });
     }
 
     setLoading(true);
@@ -62,16 +82,29 @@ export default function WhatToDiscardProblemCommentForm({
 
   return (
     <Box mt={2}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={!!errors.content || !!errors.parent_comment_id}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormControl
+          isInvalid={!!form.errors.content || !!form.errors.parent_comment_id}
+        >
           <Box>
-            <Textarea placeholder="コメントする..." {...register("content")} />
+            <Textarea
+              placeholder="コメントする..."
+              {...form.register("content")}
+              ref={(el) => {
+                form.register("content").ref(el);
+                CommentContentRef.current = el;
+              }}
+            />
             <FormErrorMessage color={"red.500"}>
-              {errors.content && errors.content.message}
+              {form.errors.content && form.errors.content.message}
             </FormErrorMessage>
           </Box>
 
-          <Input type="number" hidden />
+          <VisuallyHiddenInput {...form.register("parent_comment_id")} />
+          <FormErrorMessage color={"red.500"}>
+            {form.errors.parent_comment_id &&
+              form.errors.parent_comment_id.message}
+          </FormErrorMessage>
 
           <Container mt={3} textAlign={"center"}>
             <Input type="submit" border={"1px"} w={"fit-content"} />

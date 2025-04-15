@@ -3,10 +3,10 @@ import TileImage from "../../components/TileImage";
 import { useRef, useState } from "react";
 import { MdHowToVote } from "react-icons/md";
 import { Link } from "react-router";
-import WhatToDiscardProblemCommentList from "./WhatToDiscardProblemCommentList";
 import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
 import PopButton from "../../components/PopButton";
+import WhatToDiscardProblemCommentSection from "./WhatToDiscardProblemCommentSection";
 
 export default function WhatToDiscardProblemCard({
   problem,
@@ -198,7 +198,7 @@ export default function WhatToDiscardProblemCard({
             className={`${commentVisible ? "max-h-[9999px]" : "max-h-0"} overflow-hidden lg:px-2 px-1 transition-all`}
           >
             <div className="mt-4">
-              <WhatToDiscardProblemCommentList problemId={problem.id} />
+              <WhatToDiscardProblemCommentSection problemId={problem.id} />
             </div>
 
             <div className="flex justify-center mt-4 mb-2">

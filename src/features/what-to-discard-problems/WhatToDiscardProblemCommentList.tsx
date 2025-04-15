@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemParentCommentCard from "./WhatToDiscardProblemParentCommentCard";
-import WhatToDiscardProblemCommentForm from "./WhatToDiscardProblemCommentForm";
 
 export type WhatToDiscardProblemParentComment = {
-  id: string;
+  id: number;
   content: string;
   created_at: string;
 
@@ -26,8 +25,10 @@ export type WhatToDiscardProblemParentComment = {
 
 export default function WhatToDiscardProblemCommentList({
   problemId,
+  onReply,
 }: {
   problemId: number;
+  onReply: (commentId: string) => void;
 }) {
   const [whatToDiscardProblemComments, setWhatToDiscardProblemComments] =
     useState<WhatToDiscardProblemParentComment[]>([]);
@@ -60,14 +61,13 @@ export default function WhatToDiscardProblemCommentList({
         whatToDiscardProblemComments.map((comment, index) => {
           return (
             <WhatToDiscardProblemParentCommentCard
+              onReply={onReply}
               comment={comment}
               key={index}
             />
           );
         })
       )}
-
-      <WhatToDiscardProblemCommentForm problemId={problemId} />
     </div>
   );
 }
