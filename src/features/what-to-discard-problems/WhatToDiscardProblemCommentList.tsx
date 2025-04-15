@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemParentCommentCard from "./WhatToDiscardProblemParentCommentCard";
-import axios from "axios";
+import WhatToDiscardProblemCommentForm from "./WhatToDiscardProblemCommentForm";
 
 export type WhatToDiscardProblemParentComment = {
   id: string;
@@ -43,10 +43,7 @@ export default function WhatToDiscardProblemCommentList({
 
         setWhatToDiscardProblemComments(comments);
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.error(error.response?.status);
-          console.error(error.message);
-        }
+        console.error(error);
       }
     };
 
@@ -55,14 +52,22 @@ export default function WhatToDiscardProblemCommentList({
 
   return (
     <div>
-      {whatToDiscardProblemComments.map((comment, index) => {
-        return (
-          <WhatToDiscardProblemParentCommentCard
-            comment={comment}
-            key={index}
-          />
-        );
-      })}
+      {!whatToDiscardProblemComments.length ? (
+        <div className="text-center text-lg font-bold">
+          コメントはまだありません
+        </div>
+      ) : (
+        whatToDiscardProblemComments.map((comment, index) => {
+          return (
+            <WhatToDiscardProblemParentCommentCard
+              comment={comment}
+              key={index}
+            />
+          );
+        })
+      )}
+
+      <WhatToDiscardProblemCommentForm problemId={problemId} />
     </div>
   );
 }

@@ -167,7 +167,9 @@ export default function WhatToDiscardProblemCard({
               value={
                 <div className="flex items-center gap-1">
                   <FaRegComment color="#333" size={24} />
-                  <div className="font-sans lg:text-lg">13</div>
+                  <div className="font-sans lg:text-lg">
+                    {problem.comments_count}
+                  </div>
                 </div>
               }
               onClick={() => {

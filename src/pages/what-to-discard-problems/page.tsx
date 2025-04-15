@@ -15,6 +15,8 @@ export type WhatToDiscardProblem = {
   point_west: number;
   point_north: number;
 
+  comments_count: number;
+
   hands: {
     value: number;
   }[];

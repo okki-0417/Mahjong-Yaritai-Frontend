@@ -39,7 +39,7 @@ const provideBgColor = (type: string) => {
       return "bg-red-500";
 
     case "success":
-      return "bg-green-400";
+      return "bg-green-600";
 
     default:
       return "bg-slate-500";
