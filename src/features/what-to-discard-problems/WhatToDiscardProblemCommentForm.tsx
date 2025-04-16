@@ -79,36 +79,42 @@ export default function WhatToDiscardProblemCommentForm({
   };
 
   return (
-    <Box mt={2}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormControl
-          isInvalid={!!form.errors.content || !!form.errors.parent_comment_id}
-        >
-          <Box>
-            <Textarea
-              placeholder="コメントする..."
-              {...form.register("content")}
-              ref={(el) => {
-                form.register("content").ref(el);
-                CommentContentRef.current = el;
-              }}
-            />
-            <FormErrorMessage color={"red.500"}>
-              {form.errors.content && form.errors.content.message}
-            </FormErrorMessage>
-          </Box>
+    <Box>
+      {auth && (
+        <Box mt={2}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormControl
+              isInvalid={
+                !!form.errors.content || !!form.errors.parent_comment_id
+              }
+            >
+              <Box>
+                <Textarea
+                  placeholder="コメントする..."
+                  {...form.register("content")}
+                  ref={(el) => {
+                    form.register("content").ref(el);
+                    CommentContentRef.current = el;
+                  }}
+                />
+                <FormErrorMessage color={"red.500"}>
+                  {form.errors.content && form.errors.content.message}
+                </FormErrorMessage>
+              </Box>
 
-          <VisuallyHiddenInput {...form.register("parent_comment_id")} />
-          <FormErrorMessage color={"red.500"}>
-            {form.errors.parent_comment_id &&
-              form.errors.parent_comment_id.message}
-          </FormErrorMessage>
+              <VisuallyHiddenInput {...form.register("parent_comment_id")} />
+              <FormErrorMessage color={"red.500"}>
+                {form.errors.parent_comment_id &&
+                  form.errors.parent_comment_id.message}
+              </FormErrorMessage>
 
-          <Container mt={3} textAlign={"center"}>
-            <Input type="submit" border={"1px"} w={"fit-content"} />
-          </Container>
-        </FormControl>
-      </form>
+              <Container mt={3} textAlign={"center"}>
+                <Input type="submit" border={"1px"} w={"fit-content"} />
+              </Container>
+            </FormControl>
+          </form>
+        </Box>
+      )}
     </Box>
   );
 }
