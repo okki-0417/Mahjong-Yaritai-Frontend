@@ -29,6 +29,10 @@ export type WhatToDiscardProblem = {
     name: string;
   };
 
+  vote: {
+    tile_id: number;
+  };
+
   likes: Likes;
 };
 

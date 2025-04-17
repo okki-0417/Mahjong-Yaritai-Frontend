@@ -7,15 +7,17 @@ import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page"
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
 import PopButton from "../../components/PopButton";
 import WhatToDiscardProblemCommentSection from "./WhatToDiscardProblemCommentSection";
+import WhatToDiscardProblemVoteButton from "./WhatToDiscardProblemVoteButton";
 
 export default function WhatToDiscardProblemCard({
   problem,
 }: {
   problem: WhatToDiscardProblem;
 }) {
-  const [commentVisible, setCommentVisible] = useState<boolean>(false);
-  const [voted] = useState<boolean>(false);
-  const [voteResultVisible, setVoteResultVisible] = useState<boolean>(false);
+  const [commentVisible, setCommentVisible] = useState(false);
+  const [voted, setVoted] = useState(false);
+  const [voteResultVisible, setVoteResultVisible] = useState(false);
+  const [votedTileId, setVotedTileId] = useState<number | null>(null);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -43,7 +45,7 @@ export default function WhatToDiscardProblemCard({
         </div>
 
         <div className="lg:mt-5 mt-2 flex flex-col justify-between lg:px-4 px-3">
-          <div onClick={() => setVoteResultVisible(!voteResultVisible)}>
+          <div>
             <div className="md:text-2xl text-lg font-bold flex gap-2 md:h-8 h-6">
               <span>{`${problem.round}局`}</span>
 
@@ -84,12 +86,12 @@ export default function WhatToDiscardProblemCard({
                   <span className="lg:hidden">:</span>
                 </span>
 
-                <PopButton
-                  value={
-                    <div className="lg:w-12 w-6">
-                      <TileImage tile={problem.tsumo} />
-                    </div>
-                  }
+                <WhatToDiscardProblemVoteButton
+                  tileId={problem.tsumo}
+                  problemId={problem.id}
+                  setVoted={setVoted}
+                  votedTileId={votedTileId}
+                  setVotedTileId={setVotedTileId}
                 />
               </div>
 
@@ -109,7 +111,10 @@ export default function WhatToDiscardProblemCard({
               <div
                 className={`${voteResultVisible && "opacity-0"} lg:text-xl flex items-center justify-center gap-1 font-medium`}
               >
-                <button className="w-fit animate-bounce flex items-center gap-1 z-0">
+                <button
+                  className="w-fit animate-bounce flex items-center gap-1 z-0"
+                  onClick={() => setVoteResultVisible(!voteResultVisible)}
+                >
                   <span>投票結果</span>
                   <FaAngleDown />
                 </button>
