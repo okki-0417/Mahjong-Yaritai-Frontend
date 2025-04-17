@@ -16,7 +16,6 @@ npm run dev
 npm run build-css
 ```
 
-
 **formatter**
 - Prettierを使用
 
@@ -24,3 +23,6 @@ npm run build-css
 - ChakraUIを途中から使用
 - ReactIconsを使用
 - TalwindCSSを使用
+
+**デプロイ**
+- Netlifyを使用
