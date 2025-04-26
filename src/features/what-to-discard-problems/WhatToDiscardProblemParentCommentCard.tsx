@@ -4,10 +4,10 @@ import WhatToDiscardProblemChildCommentCard from "./WhatToDiscardProblemChildCom
 
 export default function WhatToDiscardProblemParentCommentCard({
   comment,
-  onReply,
+  handleReplyClick,
 }: {
   comment: WhatToDiscardProblemParentComment;
-  onReply: (commentId: string) => void;
+  handleReplyClick: (commentId: string) => void;
 }) {
   return (
     <div>
@@ -17,7 +17,7 @@ export default function WhatToDiscardProblemParentCommentCard({
         user_name={comment.user.name}
         created_at={comment.created_at}
         content={comment.content}
-        onReply={onReply}
+        handleReplyClick={handleReplyClick}
       />
 
       {comment.replies.map((reply, index) => {
@@ -29,7 +29,7 @@ export default function WhatToDiscardProblemParentCommentCard({
             user_name={reply.user.name}
             created_at={reply.created_at}
             content={reply.content}
-            onReply={onReply}
+            handleReplyClick={handleReplyClick}
           />
         );
       })}

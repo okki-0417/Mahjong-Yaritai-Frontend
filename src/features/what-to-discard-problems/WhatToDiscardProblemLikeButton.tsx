@@ -1,25 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiClient } from "../../ApiConfig";
 import LikeButton from "../../components/LikeButton";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
 import { useSetToast } from "../../hooks/useSetToast";
+import axios from "axios";
 
-export type Likes = {
-  what_to_discard_problem_id: number;
+export type LikesType = {
   count: number;
   current_user_like_id: number | null;
 };
 
 export default function WhatToDiscardProblemLikeButton({
-  likes,
+  problemId,
 }: {
-  likes: Likes;
+  problemId: number;
 }) {
-  if (!likes) return;
+  const [likes, setLikes] = useState<LikesType>();
 
-  const [likeCount, setLikeCount] = useState(likes.count);
-  const [myLikeId, setMyLikeId] = useState(likes.current_user_like_id);
+  useEffect(() => {
+    const fetchWhatToDiscardProblemLikes = async () => {
+      try {
+        const response = await apiClient.get(
+          `/what_to_discard_problems/${problemId}/likes`
+        );
+
+        setLikes(response.data.what_to_discard_problem_likes);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error(error.status);
+          console.error(error.message);
+        }
+      }
+    };
+
+    fetchWhatToDiscardProblemLikes();
+  }, []);
 
   const [loading, setLoading] = useState(false);
 
@@ -34,28 +50,31 @@ export default function WhatToDiscardProblemLikeButton({
     setLoading(true);
 
     try {
-      if (!myLikeId) {
+      if (!likes?.current_user_like_id) {
         const response = await apiClient.post(
-          `/what_to_discard_problems/${likes.what_to_discard_problem_id}/likes`
+          `/what_to_discard_problems/${problemId}/likes`
         );
 
-        const data = response.data;
+        const likes_res = response.data.what_to_discard_problem_likes;
 
-        setMyLikeId(data.what_to_discard_problem_like.id);
-        setLikeCount(likeCount + 1);
-      } else if (myLikeId) {
-        await apiClient.delete(
-          `/what_to_discard_problems/${likes.what_to_discard_problem_id}/likes/${myLikeId}`
+        setLikes(likes_res);
+      } else if (likes.current_user_like_id) {
+        const response = await apiClient.delete(
+          `/what_to_discard_problems/${problemId}/likes/${likes.current_user_like_id}`
         );
 
-        setMyLikeId(null);
-        setLikeCount(likeCount - 1);
+        const likes_res = response.data.what_to_discard_problem_likes;
+
+        setLikes(likes_res);
       } else {
         throw new Error("Likeの状態に不整合があります");
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error.status);
+        console.error(error.message);
+      }
       setToast({ type: "error", message: "「いいね」の操作に失敗しました。" });
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -64,8 +83,8 @@ export default function WhatToDiscardProblemLikeButton({
   return (
     <div>
       <LikeButton
-        isLiked={!!myLikeId}
-        likeCount={likeCount}
+        isLiked={!!likes?.current_user_like_id}
+        likeCount={likes?.count || 0}
         handleClick={handleClick}
       />
     </div>

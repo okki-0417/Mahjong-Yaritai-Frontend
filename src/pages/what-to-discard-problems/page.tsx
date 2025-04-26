@@ -1,39 +1,35 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
-import { Likes } from "../../features/what-to-discard-problems/WhatToDiscardProblemLikeButton";
 import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
+import axios from "axios";
 
 export type WhatToDiscardProblem = {
   id: number;
   round: number;
   turn: number;
   wind: number;
-  dora: number;
   point_east: number;
   point_south: number;
   point_west: number;
   point_north: number;
 
+  dora_id: number;
+  tsumo_id: number;
+
+  hand_ids: number[];
+
   comments_count: number;
+  votes_count: number;
+  is_current_user_voted: boolean;
 
-  hands: {
-    value: number;
-  }[];
-
-  tsumo: number;
   created_at: string;
+  updated_at: string;
 
   user: {
     id: number;
     name: string;
   };
-
-  vote: {
-    tile_id: number;
-  };
-
-  likes: Likes;
 };
 
 export default function WhatToDiscardProblems() {
@@ -46,11 +42,14 @@ export default function WhatToDiscardProblems() {
       try {
         const response = await apiClient.get(`/what_to_discard_problems`);
 
-        const data = response.data;
-
-        setWhatToDiscardProblems(data.what_to_discard_problems);
+        setWhatToDiscardProblems(response.data.what_to_discard_problems);
       } catch (error) {
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+          console.error(error.status);
+          console.error(error.message);
+        } else {
+          console.error(error);
+        }
       }
     };
 

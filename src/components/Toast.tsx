@@ -9,7 +9,7 @@ export type ToastType = {
 export type ToastTypeType = "error" | "success";
 
 export default function Toast({ toast }: { toast: ToastType | null }) {
-  if (!toast) return;
+  if (!toast) return <div />;
 
   const setToast = useSetToast();
 
@@ -21,7 +21,7 @@ export default function Toast({ toast }: { toast: ToastType | null }) {
     return () => clearTimeout(timer);
   }, [toast]);
 
-  const bgColor = provideBgColor(toast.type);
+  const bgColor = provideBgColor(toast?.type || "");
 
   return (
     <div

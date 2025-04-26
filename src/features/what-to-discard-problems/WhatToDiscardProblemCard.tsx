@@ -1,28 +1,36 @@
-import { FaAngleDown, FaAngleUp, FaRegComment } from "react-icons/fa";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import TileImage from "../../components/TileImage";
 import { useRef, useState } from "react";
-import { MdHowToVote } from "react-icons/md";
 import { Link } from "react-router";
 import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
 import PopButton from "../../components/PopButton";
 import WhatToDiscardProblemCommentSection from "./WhatToDiscardProblemCommentSection";
-import WhatToDiscardProblemVoteButton from "./WhatToDiscardProblemVoteButton";
+import WhatToDiscardProblemVotesCount from "./WhatToDiscardProblemVotesCount";
+import WhatToDiscardProblemVoteList from "./WhatToDiscardProblemVoteList";
+import WhatToDiscardProblemCommentsCount from "./WhatToDiscardProblemCommentsCount";
+import { Button, Flex } from "@chakra-ui/react";
+
+export type MyVoteType = {
+  id: number;
+  tile_id: number;
+};
 
 export default function WhatToDiscardProblemCard({
   problem,
 }: {
   problem: WhatToDiscardProblem;
 }) {
-  const [commentVisible, setCommentVisible] = useState(false);
-  const [voted, setVoted] = useState(false);
-  const [voteResultVisible, setVoteResultVisible] = useState(false);
-  const [votedTileId, setVotedTileId] = useState<number | null>(null);
+  const [isVoteResultOpen, setIsVoteResultOpen] = useState(false);
+  const [myVote, setMyVote] = useState<MyVoteType | null>(null);
+  const [isCommentListOpen, setIsCommentListOpen] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(problem.comments_count);
+  const [votesCount, setVotesCount] = useState(problem.votes_count);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const problemCardRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={ref} className="mt-12">
+    <div ref={problemCardRef} className="mt-12">
       <div className="text-xl">
         <span className="font-sans font-extralight">
           {new Date(problem.created_at).toLocaleString()}
@@ -58,7 +66,7 @@ export default function WhatToDiscardProblemCard({
 
               <div className="flex gap-2">
                 <span>ドラ:</span>
-                <TileImage tile={problem.dora} hover={false} />
+                <TileImage tile={problem.dora_id} hover={false} />
               </div>
             </div>
 
@@ -86,20 +94,14 @@ export default function WhatToDiscardProblemCard({
                   <span className="lg:hidden">:</span>
                 </span>
 
-                <WhatToDiscardProblemVoteButton
-                  tileId={problem.tsumo}
-                  problemId={problem.id}
-                  setVoted={setVoted}
-                  votedTileId={votedTileId}
-                  setVotedTileId={setVotedTileId}
-                />
+                <PopButton value={<TileImage tile={problem.tsumo_id} />} />
               </div>
 
               <div className="flex justify-center items-end">
-                {problem.hands.map((hand, index) => {
+                {problem.hand_ids.map((hand_id, index) => {
                   return (
                     <PopButton
-                      value={<TileImage tile={hand.value} />}
+                      value={<TileImage tile={hand_id} />}
                       key={index}
                     />
                   );
@@ -109,113 +111,78 @@ export default function WhatToDiscardProblemCard({
 
             <div className="mt-6 flex justify-center">
               <div
-                className={`${voteResultVisible && "opacity-0"} lg:text-xl flex items-center justify-center gap-1 font-medium`}
+                className={`${isVoteResultOpen && "hidden"} lg:text-xl flex items-center justify-center gap-1 font-medium`}
               >
-                <button
-                  className="w-fit animate-bounce flex items-center gap-1 z-0"
-                  onClick={() => setVoteResultVisible(!voteResultVisible)}
+                <Button
+                  bgColor="inherit"
+                  color="white"
+                  _hover={{ bgColor: "green.400" }}
+                  onClick={() => setIsVoteResultOpen(!isVoteResultOpen)}
                 >
                   <span>投票結果</span>
                   <FaAngleDown />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
 
-          <div>
-            <div
-              className={`${voteResultVisible ? "max-h-screen" : "max-h-0"} overflow-hidden transition-all`}
-            >
-              <div className="flex justify-center">
-                <div className="max-w-fit flex lg:flex-row flex-col lg:justify-center items-start gap-2">
-                  {problem.hands.map((hand, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="flex lg:flex-col flex-row-reverse items-center gap-2"
-                      >
-                        <div className="lg:block flex flex-row-reverse items-center gap-2">
-                          <span className="font-sans">23</span>
-                          <div className="lg:h-32 h-4 lg:w-4 w-32 bg-white"></div>
-                        </div>
-                        <PopButton
-                          value={
-                            <div className="lg:h-12 h-8">
-                              <TileImage tile={hand.value} />
-                            </div>
-                          }
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  ref?.current?.scrollIntoView({ behavior: "smooth" });
-                  setVoteResultVisible(false);
-                }}
-                className="w-full flex justify-center mt-6"
-              >
-                <FaAngleUp color="white" />
-              </button>
-            </div>
+          <div
+            className={`${isVoteResultOpen ? "max-h-screen" : "max-h-0"} overflow-hidden transition-all`}
+          >
+            {isVoteResultOpen && (
+              <WhatToDiscardProblemVoteList
+                problemId={problem.id}
+                myVote={myVote}
+                setMyVote={setMyVote}
+                setIsVoteResultOpen={setIsVoteResultOpen}
+                problemCardRef={problemCardRef}
+                setVotesCount={setVotesCount}
+              />
+            )}
           </div>
         </div>
 
         <div className="mt-4 py-1 rounded-b-md bg-slate-100 text-gray-700">
           <div className="font-bold py-2 flex items-center gap-3 lg:pl-4 pl-2">
-            <WhatToDiscardProblemLikeButton likes={problem.likes} />
+            <WhatToDiscardProblemLikeButton problemId={problem.id} />
 
-            <PopButton
-              value={
-                <div className="flex items-center gap-1">
-                  <FaRegComment color="#333" size={24} />
-                  <div className="font-sans lg:text-lg">
-                    {problem.comments_count}
-                  </div>
-                </div>
-              }
-              onClick={() => {
-                setCommentVisible(!commentVisible);
-              }}
-              defaultClassName="pt-1"
+            <WhatToDiscardProblemCommentsCount
+              commentsCount={commentsCount}
+              isCommentListOpen={isCommentListOpen}
+              setCommentListOpen={setIsCommentListOpen}
             />
 
-            <button
-              onClick={() => {
-                setVoteResultVisible(true);
-              }}
-            >
-              <div className="flex items-center gap-1">
-                {voted ? (
-                  <MdHowToVote color="#06c5ff" size={26} />
-                ) : (
-                  <MdHowToVote color="#333" size={26} />
-                )}
-                <div className="font-sans lg:text-lg">13</div>
-              </div>
-            </button>
+            <WhatToDiscardProblemVotesCount
+              myVote={myVote}
+              votesCount={votesCount}
+              isVoteResultOpen={isVoteResultOpen}
+              setIsVoteResultOpen={setIsVoteResultOpen}
+            />
           </div>
 
           <div
-            className={`${commentVisible ? "max-h-[9999px]" : "max-h-0"} overflow-hidden lg:px-2 px-1 transition-all`}
+            className={`${isCommentListOpen ? "max-h-[9999px]" : "max-h-0"} overflow-hidden lg:px-2 px-1 transition-all`}
           >
-            <div className="mt-4">
-              <WhatToDiscardProblemCommentSection problemId={problem.id} />
-            </div>
+            <WhatToDiscardProblemCommentSection
+              problemId={problem.id}
+              isCommentListOpen={isCommentListOpen}
+              setIsCommentListOpen={setIsCommentListOpen}
+              problemCardRef={problemCardRef}
+              setCommentsCount={setCommentsCount}
+            />
 
-            <div className="flex justify-center mt-4 mb-2">
-              <button
+            <Flex justifyContent="center" mt={4} mb={2}>
+              <Button
                 onClick={() => {
-                  ref?.current?.scrollIntoView({ behavior: "smooth" });
-                  setCommentVisible(false);
+                  problemCardRef?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  setIsCommentListOpen(false);
                 }}
               >
                 <FaAngleUp color="#333" />
-              </button>
-            </div>
+              </Button>
+            </Flex>
           </div>
         </div>
       </div>

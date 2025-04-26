@@ -6,14 +6,14 @@ export default function WhatToDiscardProblemChildCommentCard({
   user_name,
   created_at,
   content,
-  onReply,
+  handleReplyClick,
 }: {
   parentCommentId: number;
   user_id: number;
   user_name: string;
   created_at: string;
   content: string;
-  onReply: (ParentCommentId: string) => void;
+  handleReplyClick: (ParentCommentId: string) => void;
 }) {
   return (
     <div className="pl-4">
@@ -25,7 +25,7 @@ export default function WhatToDiscardProblemChildCommentCard({
           user_name={user_name}
           created_at={created_at}
           content={content}
-          onReply={onReply}
+          handleReplyClick={handleReplyClick}
         />
       </div>
     </div>

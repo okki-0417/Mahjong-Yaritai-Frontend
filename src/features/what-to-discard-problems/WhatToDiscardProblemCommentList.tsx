@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemParentCommentCard from "./WhatToDiscardProblemParentCommentCard";
+import axios from "axios";
+import Loading from "../../components/Loading";
 
 export type WhatToDiscardProblemParentComment = {
   id: number;
@@ -25,16 +27,22 @@ export type WhatToDiscardProblemParentComment = {
 
 export default function WhatToDiscardProblemCommentList({
   problemId,
-  onReply,
+  handleReplyClick,
+  whatToDiscardProblemComments,
+  setWhatToDiscardProblemComments,
 }: {
   problemId: number;
-  onReply: (commentId: string) => void;
+  handleReplyClick: (commentId: string) => void;
+  whatToDiscardProblemComments: WhatToDiscardProblemParentComment[];
+  setWhatToDiscardProblemComments: React.Dispatch<
+    React.SetStateAction<WhatToDiscardProblemParentComment[]>
+  >;
 }) {
-  const [whatToDiscardProblemComments, setWhatToDiscardProblemComments] =
-    useState<WhatToDiscardProblemParentComment[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchWhatToDiscardProblemsComments = async () => {
+      setIsLoading(true);
       try {
         const response = await apiClient.get(
           `/what_to_discard_problems/${problemId}/comments`
@@ -44,7 +52,12 @@ export default function WhatToDiscardProblemCommentList({
 
         setWhatToDiscardProblemComments(comments);
       } catch (error) {
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+          console.error(error.status);
+          console.error(error.message);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -53,7 +66,9 @@ export default function WhatToDiscardProblemCommentList({
 
   return (
     <div>
-      {!whatToDiscardProblemComments.length ? (
+      {isLoading ? (
+        <Loading />
+      ) : !whatToDiscardProblemComments.length ? (
         <div className="text-center text-lg font-bold">
           コメントはまだありません
         </div>
@@ -61,7 +76,7 @@ export default function WhatToDiscardProblemCommentList({
         whatToDiscardProblemComments.map((comment, index) => {
           return (
             <WhatToDiscardProblemParentCommentCard
-              onReply={onReply}
+              handleReplyClick={handleReplyClick}
               comment={comment}
               key={index}
             />

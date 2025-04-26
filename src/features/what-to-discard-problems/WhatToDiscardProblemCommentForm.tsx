@@ -4,6 +4,7 @@ import {
   FormControl,
   FormErrorMessage,
   Input,
+  Text,
   Textarea,
   VisuallyHiddenInput,
 } from "@chakra-ui/react";
@@ -21,14 +22,22 @@ import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
 import { useState } from "react";
 import { useSetToast } from "../../hooks/useSetToast";
+import { Link } from "react-router";
+import { WhatToDiscardProblemParentComment } from "./WhatToDiscardProblemCommentList";
 
 export default function WhatToDiscardProblemCommentForm({
   problemId,
+  setWhatToDiscardProblemComments,
   CommentContentRef,
+  setCommentsCount,
   form,
 }: {
   problemId: number;
+  setWhatToDiscardProblemComments: React.Dispatch<
+    React.SetStateAction<WhatToDiscardProblemParentComment[]>
+  >;
   CommentContentRef: any;
+  setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
   form: {
     register: UseFormRegister<{
       content: string;
@@ -61,12 +70,17 @@ export default function WhatToDiscardProblemCommentForm({
     setLoading(true);
 
     try {
-      await apiClient.post(`/what_to_discard_problems/${problemId}/comments`, {
-        what_to_discard_problem_comment: formData,
-      });
+      const response = await apiClient.post(
+        `/what_to_discard_problems/${problemId}/comments`,
+        { what_to_discard_problem_comment: formData }
+      );
+
+      const comments = response.data.what_to_discard_problem_comments;
 
       setToast({ type: "success", message: "コメントしました" });
-      location.reload();
+
+      setWhatToDiscardProblemComments(comments.comments);
+      setCommentsCount(comments.total_count);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(error.status);
@@ -80,7 +94,7 @@ export default function WhatToDiscardProblemCommentForm({
 
   return (
     <Box>
-      {auth && (
+      {auth ? (
         <Box mt={2}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormControl
@@ -114,7 +128,22 @@ export default function WhatToDiscardProblemCommentForm({
             </FormControl>
           </form>
         </Box>
+      ) : (
+        <NotLoggedInCommentForm />
       )}
     </Box>
   );
 }
+
+const NotLoggedInCommentForm = () => {
+  return (
+    <Container pt={4}>
+      <Text textAlign="center">コメントを投稿するにはログインしてください</Text>
+      <Container textAlign="center" mt={4}>
+        <Link to="/auth/login" className="btn btn-main">
+          ログインする
+        </Link>
+      </Container>
+    </Container>
+  );
+};

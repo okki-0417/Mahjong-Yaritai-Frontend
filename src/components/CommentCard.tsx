@@ -8,7 +8,7 @@ type CommentCardType = {
   user_name: string;
   created_at: string;
   content: string;
-  onReply: (commentId: string) => any;
+  handleReplyClick: (commentId: string) => any;
 };
 
 export default function CommentCard({
@@ -17,10 +17,10 @@ export default function CommentCard({
   user_name,
   created_at,
   content,
-  onReply,
+  handleReplyClick,
 }: CommentCardType) {
   const handleClick = () => {
-    onReply(String(comment_id));
+    handleReplyClick(String(comment_id));
   };
 
   return (
@@ -47,6 +47,8 @@ export default function CommentCard({
           返信する
           <MdOutlineReply size={15} />
         </Button>
+
+        {/* <Button fontSize="xs">削除する</Button> */}
       </Box>
 
       <div className="font-sans font-normal text-sm px-1 mt-1">
