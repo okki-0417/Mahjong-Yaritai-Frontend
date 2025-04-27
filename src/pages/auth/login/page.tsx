@@ -50,7 +50,7 @@ export default function Login() {
       setResErrors([...resErrors, (await response.json())?.errors]);
     } else {
       setAuth(true);
-      navigate("/dashboard");
+      location.href = "/dashboard";
     }
   };
 
