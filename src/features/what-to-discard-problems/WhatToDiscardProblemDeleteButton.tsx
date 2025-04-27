@@ -17,6 +17,7 @@ export default function WhatToDiscardProblemDeleteButton({
       await apiClient.delete(`/what_to_discard_problems/${problemId}`);
 
       setToast({ type: "success", message: "何切る問題を削除しました" });
+      location.reload();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(error.status);
