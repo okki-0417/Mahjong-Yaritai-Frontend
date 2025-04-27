@@ -1,4 +1,4 @@
-import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { FaAngleDown } from "react-icons/fa";
 import TileImage from "../../components/TileImage";
 import { useRef, useState } from "react";
 import { Link } from "react-router";
@@ -11,7 +11,11 @@ import WhatToDiscardProblemVotesCount, {
 } from "./WhatToDiscardProblemVotesCount";
 import WhatToDiscardProblemVoteList from "./WhatToDiscardProblemVoteList";
 import WhatToDiscardProblemCommentsCount from "./WhatToDiscardProblemCommentsCount";
-import { Button, Flex } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
+import CloseAccordionButton from "../../components/CloseAccordionButton";
+import ToggleWrapper from "../../components/ToggleWrapper";
+import WhatToDiscardProblemDeleteButton from "./WhatToDiscardProblemDeleteButton";
+import useMyUserId from "../../hooks/useMyUserId";
 
 export default function WhatToDiscardProblemCard({
   problem,
@@ -27,6 +31,8 @@ export default function WhatToDiscardProblemCard({
 
   const problemCardRef = useRef<HTMLDivElement>(null);
 
+  const myUserId = useMyUserId();
+
   return (
     <div ref={problemCardRef} className="mt-12">
       <div className="text-xl">
@@ -36,7 +42,7 @@ export default function WhatToDiscardProblemCard({
       </div>
 
       <div className="bg-green-700 rounded-md mt-2 drop-shadow shadow-gray-800">
-        <div className="lg:mt-2 mt-1 lg:h-10 h-9 lg:pl-4 pl-3 pt-2 flex justify-between items-center">
+        <div className="h-10 px-3 pt-2 flex justify-between items-center">
           <Link to={`/users/${problem.user.id}`} className="h-full">
             <div className="h-full font-bold text-lg flex items-center gap-2">
               <div className="h-full aspect-square rounded-full overflow-hidden">
@@ -48,6 +54,16 @@ export default function WhatToDiscardProblemCard({
               <span className="lg:text-base text-sm">{problem.user.name}</span>
             </div>
           </Link>
+
+          {problem.user.id == myUserId && (
+            <div className="flex">
+              {/* <Button bgColor="inherit" _hover={{ bgColor: "green.400" }}>
+              <MdEdit size={20} color="white" />
+            </Button> */}
+
+              <WhatToDiscardProblemDeleteButton problemId={problem.id} />
+            </div>
+          )}
         </div>
 
         <div className="lg:mt-5 mt-2 flex flex-col justify-between lg:px-4 px-3">
@@ -124,9 +140,7 @@ export default function WhatToDiscardProblemCard({
             </div>
           </div>
 
-          <div
-            className={`${isVoteResultOpen ? "max-h-screen" : "max-h-0"} overflow-hidden transition-all`}
-          >
+          <ToggleWrapper flag={isVoteResultOpen}>
             {isVoteResultOpen && (
               <WhatToDiscardProblemVoteList
                 problemId={problem.id}
@@ -137,7 +151,17 @@ export default function WhatToDiscardProblemCard({
                 setVotesCount={setVotesCount}
               />
             )}
-          </div>
+
+            <CloseAccordionButton
+              onClick={() => {
+                problemCardRef?.current?.scrollIntoView({
+                  behavior: "smooth",
+                });
+                setIsVoteResultOpen(false);
+              }}
+              arrowColor="white"
+            />
+          </ToggleWrapper>
         </div>
 
         <div className="mt-4 py-1 rounded-b-md bg-slate-100 text-gray-700">
@@ -160,9 +184,7 @@ export default function WhatToDiscardProblemCard({
             />
           </div>
 
-          <div
-            className={`${isCommentListOpen ? "max-h-[9999px]" : "max-h-0"} overflow-hidden lg:px-2 px-1 transition-all`}
-          >
+          <ToggleWrapper flag={isCommentListOpen}>
             <WhatToDiscardProblemCommentSection
               problemId={problem.id}
               isCommentListOpen={isCommentListOpen}
@@ -171,19 +193,15 @@ export default function WhatToDiscardProblemCard({
               setCommentsCount={setCommentsCount}
             />
 
-            <Flex justifyContent="center" mt={4} mb={2}>
-              <Button
-                onClick={() => {
-                  problemCardRef?.current?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-                  setIsCommentListOpen(false);
-                }}
-              >
-                <FaAngleUp color="#333" />
-              </Button>
-            </Flex>
-          </div>
+            <CloseAccordionButton
+              onClick={() => {
+                problemCardRef?.current?.scrollIntoView({
+                  behavior: "smooth",
+                });
+                setIsCommentListOpen(false);
+              }}
+            />
+          </ToggleWrapper>
         </div>
       </div>
     </div>

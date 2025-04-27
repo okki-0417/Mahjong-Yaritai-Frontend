@@ -1,9 +1,7 @@
-import { FaAngleUp } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemVoteButton from "./WhatToDiscardProblemVoteButton";
-import { Button, Flex } from "@chakra-ui/react";
 import { MyVoteType } from "./WhatToDiscardProblemVotesCount";
 
 export type VotesType = {
@@ -16,8 +14,6 @@ export default function WhatToDiscardProblemVoteList({
   problemId,
   myVote,
   setMyVote,
-  setIsVoteResultOpen,
-  problemCardRef,
   setVotesCount,
 }: {
   problemId: number;
@@ -92,21 +88,6 @@ export default function WhatToDiscardProblemVoteList({
           })}
         </div>
       </div>
-
-      <Flex justify="center" mt={3}>
-        <Button
-          bgColor="inherit"
-          _hover={{ bgColor: "green.400" }}
-          onClick={() => {
-            problemCardRef?.current?.scrollIntoView({
-              behavior: "smooth",
-            });
-            setIsVoteResultOpen(false);
-          }}
-        >
-          <FaAngleUp color="white" />
-        </Button>
-      </Flex>
     </div>
   );
 }
