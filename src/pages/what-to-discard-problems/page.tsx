@@ -3,6 +3,7 @@ import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
 import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
 import axios from "axios";
+import { Button, Flex } from "@chakra-ui/react";
 
 export type WhatToDiscardProblem = {
   id: number;
@@ -29,19 +30,28 @@ export type WhatToDiscardProblem = {
     id: number;
     name: string;
   };
+
+  pagination: {
+    next_page: number | null;
+  };
 };
 
 export default function WhatToDiscardProblems() {
   const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<
     WhatToDiscardProblem[]
   >([]);
+  const [nextPage, setNextPage] = useState<number | null>(null);
+  const [nextPageLoading, setNextPageLoading] = useState(false);
 
   useEffect(() => {
     const fetchWhatToDiscardProblems = async () => {
       try {
-        const response = await apiClient.get(`/what_to_discard_problems`);
+        const response = await apiClient.get("/what_to_discard_problems");
 
-        setWhatToDiscardProblems(response.data.what_to_discard_problems);
+        setWhatToDiscardProblems(response.data.what_to_discard_problems.data);
+        setNextPage(
+          response.data.what_to_discard_problems.pagination.next_page
+        );
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.error(error.status);
@@ -54,6 +64,35 @@ export default function WhatToDiscardProblems() {
 
     fetchWhatToDiscardProblems();
   }, []);
+
+  const loadNextPage = async () => {
+    if (!nextPage) return;
+
+    if (nextPageLoading) return;
+    setNextPageLoading(true);
+
+    try {
+      const response = await apiClient.get(
+        `what_to_discard_problems?page=${nextPage}`
+      );
+
+      setWhatToDiscardProblems([
+        ...whatToDiscardProblems,
+        ...response.data.what_to_discard_problems.data,
+      ]);
+
+      setNextPage(response.data.what_to_discard_problems.pagination.next_page);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error.status);
+        console.error(error.message);
+      } else {
+        console.error(error);
+      }
+    } finally {
+      setNextPageLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-4xl lg:mx-auto mx-4 mt-36">
@@ -74,6 +113,12 @@ export default function WhatToDiscardProblems() {
       {whatToDiscardProblems.map((problem, index) => (
         <WhatToDiscardProblemCard key={index} problem={problem} />
       ))}
+
+      {nextPage && (
+        <Flex justify="center" mt={5}>
+          <Button onClick={() => loadNextPage()}>さらに読み込む</Button>
+        </Flex>
+      )}
     </div>
   );
 }
