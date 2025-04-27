@@ -38,12 +38,7 @@ export default function CommentCard({
           </div>
         </Link>
 
-        <Button
-          fontSize="xs"
-          bgColor="inherit"
-          _hover={{ bgColor: "inherit" }}
-          onClick={handleClick}
-        >
+        <Button fontSize="xs" onClick={handleClick}>
           返信する
           <MdOutlineReply size={15} />
         </Button>

@@ -21,7 +21,6 @@ export type WhatToDiscardProblem = {
 
   comments_count: number;
   votes_count: number;
-  is_current_user_voted: boolean;
 
   created_at: string;
   updated_at: string;

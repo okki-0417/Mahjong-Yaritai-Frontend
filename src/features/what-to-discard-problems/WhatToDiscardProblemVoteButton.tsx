@@ -7,8 +7,7 @@ import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
 import { useState } from "react";
 import { VotesType } from "./WhatToDiscardProblemVoteList";
-import { MyVoteType } from "./WhatToDiscardProblemCard";
-import { isMyVoteEmpty } from "./WhatToDiscardProblemVotesCount";
+import { isMyVoteEmpty, MyVoteType } from "./WhatToDiscardProblemVotesCount";
 
 export default function WhatToDiscardProblemVoteButton({
   problemId,
@@ -20,8 +19,8 @@ export default function WhatToDiscardProblemVoteButton({
 }: {
   problemId: number;
   tileId: number;
-  myVote: MyVoteType | null;
-  setMyVote: React.Dispatch<React.SetStateAction<MyVoteType | null>>;
+  myVote: MyVoteType;
+  setMyVote: React.Dispatch<React.SetStateAction<MyVoteType>>;
   setVotes: React.Dispatch<React.SetStateAction<VotesType | null>>;
   setVotesCount: React.Dispatch<React.SetStateAction<number>>;
 }) {
@@ -40,7 +39,7 @@ export default function WhatToDiscardProblemVoteButton({
     setIsLoading(true);
 
     try {
-      if (!myVote || isMyVoteEmpty(myVote)) {
+      if (isMyVoteEmpty(myVote)) {
         const response = await apiClient.post(
           `/what_to_discard_problems/${problemId}/votes`,
           {
@@ -67,7 +66,7 @@ export default function WhatToDiscardProblemVoteButton({
 
         setVotes(response.data.what_to_discard_problem_votes);
         setVotesCount(response.data.what_to_discard_problem_votes.total_count);
-        setMyVote(null);
+        setMyVote({ id: null, tile_id: null });
 
         setToast({ type: "success", message: "投票を取り消しました" });
       } else {

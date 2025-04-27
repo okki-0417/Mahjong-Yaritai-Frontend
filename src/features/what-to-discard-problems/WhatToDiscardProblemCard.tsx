@@ -6,15 +6,12 @@ import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page"
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
 import PopButton from "../../components/PopButton";
 import WhatToDiscardProblemCommentSection from "./WhatToDiscardProblemCommentSection";
-import WhatToDiscardProblemVotesCount from "./WhatToDiscardProblemVotesCount";
+import WhatToDiscardProblemVotesCount, {
+  MyVoteType,
+} from "./WhatToDiscardProblemVotesCount";
 import WhatToDiscardProblemVoteList from "./WhatToDiscardProblemVoteList";
 import WhatToDiscardProblemCommentsCount from "./WhatToDiscardProblemCommentsCount";
 import { Button, Flex } from "@chakra-ui/react";
-
-export type MyVoteType = {
-  id: number;
-  tile_id: number;
-};
 
 export default function WhatToDiscardProblemCard({
   problem,
@@ -22,10 +19,11 @@ export default function WhatToDiscardProblemCard({
   problem: WhatToDiscardProblem;
 }) {
   const [isVoteResultOpen, setIsVoteResultOpen] = useState(false);
-  const [myVote, setMyVote] = useState<MyVoteType | null>(null);
   const [isCommentListOpen, setIsCommentListOpen] = useState(false);
+
   const [commentsCount, setCommentsCount] = useState(problem.comments_count);
   const [votesCount, setVotesCount] = useState(problem.votes_count);
+  const [myVote, setMyVote] = useState<MyVoteType>({ id: null, tile_id: null });
 
   const problemCardRef = useRef<HTMLDivElement>(null);
 
@@ -153,7 +151,9 @@ export default function WhatToDiscardProblemCard({
             />
 
             <WhatToDiscardProblemVotesCount
+              problemId={problem.id}
               myVote={myVote}
+              setMyVote={setMyVote}
               votesCount={votesCount}
               isVoteResultOpen={isVoteResultOpen}
               setIsVoteResultOpen={setIsVoteResultOpen}
