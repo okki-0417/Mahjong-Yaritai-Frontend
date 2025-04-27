@@ -3,6 +3,7 @@ import axios from "axios";
 import { IoMdTrash } from "react-icons/io";
 import { apiClient } from "../../ApiConfig";
 import { useSetToast } from "../../hooks/useSetToast";
+import { useState } from "react";
 
 export default function WhatToDiscardProblemDeleteButton({
   problemId,
@@ -10,10 +11,16 @@ export default function WhatToDiscardProblemDeleteButton({
   problemId: number;
 }) {
   const setToast = useSetToast();
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    const isConfirmed = confirm("この何切る問題を削除しますか？");
+    if (!isConfirmed) return;
+
     try {
-      confirm("この何切る問題を削除しますか？");
       await apiClient.delete(`/what_to_discard_problems/${problemId}`);
 
       setToast({ type: "success", message: "何切る問題を削除しました" });
@@ -25,6 +32,10 @@ export default function WhatToDiscardProblemDeleteButton({
       } else {
         console.error(error);
       }
+
+      setToast({ type: "error", message: "削除に失敗" });
+    } finally {
+      setLoading(false);
     }
   };
 
