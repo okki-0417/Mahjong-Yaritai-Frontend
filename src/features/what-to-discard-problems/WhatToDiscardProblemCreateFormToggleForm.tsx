@@ -7,7 +7,7 @@ import { ModalContext } from "../../contexts/ModalContextProvider";
 
 export default function WhatToDiscardProblemToggleForm() {
   const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean | null>(
-    null,
+    null
   );
 
   const { auth } = useContext(AuthStateContext);
@@ -41,6 +41,7 @@ export default function WhatToDiscardProblemToggleForm() {
           }}
         />
       </div>
+
       <div>
         <ToggleWrapper flag={!!isCreateFormOpen}>
           <WhatToDiscardProblemForm setIsCreateFormOpen={setIsCreateFormOpen} />

@@ -58,7 +58,7 @@ export default function WhatToDiscardProblemVoteList({
   return (
     <div>
       <div className="flex justify-center">
-        <div className="max-w-fit flex lg:flex-row flex-col lg:justify-center items-start gap-2">
+        <div className="max-w-fit flex lg:flex-row flex-col lg:justify-center items-start gap-1">
           {votes?.results.map((result, index) => {
             return (
               <div key={index} className="flex flex-col gap-1">

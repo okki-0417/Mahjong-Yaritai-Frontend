@@ -112,7 +112,7 @@ export default function WhatToDiscardProblemCard({
               </div>
 
               <div className="flex justify-center items-end">
-                {problem.hand_ids.map((hand_id, index) => {
+                {problem.hand_ids.slice(0, -1).map((hand_id, index) => {
                   return (
                     <PopButton
                       value={<TileImage tile={hand_id} />}
