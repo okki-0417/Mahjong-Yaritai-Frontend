@@ -7,7 +7,7 @@ export default function TileImage({
 }) {
   return (
     <div
-      className={`h-full transition-all bg-white rounded overflow-hidden ${hover && "hover:scale-110"}`}
+      className={`h-full transition-all hover:bg-white rounded overflow-hidden ${hover && "hover:scale-110"}`}
     >
       <img
         src={`/tiles/${tile}.webp`}

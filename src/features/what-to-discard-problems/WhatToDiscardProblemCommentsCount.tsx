@@ -15,7 +15,7 @@ export default function WhatToDiscardProblemCommentsCount({
       value={
         <div className="flex items-center gap-1">
           <FaRegComment color="#333" size={24} />
-          <div className="font-sans lg:text-lg">{commentsCount}</div>
+          <div className="font-bold font-sans lg:text-lg">{commentsCount}</div>
         </div>
       }
       onClick={() => {

@@ -17,8 +17,8 @@ import ErrorPage from "./components/ErrorPage";
 import ToastContextProvider from "./contexts/ToastContextProvider";
 import ModalContextProvider from "./contexts/ModalContextProvider";
 import LearningDetail from "./pages/learning/[:id]/page";
-import DefaultLayout from "./components/layout/defaultLayout";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import DefaultLayout from "./components/layout/DefaultLayout";
 
 const theme = extendTheme({
   styles: {

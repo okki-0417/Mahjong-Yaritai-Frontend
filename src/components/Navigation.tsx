@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { NavLink } from "react-router";
 import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
-import { FaAngleRight, FaGear } from "react-icons/fa6";
+import { FaAngleRight } from "react-icons/fa6";
 import { GiThink } from "react-icons/gi";
-import { RiArticleFill } from "react-icons/ri";
-import { BsGraphUpArrow } from "react-icons/bs";
+import useIsLoggedIn from "../hooks/useIsLoggedIn";
+import { Button, Flex } from "@chakra-ui/react";
 
 export default function Navigation() {
   const [checked, setChecked] = useState<boolean>(false);
+  const auth = useIsLoggedIn();
 
   return (
     <>
@@ -33,13 +34,13 @@ export default function Navigation() {
             </div>
 
             <div className="md:flex hidden gap-5 items-center text-lg">
-              <NavLink
+              {/* <NavLink
                 to="/learning"
                 className="text-white flex gap-1 items-center"
               >
                 <img src="/beginner-icon.webp" alt="" className="w-6" />
                 <span>ハンディガイド</span>
-              </NavLink>
+              </NavLink> */}
 
               <NavLink
                 to="/what-to-discard-problems"
@@ -49,29 +50,39 @@ export default function Navigation() {
                 <div className="tracking-widest">何切る問題</div>
               </NavLink>
 
-              <NavLink
+              {/* <NavLink
                 to="/articles"
                 className="text-white flex gap-1 items-center"
               >
                 <RiArticleFill size={20} color="white" />
                 <div>ブログ</div>
-              </NavLink>
+              </NavLink> */}
 
-              <NavLink
+              {/* <NavLink
                 to="/records"
                 className="text-white flex gap-2 items-center"
               >
                 <BsGraphUpArrow size={20} color="white" />
                 <div>戦績の記録</div>
-              </NavLink>
+              </NavLink> */}
 
-              <NavLink
+              {/* <NavLink
                 to="/settings"
                 className="text-white flex gap-2 items-center"
               >
                 <FaGear size={20} color="white" />
                 <div>設定</div>
-              </NavLink>
+              </NavLink> */}
+              {!auth && (
+                <Flex gap={1}>
+                  <NavLink to="/auth/login">
+                    <Button colorScheme="pink">ログイン</Button>
+                  </NavLink>
+                  <NavLink to="/authorization-session">
+                    <Button colorScheme="blue">新規登録</Button>
+                  </NavLink>
+                </Flex>
+              )}
             </div>
 
             <button
@@ -80,7 +91,6 @@ export default function Navigation() {
             >
               <input
                 type="checkbox"
-                id="side-menu"
                 hidden
                 className="peer"
                 defaultChecked={checked}

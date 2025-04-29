@@ -1,92 +1,63 @@
-import { useContext } from "react";
-import { FaAngleRight } from "react-icons/fa6";
 import { Link } from "react-router";
-import { AuthStateContext } from "../contexts/AuthStateContextProvider";
-import { BASEURL } from "../ApiConfig";
+import useLogout from "../hooks/useLogout";
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Divider,
+  HStack,
+  ListItem,
+  UnorderedList,
+} from "@chakra-ui/react";
+import useIsLoggedIn from "../hooks/useIsLoggedIn";
 
 export default function Footer() {
-  const { setAuth } = useContext(AuthStateContext);
+  const logout = useLogout();
 
-  const logout = async () => {
-    confirm("ログアウトしますか？");
-    const response = await fetch(`${BASEURL}/session`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("ログアウトに失敗しました");
-    }
-
-    setAuth(false);
-  };
+  const auth = useIsLoggedIn();
 
   return (
-    <footer className="mt-32 w-full lg:h-72 flex flex-col justify-between bg-gray-800">
-      <nav className="lg:px-16 px-8 lg:pt-12 lg:pb-12 pt-8 pb-20">
-        <ul className="flex lg:flex-row flex-col lg:gap-16 gap-8">
-          <Link to="/" className="font-bold hover:text-white lg:text-xl">
-            <li className="flex items-center gap-1">
-              <FaAngleRight size={16} />
-              <span>ホーム</span>
-            </li>
-          </Link>
+    <Box
+      as="footer"
+      mt={100}
+      bgColor="gray.800"
+      color="gray.200"
+      display={["none", "block"]}
+    >
+      <Container as="nav" maxW="5xl" py={20}>
+        <UnorderedList styleType="none">
+          <HStack spacing="12">
+            <Link to="/">
+              <ListItem>ホーム</ListItem>
+            </Link>
 
-          <li>
-            <span className="font-bold lg:text-xl text-base">プロフィール</span>
-            <ul className="lg:text-lg text-sm lg:mt-2 mt-1 flex flex-col gap-1">
-              <Link to="/profile" className="hover:text-white">
-                <li className="flex items-center gap-1 lg:pl-0 pl-4">
-                  <FaAngleRight size={12} />
-                  <span>見る</span>
-                </li>
-              </Link>
+            <Center h={8}>
+              <Divider orientation="vertical" borderColor="white" />
+            </Center>
 
-              <Link to="/profile/edit" className="hover:text-white">
-                <li className="flex items-center gap-1 lg:pl-0 pl-4">
-                  <FaAngleRight size={12} />
-                  <span>編集する</span>
-                </li>
-              </Link>
-            </ul>
-          </li>
+            <Link to="/what-to-discard-problems">
+              <ListItem>何切る問題</ListItem>
+            </Link>
 
-          <li>
-            <span className="font-bold lg:text-xl text-base">何切る問題</span>
-            <ul className="lg:text-lg text-sm lg:mt-2 mt-1 flex flex-col gap-1">
-              <Link to="/what-to-discard-problems" className="hover:text-white">
-                <li className="flex items-center gap-1 lg:pl-0 pl-4">
-                  <FaAngleRight size={12} />
-                  <span>一覧</span>
-                </li>
-              </Link>
+            {auth && (
+              <>
+                <Center h={10}>
+                  <Divider orientation="vertical" borderColor="white" />
+                </Center>
 
-              <Link
-                to="/what-to-discard-problems/new"
-                className="hover:text-white"
-              >
-                <li className="flex items-center gap-1 lg:pl-0 pl-4">
-                  <FaAngleRight size={12} />
-                  <span>新規作成</span>
-                </li>
-              </Link>
-            </ul>
-          </li>
+                <Button onClick={logout} colorScheme="" color="gray.200">
+                  ログアウト
+                </Button>
+              </>
+            )}
+          </HStack>
+        </UnorderedList>
+      </Container>
 
-          <li>
-            <button
-              onClick={logout}
-              className="flex gap-1 items-center hover:text-white"
-            >
-              <span>ログアウト</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-
-      <p className="text-center py-2 bg-gray-900">
-        &copy; <span>2025</span>
-      </p>
-    </footer>
+      <Center py={2} bgColor="gray.900">
+        &copy; 2025 All Rights Reserved
+      </Center>
+    </Box>
   );
 }

@@ -28,9 +28,7 @@ export default function WhatToDiscardProblemVotesCount({
         `/what_to_discard_problems/${problemId}/votes/my_vote`
       );
 
-      const myVote: MyVoteType = response.data.my_vote;
-
-      setMyVote(myVote);
+      setMyVote(response.data.my_vote);
     };
 
     fetchMyVote();
@@ -48,7 +46,7 @@ export default function WhatToDiscardProblemVotesCount({
         ) : (
           <MdHowToVote color="#0080ff" size={26} />
         )}
-        <div className="font-sans lg:text-lg">{votesCount}</div>
+        <div className="font-bold font-sans lg:text-lg">{votesCount}</div>
       </div>
     </button>
   );

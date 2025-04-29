@@ -1,184 +1,132 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { BASEURL } from "../../../ApiConfig";
-import ErrorMessage, {
-  ErrorMessageType,
-} from "../../../components/ErrorMessage";
+import { apiClient } from "../../../ApiConfig";
 import { SubmitHandler, useForm } from "react-hook-form";
 import AlreadyLoggedIn from "../../../components/AlreadyLoggedIn";
 import { FaAngleRight } from "react-icons/fa6";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
+import { useSetToast } from "../../../hooks/useSetToast";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Text,
+} from "@chakra-ui/react";
+
+type UserFormType = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
 
 export default function UserCreate() {
   const navigate = useNavigate();
+  const setToast = useSetToast();
+
   const { auth, setAuth } = useContext(AuthStateContext);
-  const [passVisible, setPassVisible] = useState<boolean>(false);
-  const [passConfVisible, setPassConfVisible] = useState<boolean>(false);
 
-  type UserForm = {
-    name: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
-  };
+  const [passVisible, setPassVisible] = useState(false);
+  const [passConfVisible, setPassConfVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [resErrors, setResErrors] = useState<ErrorMessageType[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserForm>();
+  } = useForm<UserFormType>();
 
-  const onSubmit: SubmitHandler<UserForm> = async (formData: UserForm) => {
-    const response = await fetch(`${BASEURL}/users`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ user: formData }),
-    });
+  const onSubmit: SubmitHandler<UserFormType> = async (
+    formData: UserFormType
+  ) => {
+    if (loading) return;
+    setLoading(true);
 
-    const data = await response.json();
+    try {
+      await apiClient.post("/users", { user: formData });
 
-    console.log(data);
-
-    if (!response.ok) {
-      setResErrors([...resErrors, (await response.json())?.errors]);
-    } else {
       setAuth(true);
-      navigate("/dashboard");
+      navigate("/what-to-discard-problems");
+      // navigate("/dashboard");
+    } catch (error) {
+      setToast({ type: "success", message: "ユーザーの作成に失敗しました" });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      {auth === false ? (
-        <div className="lg:w-1/2 mx-auto bg-white py-8 lg:px-16 px-4  mt-16 rounded-md text-gray-800">
-          <div className="mt-2">
-            <h1 className="lg:text-3xl text-2xl font-semibold">
-              新規ユーザー登録
-            </h1>
+      {auth == false ? (
+        <Container mt={40} size="xl">
+          <Text fontSize="4xl">新規ユーザー登録</Text>
 
-            <div className="w-full mt-6">
-              {resErrors[0] && (
-                <ErrorMessage
-                  message={resErrors[resErrors.length - 1]?.message}
-                />
-              )}
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                  <div className="grid grid-cols-6 lg:gap-8 gap-1">
-                    <div className="col-span-2 h-full flex items-center lg:text-xl">
-                      <label htmlFor="name">ハンドルネーム</label>
-                    </div>
-                    <div className="col-span-4 p-2 h-full flex flex-col items-center ">
-                      <input
-                        type="text"
-                        autoComplete="name"
-                        className={`border border-black rounded-sm h-8 w-full p-2 ${errors.email ? "bg-red-200" : ""}`}
-                        {...register("name", {
-                          required: "必須です",
-                        })}
-                      />
-                    </div>
-                  </div>
-                  {errors.name && (
-                    <div className="text-red-500 w-full text-sm text-end">
-                      {errors.name.message}
-                    </div>
-                  )}
-                </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-5">
+            <FormControl isRequired isInvalid={!!errors.name}>
+              <FormLabel htmlFor="name">ハンドルネーム</FormLabel>
+              <Input
+                type="text"
+                {...register("name", { required: "必須です" })}
+              />
+              <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+            </FormControl>
 
-                <div>
-                  <div className="grid grid-cols-6 lg:gap-8 gap-1">
-                    <div className="col-span-2 h-full flex items-center lg:text-xl text-gray-800">
-                      <label htmlFor="name">パスワード</label>
-                    </div>
-                    <div className="col-span-4 p-2 h-full flex flex-col items-center">
-                      <input
-                        type={passVisible ? "text" : "password"}
-                        autoComplete="password"
-                        className={`border border-black rounded-sm h-8 w-full p-2 ${errors.password ? "bg-red-200" : ""}`}
-                        {...register("password", { required: "必須です" })}
-                      />
-                      {errors.password && (
-                        <div className="text-red-500 w-full text-sm text-end">
-                          {errors.password.message}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+            <FormControl isInvalid={!!errors.password} isRequired mt={5}>
+              <FormLabel htmlFor="name">パスワード</FormLabel>
+              <Input
+                type={passVisible ? "text" : "password"}
+                {...register("password", { required: "必須です" })}
+              />
 
-                  <div className="text-end">
-                    <button
-                      type="button"
-                      className="bg-gray-300 text-sm py-1 px-3 rounded-full"
-                      onClick={() => setPassVisible(!passVisible)}
-                    >
-                      パスワードを{passVisible && "非"}表示
-                    </button>
-                  </div>
-                </div>
+              <Flex mt={2} justifyContent="end">
+                <Button
+                  type="button"
+                  size="sm"
+                  colorScheme="whiteAlpha"
+                  onClick={() => setPassVisible(!passVisible)}
+                >
+                  パスワードを{passVisible && "非"}表示
+                </Button>
+              </Flex>
+            </FormControl>
 
-                <div>
-                  <div className="grid grid-cols-6 lg:gap-8 gap-1">
-                    <div className="col-span-2 h-full flex items-center lg:text-xl text-gray-800">
-                      <label htmlFor="name">パスワード（確認）</label>
-                    </div>
-                    <div className="col-span-4 p-2 h-full flex flex-col items-center">
-                      <input
-                        type={passConfVisible ? "text" : "password"}
-                        autoComplete="password-confirmation"
-                        className={`border border-black rounded-sm h-8 w-full p-2 ${errors.password ? "bg-red-200" : ""}`}
-                        {...register("password_confirmation", {
-                          required: "必須です",
-                        })}
-                      />
-                      {errors.password_confirmation && (
-                        <div className="text-red-500 w-full text-sm text-end">
-                          {errors.password_confirmation.message}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+            <FormControl isInvalid={!!errors.password_confirmation} isRequired>
+              <FormLabel htmlFor="name">パスワード（確認）</FormLabel>
+              <Input
+                type={passConfVisible ? "text" : "password"}
+                {...register("password_confirmation", {
+                  required: "必須です",
+                })}
+              />
+              <FormErrorMessage>
+                {errors.password_confirmation?.message}
+              </FormErrorMessage>
+              <Flex mt={2} justifyContent="end">
+                <Button
+                  type="button"
+                  size="sm"
+                  colorScheme="whiteAlpha"
+                  onClick={() => setPassConfVisible(!passConfVisible)}
+                >
+                  パスワードを{passConfVisible && "非"}表示
+                </Button>
+              </Flex>
+            </FormControl>
 
-                  <div className="text-end">
-                    <button
-                      type="button"
-                      className="bg-gray-300 text-sm py-1 px-3 rounded-full"
-                      onClick={() => setPassConfVisible(!passConfVisible)}
-                    >
-                      パスワードを{passConfVisible && "非"}表示
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-4 flex lg:gap-4 gap-2">
-                  <div>
-                    <input
-                      type="submit"
-                      value="ユーザー登録する"
-                      className="btn btn-main"
-                    />
-                  </div>
-                </div>
-              </form>
-
-              <div className="mt-6">
-                <p className="text-lg text-gray-800">
-                  <Link
-                    to="/auth/login"
-                    className="text-blue-500 hover:text-blue-300 underline flex items-center"
-                  >
-                    <span>ログインはこちら</span>
-                    <FaAngleRight size={16} />
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+            <Box mt={4}>
+              <input
+                type="submit"
+                value="ユーザー登録する"
+                className="btn btn-main"
+              />
+            </Box>
+          </form>
+        </Container>
       ) : (
         <AlreadyLoggedIn />
       )}

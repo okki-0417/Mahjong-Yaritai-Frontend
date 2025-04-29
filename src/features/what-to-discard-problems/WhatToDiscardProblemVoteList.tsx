@@ -3,6 +3,7 @@ import axios from "axios";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemVoteButton from "./WhatToDiscardProblemVoteButton";
 import { MyVoteType } from "./WhatToDiscardProblemVotesCount";
+import { Box, Center, Flex, Text } from "@chakra-ui/react";
 
 export type VotesType = {
   results: { tile_id: number; count: number }[];
@@ -56,38 +57,81 @@ export default function WhatToDiscardProblemVoteList({
   }, [votes]);
 
   return (
-    <div>
-      <div className="flex justify-center">
-        <div className="max-w-fit flex lg:flex-row flex-col lg:justify-center items-start gap-1">
-          {votes?.results.map((result, index) => {
-            return (
-              <div key={index} className="flex flex-col gap-1">
-                <div className="flex flex-col justify-end items-center h-40">
-                  <div className="font-sans text-center grow-0">
+    <Center mt={6}>
+      <Flex
+        flexDir={["column", "row"]}
+        justifyContent="center"
+        alignItems={["center", "flex-start"]}
+        gap="1"
+        w="full"
+      >
+        {votes?.results.map((result, index) => {
+          return (
+            <Flex
+              flexDir={["row-reverse", "column"]}
+              alignItems="center"
+              justifyContent="flex-end"
+              gap={1}
+              key={index}
+            >
+              <Flex
+                h={["auto", "52"]}
+                w={["2xs", "auto"]}
+                alignItems="flex-end"
+              >
+                <Box
+                  display={["none", "block"]}
+                  className={`${myVote.tile_id == result.tile_id ? "bg-sky-400" : "bg-green-400"} border border-b-0 rounded-t-sm`}
+                  w="4"
+                  borderColor="white"
+                  position="relative"
+                  style={{
+                    height: `${Math.round((result.count / mostVotedCount) * 100)}%`,
+                  }}
+                >
+                  <Text
+                    fontFamily="sans-serif"
+                    position="absolute"
+                    top="-6"
+                    left="0.5"
+                  >
                     {result.count}
-                  </div>
+                  </Text>
+                </Box>
 
-                  <div
-                    className={`${myVote.tile_id == result.tile_id ? "bg-sky-400" : "bg-green-400"} lg:w-4 border border-white border-b-0 rounded-t-sm`}
-                    style={{
-                      height: `${Math.round((result.count / mostVotedCount) * 100)}%`,
-                    }}
-                  />
-                </div>
+                <Box
+                  display={["block", "none"]}
+                  className={`${myVote.tile_id == result.tile_id ? "bg-sky-400" : "bg-green-400"} border border-l-0 rounded-r-sm`}
+                  h="4"
+                  borderColor="white"
+                  position="relative"
+                  style={{
+                    width: `${Math.round((result.count / mostVotedCount) * 100)}%`,
+                  }}
+                >
+                  <Text
+                    fontFamily="sans-serif"
+                    position="absolute"
+                    right="-4"
+                    top="-1.5"
+                  >
+                    {result.count}
+                  </Text>
+                </Box>
+              </Flex>
 
-                <WhatToDiscardProblemVoteButton
-                  setVotesCount={setVotesCount}
-                  problemId={problemId}
-                  tileId={result.tile_id}
-                  myVote={myVote}
-                  setMyVote={setMyVote}
-                  setVotes={setVotes}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
+              <WhatToDiscardProblemVoteButton
+                setVotesCount={setVotesCount}
+                problemId={problemId}
+                tileId={result.tile_id}
+                myVote={myVote}
+                setMyVote={setMyVote}
+                setVotes={setVotes}
+              />
+            </Flex>
+          );
+        })}
+      </Flex>
+    </Center>
   );
 }

@@ -1,13 +1,32 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { BASEURL } from "../../ApiConfig";
-import { useNavigate } from "react-router";
+import { apiClient } from "../../ApiConfig";
+import { Link, useNavigate } from "react-router";
+import { useSetToast } from "../../hooks/useSetToast";
+import {
+  Box,
+  Container,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
+import { FaAngleRight } from "react-icons/fa";
+import MainButton from "../../components/MainButton";
+import { useEffect } from "react";
+import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 
 type AuthorizationSessionForm = {
   email: string;
 };
 
 export default function AuthorizationSession() {
+  const auth = useIsLoggedIn();
   const navigate = useNavigate();
+  const setToast = useSetToast();
+
+  useEffect(() => {
+    if (auth) navigate("/dashboard");
+  }, [auth]);
 
   const {
     register,
@@ -16,65 +35,53 @@ export default function AuthorizationSession() {
   } = useForm<AuthorizationSessionForm>();
 
   const onSubmit: SubmitHandler<AuthorizationSessionForm> = async (
-    formData: AuthorizationSessionForm,
+    formData: AuthorizationSessionForm
   ) => {
     try {
-      const response = await fetch(`${BASEURL}/authorization_session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(formData),
+      await apiClient.post("/authorization_session", {
+        authorization_session: formData,
       });
-
-      if (!response.ok) {
-        throw new Error("Error fetching authorization session");
-      }
 
       navigate("/authorization");
     } catch (error) {
-      console.error(error);
+      setToast({
+        type: "error",
+        message: "このメールアドレスは使用できません",
+      });
     }
   };
 
   return (
-    <div className="max-w-screen-sm mx-auto mt-40 px-4">
+    <Container mt={40} maxW="2xl">
       <h1 className="lg:text-4xl text-2xl font-semibold mb-3">ユーザー登録</h1>
       <hr />
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
-        <fieldset>
-          <div className="mt-4">
-            <div className="label">
-              <label htmlFor="email">Email</label>
-            </div>
+        <FormControl isInvalid={!!errors.email} isRequired>
+          <FormLabel htmlFor="email">Email</FormLabel>
 
-            {errors.email && (
-              <p className="input-error">{errors.email.message}</p>
-            )}
-            <div className="mt-1">
-              <input
-                type="email"
-                placeholder="test@mahjong-yaritai.com"
-                autoComplete="email"
-                className="input"
-                required={true}
-                {...register("email", {
-                  required: "メールアドレスを入力してください",
-                })}
-              />
-            </div>
-          </div>
-        </fieldset>
+          <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
 
-        <input
-          type="submit"
-          value="確認メールを送信する"
-          className="btn btn-main mt-6"
-        />
+          <Input
+            type="email"
+            placeholder="test@mahjong-yaritai.com"
+            autoComplete="email"
+            {...register("email")}
+          />
+        </FormControl>
+
+        <MainButton className="mt-4">確認メールを送信する</MainButton>
       </form>
-    </div>
+
+      <Box mt={4}>
+        <Link
+          to="/auth/login"
+          className="text-blue-300 hover:text-blue-200 hover:underline flex items-center w-fit"
+        >
+          ログインはこちら
+          <FaAngleRight size={16} />
+        </Link>
+      </Box>
+    </Container>
   );
 }

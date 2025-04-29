@@ -11,7 +11,17 @@ import WhatToDiscardProblemVotesCount, {
 } from "./WhatToDiscardProblemVotesCount";
 import WhatToDiscardProblemVoteList from "./WhatToDiscardProblemVoteList";
 import WhatToDiscardProblemCommentsCount from "./WhatToDiscardProblemCommentsCount";
-import { Button } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Grid,
+  GridItem,
+  HStack,
+  Image,
+  Text,
+} from "@chakra-ui/react";
 import CloseAccordionButton from "../../components/CloseAccordionButton";
 import ToggleWrapper from "../../components/ToggleWrapper";
 import WhatToDiscardProblemDeleteButton from "./WhatToDiscardProblemDeleteButton";
@@ -34,111 +44,104 @@ export default function WhatToDiscardProblemCard({
   const myUserId = useMyUserId();
 
   return (
-    <div ref={problemCardRef} className="mt-12">
-      <div className="text-xl">
-        <span className="font-sans font-extralight">
-          {new Date(problem.created_at).toLocaleString()}
-        </span>
-      </div>
+    <Box ref={problemCardRef} mt={12} w="full">
+      <Text fontSize="xl">{new Date(problem.created_at).toLocaleString()}</Text>
 
-      <div className="bg-green-700 rounded-md mt-2 drop-shadow shadow-gray-800">
-        <div className="h-10 px-3 pt-2 flex justify-between items-center">
-          <Link to={`/users/${problem.user.id}`} className="h-full">
-            <div className="h-full font-bold text-lg flex items-center gap-2">
-              <div className="h-full aspect-square rounded-full overflow-hidden">
-                <img
-                  src="https://placehold.jp/150x150.png"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <span className="lg:text-base text-sm">{problem.user.name}</span>
-            </div>
+      <Box boxShadow="base" borderRadius="md" className="bg-green-700">
+        <Flex justifyContent="space-between" px="3" pt="2">
+          <Link to={`/users/${problem.user.id}`}>
+            <HStack>
+              <Image
+                borderRadius="full"
+                objectFit="cover"
+                h="8"
+                src="https://placehold.jp/150x150.png"
+              />
+
+              <Text fontSize="20">{problem.user.name}</Text>
+            </HStack>
           </Link>
 
           {problem.user.id == myUserId && (
-            <div className="flex">
+            <HStack>
               {/* <Button bgColor="inherit" _hover={{ bgColor: "green.400" }}>
               <MdEdit size={20} color="white" />
             </Button> */}
 
               <WhatToDiscardProblemDeleteButton problemId={problem.id} />
-            </div>
+            </HStack>
           )}
-        </div>
+        </Flex>
 
-        <div className="lg:mt-5 mt-2 flex flex-col justify-between lg:px-4 px-3">
-          <div>
-            <div className="md:text-2xl text-lg font-bold flex gap-2 md:h-8 h-6">
-              <span>{`${problem.round}局`}</span>
+        <Box px="3" mt="3">
+          <HStack fontSize={[18, 20]}>
+            <Text>{`${problem.round}局`}</Text>
 
-              <div>
-                <span className="font-sans font-normal">{problem.turn}</span>
-                <span>巡目</span>
-              </div>
+            <Text>{problem.turn}巡目</Text>
 
-              <span>{`${problem.wind}家`}</span>
+            <Text>{`${problem.wind}家`}</Text>
 
-              <div className="flex gap-2">
-                <span>ドラ:</span>
-                <TileImage tile={problem.dora_id} hover={false} />
-              </div>
-            </div>
+            <HStack h="8">
+              <Text>ドラ:</Text>
+              <TileImage tile={problem.dora_id} hover={false} />
+            </HStack>
+          </HStack>
 
-            <div className="mt-2 md:text-2xl text-lg md:flex grid grid-cols-2 md:gap-4">
-              {[
-                { label: "東家", point: problem.point_east },
-                { label: "南家", point: problem.point_west },
-                { label: "西家", point: problem.point_west },
-                { label: "北家", point: problem.point_north },
-              ].map((obj) => {
+          <Grid templateColumns="repeat(4,1fr)" fontSize={[18, 20]} mt="2">
+            {[
+              { label: "東家", point: problem.point_east },
+              { label: "南家", point: problem.point_west },
+              { label: "西家", point: problem.point_west },
+              { label: "北家", point: problem.point_north },
+            ].map((obj) => {
+              return (
+                <GridItem colSpan={[2, 1]}>
+                  <HStack key={obj.label}>
+                    <Text>{obj.label}</Text>
+                    <Text className="font-sans font-normal">{obj.point}点</Text>
+                  </HStack>
+                </GridItem>
+              );
+            })}
+          </Grid>
+
+          <Flex
+            flexDir={["column", "row-reverse"]}
+            justifyContent="center"
+            gap="3"
+            mt="3"
+          >
+            <Flex flexDir={["row", "column"]} alignItems="center">
+              <Text>ツモ</Text>
+
+              <PopButton
+                value={<TileImage tile={problem.tsumo_id} />}
+                defaultClassName="sm:h-auto h-8"
+              />
+            </Flex>
+
+            <Flex justifyContent="center" alignItems="flex-end">
+              {problem.hand_ids.slice(0, -1).map((hand_id, index) => {
                 return (
-                  <div className="flex gap-1" key={obj.label}>
-                    <span>{obj.label}</span>
-                    <span className="font-sans font-normal">{obj.point}</span>
-                    <span>点</span>
-                  </div>
+                  <PopButton value={<TileImage tile={hand_id} />} key={index} />
                 );
               })}
-            </div>
+            </Flex>
+          </Flex>
 
-            <div className="flex lg:flex-row-reverse flex-col justify-center gap-4 mt-4">
-              <div className="flex lg:flex-col flex-row items-center gap-1">
-                <span className="font-bold text-center text-base">
-                  <span>ツモ</span>
-                  <span className="lg:hidden">:</span>
-                </span>
-
-                <PopButton value={<TileImage tile={problem.tsumo_id} />} />
-              </div>
-
-              <div className="flex justify-center items-end">
-                {problem.hand_ids.slice(0, -1).map((hand_id, index) => {
-                  return (
-                    <PopButton
-                      value={<TileImage tile={hand_id} />}
-                      key={index}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-center">
-              <div
-                className={`${isVoteResultOpen && "hidden"} lg:text-xl flex items-center justify-center gap-1 font-medium`}
+          <Center mt={[3, 6]}>
+            {!isVoteResultOpen && (
+              <Button
+                bgColor="inherit"
+                color="white"
+                _hover={{ bgColor: "green.400" }}
+                onClick={() => setIsVoteResultOpen(!isVoteResultOpen)}
               >
-                <Button
-                  bgColor="inherit"
-                  color="white"
-                  _hover={{ bgColor: "green.400" }}
-                  onClick={() => setIsVoteResultOpen(!isVoteResultOpen)}
-                >
-                  <span>投票結果</span>
-                  <FaAngleDown />
-                </Button>
-              </div>
-            </div>
-          </div>
+                投票結果
+                <FaAngleDown />
+              </Button>
+            )}
+          </Center>
 
           <ToggleWrapper flag={isVoteResultOpen}>
             {isVoteResultOpen && (
@@ -162,10 +165,17 @@ export default function WhatToDiscardProblemCard({
               arrowColor="white"
             />
           </ToggleWrapper>
-        </div>
+        </Box>
 
-        <div className="mt-4 py-1 rounded-b-md bg-slate-100 text-gray-700">
-          <div className="font-bold py-2 flex items-center gap-3 lg:pl-4 pl-2">
+        <Box
+          mt="4"
+          py="2"
+          px="4"
+          bgColor="white"
+          color="gray.700"
+          className="rounded-b-md"
+        >
+          <HStack>
             <WhatToDiscardProblemLikeButton problemId={problem.id} />
 
             <WhatToDiscardProblemCommentsCount
@@ -182,7 +192,7 @@ export default function WhatToDiscardProblemCard({
               isVoteResultOpen={isVoteResultOpen}
               setIsVoteResultOpen={setIsVoteResultOpen}
             />
-          </div>
+          </HStack>
 
           <ToggleWrapper flag={isCommentListOpen}>
             <WhatToDiscardProblemCommentSection
@@ -202,8 +212,8 @@ export default function WhatToDiscardProblemCard({
               }}
             />
           </ToggleWrapper>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }

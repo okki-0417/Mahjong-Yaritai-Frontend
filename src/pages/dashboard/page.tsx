@@ -7,10 +7,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (auth === false) {
-      navigate("/auth/login");
-    }
-    console.log(`Dashboard: ${auth}`);
+    navigate("/what-to-discard-problems");
+
+    // if (auth === false) {
+    //   navigate("/auth/login");
+    // }
   }, [auth]);
 
   return <div className="bg-red-200"></div>;

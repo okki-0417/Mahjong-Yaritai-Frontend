@@ -3,7 +3,7 @@ import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
 import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
 import axios from "axios";
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, VStack } from "@chakra-ui/react";
 
 export type WhatToDiscardProblem = {
   id: number;
@@ -114,9 +114,11 @@ export default function WhatToDiscardProblems() {
         setNextPage={setNextPage}
       />
 
-      {whatToDiscardProblems.map((problem, index) => (
-        <WhatToDiscardProblemCard key={index} problem={problem} />
-      ))}
+      <VStack spacing={15}>
+        {whatToDiscardProblems.map((problem, index) => (
+          <WhatToDiscardProblemCard key={index} problem={problem} />
+        ))}
+      </VStack>
 
       {nextPage && (
         <Flex justify="center" mt={5}>

@@ -1,13 +1,31 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { BASEURL } from "../../ApiConfig";
+import { apiClient } from "../../ApiConfig";
 import { useNavigate } from "react-router";
+import { useSetToast } from "../../hooks/useSetToast";
+import {
+  Container,
+  FormControl,
+  FormErrorMessage,
+  NumberInput,
+  NumberInputField,
+  Text,
+} from "@chakra-ui/react";
+import useIsLoggedIn from "../../hooks/useIsLoggedIn";
+import { useEffect } from "react";
+import MainButton from "../../components/MainButton";
 
 type AuthorizationForm = {
   token: string;
 };
 
 export default function Authorization() {
+  const auth = useIsLoggedIn();
   const navigate = useNavigate();
+  const setToast = useSetToast();
+
+  useEffect(() => {
+    if (auth) navigate("/dashboard");
+  }, [auth]);
 
   const {
     register,
@@ -17,62 +35,33 @@ export default function Authorization() {
 
   const onSubmit: SubmitHandler<AuthorizationForm> = async (formData) => {
     try {
-      const response = await fetch(`${BASEURL}/authorization`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error fetching authorization session");
-      }
+      await apiClient.post("/authorization", { authorization: formData });
 
       navigate("/users/new");
     } catch (error) {
-      console.error(error);
+      setToast({ type: "error", message: "認証に失敗しました" });
     }
   };
 
   return (
-    <div className="lg:w-1/2 mx-auto bg-white py-8 lg:px-16 px-4  mt-16 rounded-md text-gray-700">
-      <h1 className="text-2xl font-bold">認証メールを送信しました。</h1>
-      <p className="mt-2">メール内の「認証コードを入力してください」</p>
+    <Container maxW="xl" mt={40}>
+      <Text fontSize="2xl">認証メールを送信しました。</Text>
+
+      <Text mt={2}>メール内の認証コードを入力してください</Text>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <fieldset>
-          <div className="mt-4">
-            {errors.token && (
-              <p className="input-error">{errors.token.message}</p>
-            )}
-            <input
-              type="number"
-              autoComplete="number"
-              className="input w-full mt-1 font-sans text-lg tracking-widest"
-              required={true}
-              {...register("token", {
-                required: "メールアドレスを入力してください",
-                minLength: {
-                  value: 6,
-                  message: "認証コードは6桁です",
-                },
-                maxLength: {
-                  value: 6,
-                  message: "認証コードは6桁です",
-                },
-              })}
-            />
-          </div>
-        </fieldset>
+        <FormControl isInvalid={!!errors.token} isRequired>
+          <FormErrorMessage className="mt-4">
+            {errors.token?.message}
+          </FormErrorMessage>
 
-        <input
-          type="submit"
-          value="認証を完了する"
-          className="btn btn-main mt-6"
-        />
+          <NumberInput mt={4}>
+            <NumberInputField {...register("token")} />
+          </NumberInput>
+        </FormControl>
+
+        <MainButton className="mt-4">認証を完了する</MainButton>
       </form>
-    </div>
+    </Container>
   );
 }
