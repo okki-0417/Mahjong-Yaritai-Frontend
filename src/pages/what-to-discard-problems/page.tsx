@@ -65,7 +65,13 @@ export default function WhatToDiscardProblems() {
     fetchWhatToDiscardProblems();
   }, []);
 
-  const loadNextPage = async () => {
+  const loadNextPage = async ({
+    nextPage,
+    whatToDiscardProblems,
+  }: {
+    nextPage: number;
+    whatToDiscardProblems: WhatToDiscardProblem[];
+  }) => {
     if (!nextPage) return;
 
     if (nextPageLoading) return;
@@ -83,12 +89,6 @@ export default function WhatToDiscardProblems() {
 
       setNextPage(response.data.what_to_discard_problems.pagination.next_page);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.status);
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
     } finally {
       setNextPageLoading(false);
     }
@@ -108,7 +108,11 @@ export default function WhatToDiscardProblems() {
         </span>
       </p>
 
-      <WhatToDiscardProblemToggleForm />
+      <WhatToDiscardProblemToggleForm
+        whatToDiscardProblems={whatToDiscardProblems}
+        setWhatToDiscardProblems={setWhatToDiscardProblems}
+        setNextPage={setNextPage}
+      />
 
       {whatToDiscardProblems.map((problem, index) => (
         <WhatToDiscardProblemCard key={index} problem={problem} />
@@ -116,7 +120,11 @@ export default function WhatToDiscardProblems() {
 
       {nextPage && (
         <Flex justify="center" mt={5}>
-          <Button onClick={() => loadNextPage()}>さらに読み込む</Button>
+          <Button
+            onClick={() => loadNextPage({ nextPage, whatToDiscardProblems })}
+          >
+            さらに読み込む
+          </Button>
         </Flex>
       )}
     </div>

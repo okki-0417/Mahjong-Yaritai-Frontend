@@ -1,11 +1,21 @@
-import { useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import PopButton from "../../components/PopButton";
 import ToggleWrapper from "../../components/ToggleWrapper";
 import WhatToDiscardProblemForm from "./WhatToDiscardProblemForm";
 import { AuthStateContext } from "../../contexts/AuthStateContextProvider";
 import { ModalContext } from "../../contexts/ModalContextProvider";
+import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
+import { Box } from "@chakra-ui/react";
 
-export default function WhatToDiscardProblemToggleForm() {
+export default function WhatToDiscardProblemToggleForm({
+  whatToDiscardProblems,
+  setWhatToDiscardProblems,
+  setNextPage,
+}: {
+  whatToDiscardProblems: WhatToDiscardProblem[];
+  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblem[]>>;
+  setNextPage: Dispatch<SetStateAction<number | null>>;
+}) {
   const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean | null>(
     null
   );
@@ -13,22 +23,9 @@ export default function WhatToDiscardProblemToggleForm() {
   const { auth } = useContext(AuthStateContext);
   const { setModalName } = useContext(ModalContext);
 
-  useEffect(() => {
-    if (
-      isCreateFormOpen === null &&
-      localStorage.getItem("isCreateFormOpen") === "open"
-    ) {
-      setIsCreateFormOpen(true);
-    }
-
-    isCreateFormOpen
-      ? localStorage.setItem("isCreateFormOpen", "open")
-      : localStorage.removeItem("isCreateFormOpen");
-  }, [isCreateFormOpen]);
-
   return (
-    <div>
-      <div className="mt-6">
+    <Box>
+      <Box mt={6}>
         <PopButton
           value="＋"
           defaultClassName="btn-circle btn-main"
@@ -40,13 +37,18 @@ export default function WhatToDiscardProblemToggleForm() {
             setIsCreateFormOpen(!isCreateFormOpen);
           }}
         />
-      </div>
+      </Box>
 
-      <div>
+      <Box>
         <ToggleWrapper flag={!!isCreateFormOpen}>
-          <WhatToDiscardProblemForm setIsCreateFormOpen={setIsCreateFormOpen} />
+          <WhatToDiscardProblemForm
+            setIsCreateFormOpen={setIsCreateFormOpen}
+            whatToDiscardProblems={whatToDiscardProblems}
+            setWhatToDiscardProblems={setWhatToDiscardProblems}
+            setNextPage={setNextPage}
+          />
         </ToggleWrapper>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

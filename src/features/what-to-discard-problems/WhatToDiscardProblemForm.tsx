@@ -16,8 +16,8 @@ import {
   VisuallyHiddenInput,
   Wrap,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useSetToast } from "../../hooks/useSetToast";
+import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
 
 type WhatToDiscardProblemCreateFormType = {
   round: string;
@@ -75,18 +75,20 @@ const MAX_DUPLICATE_TILES_NUM = 4;
 
 export default function WhatToDiscardProblemForm({
   setIsCreateFormOpen,
+  whatToDiscardProblems,
+  setWhatToDiscardProblems,
+  setNextPage,
 }: {
   setIsCreateFormOpen: Dispatch<SetStateAction<boolean | null>>;
+  whatToDiscardProblems: WhatToDiscardProblem[];
+  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblem[]>>;
+  setNextPage: Dispatch<SetStateAction<number | null>>;
 }) {
   const [focussedTileInput, setFocussedTileInput] =
     useState<TileInputNameType>("dora_id");
 
   const [focussedPointInput, setFocussedPointInput] =
     useState<PointInputs | null>("point_east");
-
-  const [usedTilesCountTally, setUsedTilesCountTally] = useState<
-    Record<string, number>
-  >({});
 
   const {
     register,
@@ -165,8 +167,6 @@ export default function WhatToDiscardProblemForm({
       {}
     );
 
-    setUsedTilesCountTally(usedTilesCountTally);
-
     if (!isNoTileOverused(usedTilesCountTally)) {
       setError("tileUsage", {
         type: "manual",
@@ -187,19 +187,19 @@ export default function WhatToDiscardProblemForm({
     setIsLoading(true);
 
     try {
-      await apiClient.post("/what_to_discard_problems", {
+      const response = await apiClient.post("/what_to_discard_problems", {
         what_to_discard_problem: formData,
       });
+
+      setWhatToDiscardProblems([
+        ...whatToDiscardProblems,
+        response.data.what_to_discard_problem.data,
+      ]);
+      setNextPage(response.data.what_to_discard_problem.pagination.next_page);
 
       setIsCreateFormOpen(false);
       setToast({ type: "success", message: "作成しました" });
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.status);
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
       setToast({ type: "error", message: "作成に失敗しました" });
     } finally {
       setIsLoading(false);
@@ -407,7 +407,10 @@ export default function WhatToDiscardProblemForm({
         isRequired
         isInvalid={!!(errors.tileUsage || errors.handSort)}
       >
-        <FormLabel fontSize={20}>手牌状況</FormLabel>
+        <FormLabel as="legend" fontSize={20}>
+          手牌状況
+        </FormLabel>
+
         {(errors.dora_id ||
           errors.hand1_id ||
           errors.hand2_id ||
@@ -423,7 +426,7 @@ export default function WhatToDiscardProblemForm({
           errors.hand12_id ||
           errors.hand13_id ||
           errors.tsumo_id) && (
-          <FormErrorMessage>選択していない手牌情報があります</FormErrorMessage>
+          <FormErrorMessage>選択していない手牌があります</FormErrorMessage>
         )}
 
         <Box>
@@ -552,19 +555,13 @@ export default function WhatToDiscardProblemForm({
                           "dora_id",
                         ] as const
                       ).some((fieldName) => {
-                        if (!watch(fieldName)) {
-                          setFocussedTileInput(fieldName);
-                          return true;
-                        }
+                        if (watch(fieldName)) return true;
+
+                        setFocussedTileInput(fieldName);
                       });
                     }}
                     defaultClassName="w-10 border border-gray-700 rounded-sm"
                   />
-
-                  <Text fontFamily="sans-serif">
-                    {MAX_DUPLICATE_TILES_NUM -
-                      (usedTilesCountTally[tileId] || 0)}
-                  </Text>
                 </Flex>
               );
             })}
