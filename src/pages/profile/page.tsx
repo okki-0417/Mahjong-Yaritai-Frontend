@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { pageApiClient } from "../../ApiConfig";
 import { Link } from "react-router";
 import { MdOutlineEdit } from "react-icons/md";
+import { apiClient } from "../../ApiConfig";
 
 type Profile = {
   name: string;
@@ -13,7 +13,7 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const response = await pageApiClient.get("/profile");
+      const response = await apiClient.get("/profile");
       setProfile(response.data.profile);
     };
 

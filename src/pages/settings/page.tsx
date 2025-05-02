@@ -7,13 +7,9 @@ type ProfileSetting = {
 };
 
 export default function Settings() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ProfileSetting>();
+  const { register, handleSubmit } = useForm<ProfileSetting>();
 
-  const onSubmit: SubmitHandler<ProfileSetting> = async (data) => {
+  const onSubmit: SubmitHandler<ProfileSetting> = async () => {
     // submit to the server
   };
 

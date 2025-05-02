@@ -39,7 +39,7 @@ export default function ProfileEditForm() {
     const getImageSrc = async () => {
       const imageBase64 = localStorage.getItem("uploadedImage");
       if (imageBase64) {
-        setImageSrc(imageBase64);
+        // setImageSrc(imageBase64);
       }
     };
 

@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { apiClient } from "../../../ApiConfig";
 import { SubmitHandler, useForm } from "react-hook-form";
 import AlreadyLoggedIn from "../../../components/AlreadyLoggedIn";
-import { FaAngleRight } from "react-icons/fa6";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
 import { useSetToast } from "../../../hooks/useSetToast";
 import {

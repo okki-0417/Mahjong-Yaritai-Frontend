@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import ThreadCard from "../../features/forum-threads/ThreadCard";
 import { useSearchParams } from "react-router";
 import Pagination, { PaginationType } from "../../components/Pagination";
-import axios from "axios";
 import { apiClient } from "../../ApiConfig";
 
 export type ForumThread = {

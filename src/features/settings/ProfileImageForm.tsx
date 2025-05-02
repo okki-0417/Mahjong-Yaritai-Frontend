@@ -4,7 +4,7 @@ import { ProfileSetting } from "./ProfileEditForm";
 
 export default function ProfileImageForm({
   register,
-  avatar,
+  // avatar,
 }: {
   register: UseFormRegister<ProfileSetting>;
   avatar?: File;
