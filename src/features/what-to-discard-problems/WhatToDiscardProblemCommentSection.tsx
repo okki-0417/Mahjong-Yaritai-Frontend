@@ -11,15 +11,16 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@chakra-ui/react";
 
+export type CommentType = {
+  content: string;
+  parent_comment_id?: string | undefined;
+};
+
 export default function WhatToDiscardProblemCommentSection({
   problemId,
-  isCommentListOpen,
   setCommentsCount,
 }: {
   problemId: number;
-  isCommentListOpen: boolean;
-  setIsCommentListOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  problemCardRef: React.RefObject<HTMLDivElement>;
   setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const CommentContentRef = useRef<HTMLTextAreaElement | null>(null);
@@ -30,7 +31,7 @@ export default function WhatToDiscardProblemCommentSection({
     register,
     handleSubmit,
     setValue,
-    watch,
+    resetField,
     formState: { errors },
   } = useForm<WhatToDiscardProblemCommentSchemaType>({
     resolver: zodResolver(whatToDiscardProblemCommentSchema),
@@ -40,7 +41,6 @@ export default function WhatToDiscardProblemCommentSection({
     if (!CommentContentRef.current) return;
 
     CommentContentRef.current.scrollIntoView({
-      behavior: "smooth",
       block: "center",
     });
     CommentContentRef.current.focus();
@@ -50,24 +50,22 @@ export default function WhatToDiscardProblemCommentSection({
 
   return (
     <div>
-      {isCommentListOpen && (
-        <Box>
-          <WhatToDiscardProblemCommentList
-            whatToDiscardProblemComments={whatToDiscardProblemComments}
-            setWhatToDiscardProblemComments={setWhatToDiscardProblemComments}
-            problemId={problemId}
-            handleReplyClick={handleReplyClick}
-          />
+      <Box>
+        <WhatToDiscardProblemCommentList
+          whatToDiscardProblemComments={whatToDiscardProblemComments}
+          setWhatToDiscardProblemComments={setWhatToDiscardProblemComments}
+          problemId={problemId}
+          handleReplyClick={handleReplyClick}
+        />
 
-          <WhatToDiscardProblemCommentForm
-            problemId={problemId}
-            setWhatToDiscardProblemComments={setWhatToDiscardProblemComments}
-            CommentContentRef={CommentContentRef}
-            form={{ register, handleSubmit, errors, watch }}
-            setCommentsCount={setCommentsCount}
-          />
-        </Box>
-      )}
+        <WhatToDiscardProblemCommentForm
+          problemId={problemId}
+          setWhatToDiscardProblemComments={setWhatToDiscardProblemComments}
+          CommentContentRef={CommentContentRef}
+          form={{ register, handleSubmit, errors, resetField }}
+          setCommentsCount={setCommentsCount}
+        />
+      </Box>
     </div>
   );
 }

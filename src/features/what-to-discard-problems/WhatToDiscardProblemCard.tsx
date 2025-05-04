@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { Link } from "react-router";
 import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
-import PopButton from "../../components/PopButton";
 import WhatToDiscardProblemCommentSection from "./WhatToDiscardProblemCommentSection";
 import WhatToDiscardProblemVotesCount, {
   MyVoteType,
@@ -55,7 +54,7 @@ export default function WhatToDiscardProblemCard({
                 borderRadius="full"
                 objectFit="cover"
                 h="8"
-                src="https://placehold.jp/150x150.png"
+                src={problem.user.avatar_url || "/no-image.webp"}
               />
 
               <Text fontSize="20">{problem.user.name}</Text>
@@ -95,8 +94,8 @@ export default function WhatToDiscardProblemCard({
               { label: "北家", point: problem.point_north },
             ].map((obj) => {
               return (
-                <GridItem colSpan={[2, 1]}>
-                  <HStack key={obj.label}>
+                <GridItem colSpan={[2, 1]} key={obj.label}>
+                  <HStack>
                     <Text>{obj.label}</Text>
                     <Text className="font-sans font-normal">{obj.point}点</Text>
                   </HStack>
@@ -114,16 +113,17 @@ export default function WhatToDiscardProblemCard({
             <Flex flexDir={["row", "column"]} alignItems="center">
               <Text>ツモ</Text>
 
-              <PopButton
-                value={<TileImage tile={problem.tsumo_id} />}
-                defaultClassName="sm:h-auto h-8"
-              />
+              <Box>
+                <TileImage tile={problem.tsumo_id} hover={false} />
+              </Box>
             </Flex>
 
             <Flex justifyContent="center" alignItems="flex-end">
               {problem.hand_ids.slice(0, -1).map((hand_id, index) => {
                 return (
-                  <PopButton value={<TileImage tile={hand_id} />} key={index} />
+                  <Box key={index}>
+                    <TileImage tile={hand_id} hover={false} />
+                  </Box>
                 );
               })}
             </Flex>
@@ -145,25 +145,21 @@ export default function WhatToDiscardProblemCard({
 
           <ToggleWrapper flag={isVoteResultOpen}>
             {isVoteResultOpen && (
-              <WhatToDiscardProblemVoteList
-                problemId={problem.id}
-                myVote={myVote}
-                setMyVote={setMyVote}
-                setIsVoteResultOpen={setIsVoteResultOpen}
-                problemCardRef={problemCardRef}
-                setVotesCount={setVotesCount}
-              />
+              <>
+                <WhatToDiscardProblemVoteList
+                  problemId={problem.id}
+                  myVote={myVote}
+                  setMyVote={setMyVote}
+                  setIsVoteResultOpen={setIsVoteResultOpen}
+                  problemCardRef={problemCardRef}
+                  setVotesCount={setVotesCount}
+                />
+                <CloseAccordionButton
+                  onClick={() => setIsVoteResultOpen(false)}
+                  arrowColor="white"
+                />
+              </>
             )}
-
-            <CloseAccordionButton
-              onClick={() => {
-                problemCardRef?.current?.scrollIntoView({
-                  behavior: "smooth",
-                });
-                setIsVoteResultOpen(false);
-              }}
-              arrowColor="white"
-            />
           </ToggleWrapper>
         </Box>
 
@@ -195,22 +191,18 @@ export default function WhatToDiscardProblemCard({
           </HStack>
 
           <ToggleWrapper flag={isCommentListOpen}>
-            <WhatToDiscardProblemCommentSection
-              problemId={problem.id}
-              isCommentListOpen={isCommentListOpen}
-              setIsCommentListOpen={setIsCommentListOpen}
-              problemCardRef={problemCardRef}
-              setCommentsCount={setCommentsCount}
-            />
+            {isCommentListOpen && (
+              <>
+                <WhatToDiscardProblemCommentSection
+                  problemId={problem.id}
+                  setCommentsCount={setCommentsCount}
+                />
 
-            <CloseAccordionButton
-              onClick={() => {
-                problemCardRef?.current?.scrollIntoView({
-                  behavior: "smooth",
-                });
-                setIsCommentListOpen(false);
-              }}
-            />
+                <CloseAccordionButton
+                  onClick={() => setIsCommentListOpen(false)}
+                />
+              </>
+            )}
           </ToggleWrapper>
         </Box>
       </Box>

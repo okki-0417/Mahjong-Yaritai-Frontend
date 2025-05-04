@@ -4,7 +4,7 @@ import { AuthStateContext } from "../contexts/AuthStateContextProvider";
 import { apiClient } from "../ApiConfig";
 
 export default function useLogout(): () => Promise<void> {
-  const { auth, setAuth } = useContext(AuthStateContext);
+  const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);
   const setToast = useSetToast();
   const [loading, setLoading] = useState(false);
 
@@ -19,6 +19,8 @@ export default function useLogout(): () => Promise<void> {
     try {
       await apiClient.delete("/session");
       setAuth(false);
+      setMyUserId(null);
+      setToast({ type: "success", message: "ログアウトしました" });
     } catch (error) {
       setToast({ type: "error", message: "ログアウトに失敗しました" });
     } finally {

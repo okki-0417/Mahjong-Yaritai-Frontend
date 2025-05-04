@@ -28,7 +28,7 @@ type LoginForm = {
 
 export default function Login() {
   const navigate = useNavigate();
-  const { auth, setAuth } = useContext(AuthStateContext);
+  const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);
   const [passVisible, setPassVisible] = useState<boolean>(false);
 
   const setToast = useSetToast();
@@ -41,9 +41,10 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<LoginForm> = async (formData: LoginForm) => {
     try {
-      await apiClient.post("/session", { session: formData });
+      const response = await apiClient.post("/session", { session: formData });
 
       setAuth(true);
+      setMyUserId(response.data.user.id);
       navigate("/what-to-discard-problems");
     } catch (error) {
       setToast({ type: "error", message: "ログインに失敗しました" });

@@ -1,17 +1,18 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { apiClient } from "../ApiConfig";
-import axios from "axios";
 
 type AuthStateContextType = {
   auth: boolean;
   setAuth: (auth: boolean) => void;
   myUserId: number | null;
+  setMyUserId: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const AuthStateContext = createContext<AuthStateContextType>({
   auth: false,
   setAuth: () => {},
   myUserId: null,
+  setMyUserId: () => {},
 });
 
 type SessionType = {
@@ -35,13 +36,7 @@ export default function AuthStateContextProvider({
 
         session.is_logged_in ? setAuth(true) : setAuth(false);
         session.user_id && setMyUserId(session.user_id);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.error(error.status);
-          console.error(error.message);
-        }
-        console.error(error);
-      }
+      } catch (error) {}
     };
 
     fetchSessionState();
@@ -50,7 +45,7 @@ export default function AuthStateContextProvider({
   console.log(`You are ${auth ? "LOGGED IN" : "NOT LOGGED IN"}`);
 
   return (
-    <AuthStateContext.Provider value={{ auth, setAuth, myUserId }}>
+    <AuthStateContext.Provider value={{ auth, setAuth, myUserId, setMyUserId }}>
       {children}
     </AuthStateContext.Provider>
   );

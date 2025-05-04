@@ -13,17 +13,17 @@ import {
   SubmitHandler,
   UseFormHandleSubmit,
   UseFormRegister,
-  UseFormWatch,
+  UseFormResetField,
 } from "react-hook-form";
 import { WhatToDiscardProblemCommentSchemaType } from "../../schemas/WhatToDiscardProblemCommentSchema";
 import { apiClient } from "../../ApiConfig";
-import axios from "axios";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
 import { useState } from "react";
 import { useSetToast } from "../../hooks/useSetToast";
 import { Link } from "react-router";
 import { WhatToDiscardProblemParentComment } from "./WhatToDiscardProblemCommentList";
+import { CommentType } from "./WhatToDiscardProblemCommentSection";
 
 export default function WhatToDiscardProblemCommentForm({
   problemId,
@@ -39,22 +39,10 @@ export default function WhatToDiscardProblemCommentForm({
   CommentContentRef: any;
   setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
   form: {
-    register: UseFormRegister<{
-      content: string;
-      parent_comment_id?: string | undefined;
-    }>;
-    handleSubmit: UseFormHandleSubmit<{
-      content: string;
-      parent_comment_id?: string | undefined;
-    }>;
-    errors: FieldErrors<{
-      content: string;
-      parent_comment_id?: string | undefined;
-    }>;
-    watch: UseFormWatch<{
-      content: string;
-      parent_comment_id?: string | undefined;
-    }>;
+    register: UseFormRegister<CommentType>;
+    handleSubmit: UseFormHandleSubmit<CommentType>;
+    errors: FieldErrors<CommentType>;
+    resetField: UseFormResetField<CommentType>;
   };
 }) {
   const [loading, setLoading] = useState(false);
@@ -81,15 +69,13 @@ export default function WhatToDiscardProblemCommentForm({
 
       setWhatToDiscardProblemComments(comments.comments);
       setCommentsCount(comments.total_count);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.status);
-        console.error(error.message);
-      }
-      setToast({ type: "error", message: "コメントの投稿に失敗しました" });
-    }
 
-    setLoading(true);
+      form.resetField("content");
+    } catch (error) {
+      setToast({ type: "error", message: "コメントの投稿に失敗しました" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

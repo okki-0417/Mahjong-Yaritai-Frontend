@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemParentCommentCard from "./WhatToDiscardProblemParentCommentCard";
 import axios from "axios";
-import Loading from "../../components/Loading";
+import { Box, Center, Spinner } from "@chakra-ui/react";
 
 export type WhatToDiscardProblemParentComment = {
   id: number;
@@ -65,9 +65,11 @@ export default function WhatToDiscardProblemCommentList({
   }, []);
 
   return (
-    <div>
+    <Box>
       {isLoading ? (
-        <Loading />
+        <Center>
+          <Spinner color="black" size="xl" />
+        </Center>
       ) : !whatToDiscardProblemComments.length ? (
         <div className="text-center text-lg font-bold">
           コメントはまだありません
@@ -83,6 +85,6 @@ export default function WhatToDiscardProblemCommentList({
           );
         })
       )}
-    </div>
+    </Box>
   );
 }
