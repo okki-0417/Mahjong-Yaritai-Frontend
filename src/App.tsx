@@ -19,6 +19,7 @@ import ModalContextProvider from "./contexts/ModalContextProvider";
 import LearningDetail from "./pages/learning/[:id]/page";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import DefaultLayout from "./components/layout/DefaultLayout";
+import UserShow from "./pages/users/:id/page";
 
 const theme = extendTheme({
   styles: {
@@ -52,6 +53,7 @@ export default function App() {
                     <Route path="/auth/login" element={<Login />} />
                     <Route path="/users">
                       <Route path="new" element={<UserCreate />} />
+                      <Route path=":id" element={<UserShow />} />
                     </Route>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/about" element={<About />} />
@@ -66,6 +68,7 @@ export default function App() {
                     <Route path="/articles" element={<Articles />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/records" element={<Records />} />
+                    <Route path="/404" element={<ErrorPage status={404} />} />
                     <Route path="*" element={<ErrorPage status={404} />} />
                   </Route>
                 </Routes>
