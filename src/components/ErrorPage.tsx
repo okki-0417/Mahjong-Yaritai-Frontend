@@ -1,3 +1,5 @@
+import { useParams } from "react-router";
+
 const errorMessage: {
   [key: number]: string;
 } = {
@@ -12,14 +14,18 @@ export default function ErrorPage({
   status,
   message,
 }: {
-  status: number;
+  status?: number;
   message?: string | null;
 }) {
+  const { id } = useParams();
+
   return (
     <div className="mt-32 max-w-screen-lg mx-auto">
       <h1 className="text-center text-7xl">{status}</h1>
       <p className="mt-12 text-3xl text-center">
-        {message || errorMessage[status] || "エラーが発生しました。"}
+        {message ||
+          errorMessage[status || Number(id)] ||
+          "サーバーに接続できませんでした。"}
       </p>
     </div>
   );

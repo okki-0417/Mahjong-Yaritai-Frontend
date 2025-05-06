@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { apiClient } from "../../ApiConfig";
 import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
 import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
+import { Button, Flex, useToast, VStack } from "@chakra-ui/react";
 import axios from "axios";
-import { Button, Flex, VStack } from "@chakra-ui/react";
 
 export type WhatToDiscardProblem = {
   id: number;
@@ -44,6 +44,7 @@ export default function WhatToDiscardProblems() {
   const [nextPage, setNextPage] = useState<number | null>(null);
   const [nextPageLoading, setNextPageLoading] = useState(false);
 
+  const toast = useToast();
   useEffect(() => {
     const fetchWhatToDiscardProblems = async () => {
       try {
@@ -55,10 +56,13 @@ export default function WhatToDiscardProblems() {
         );
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          console.error(error.status);
-          console.error(error.message);
-        } else {
-          console.error(error);
+          toast({
+            title: "失敗",
+            description: `${error.status}: ${error.message}`,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
         }
       }
     };

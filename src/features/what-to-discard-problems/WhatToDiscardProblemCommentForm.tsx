@@ -6,6 +6,7 @@ import {
   Input,
   Text,
   Textarea,
+  useToast,
   VisuallyHiddenInput,
 } from "@chakra-ui/react";
 import {
@@ -20,7 +21,6 @@ import { apiClient } from "../../ApiConfig";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
 import { useState } from "react";
-import { useSetToast } from "../../hooks/useSetToast";
 import { Link } from "react-router";
 import { WhatToDiscardProblemParentComment } from "./WhatToDiscardProblemCommentList";
 import { CommentType } from "./WhatToDiscardProblemCommentSection";
@@ -48,7 +48,7 @@ export default function WhatToDiscardProblemCommentForm({
   const [loading, setLoading] = useState(false);
   const auth = useIsLoggedIn();
   const setModal = useSetModal();
-  const setToast = useSetToast();
+  const toast = useToast();
 
   const onSubmit: SubmitHandler<WhatToDiscardProblemCommentSchemaType> = async (
     formData
@@ -65,14 +65,24 @@ export default function WhatToDiscardProblemCommentForm({
 
       const comments = response.data.what_to_discard_problem_comments;
 
-      setToast({ type: "success", message: "コメントしました" });
+      toast({
+        title: "コメントを投稿しました",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
 
       setWhatToDiscardProblemComments(comments.comments);
       setCommentsCount(comments.total_count);
 
       form.resetField("content");
     } catch (error) {
-      setToast({ type: "error", message: "コメントの投稿に失敗しました" });
+      toast({
+        title: "コメントを投稿できませんでした",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }

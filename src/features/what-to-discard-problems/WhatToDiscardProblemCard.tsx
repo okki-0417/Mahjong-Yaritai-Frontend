@@ -113,7 +113,7 @@ export default function WhatToDiscardProblemCard({
             <Flex flexDir={["row", "column"]} alignItems="center">
               <Text>ツモ</Text>
 
-              <Box>
+              <Box w={[8, "auto"]}>
                 <TileImage tile={problem.tsumo_id} hover={false} />
               </Box>
             </Flex>
@@ -199,7 +199,12 @@ export default function WhatToDiscardProblemCard({
                 />
 
                 <CloseAccordionButton
-                  onClick={() => setIsCommentListOpen(false)}
+                  onClick={() => {
+                    problemCardRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                    setIsCommentListOpen(false);
+                  }}
                 />
               </>
             )}

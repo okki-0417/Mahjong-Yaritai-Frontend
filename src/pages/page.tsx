@@ -67,22 +67,26 @@ export default function Home() {
 
       <div className="mt-24 h-20 marquee-container">
         <div className="flex gap-3 marquee-inner">
-          {tileImagePaths.map((obj, index) => {
-            return (
-              <div className="drop-shadow-lg" key={index}>
-                <TileImage tile={obj.id} hover={false} />
-              </div>
-            );
-          })}
+          {Array(34)
+            .fill(null)
+            .map((_, index) => {
+              return (
+                <div className="drop-shadow-lg" key={index}>
+                  <TileImage tile={index + 1} hover={false} />
+                </div>
+              );
+            })}
         </div>
         <div className="flex gap-3 marquee-inner">
-          {tileImagePaths.map((obj, index) => {
-            return (
-              <div className="drop-shadow-lg" key={index}>
-                <TileImage tile={obj.id} hover={false} />
-              </div>
-            );
-          })}
+          {Array(34)
+            .fill(null)
+            .map((_, index) => {
+              return (
+                <div className="drop-shadow-lg" key={index}>
+                  <TileImage tile={index + 1} hover={false} />
+                </div>
+              );
+            })}
         </div>
       </div>
 

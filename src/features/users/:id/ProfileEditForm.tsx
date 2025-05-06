@@ -6,6 +6,7 @@ import {
   Flex,
   Image,
   Input,
+  useToast,
   VisuallyHiddenInput,
   VStack,
 } from "@chakra-ui/react";
@@ -18,7 +19,6 @@ import {
 } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { useSetToast } from "../../../hooks/useSetToast";
 import { apiClient } from "../../../ApiConfig";
 import { UserType } from "../../../pages/users/:id/page";
 
@@ -37,7 +37,7 @@ export default function ProfileEditForm({
   setIsEditMode: React.Dispatch<SetStateAction<boolean>>;
 }) {
   const { id } = useParams();
-  const setToast = useSetToast();
+  const toast = useToast();
 
   const [iconImageUrl, setIconImageUrl] = useState<string | null>(null);
 
@@ -80,10 +80,20 @@ export default function ProfileEditForm({
 
       setUser(response.data.user);
 
-      setToast({ type: "success", message: "プロフィールを更新しました。" });
+      toast({
+        title: "プロフィールを更新しました",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       setIsEditMode(false);
     } catch (error) {
-      setToast({ type: "error", message: "プロフィールの更新に失敗しました" });
+      toast({
+        title: "プロフィールを更新できませんでした",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

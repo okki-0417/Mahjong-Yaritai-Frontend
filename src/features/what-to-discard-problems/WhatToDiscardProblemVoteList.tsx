@@ -57,7 +57,7 @@ export default function WhatToDiscardProblemVoteList({
   }, [votes]);
 
   return (
-    <Center mt={6} h={280}>
+    <Center mt={6} h={["auto", 280]}>
       <Flex
         flexDir={["column", "row"]}
         justifyContent="center"

@@ -1,4 +1,3 @@
-import axios from "axios";
 import PopButton from "../../components/PopButton";
 import TileImage from "../../components/TileImage";
 import { apiClient } from "../../ApiConfig";
@@ -8,6 +7,7 @@ import { useSetModal } from "../../hooks/useSetModal";
 import { useState } from "react";
 import { VotesType } from "./WhatToDiscardProblemVoteList";
 import { isMyVoteEmpty, MyVoteType } from "./WhatToDiscardProblemVotesCount";
+import { Box } from "@chakra-ui/react";
 
 export default function WhatToDiscardProblemVoteButton({
   problemId,
@@ -95,12 +95,6 @@ export default function WhatToDiscardProblemVoteButton({
         });
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.status);
-        console.error(error.message);
-      } else {
-        console.error(error);
-      }
       setToast({ type: "error", message: "投票の投稿/削除に失敗しました" });
     } finally {
       setIsLoading(false);
@@ -109,14 +103,11 @@ export default function WhatToDiscardProblemVoteButton({
 
   return (
     <PopButton
-      defaultClassName={
-        myVote?.tile_id == tileId ? "border-2 border-red-400 rounded" : ""
-      }
       onClick={handleClick}
       value={
-        <div className="lg:w-12 w-6">
+        <Box w={["6", "12"]}>
           <TileImage tile={tileId} />
-        </div>
+        </Box>
       }
     />
   );
