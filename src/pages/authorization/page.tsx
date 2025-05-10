@@ -1,7 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { apiClient } from "../../ApiConfig";
 import { useNavigate } from "react-router";
-import { useSetToast } from "../../hooks/useSetToast";
 import {
   Container,
   FormControl,
@@ -9,6 +8,7 @@ import {
   NumberInput,
   NumberInputField,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useEffect } from "react";
@@ -21,7 +21,7 @@ type AuthorizationForm = {
 export default function Authorization() {
   const auth = useIsLoggedIn();
   const navigate = useNavigate();
-  const setToast = useSetToast();
+  const toast = useToast();
 
   useEffect(() => {
     if (auth) navigate("/dashboard");
@@ -39,7 +39,12 @@ export default function Authorization() {
 
       navigate("/users/new");
     } catch (error) {
-      setToast({ type: "error", message: "認証に失敗しました" });
+      toast({
+        title: "認証に失敗しました",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

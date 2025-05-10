@@ -3,8 +3,8 @@ import { apiClient } from "../../ApiConfig";
 import LikeButton from "../../components/LikeButton";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
-import { useSetToast } from "../../hooks/useSetToast";
 import axios from "axios";
+import { useToast } from "@chakra-ui/react";
 
 export type LikesType = {
   count: number;
@@ -41,7 +41,7 @@ export default function WhatToDiscardProblemLikeButton({
 
   const auth = useIsLoggedIn();
   const setModal = useSetModal();
-  const setToast = useSetToast();
+  const toast = useToast();
 
   const handleClick = async () => {
     if (!auth) return setModal("NotLoggedIn");
@@ -74,7 +74,12 @@ export default function WhatToDiscardProblemLikeButton({
         console.error(error.status);
         console.error(error.message);
       }
-      setToast({ type: "error", message: "「いいね」の操作に失敗しました。" });
+      toast({
+        title: "いいねの操作に失敗しました",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }

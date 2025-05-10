@@ -1,16 +1,17 @@
-import { Button } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { IoMdTrash } from "react-icons/io";
 import { apiClient } from "../../ApiConfig";
-import { useSetToast } from "../../hooks/useSetToast";
 import { useState } from "react";
+import useErrorToast from "../../hooks/useErrorToast";
 
 export default function WhatToDiscardProblemDeleteButton({
   problemId,
 }: {
   problemId: number;
 }) {
-  const setToast = useSetToast();
+  const toast = useToast();
+  const errorToast = useErrorToast();
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -23,17 +24,17 @@ export default function WhatToDiscardProblemDeleteButton({
     try {
       await apiClient.delete(`/what_to_discard_problems/${problemId}`);
 
-      setToast({ type: "success", message: "何切る問題を削除しました" });
+      toast({
+        title: "何切る問題を削除しました",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       location.reload();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(error.status);
-        console.error(error.message);
-      } else {
-        console.error(error);
+        errorToast({ error, title: "削除に失敗しました" });
       }
-
-      setToast({ type: "error", message: "削除に失敗" });
     } finally {
       setLoading(false);
     }

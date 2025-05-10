@@ -3,7 +3,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { apiClient } from "../../../ApiConfig";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
-import { useSetToast } from "../../../hooks/useSetToast";
 import {
   Box,
   Button,
@@ -13,6 +12,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { FaAngleRight } from "react-icons/fa";
 
@@ -29,9 +29,9 @@ type LoginForm = {
 export default function Login() {
   const navigate = useNavigate();
   const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);
-  const [passVisible, setPassVisible] = useState<boolean>(false);
+  const [passVisible, setPassVisible] = useState(false);
 
-  const setToast = useSetToast();
+  const toast = useToast();
 
   const {
     register,
@@ -39,7 +39,7 @@ export default function Login() {
     formState: { errors },
   } = useForm<LoginForm>();
 
-  const onSubmit: SubmitHandler<LoginForm> = async (formData: LoginForm) => {
+  const onSubmit: SubmitHandler<LoginForm> = async (formData) => {
     try {
       const response = await apiClient.post("/session", { session: formData });
 
@@ -47,7 +47,12 @@ export default function Login() {
       setMyUserId(response.data.user.id);
       navigate("/what-to-discard-problems");
     } catch (error) {
-      setToast({ type: "error", message: "ログインに失敗しました" });
+      toast({
+        title: "ログインに失敗しました",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 

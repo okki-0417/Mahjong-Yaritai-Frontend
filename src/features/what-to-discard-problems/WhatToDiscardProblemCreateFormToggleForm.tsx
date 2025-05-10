@@ -4,21 +4,19 @@ import ToggleWrapper from "../../components/ToggleWrapper";
 import WhatToDiscardProblemForm from "./WhatToDiscardProblemForm";
 import { AuthStateContext } from "../../contexts/AuthStateContextProvider";
 import { ModalContext } from "../../contexts/ModalContextProvider";
-import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
 import { Box } from "@chakra-ui/react";
+import { WhatToDiscardProblems } from "../../pages/what-to-discard-problems/page";
 
 export default function WhatToDiscardProblemToggleForm({
   whatToDiscardProblems,
   setWhatToDiscardProblems,
   setNextPage,
 }: {
-  whatToDiscardProblems: WhatToDiscardProblem[];
-  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblem[]>>;
+  whatToDiscardProblems: WhatToDiscardProblems;
+  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblems>>;
   setNextPage: Dispatch<SetStateAction<number | null>>;
 }) {
-  const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean | null>(
-    null
-  );
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean>(false);
 
   const { auth } = useContext(AuthStateContext);
   const { setModalName } = useContext(ModalContext);

@@ -13,11 +13,13 @@ import {
   FormErrorMessage,
   FormLabel,
   Text,
+  useToast,
   VisuallyHiddenInput,
   Wrap,
 } from "@chakra-ui/react";
-import { useSetToast } from "../../hooks/useSetToast";
-import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
+import { WhatToDiscardProblems } from "../../pages/what-to-discard-problems/page";
+import useErrorToast from "../../hooks/useErrorToast";
+import axios from "axios";
 
 type WhatToDiscardProblemCreateFormType = {
   round: string;
@@ -79,9 +81,9 @@ export default function WhatToDiscardProblemForm({
   setWhatToDiscardProblems,
   setNextPage,
 }: {
-  setIsCreateFormOpen: Dispatch<SetStateAction<boolean | null>>;
-  whatToDiscardProblems: WhatToDiscardProblem[];
-  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblem[]>>;
+  setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
+  whatToDiscardProblems: WhatToDiscardProblems;
+  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblems>>;
   setNextPage: Dispatch<SetStateAction<number | null>>;
 }) {
   const [focussedTileInput, setFocussedTileInput] =
@@ -177,7 +179,8 @@ export default function WhatToDiscardProblemForm({
     }
   }, [...enteredTileIds]);
 
-  const setToast = useSetToast();
+  const toast = useToast();
+  const errorToast = useErrorToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit: SubmitHandler<WhatToDiscardProblemCreateFormType> = async (
@@ -190,17 +193,27 @@ export default function WhatToDiscardProblemForm({
       const response = await apiClient.post("/what_to_discard_problems", {
         what_to_discard_problem: formData,
       });
+      const data = response.data;
 
       setWhatToDiscardProblems([
         ...whatToDiscardProblems,
-        response.data.what_to_discard_problem.data,
+        data.what_to_discard_problem,
       ]);
-      setNextPage(response.data.what_to_discard_problem.pagination.next_page);
+
+      // setNextPage(data.meta.pagination.next_page);
 
       setIsCreateFormOpen(false);
-      setToast({ type: "success", message: "作成しました" });
+      toast({
+        title: "何切る問題を作成しました",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
-      setToast({ type: "error", message: "作成に失敗しました" });
+      if (axios.isAxiosError(error)) {
+        errorToast({ error, title: "何切る問題の作成に失敗しました" });
+      }
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

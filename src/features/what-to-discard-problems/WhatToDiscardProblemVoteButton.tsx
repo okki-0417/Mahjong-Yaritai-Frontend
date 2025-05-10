@@ -1,13 +1,12 @@
 import PopButton from "../../components/PopButton";
 import TileImage from "../../components/TileImage";
 import { apiClient } from "../../ApiConfig";
-import { useSetToast } from "../../hooks/useSetToast";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
 import { useState } from "react";
 import { VotesType } from "./WhatToDiscardProblemVoteList";
 import { isMyVoteEmpty, MyVoteType } from "./WhatToDiscardProblemVotesCount";
-import { Box } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 
 export default function WhatToDiscardProblemVoteButton({
   problemId,
@@ -26,7 +25,7 @@ export default function WhatToDiscardProblemVoteButton({
 }) {
   const auth = useIsLoggedIn();
   const setModal = useSetModal();
-  const setToast = useSetToast();
+  const toast = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,9 +54,11 @@ export default function WhatToDiscardProblemVoteButton({
           response.data.what_to_discard_problem_votes.current_user_vote
         );
 
-        setToast({
-          type: "success",
-          message: "投票しました",
+        toast({
+          title: "投票しました",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
         });
       } else if (myVote.tile_id == tileId) {
         const response = await apiClient.delete(
@@ -68,7 +69,12 @@ export default function WhatToDiscardProblemVoteButton({
         setVotesCount(response.data.what_to_discard_problem_votes.total_count);
         setMyVote({ id: null, tile_id: null });
 
-        setToast({ type: "success", message: "投票を取り消しました" });
+        toast({
+          title: "投票を取り消しました",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       } else {
         await apiClient.delete(
           `/what_to_discard_problems/${problemId}/votes/${myVote.id}`
@@ -89,13 +95,20 @@ export default function WhatToDiscardProblemVoteButton({
           response.data.what_to_discard_problem_votes.current_user_vote
         );
 
-        setToast({
-          type: "success",
-          message: "投票しました",
+        toast({
+          title: "投票しました",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
         });
       }
     } catch (error) {
-      setToast({ type: "error", message: "投票の投稿/削除に失敗しました" });
+      toast({
+        title: "投票の操作に失敗しました",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setIsLoading(false);
     }

@@ -1,7 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { apiClient } from "../../ApiConfig";
 import { Link, useNavigate } from "react-router";
-import { useSetToast } from "../../hooks/useSetToast";
 import {
   Box,
   Container,
@@ -9,6 +8,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { FaAngleRight } from "react-icons/fa";
 import MainButton from "../../components/MainButton";
@@ -22,7 +22,7 @@ type AuthorizationSessionForm = {
 export default function AuthorizationSession() {
   const auth = useIsLoggedIn();
   const navigate = useNavigate();
-  const setToast = useSetToast();
+  const toast = useToast();
 
   useEffect(() => {
     if (auth) navigate("/dashboard");
@@ -44,9 +44,11 @@ export default function AuthorizationSession() {
 
       navigate("/authorization");
     } catch (error) {
-      setToast({
-        type: "error",
-        message: "このメールアドレスは使用できません",
+      toast({
+        title: "このメールアドレスは使用できません",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       });
     }
   };

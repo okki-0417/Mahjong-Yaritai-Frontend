@@ -4,7 +4,6 @@ import { apiClient } from "../../../ApiConfig";
 import { SubmitHandler, useForm } from "react-hook-form";
 import AlreadyLoggedIn from "../../../components/AlreadyLoggedIn";
 import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
-import { useSetToast } from "../../../hooks/useSetToast";
 import {
   Box,
   Button,
@@ -15,6 +14,7 @@ import {
   FormLabel,
   Input,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 
 type UserFormType = {
@@ -26,7 +26,7 @@ type UserFormType = {
 
 export default function UserCreate() {
   const navigate = useNavigate();
-  const setToast = useSetToast();
+  const toast = useToast();
 
   const { auth, setAuth } = useContext(AuthStateContext);
 
@@ -53,7 +53,12 @@ export default function UserCreate() {
       navigate("/what-to-discard-problems");
       // navigate("/dashboard");
     } catch (error) {
-      setToast({ type: "success", message: "ユーザーの作成に失敗しました" });
+      toast({
+        title: "ユーザーの作成に失敗しました",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }

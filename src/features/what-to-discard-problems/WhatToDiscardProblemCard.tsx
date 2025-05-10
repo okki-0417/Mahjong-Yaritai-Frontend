@@ -2,7 +2,6 @@ import { FaAngleDown } from "react-icons/fa";
 import TileImage from "../../components/TileImage";
 import { useRef, useState } from "react";
 import { Link } from "react-router";
-import { WhatToDiscardProblem } from "../../pages/what-to-discard-problems/page";
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
 import WhatToDiscardProblemCommentSection from "./WhatToDiscardProblemCommentSection";
 import WhatToDiscardProblemVotesCount, {
@@ -25,6 +24,7 @@ import CloseAccordionButton from "../../components/CloseAccordionButton";
 import ToggleWrapper from "../../components/ToggleWrapper";
 import WhatToDiscardProblemDeleteButton from "./WhatToDiscardProblemDeleteButton";
 import useMyUserId from "../../hooks/useMyUserId";
+import { WhatToDiscardProblem } from "../../types/models";
 
 export default function WhatToDiscardProblemCard({
   problem,
@@ -82,7 +82,7 @@ export default function WhatToDiscardProblemCard({
 
             <HStack h="8">
               <Text>ドラ:</Text>
-              <TileImage tile={problem.dora_id} hover={false} />
+              <TileImage tile={problem.dora.id} hover={false} />
             </HStack>
           </HStack>
 
@@ -114,15 +114,29 @@ export default function WhatToDiscardProblemCard({
               <Text>ツモ</Text>
 
               <Box w={[8, "auto"]}>
-                <TileImage tile={problem.tsumo_id} hover={false} />
+                <TileImage tile={problem.tsumo.id} hover={false} />
               </Box>
             </Flex>
 
             <Flex justifyContent="center" alignItems="flex-end">
-              {problem.hand_ids.slice(0, -1).map((hand_id, index) => {
+              {[
+                problem.hand1,
+                problem.hand2,
+                problem.hand3,
+                problem.hand4,
+                problem.hand5,
+                problem.hand6,
+                problem.hand7,
+                problem.hand8,
+                problem.hand9,
+                problem.hand10,
+                problem.hand11,
+                problem.hand12,
+                problem.hand13,
+              ].map((hand, index) => {
                 return (
                   <Box key={index}>
-                    <TileImage tile={hand_id} hover={false} />
+                    <TileImage tile={hand.id} hover={false} />
                   </Box>
                 );
               })}
