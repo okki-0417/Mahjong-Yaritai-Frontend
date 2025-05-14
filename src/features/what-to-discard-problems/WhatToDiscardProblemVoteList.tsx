@@ -31,7 +31,7 @@ export default function WhatToDiscardProblemVoteList({
     const fetchVotes = async () => {
       try {
         const response = await apiClient.get(
-          `/what_to_discard_problems/${problemId}/votes`
+          `/what_to_discard_problems/${problemId}/votes`,
         );
 
         setVotes(response.data.what_to_discard_problem_votes);
@@ -51,7 +51,7 @@ export default function WhatToDiscardProblemVoteList({
   useEffect(() => {
     if (votes) {
       setMostVotedCount(
-        Math.max(...votes.results.map((result) => result.count))
+        Math.max(...votes.results.map((result) => result.count)),
       );
     }
   }, [votes]);

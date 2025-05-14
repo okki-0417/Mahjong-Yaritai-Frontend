@@ -1,13 +1,15 @@
+"use client";
+
 import { useState } from "react";
-import { NavLink } from "react-router";
 import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
 import { FaAngleRight } from "react-icons/fa6";
 import { GiThink } from "react-icons/gi";
 import useIsLoggedIn from "../hooks/useIsLoggedIn";
 import { Button, Flex } from "@chakra-ui/react";
+import Link from "next/link";
 
 export default function Navigation() {
-  const [checked, setChecked] = useState<boolean>(false);
+  const [checked, setChecked] = useState(false);
   const auth = useIsLoggedIn();
 
   return (
@@ -16,8 +18,8 @@ export default function Navigation() {
         <nav className="bg-gray-900 h-20 flex items-center">
           <div className="w-4/5  mx-auto px-4 sm:px-6 relative flex md:justify-between justify-center items-center">
             <div className="flex items-center pr-8">
-              <NavLink
-                to="/"
+              <Link
+                href="/"
                 className="font-bold text-2xl flex items-center gap-4"
               >
                 <div className="rounded-full overflow-hidden">
@@ -30,57 +32,26 @@ export default function Navigation() {
                 <span className="lg:text-3xl text-2xl font-bold text-white">
                   麻雀ヤリタイ
                 </span>
-              </NavLink>
+              </Link>
             </div>
 
             <div className="md:flex hidden gap-5 items-center text-lg">
-              {/* <NavLink
-                to="/learning"
-                className="text-white flex gap-1 items-center"
-              >
-                <img src="/beginner-icon.webp" alt="" className="w-6" />
-                <span>ハンディガイド</span>
-              </NavLink> */}
-
-              <NavLink
-                to="/what-to-discard-problems"
+              <Link
+                href="/what-to-discard-problems"
                 className="text-white flex gap-1 items-center"
               >
                 <GiThink size={25} color="white" />
                 <div className="tracking-widest">何切る問題</div>
-              </NavLink>
+              </Link>
 
-              {/* <NavLink
-                to="/articles"
-                className="text-white flex gap-1 items-center"
-              >
-                <RiArticleFill size={20} color="white" />
-                <div>ブログ</div>
-              </NavLink> */}
-
-              {/* <NavLink
-                to="/records"
-                className="text-white flex gap-2 items-center"
-              >
-                <BsGraphUpArrow size={20} color="white" />
-                <div>戦績の記録</div>
-              </NavLink> */}
-
-              {/* <NavLink
-                to="/settings"
-                className="text-white flex gap-2 items-center"
-              >
-                <FaGear size={20} color="white" />
-                <div>設定</div>
-              </NavLink> */}
               {!auth && (
                 <Flex gap={1}>
-                  <NavLink to="/auth/login">
+                  <Link href="/auth/login">
                     <Button colorScheme="pink">ログイン</Button>
-                  </NavLink>
-                  <NavLink to="/authorization-session">
+                  </Link>
+                  <Link href="/authorization-session">
                     <Button colorScheme="blue">新規登録</Button>
-                  </NavLink>
+                  </Link>
                 </Flex>
               )}
             </div>
@@ -127,18 +98,18 @@ export default function Navigation() {
               </div>
 
               <ul className="h-0 overflow-hidden peer-checked:h-auto ml-4">
-                <NavLink to="profile">
+                <Link href="profile">
                   <li className="flex gap-1 items-center">
                     <FaAngleRight size={12} />
                     <span>プロフィール</span>
                   </li>
-                </NavLink>
-                <NavLink to="profile/edit">
+                </Link>
+                <Link href="profile/edit">
                   <li className="flex gap-1 items-center">
                     <FaAngleRight size={12} />
                     <span>編集</span>
                   </li>
-                </NavLink>
+                </Link>
               </ul>
             </li>
 
@@ -163,18 +134,18 @@ export default function Navigation() {
               </div>
 
               <ul className="h-0 overflow-hidden peer-checked:h-auto ml-4">
-                <NavLink to="what-to-discard-problems">
+                <Link href="what-to-discard-problems">
                   <li className="flex gap-1 items-center">
                     <FaAngleRight size={12} />
                     <span>一覧</span>
                   </li>
-                </NavLink>
-                <NavLink to="what-to-discard-problems/new">
+                </Link>
+                <Link href="what-to-discard-problems/new">
                   <li className="flex gap-1 items-center">
                     <FaAngleRight size={12} />
                     <span>新規作成</span>
                   </li>
-                </NavLink>
+                </Link>
               </ul>
             </li>
           </ul>

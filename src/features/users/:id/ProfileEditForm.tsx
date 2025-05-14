@@ -20,7 +20,7 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { apiClient } from "../../../ApiConfig";
-import { UserType } from "../../../pages/users/:id/page";
+import { UserType } from "../../../app/users/:id/page";
 
 type UserEditType = {
   name: string;

@@ -17,7 +17,7 @@ import {
   VisuallyHiddenInput,
   Wrap,
 } from "@chakra-ui/react";
-import { WhatToDiscardProblems } from "../../pages/what-to-discard-problems/page";
+import { WhatToDiscardProblems } from "../../app/what-to-discard-problems/page";
 import useErrorToast from "../../hooks/useErrorToast";
 import axios from "axios";
 
@@ -269,7 +269,6 @@ export default function WhatToDiscardProblemForm({
         <TentativeInput>
           {watch("turn") ? `${watch("turn")}巡目` : ""}
         </TentativeInput>
-
         <Wrap gap={2} mt={2}>
           {Array(MAX_TURN)
             .fill(null)

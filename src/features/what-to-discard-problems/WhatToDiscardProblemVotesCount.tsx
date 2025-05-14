@@ -25,7 +25,7 @@ export default function WhatToDiscardProblemVotesCount({
   useEffect(() => {
     const fetchMyVote = async () => {
       const response = await apiClient.get(
-        `/what_to_discard_problems/${problemId}/votes/my_vote`
+        `/what_to_discard_problems/${problemId}/votes/my_vote`,
       );
 
       setMyVote(response.data.my_vote);

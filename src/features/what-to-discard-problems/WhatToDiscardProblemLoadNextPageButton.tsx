@@ -3,7 +3,7 @@ import { useState } from "react";
 import {
   FetchWhatToDiscardProblemsType,
   WhatToDiscardProblems,
-} from "../../pages/what-to-discard-problems/page";
+} from "../../app/what-to-discard-problems/page";
 import { apiClient } from "../../ApiConfig";
 import axios from "axios";
 import useErrorToast from "../../hooks/useErrorToast";

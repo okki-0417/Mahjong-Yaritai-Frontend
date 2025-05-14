@@ -1,27 +1,17 @@
-import { Outlet } from "react-router";
 import Footer from "../Footer";
 import BottomNavigation from "../BottomNavigation";
-import { useContext } from "react";
-import { ModalContext } from "../../contexts/ModalContextProvider";
+import { ReactNode } from "react";
 import ModalProvider from "../ModalProvider";
-import { ToastContext } from "../../contexts/ToastContextProvider";
-import Toast from "../Toast";
 import Navigation from "../Navigation";
 
-export default function DefaultLayout() {
-  const { modalName } = useContext(ModalContext);
-  const { toast } = useContext(ToastContext);
-
+export default function DefaultLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
 
-      <ModalProvider modalName={modalName} />
-      <Toast toast={toast} />
+      <ModalProvider />
 
-      <main className="flex-grow">
-        <Outlet />
-      </main>
+      <main className="flex-grow">{children}</main>
 
       <Footer />
       <BottomNavigation />

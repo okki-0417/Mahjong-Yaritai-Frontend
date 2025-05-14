@@ -1,5 +1,5 @@
 import { Circle, Image, Text, VStack } from "@chakra-ui/react";
-import { UserType } from "../../../pages/users/:id/page";
+import { UserType } from "../../../app/users/:id/page";
 
 export default function Profile({ user }: { user: UserType | null }) {
   return (

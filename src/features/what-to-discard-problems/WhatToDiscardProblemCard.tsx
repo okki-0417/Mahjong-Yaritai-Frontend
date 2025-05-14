@@ -1,7 +1,9 @@
+"use client";
+
 import { FaAngleDown } from "react-icons/fa";
 import TileImage from "../../components/TileImage";
 import { useRef, useState } from "react";
-import { Link } from "react-router";
+import Link from "next/link";
 import WhatToDiscardProblemLikeButton from "./WhatToDiscardProblemLikeButton";
 import WhatToDiscardProblemCommentSection from "./WhatToDiscardProblemCommentSection";
 import WhatToDiscardProblemVotesCount, {
@@ -24,7 +26,7 @@ import CloseAccordionButton from "../../components/CloseAccordionButton";
 import ToggleWrapper from "../../components/ToggleWrapper";
 import WhatToDiscardProblemDeleteButton from "./WhatToDiscardProblemDeleteButton";
 import useMyUserId from "../../hooks/useMyUserId";
-import { WhatToDiscardProblem } from "../../types/models";
+import { WhatToDiscardProblem } from "../../types/Models";
 
 export default function WhatToDiscardProblemCard({
   problem,
@@ -48,7 +50,7 @@ export default function WhatToDiscardProblemCard({
 
       <Box boxShadow="base" borderRadius="md" className="bg-green-700">
         <Flex justifyContent="space-between" px="3" pt="2">
-          <Link to={`/users/${problem.user.id}`}>
+          <Link href={`/users/${problem.user.id}`}>
             <HStack>
               <Image
                 borderRadius="full"

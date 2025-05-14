@@ -1,11 +1,14 @@
 import { useCallback, useContext, useState } from "react";
-import { useSetToast } from "./useSetToast";
 import { AuthStateContext } from "../contexts/AuthStateContextProvider";
 import { apiClient } from "../ApiConfig";
+import { useToast } from "@chakra-ui/react";
+import useErrorToast from "./useErrorToast";
+import axios from "axios";
 
 export default function useLogout(): () => Promise<void> {
   const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);
-  const setToast = useSetToast();
+  const toast = useToast();
+  const errorToast = useErrorToast();
   const [loading, setLoading] = useState(false);
 
   const logout = useCallback(async () => {
@@ -20,9 +23,11 @@ export default function useLogout(): () => Promise<void> {
       await apiClient.delete("/session");
       setAuth(false);
       setMyUserId(null);
-      setToast({ type: "success", message: "ログアウトしました" });
+      toast({ title: "ログアウトしました", status: "success" });
     } catch (error) {
-      setToast({ type: "error", message: "ログアウトに失敗しました" });
+      if (axios.isAxiosError(error)) {
+        errorToast({ error, title: "ログアウトに失敗しました" });
+      }
     } finally {
       setLoading(false);
     }

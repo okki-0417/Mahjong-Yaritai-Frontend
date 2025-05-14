@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const BASEURL = import.meta.env.VITE_API_URL;
+export const BASEURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const apiClient = axios.create({
   baseURL: BASEURL,
@@ -20,5 +20,5 @@ apiClient.interceptors.response.use(
       console.error(error);
     }
     return Promise.reject(error);
-  }
+  },
 );

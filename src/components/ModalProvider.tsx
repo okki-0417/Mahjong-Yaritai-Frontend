@@ -1,12 +1,14 @@
+"use client";
+
+import { useContext } from "react";
 import NotLoggedInModal from "./NotLoggedInModal";
+import { ModalContext } from "../contexts/ModalContextProvider";
 
 export type ModalName = "NotLoggedIn";
 
-export default function ModalProvider({
-  modalName,
-}: {
-  modalName: ModalName | null;
-}) {
+export default function ModalProvider() {
+  const { modalName } = useContext(ModalContext);
+
   if (!modalName) return;
 
   switch (modalName) {

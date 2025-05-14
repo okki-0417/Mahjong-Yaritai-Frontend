@@ -1,3 +1,5 @@
+"use client";
+
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import PopButton from "../../components/PopButton";
 import ToggleWrapper from "../../components/ToggleWrapper";
@@ -5,17 +7,17 @@ import WhatToDiscardProblemForm from "./WhatToDiscardProblemForm";
 import { AuthStateContext } from "../../contexts/AuthStateContextProvider";
 import { ModalContext } from "../../contexts/ModalContextProvider";
 import { Box } from "@chakra-ui/react";
-import { WhatToDiscardProblems } from "../../pages/what-to-discard-problems/page";
+import { WhatToDiscardProblems } from "../../app/what-to-discard-problems/page";
+import { WhatToDiscardProblemsContext } from "./contexts/WhatToDiscardProblemsContextProvider";
 
 export default function WhatToDiscardProblemToggleForm({
   whatToDiscardProblems,
-  setWhatToDiscardProblems,
-  setNextPage,
+  // setNextPage
 }: {
   whatToDiscardProblems: WhatToDiscardProblems;
-  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblems>>;
-  setNextPage: Dispatch<SetStateAction<number | null>>;
+  // setNextPage: Dispatch<SetStateAction<number | null>>;
 }) {
+  const { setWhatToDiscardProblems } = useContext(WhatToDiscardProblemsContext);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState<boolean>(false);
 
   const { auth } = useContext(AuthStateContext);

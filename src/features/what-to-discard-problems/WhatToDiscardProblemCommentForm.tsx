@@ -51,7 +51,7 @@ export default function WhatToDiscardProblemCommentForm({
   const toast = useToast();
 
   const onSubmit: SubmitHandler<WhatToDiscardProblemCommentSchemaType> = async (
-    formData
+    formData,
   ) => {
     if (!auth) return setModal("NotLoggedIn");
     if (loading) return;
@@ -60,7 +60,7 @@ export default function WhatToDiscardProblemCommentForm({
     try {
       const response = await apiClient.post(
         `/what_to_discard_problems/${problemId}/comments`,
-        { what_to_discard_problem_comment: formData }
+        { what_to_discard_problem_comment: formData },
       );
 
       const comments = response.data.what_to_discard_problem_comments;
