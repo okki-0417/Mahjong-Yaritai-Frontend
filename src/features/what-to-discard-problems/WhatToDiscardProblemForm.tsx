@@ -1,8 +1,16 @@
+"use client";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import PopButton from "../../components/PopButton";
 import TileImage from "../../components/TileImage";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { apiClient } from "../../ApiConfig";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 import {
   Box,
   Button,
@@ -17,9 +25,9 @@ import {
   VisuallyHiddenInput,
   Wrap,
 } from "@chakra-ui/react";
-import { WhatToDiscardProblems } from "../../app/what-to-discard-problems/page";
 import useErrorToast from "../../hooks/useErrorToast";
 import axios from "axios";
+import { WhatToDiscardProblemsContext } from "./contexts/WhatToDiscardProblemsContextProvider";
 
 type WhatToDiscardProblemCreateFormType = {
   round: string;
@@ -77,15 +85,11 @@ const MAX_DUPLICATE_TILES_NUM = 4;
 
 export default function WhatToDiscardProblemForm({
   setIsCreateFormOpen,
-  whatToDiscardProblems,
-  setWhatToDiscardProblems,
-  setNextPage,
 }: {
   setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
-  whatToDiscardProblems: WhatToDiscardProblems;
-  setWhatToDiscardProblems: Dispatch<SetStateAction<WhatToDiscardProblems>>;
-  setNextPage: Dispatch<SetStateAction<number | null>>;
 }) {
+  const { whatToDiscardProblems, setWhatToDiscardProblems, setNextPage } =
+    useContext(WhatToDiscardProblemsContext);
   const [focussedTileInput, setFocussedTileInput] =
     useState<TileInputNameType>("dora_id");
 

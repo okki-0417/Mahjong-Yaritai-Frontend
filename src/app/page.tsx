@@ -1,3 +1,5 @@
+"use client";
+
 import { BsGraphUpArrow } from "react-icons/bs";
 import { FaAngleRight } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
@@ -5,9 +7,15 @@ import { RiArticleFill } from "react-icons/ri";
 import Link from "next/link";
 import useTileImagePathProvider from "../hooks/useTileImagePathProvider";
 import TileImage from "../components/TileImage";
+import { Button } from "@chakra-ui/react";
+import { apiClient } from "../lib/apiClients/ApiClients";
 
 export default function Home() {
   const { tileImagePathByTileId } = useTileImagePathProvider();
+
+  const handleClick = async () => {
+    const response = apiClient.post("/graphql");
+  };
 
   return (
     <div>
@@ -50,6 +58,8 @@ export default function Home() {
           })}
         </div>
       </div>
+
+      <Button onClick={handleClick} />
 
       <div className="max-w-screen-lg mx-auto px-6">
         <div className="lg:mt-24 mt-16 text-white relative">

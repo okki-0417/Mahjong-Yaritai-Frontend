@@ -1,3 +1,7 @@
+export type Authorization = {
+  authorized: boolean;
+};
+
 export type WhatToDiscardProblem = {
   id: number;
   user: User;

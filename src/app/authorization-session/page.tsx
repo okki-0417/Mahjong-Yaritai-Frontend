@@ -1,83 +1,24 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "../../ApiConfig";
-import { Link, useNavigate } from "react-router";
-import {
-  Box,
-  Container,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Container } from "@chakra-ui/react";
 import { FaAngleRight } from "react-icons/fa";
-import MainButton from "../../components/MainButton";
-import { useEffect } from "react";
-import useIsLoggedIn from "../../hooks/useIsLoggedIn";
+import getSession from "../../lib/getSession";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import AuthorizationSessionForm from "../../features/authorization-session/AuthorizationSessionForm";
 
-type AuthorizationSessionForm = {
-  email: string;
-};
-
-export default function AuthorizationSession() {
-  const auth = useIsLoggedIn();
-  const navigate = useNavigate();
-  const toast = useToast();
-
-  useEffect(() => {
-    if (auth) navigate("/dashboard");
-  }, [auth]);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<AuthorizationSessionForm>();
-
-  const onSubmit: SubmitHandler<AuthorizationSessionForm> = async (
-    formData: AuthorizationSessionForm,
-  ) => {
-    try {
-      await apiClient.post("/authorization_session", {
-        authorization_session: formData,
-      });
-
-      navigate("/authorization");
-    } catch (error) {
-      toast({
-        title: "このメールアドレスは使用できません",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
+export default async function AuthorizationSession() {
+  // const session = await getSession();
+  // if (session?.is_logged_in) redirect("/dashboard");
 
   return (
     <Container mt={40} maxW="2xl">
       <h1 className="lg:text-4xl text-2xl font-semibold mb-3">ユーザー登録</h1>
       <hr />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
-        <FormControl isInvalid={!!errors.email} isRequired>
-          <FormLabel htmlFor="email">Email</FormLabel>
-
-          <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-
-          <Input
-            type="email"
-            placeholder="test@mahjong-yaritai.com"
-            autoComplete="email"
-            {...register("email")}
-          />
-        </FormControl>
-
-        <MainButton className="mt-4">確認メールを送信する</MainButton>
-      </form>
+      <AuthorizationSessionForm />
 
       <Box mt={4}>
         <Link
-          to="/auth/login"
+          href="/auth/login"
           className="text-blue-300 hover:text-blue-200 hover:underline flex items-center w-fit"
         >
           ログインはこちら

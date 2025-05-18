@@ -1,7 +1,7 @@
 import { Button, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { IoMdTrash } from "react-icons/io";
-import { apiClient } from "../../ApiConfig";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 import { useState } from "react";
 import useErrorToast from "../../hooks/useErrorToast";
 

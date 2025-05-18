@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 import NotLoggedInModal from "./NotLoggedInModal";
-import { ModalContext } from "../contexts/ModalContextProvider";
+import { ModalContext } from "../app/contexts/ModalContextProvider";
 
 export type ModalName = "NotLoggedIn";
 

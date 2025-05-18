@@ -26,7 +26,7 @@ import CloseAccordionButton from "../../components/CloseAccordionButton";
 import ToggleWrapper from "../../components/ToggleWrapper";
 import WhatToDiscardProblemDeleteButton from "./WhatToDiscardProblemDeleteButton";
 import useMyUserId from "../../hooks/useMyUserId";
-import { WhatToDiscardProblem } from "../../types/Models";
+import { WhatToDiscardProblem } from "../../types/ApiData";
 
 export default function WhatToDiscardProblemCard({
   problem,

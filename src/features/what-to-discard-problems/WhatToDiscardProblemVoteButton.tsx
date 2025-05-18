@@ -1,6 +1,6 @@
 import PopButton from "../../components/PopButton";
 import TileImage from "../../components/TileImage";
-import { apiClient } from "../../ApiConfig";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
 import { useState } from "react";
@@ -45,13 +45,13 @@ export default function WhatToDiscardProblemVoteButton({
             what_to_discard_problem_vote: {
               tile_id: tileId,
             },
-          },
+          }
         );
 
         setVotes(response.data.what_to_discard_problem_votes);
         setVotesCount(response.data.what_to_discard_problem_votes.total_count);
         setMyVote(
-          response.data.what_to_discard_problem_votes.current_user_vote,
+          response.data.what_to_discard_problem_votes.current_user_vote
         );
 
         toast({
@@ -62,7 +62,7 @@ export default function WhatToDiscardProblemVoteButton({
         });
       } else if (myVote.tile_id == tileId) {
         const response = await apiClient.delete(
-          `/what_to_discard_problems/${problemId}/votes/${myVote.id}`,
+          `/what_to_discard_problems/${problemId}/votes/${myVote.id}`
         );
 
         setVotes(response.data.what_to_discard_problem_votes);
@@ -77,7 +77,7 @@ export default function WhatToDiscardProblemVoteButton({
         });
       } else {
         await apiClient.delete(
-          `/what_to_discard_problems/${problemId}/votes/${myVote.id}`,
+          `/what_to_discard_problems/${problemId}/votes/${myVote.id}`
         );
 
         const response = await apiClient.post(
@@ -86,13 +86,13 @@ export default function WhatToDiscardProblemVoteButton({
             what_to_discard_problem_vote: {
               tile_id: tileId,
             },
-          },
+          }
         );
 
         setVotes(response.data.what_to_discard_problem_votes);
         setVotesCount(response.data.what_to_discard_problem_votes.total_count);
         setMyVote(
-          response.data.what_to_discard_problem_votes.current_user_vote,
+          response.data.what_to_discard_problem_votes.current_user_vote
         );
 
         toast({

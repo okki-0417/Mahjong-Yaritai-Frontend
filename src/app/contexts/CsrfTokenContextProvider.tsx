@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState, createContext } from "react";
-import { apiClient } from "../ApiConfig";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 
 export const CsrfTokenContext = createContext<string | null>(null);
 

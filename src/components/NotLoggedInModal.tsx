@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import Link from "next/link";
 import { useSetModal } from "../hooks/useSetModal";
 
 export default function NotLoggedInModal() {
@@ -20,7 +20,7 @@ export default function NotLoggedInModal() {
 
         <div className="mt-8">
           <div className="text-center">
-            <Link to="/auth/login" onClick={() => setModalName(null)}>
+            <Link href="/auth/login" onClick={() => setModalName(null)}>
               <button className="btn btn-sm btn-main text-xl">
                 ログインする
               </button>
@@ -28,7 +28,7 @@ export default function NotLoggedInModal() {
           </div>
           <div className="mt-8 text-center">
             <Link
-              to="/authorization-session"
+              href="/authorization-session"
               onClick={() => setModalName(null)}
             >
               <button className="btn btn-main text-xl">

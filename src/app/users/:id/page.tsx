@@ -1,6 +1,6 @@
 import { Button, Container, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { apiClient } from "../../../ApiConfig";
+import { apiClient } from "../../../lib/apiClients/ApiClients";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import ProfileEditForm from "../../../features/users/:id/ProfileEditForm";

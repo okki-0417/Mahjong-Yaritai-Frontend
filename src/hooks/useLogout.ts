@@ -1,9 +1,9 @@
-import { useCallback, useContext, useState } from "react";
-import { AuthStateContext } from "../contexts/AuthStateContextProvider";
-import { apiClient } from "../ApiConfig";
+import { useContext, useState } from "react";
+import { apiClient } from "../lib/apiClients/ApiClients";
 import { useToast } from "@chakra-ui/react";
 import useErrorToast from "./useErrorToast";
 import axios from "axios";
+import { AuthStateContext } from "../app/contexts/AuthStateContext/AuthStateContextInner";
 
 export default function useLogout(): () => Promise<void> {
   const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);
@@ -11,7 +11,7 @@ export default function useLogout(): () => Promise<void> {
   const errorToast = useErrorToast();
   const [loading, setLoading] = useState(false);
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
     if (!auth) return;
     if (loading) return;
     setLoading(true);
@@ -31,7 +31,7 @@ export default function useLogout(): () => Promise<void> {
     } finally {
       setLoading(false);
     }
-  }, [auth]);
+  };
 
   return logout;
 }

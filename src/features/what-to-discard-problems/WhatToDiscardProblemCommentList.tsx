@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiClient } from "../../ApiConfig";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 import WhatToDiscardProblemParentCommentCard from "./WhatToDiscardProblemParentCommentCard";
 import axios from "axios";
 import { Box, Center, Spinner } from "@chakra-ui/react";
@@ -45,7 +45,7 @@ export default function WhatToDiscardProblemCommentList({
       setIsLoading(true);
       try {
         const response = await apiClient.get(
-          `/what_to_discard_problems/${problemId}/comments`,
+          `/what_to_discard_problems/${problemId}/comments`
         );
 
         const comments = response.data.what_to_discard_problem_comments;

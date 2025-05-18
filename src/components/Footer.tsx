@@ -29,6 +29,7 @@ export default function Footer() {
               <Center h={10}>
                 <Divider orientation="vertical" borderColor="white" />
               </Center>
+
               <LogoutButton />
             </HStack>
           </UnorderedList>

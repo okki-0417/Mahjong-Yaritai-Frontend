@@ -1,26 +1,24 @@
+"use client";
+
 import { Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   FetchWhatToDiscardProblemsType,
   WhatToDiscardProblems,
 } from "../../app/what-to-discard-problems/page";
-import { apiClient } from "../../ApiConfig";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 import axios from "axios";
 import useErrorToast from "../../hooks/useErrorToast";
+import { WhatToDiscardProblemsContext } from "./contexts/WhatToDiscardProblemsContextProvider";
 
-export default function WhatToDiscardProblemLoadNextPageButton({
-  whatToDiscardProblems,
-  setWhatToDiscardProblems,
-  nextPage,
-  setNextPage,
-}: {
-  whatToDiscardProblems: WhatToDiscardProblems;
-  setWhatToDiscardProblems: React.Dispatch<
-    React.SetStateAction<WhatToDiscardProblems>
-  >;
-  nextPage: number | null;
-  setNextPage: React.Dispatch<React.SetStateAction<number | null>>;
-}) {
+export default function WhatToDiscardProblemLoadNextPageButton() {
+  const {
+    whatToDiscardProblems,
+    setWhatToDiscardProblems,
+    nextPage,
+    setNextPage,
+  } = useContext(WhatToDiscardProblemsContext);
+
   const [nextPageLoading, setNextPageLoading] = useState(false);
   const errorToast = useErrorToast();
 

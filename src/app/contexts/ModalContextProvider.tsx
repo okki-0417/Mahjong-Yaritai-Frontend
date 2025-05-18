@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, ReactNode, useState } from "react";
-import { ModalName } from "../components/ModalProvider";
+import { ModalName } from "../../components/ModalProvider";
 
 type ModalContext = {
   modalName: ModalName | null;

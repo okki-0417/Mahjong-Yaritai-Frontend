@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
-import { apiClient } from "../../ApiConfig";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
 import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
-import axios from "axios";
-import { WhatToDiscardProblem } from "../../types/Models";
+import { WhatToDiscardProblem } from "../../types/ApiData";
 import { Pagination } from "../../types/Meta";
-import useErrorToast from "../../hooks/useErrorToast";
 import WhatToDiscardProblemLoadNextPageButton from "../../features/what-to-discard-problems/WhatToDiscardProblemLoadNextPageButton";
 import WhatToDiscardProblemsContextProvider from "../../features/what-to-discard-problems/contexts/WhatToDiscardProblemsContextProvider";
 
@@ -20,14 +17,9 @@ export type FetchWhatToDiscardProblemsType = {
 };
 
 export default async function WhatToDiscardProblems() {
-  const errorToast = useErrorToast();
-
   try {
     const response = await apiClient.get("/what_to_discard_problems");
     const data: FetchWhatToDiscardProblemsType = response.data;
-
-    const whatToDiscardProblems = data.what_to_discard_problems;
-    const nextPage = data.meta.pagination.next_page;
 
     return (
       <Box className="max-w-4xl lg:mx-auto mx-4 mt-36">
@@ -43,35 +35,24 @@ export default async function WhatToDiscardProblems() {
           </Text>
         </VStack>
 
-        <WhatToDiscardProblemsContextProvider
-          initialWhatToDiscardProblems={whatToDiscardProblems}
-        >
-          <WhatToDiscardProblemToggleForm
-            whatToDiscardProblems={whatToDiscardProblems}
-          />
+        <WhatToDiscardProblemsContextProvider initialData={data}>
+          <WhatToDiscardProblemToggleForm />
         </WhatToDiscardProblemsContextProvider>
 
         <VStack spacing={15}>
-          {whatToDiscardProblems?.map((problem, index) => (
+          {data.what_to_discard_problems.map((problem, index) => (
             <WhatToDiscardProblemCard key={index} problem={problem} />
           ))}
         </VStack>
 
-        {nextPage && whatToDiscardProblems && (
+        <WhatToDiscardProblemsContextProvider initialData={data}>
           <Flex justify="center" mt={5}>
-            <WhatToDiscardProblemLoadNextPageButton
-              whatToDiscardProblems={whatToDiscardProblems}
-              setWhatToDiscardProblems={setWhatToDiscardProblems}
-              nextPage={nextPage}
-              setNextPage={setNextPage}
-            />
+            <WhatToDiscardProblemLoadNextPageButton />
           </Flex>
-        )}
+        </WhatToDiscardProblemsContextProvider>
       </Box>
     );
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      errorToast({ error, title: "何切る問題の取得に失敗しました" });
-    }
+    return <div className="mt-40">sorry</div>;
   }
 }

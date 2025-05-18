@@ -1,6 +1,6 @@
 import DefaultLayout from "../components/layout/DefaultLayout";
-import AuthStateContextProvider from "../contexts/AuthStateContextProvider";
-import ModalContextProvider from "../contexts/ModalContextProvider";
+import AuthStateContextProvider from "./contexts/AuthStateContext/AuthStateContextProvider";
+import ModalContextProvider from "./contexts/ModalContextProvider";
 import "../stylesheets/globals.css";
 import CustomChakraProvider from "../components/layout/CustomChakraProvider";
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 
@@ -20,7 +22,8 @@ export default function useErrorToast() {
   }) => {
     toast({
       title,
-      description: `${error.status}: ${error.message}`,
+      status: "error",
+      description: `${error.message}`,
       duration,
       isClosable,
     });

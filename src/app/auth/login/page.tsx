@@ -1,119 +1,30 @@
-import { useContext, useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
-import { apiClient } from "../../../ApiConfig";
-import { AuthStateContext } from "../../../contexts/AuthStateContextProvider";
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  useToast,
-} from "@chakra-ui/react";
+import { redirect } from "next/navigation";
+import { Box, Container } from "@chakra-ui/react";
 import { FaAngleRight } from "react-icons/fa";
+import Link from "next/link";
+import getSession from "../../../lib/getSession";
+import LoginForm from "../../../features/auth/login/LoginForm";
 
-export type Session = {
-  id: number;
-  email: string;
-};
-
-type LoginForm = {
-  email: string;
-  password: string;
-};
-
-export default function Login() {
-  const navigate = useNavigate();
-  const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);
-  const [passVisible, setPassVisible] = useState(false);
-
-  const toast = useToast();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>();
-
-  const onSubmit: SubmitHandler<LoginForm> = async (formData) => {
-    try {
-      const response = await apiClient.post("/session", { session: formData });
-
-      setAuth(true);
-      setMyUserId(response.data.user.id);
-      navigate("/what-to-discard-problems");
-    } catch (error) {
-      toast({
-        title: "ログインに失敗しました",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
+export default async function Login() {
+  const session = await getSession();
+  if (session?.is_logged_in) redirect("/dashboard");
 
   return (
-    <>
-      {auth === false && (
-        <Container maxH="xl" mt={40}>
-          <h1 className="lg:text-4xl text-2xl font-semibold mb-3">ログイン</h1>
-          <hr />
+    <Container maxH="xl" mt={40}>
+      <h1 className="lg:text-4xl text-2xl font-semibold mb-3">ログイン</h1>
+      <hr />
 
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
-            <FormControl isInvalid={!!errors.email} isRequired>
-              <FormLabel htmlFor="name">Email</FormLabel>
+      <LoginForm />
 
-              <Input type="email" autoComplete="email" {...register("email")} />
-
-              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl mt={8} isInvalid={!!errors.password} isRequired>
-              <FormLabel htmlFor="name">パスワード</FormLabel>
-
-              <Input
-                type={passVisible ? "text" : "password"}
-                autoComplete="password"
-                {...register("password")}
-              />
-
-              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-
-              <Flex justifyContent="end" mt={2}>
-                <Button
-                  type="button"
-                  colorScheme="whiteAlpha"
-                  onClick={() => setPassVisible(!passVisible)}
-                >
-                  パスワードを{passVisible && "非"}表示
-                </Button>
-              </Flex>
-
-              <Box mt={2}>
-                <input
-                  type="submit"
-                  value="ログインする"
-                  className="btn btn-main"
-                />
-              </Box>
-            </FormControl>
-          </form>
-
-          <Box mt={6}>
-            <Link
-              to="/users/new"
-              className="text-blue-300 hover:text-blue-200 hover:underline flex items-center"
-            >
-              新規会員登録はこちら
-              <FaAngleRight />
-            </Link>
-          </Box>
-        </Container>
-      )}
-    </>
+      <Box mt={6}>
+        <Link
+          href="authorization-session"
+          className="text-blue-300 hover:text-blue-200 hover:underline flex items-center"
+        >
+          新規会員登録はこちら
+          <FaAngleRight />
+        </Link>
+      </Box>
+    </Container>
   );
 }

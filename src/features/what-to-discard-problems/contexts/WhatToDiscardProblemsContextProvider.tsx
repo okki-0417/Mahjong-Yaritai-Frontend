@@ -1,34 +1,49 @@
 "use client";
 
 import { createContext, ReactNode, useState } from "react";
-import { WhatToDiscardProblems } from "../../../app/what-to-discard-problems/page";
+import {
+  FetchWhatToDiscardProblemsType,
+  WhatToDiscardProblems,
+} from "../../../app/what-to-discard-problems/page";
 
 type WhatToDiscardProblemsContext = {
   whatToDiscardProblems: WhatToDiscardProblems;
   setWhatToDiscardProblems: React.Dispatch<
     React.SetStateAction<WhatToDiscardProblems>
   >;
+  nextPage: number | null;
+  setNextPage: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const WhatToDiscardProblemsContext =
   createContext<WhatToDiscardProblemsContext>({
     whatToDiscardProblems: [],
     setWhatToDiscardProblems: () => {},
+    nextPage: null,
+    setNextPage: () => {},
   });
 
 export default function WhatToDiscardProblemsContextProvider({
-  initialWhatToDiscardProblems,
+  initialData,
   children,
 }: {
-  initialWhatToDiscardProblems: WhatToDiscardProblems;
+  initialData: FetchWhatToDiscardProblemsType;
   children: ReactNode;
 }) {
   const [whatToDiscardProblems, setWhatToDiscardProblems] =
-    useState<WhatToDiscardProblems>(initialWhatToDiscardProblems);
+    useState<WhatToDiscardProblems>(initialData.what_to_discard_problems);
+  const [nextPage, setNextPage] = useState<number | null>(
+    initialData.meta.pagination.next_page
+  );
 
   return (
     <WhatToDiscardProblemsContext.Provider
-      value={{ whatToDiscardProblems, setWhatToDiscardProblems }}
+      value={{
+        whatToDiscardProblems,
+        setWhatToDiscardProblems,
+        nextPage,
+        setNextPage,
+      }}
     >
       {children}
     </WhatToDiscardProblemsContext.Provider>

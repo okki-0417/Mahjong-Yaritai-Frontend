@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiClient } from "../../ApiConfig";
+import { apiClient } from "../../lib/apiClients/ApiClients";
 import LikeButton from "../../components/LikeButton";
 import useIsLoggedIn from "../../hooks/useIsLoggedIn";
 import { useSetModal } from "../../hooks/useSetModal";
@@ -22,7 +22,7 @@ export default function WhatToDiscardProblemLikeButton({
     const fetchWhatToDiscardProblemLikes = async () => {
       try {
         const response = await apiClient.get(
-          `/what_to_discard_problems/${problemId}/likes`,
+          `/what_to_discard_problems/${problemId}/likes`
         );
 
         setLikes(response.data.what_to_discard_problem_likes);
@@ -52,7 +52,7 @@ export default function WhatToDiscardProblemLikeButton({
     try {
       if (!likes?.current_user_like_id) {
         const response = await apiClient.post(
-          `/what_to_discard_problems/${problemId}/likes`,
+          `/what_to_discard_problems/${problemId}/likes`
         );
 
         const likes_res = response.data.what_to_discard_problem_likes;
@@ -60,7 +60,7 @@ export default function WhatToDiscardProblemLikeButton({
         setLikes(likes_res);
       } else if (likes.current_user_like_id) {
         const response = await apiClient.delete(
-          `/what_to_discard_problems/${problemId}/likes/${likes.current_user_like_id}`,
+          `/what_to_discard_problems/${problemId}/likes/${likes.current_user_like_id}`
         );
 
         const likes_res = response.data.what_to_discard_problem_likes;

@@ -1,18 +1,11 @@
-import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router";
-import { AuthStateContext } from "../../contexts/AuthStateContextProvider";
+import getSession from "../../lib/getSession";
+import { redirect } from "next/navigation";
 
-export default function Dashboard() {
-  const { auth } = useContext(AuthStateContext);
-  const navigate = useNavigate();
+export default async function Dashboard() {
+  const session = await getSession();
+  if (!session?.is_logged_in) redirect("/auth/login");
 
-  useEffect(() => {
-    navigate("/what-to-discard-problems");
-
-    // if (auth === false) {
-    //   navigate("/auth/login");
-    // }
-  }, [auth]);
+  redirect("/what-to-discard-problems");
 
   return <div className="bg-red-200"></div>;
 }

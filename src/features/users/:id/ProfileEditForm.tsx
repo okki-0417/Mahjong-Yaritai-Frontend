@@ -19,7 +19,7 @@ import {
 } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { apiClient } from "../../../ApiConfig";
+import { apiClient } from "../../../lib/apiClients/ApiClients";
 import { UserType } from "../../../app/users/:id/page";
 
 type UserEditType = {
