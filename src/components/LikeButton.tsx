@@ -1,15 +1,19 @@
+"use client";
+
+import PopButton from "@/src/components/PopButton";
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
-import PopButton from "./PopButton";
 
 type LikeButtonType = {
   isLiked: boolean;
   likeCount: number;
+  isLoading: boolean;
   handleClick: () => void;
 };
 
 export default function LikeButton({
   isLiked,
   likeCount,
+  isLoading,
   handleClick,
 }: LikeButtonType) {
   return (
@@ -26,6 +30,7 @@ export default function LikeButton({
       }
       onClick={handleClick}
       defaultClassName="mt-1 w-10"
+      disabled={isLoading}
     />
   );
 }

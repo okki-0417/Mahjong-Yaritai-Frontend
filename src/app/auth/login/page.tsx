@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 import { Box, Container } from "@chakra-ui/react";
 import { FaAngleRight } from "react-icons/fa";
 import Link from "next/link";
-import getSession from "../../../lib/getSession";
-import LoginForm from "../../../features/auth/login/LoginForm";
+import getSession from "@/src/lib/getSession";
+import LoginForm from "@/src/features/auth/login/LoginForm";
 
 export default async function Login() {
   const session = await getSession();

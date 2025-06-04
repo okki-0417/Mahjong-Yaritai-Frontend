@@ -1,25 +1,47 @@
-import { apiClient } from "../../lib/apiClients/ApiClients";
-import WhatToDiscardProblemCard from "../../features/what-to-discard-problems/WhatToDiscardProblemCard";
-import WhatToDiscardProblemToggleForm from "../../features/what-to-discard-problems/WhatToDiscardProblemCreateFormToggleForm";
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
-import { WhatToDiscardProblem } from "../../types/ApiData";
-import { Pagination } from "../../types/Meta";
-import WhatToDiscardProblemLoadNextPageButton from "../../features/what-to-discard-problems/WhatToDiscardProblemLoadNextPageButton";
-import WhatToDiscardProblemsContextProvider from "../../features/what-to-discard-problems/contexts/WhatToDiscardProblemsContextProvider";
+import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
+import ProblemCard from "@/src/features/what-to-discard-problems/components/ProblemCard";
+import ProblemFormToggleButton from "@/src/features/what-to-discard-problems/components/ProblemFormToggleButton";
+import LoadNextPageProblemButton from "@/src/features/what-to-discard-problems/components/LoadNextPageProblemButton";
+import { Pagination } from "@/src/types/Meta";
+import { WhatToDiscardProblem } from "@/src/types/ApiData";
+import { WHAT_TO_DISCARD_PROBLEM_FRAGMENT } from "@/src/graphql/fragments/whatToDiscardProblemFragment";
+import { PAGINATION_FRAGMENT } from "@/src/graphql/fragments/paginationFragment";
+import WhatToDiscardProblemsContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/WhatToDiscardProblemsContextProvider";
 
 export type WhatToDiscardProblems = WhatToDiscardProblem[] | [];
 
 export type FetchWhatToDiscardProblemsType = {
-  what_to_discard_problems: WhatToDiscardProblems;
+  data: WhatToDiscardProblems;
   meta: {
     pagination: Pagination;
   };
 };
 
 export default async function WhatToDiscardProblems() {
+  const apiClient = await apiPageClient();
+
   try {
-    const response = await apiClient.get("/what_to_discard_problems");
-    const data: FetchWhatToDiscardProblemsType = response.data;
+    const response = await apiClient.post("/graphql", {
+      query: `
+        ${WHAT_TO_DISCARD_PROBLEM_FRAGMENT}
+        ${PAGINATION_FRAGMENT}
+
+        query GetWhatToDiscardProblems() {
+          whatToDiscardProblems(page: 1){
+            data { ...WhatToDiscardProblemFields }
+            meta {
+              pagination { ...PaginationFields }
+            }
+          }
+        }
+      `,
+    });
+
+    // console.log(response.data.data.whatToDiscardProblems);
+
+    const problems: FetchWhatToDiscardProblemsType =
+      response.data.data.whatToDiscardProblems;
 
     return (
       <Box className="max-w-4xl lg:mx-auto mx-4 mt-36">
@@ -35,24 +57,23 @@ export default async function WhatToDiscardProblems() {
           </Text>
         </VStack>
 
-        <WhatToDiscardProblemsContextProvider initialData={data}>
-          <WhatToDiscardProblemToggleForm />
-        </WhatToDiscardProblemsContextProvider>
-
         <VStack spacing={15}>
-          {data.what_to_discard_problems.map((problem, index) => (
-            <WhatToDiscardProblemCard key={index} problem={problem} />
+          {problems.data.map((problem, index) => (
+            <ProblemCard key={index} problem={problem} />
           ))}
         </VStack>
 
-        <WhatToDiscardProblemsContextProvider initialData={data}>
+        <WhatToDiscardProblemsContextProvider initialData={problems}>
+          <ProblemFormToggleButton />
+
           <Flex justify="center" mt={5}>
-            <WhatToDiscardProblemLoadNextPageButton />
+            <LoadNextPageProblemButton />
           </Flex>
         </WhatToDiscardProblemsContextProvider>
       </Box>
     );
   } catch (error) {
-    return <div className="mt-40">sorry</div>;
+    console.error(error);
+    return <div className="mt-40">fetchに失敗</div>;
   }
 }

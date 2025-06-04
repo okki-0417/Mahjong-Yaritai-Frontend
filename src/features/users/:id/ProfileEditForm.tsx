@@ -6,61 +6,50 @@ import {
   Flex,
   Image,
   Input,
-  useToast,
   VisuallyHiddenInput,
   VStack,
 } from "@chakra-ui/react";
-import {
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useParams } from "react-router";
-import { apiClient } from "../../../lib/apiClients/ApiClients";
-import { UserType } from "../../../app/users/:id/page";
+import useErrorToast from "@/src/hooks/useErrorToast";
+import { isAxiosError } from "axios";
+import { apiClient } from "@/src/lib/apiClients/ApiClients";
+import { UserContext } from "@/src/features/users/:id/context-providers/contexts/UserContext";
+import useSuccessToast from "@/src/hooks/useSuccessToast";
+import { User } from "@/src/types/ApiData";
 
 type UserEditType = {
   name: string;
-  avatar: File;
 };
 
 export default function ProfileEditForm({
-  user,
-  setUser,
   setIsEditMode,
 }: {
-  user: UserType | null;
-  setUser: React.Dispatch<SetStateAction<UserType | null>>;
   setIsEditMode: React.Dispatch<SetStateAction<boolean>>;
 }) {
-  const { id } = useParams();
-  const toast = useToast();
-
+  const { user, setUser } = useContext(UserContext);
   const [iconImageUrl, setIconImageUrl] = useState<string | null>(null);
+  const iconImageInputRef = useRef<HTMLInputElement>(null);
 
-  const displayIconPreview = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      if (!files?.length) return;
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
 
-      const url = URL.createObjectURL(files[0]);
+  const handleIconInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files?.length) return;
 
-      setIconImageUrl(url);
-    },
-    []
-  );
+    const url = URL.createObjectURL(files[0]);
+    setIconImageUrl(url);
+  };
 
   useEffect(() => {
-    return () => {
-      if (iconImageUrl) URL.revokeObjectURL(iconImageUrl);
-    };
+    if (!iconImageUrl) return;
+
+    const currentImageUrl = iconImageUrl;
+    return () => URL.revokeObjectURL(currentImageUrl);
   }, [iconImageUrl]);
 
   const { register, handleSubmit } = useForm<UserEditType>();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit: SubmitHandler<UserEditType> = async (data) => {
     const formData = new FormData();
@@ -68,32 +57,29 @@ export default function ProfileEditForm({
     const { name } = data;
     formData.append("user[name]", name);
 
-    const file = fileInputRef.current?.files?.[0];
+    const file = iconImageInputRef.current?.files?.[0];
     if (file) formData.append("user[avatar]", file);
 
     try {
-      const response = await apiClient.patch(`users/${id}`, formData, {
+      const response = await apiClient.patch(`users/${user?.id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      setUser(response.data.user);
+      const data: User = response.data.user;
 
-      toast({
-        title: "プロフィールを更新しました",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      setUser(data);
       setIsEditMode(false);
+      successToast({ title: "プロフィールを更新しました" });
     } catch (error) {
-      toast({
-        title: "プロフィールを更新できませんでした",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      if (isAxiosError(error)) {
+        errorToast({
+          error,
+          title: "プロフィールを更新できませんでした",
+        });
+      }
+      errorToast({ title: "ネットワークエラー" });
     }
   };
 
@@ -111,18 +97,16 @@ export default function ProfileEditForm({
           />
         </Circle>
 
-        <>
-          <VisuallyHiddenInput
-            type="file"
-            accept="image/png, image/jpeg, image/webp image/svg, image/gif"
-            ref={fileInputRef}
-            onChange={(event) => displayIconPreview(event)}
-          />
+        <VisuallyHiddenInput
+          type="file"
+          accept="image/png, image/jpeg, image/webp image/svg, image/gif"
+          ref={iconImageInputRef}
+          onChange={(event) => handleIconInput(event)}
+        />
 
-          <Button onClick={() => fileInputRef.current?.click()}>
-            <AttachmentIcon />
-          </Button>
-        </>
+        <Button onClick={() => iconImageInputRef.current?.click()}>
+          <AttachmentIcon />
+        </Button>
 
         <Flex alignItems="start">
           <Input

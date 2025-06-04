@@ -1,11 +1,11 @@
+import AuthorizationForm from "@/src/features/authorization/AuthorizationForm";
+import getSession from "@/src/lib/getSession";
 import { Container, Text } from "@chakra-ui/react";
-import getSession from "../../lib/getSession";
 import { redirect } from "next/navigation";
-import AuthorizationForm from "../../features/authorization/AuthorizationForm";
 
 export default async function Authorization() {
-  // const session = await getSession();
-  // if (session?.is_logged_in) redirect("/dashboard");
+  const session = await getSession();
+  if (session?.is_logged_in) redirect("/dashboard");
 
   return (
     <Container maxW="xl" mt={40}>

@@ -1,6 +1,8 @@
+"use client";
+
 import { Box, Button } from "@chakra-ui/react";
+import Link from "next/link";
 import { MdOutlineReply } from "react-icons/md";
-import { Link } from "react-router";
 
 type CommentCardType = {
   comment_id: number;
@@ -8,7 +10,7 @@ type CommentCardType = {
   user_name: string;
   created_at: string;
   content: string;
-  handleReplyClick: (commentId: string) => any;
+  handleReplyClick: (commentId: string) => void;
 };
 
 export default function CommentCard({
@@ -26,7 +28,7 @@ export default function CommentCard({
   return (
     <div className="w-full py-3 px-2 font-semibold text-gray-700 border-b border-gray-300">
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Link to={`/users/${user_id}`}>
+        <Link href={`/users/${user_id}`}>
           <div className="flex items-center lg:gap-2 gap-1">
             <div className="w-6 h-6 rounded-full overflow-hidden">
               <img

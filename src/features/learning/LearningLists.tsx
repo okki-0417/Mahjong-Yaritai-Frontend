@@ -1,6 +1,6 @@
+import AccordionCardBig from "@/src/components/AccordingCards/AccordionCardBig";
+import AccordionCardMid from "@/src/components/AccordingCards/AccordionCardMid";
 import { useState } from "react";
-import AccordionCardBig from "../../components/AccordingCards/AccordionCardBig";
-import AccordionCardMid from "../../components/AccordingCards/AccordionCardMid";
 
 export default function LearningLists() {
   return (

@@ -1,5 +1,5 @@
+import { useSetModal } from "@/src/hooks/useSetModal";
 import Link from "next/link";
-import { useSetModal } from "../hooks/useSetModal";
 
 export default function NotLoggedInModal() {
   const setModalName = useSetModal();

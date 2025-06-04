@@ -5,7 +5,7 @@ export default function CloseAccordionButton({
   onClick,
   arrowColor = "inherit",
 }: {
-  onClick: () => any;
+  onClick: () => void;
   arrowColor?: string;
 }) {
   return (

@@ -5,12 +5,12 @@ import {
   FormErrorMessage,
   NumberInput,
   NumberInputField,
-  useToast,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "../../lib/apiClients/ApiClients";
-import MainButton from "../../components/MainButton";
+import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useRouter } from "next/navigation";
+import useErrorToast from "@/src/hooks/useErrorToast";
+import MainButton from "@/src/components/MainButton";
 
 type AuthorizationForm = {
   token: string;
@@ -18,7 +18,7 @@ type AuthorizationForm = {
 
 export default function AuthorizationForm() {
   const router = useRouter();
-  const toast = useToast();
+  const errorToast = useErrorToast();
 
   const {
     register,
@@ -32,11 +32,9 @@ export default function AuthorizationForm() {
 
       router.push("/users/new");
     } catch (error) {
-      toast({
+      errorToast({
+        error,
         title: "認証に失敗しました",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };

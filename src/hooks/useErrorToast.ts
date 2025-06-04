@@ -11,10 +11,11 @@ export default function useErrorToast() {
   const errorToast = ({
     error,
     title,
+    description,
     duration = 3000,
     isClosable = true,
   }: {
-    error: ErrorToastType;
+    error?: ErrorToastType;
     title: string;
     description?: string;
     duration?: number;
@@ -23,7 +24,7 @@ export default function useErrorToast() {
     toast({
       title,
       status: "error",
-      description: `${error.message}`,
+      description: description || `${error?.message}`,
       duration,
       isClosable,
     });

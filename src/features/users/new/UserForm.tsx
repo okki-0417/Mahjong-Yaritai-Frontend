@@ -10,12 +10,12 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { AuthStateContext } from "../../../app/contexts/AuthStateContext/AuthStateContextInner";
+import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "../../../lib/apiClients/ApiClients";
-import useErrorToast from "../../../hooks/useErrorToast";
+import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import axios from "axios";
+import useErrorToast from "@/src/hooks/useErrorToast";
 
 type UserFormType = {
   name: string;
@@ -41,7 +41,7 @@ export default function UserForm() {
   } = useForm<UserFormType>();
 
   const onSubmit: SubmitHandler<UserFormType> = async (
-    formData: UserFormType
+    formData: UserFormType,
   ) => {
     if (loading) return;
     setLoading(true);

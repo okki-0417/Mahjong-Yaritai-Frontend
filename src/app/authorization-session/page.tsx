@@ -1,13 +1,13 @@
 import { Box, Container } from "@chakra-ui/react";
 import { FaAngleRight } from "react-icons/fa";
-import getSession from "../../lib/getSession";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import AuthorizationSessionForm from "../../features/authorization-session/AuthorizationSessionForm";
+import getSession from "@/src/lib/getSession";
+import AuthorizationSessionForm from "@/src/features/authorization-session/AuthorizationSessionForm";
 
 export default async function AuthorizationSession() {
-  // const session = await getSession();
-  // if (session?.is_logged_in) redirect("/dashboard");
+  const session = await getSession();
+  if (session?.is_logged_in) redirect("/dashboard");
 
   return (
     <Container mt={40} maxW="2xl">

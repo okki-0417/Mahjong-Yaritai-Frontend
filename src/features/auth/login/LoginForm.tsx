@@ -2,10 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import { AuthStateContext } from "../../../app/contexts/AuthStateContext/AuthStateContextInner";
-import useErrorToast from "../../../hooks/useErrorToast";
+import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "../../../lib/apiClients/ApiClients";
+import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import axios from "axios";
 import {
   Box,
@@ -16,6 +15,7 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
+import useErrorToast from "@/src/hooks/useErrorToast";
 
 type LoginForm = {
   email: string;

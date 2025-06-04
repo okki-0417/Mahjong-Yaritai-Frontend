@@ -1,4 +1,4 @@
-import { apiPageClient } from "./apiClients/ApiPageClient";
+import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
 
 export type SessionType = {
   is_logged_in: boolean;
@@ -14,6 +14,7 @@ export default async function getSession() {
 
     return session;
   } catch (error) {
+    console.error(error);
     return null;
   }
 }

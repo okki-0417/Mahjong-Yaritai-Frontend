@@ -13,6 +13,7 @@ export const apiPageClient = async () => {
     timeout: 10000,
     headers: {
       Cookie: cookieHeader,
+      Accept: "application/json",
     },
   });
 

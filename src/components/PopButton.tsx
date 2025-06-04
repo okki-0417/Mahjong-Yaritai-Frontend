@@ -5,6 +5,7 @@ type PopButtonType = {
   defaultClassName?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 };
 
 export default function PopButton({
@@ -12,6 +13,7 @@ export default function PopButton({
   defaultClassName = "",
   onClick = () => {},
   type = "button",
+  disabled,
 }: PopButtonType) {
   const [animate, setAnimate] = useState<boolean>(false);
 
@@ -27,6 +29,7 @@ export default function PopButton({
       type={type}
       onClick={handleClick}
       className={`${defaultClassName} ${animate ? "pop" : ""} hover:scale-105`}
+      disabled={disabled}
     >
       {value}
     </button>

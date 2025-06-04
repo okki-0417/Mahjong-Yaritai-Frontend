@@ -1,3 +1,4 @@
+import LogoutButton from "@/src/components/LogoutButton";
 import {
   Box,
   Center,
@@ -8,7 +9,6 @@ import {
   UnorderedList,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import LogoutButton from "./LogoutButton";
 
 export default function Footer() {
   return (

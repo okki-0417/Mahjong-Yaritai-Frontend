@@ -1,8 +1,8 @@
 "use client";
 
+import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
+import useLogout from "@/src/hooks/useLogout";
 import { Button } from "@chakra-ui/react";
-import useLogout from "../hooks/useLogout";
-import useIsLoggedIn from "../hooks/useIsLoggedIn";
 
 export default function LogoutButton() {
   const logout = useLogout();

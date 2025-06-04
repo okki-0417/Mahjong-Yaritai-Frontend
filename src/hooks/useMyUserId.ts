@@ -1,5 +1,5 @@
+import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import { useContext } from "react";
-import { AuthStateContext } from "../app/contexts/AuthStateContext/AuthStateContextInner";
 
 export default function useMyUserId() {
   const { myUserId } = useContext(AuthStateContext);

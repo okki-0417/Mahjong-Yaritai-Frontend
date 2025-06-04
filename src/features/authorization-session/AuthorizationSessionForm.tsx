@@ -1,9 +1,9 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "../../lib/apiClients/ApiClients";
+import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useRouter } from "next/navigation";
-import useErrorToast from "../../hooks/useErrorToast";
+import useErrorToast from "@/src/hooks/useErrorToast";
 import axios from "axios";
 import {
   FormControl,
@@ -11,7 +11,7 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import MainButton from "../../components/MainButton";
+import MainButton from "@/src/components/MainButton";
 
 type AuthorizationSessionForm = {
   email: string;
@@ -28,7 +28,7 @@ export default function AuthorizationSessionForm() {
   } = useForm<AuthorizationSessionForm>();
 
   const onSubmit: SubmitHandler<AuthorizationSessionForm> = async (
-    formData: AuthorizationSessionForm
+    formData: AuthorizationSessionForm,
   ) => {
     try {
       await apiClient.post("/authorization_session", {

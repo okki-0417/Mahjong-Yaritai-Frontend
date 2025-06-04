@@ -8,10 +8,10 @@ export type WhatToDiscardProblem = {
   round: number;
   turn: number;
   wind: number;
-  point_east: number;
-  point_south: number;
-  point_west: number;
-  point_north: number;
+  pointEast: number;
+  pointSouth: number;
+  pointWest: number;
+  pointNorth: number;
   dora: Tile;
   tsumo: Tile;
   hand1: Tile;
@@ -27,26 +27,50 @@ export type WhatToDiscardProblem = {
   hand11: Tile;
   hand12: Tile;
   hand13: Tile;
-  likes_count: number;
-  comments_count: number;
-  votes_count: number;
-  created_at: string;
-  updated_at: string;
+  likesCount: number;
+  commentsCount: number;
+  votesCount: number;
+  myLike: ProblemLike;
+  myVote: ProblemVote;
+  createdAt: string;
+  updatedAt: string;
 };
+
+export type ProblemLike = {
+  id: number;
+  userId: number;
+  whatToDiscardProblemId: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProblemVote = {
+  id: number;
+  user_id: number;
+  tile: Tile;
+  whatToDiscardProblemId: number;
+  created_at: number;
+  updated_at: number;
+};
+
+export type VoteResultType = {
+  tileId: number;
+  count: number;
+}[];
 
 export type Tile = {
   id: number;
   suit: string;
-  ordinal_number_in_suit: string;
+  ordinalNumberIn_suit: string;
   name: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type User = {
   id: number;
   name: string;
-  avatar_url: string;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 };

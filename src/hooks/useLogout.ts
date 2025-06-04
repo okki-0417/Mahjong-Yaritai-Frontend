@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import { apiClient } from "../lib/apiClients/ApiClients";
 import { useToast } from "@chakra-ui/react";
-import useErrorToast from "./useErrorToast";
 import axios from "axios";
-import { AuthStateContext } from "../app/contexts/AuthStateContext/AuthStateContextInner";
+import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
+import useErrorToast from "@/src/hooks/useErrorToast";
+import { apiClient } from "@/src/lib/apiClients/ApiClients";
 
 export default function useLogout(): () => Promise<void> {
   const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);

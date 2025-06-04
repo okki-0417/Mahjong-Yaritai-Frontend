@@ -1,8 +1,8 @@
-import Footer from "../Footer";
-import BottomNavigation from "../BottomNavigation";
+import BottomNavigation from "@/src/components/BottomNavigation";
+import Footer from "@/src/components/Footer";
+import ModalProvider from "@/src/components/ModalProvider";
+import Navigation from "@/src/components/Navigation";
 import { ReactNode } from "react";
-import ModalProvider from "../ModalProvider";
-import Navigation from "../Navigation";
 
 export default function DefaultLayout({ children }: { children: ReactNode }) {
   return (

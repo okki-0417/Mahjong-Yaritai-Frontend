@@ -1,5 +1,3 @@
-import LearningLists from "../../features/learning/LearningLists";
-
 export default function Learning() {
   return (
     <div className="max-w-screen-lg mx-auto mt-36 mb-48 px-4">

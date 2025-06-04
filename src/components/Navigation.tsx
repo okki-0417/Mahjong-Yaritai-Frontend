@@ -20,7 +20,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import useIsLoggedIn from "../hooks/useIsLoggedIn";
+import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 
 export default function Navigation() {
   const [checked, setChecked] = useState(false);
@@ -47,7 +47,7 @@ export default function Navigation() {
                 </HStack>
               </Link>
 
-              <HStack display={["hidden", "flex"]} gap="5">
+              <HStack display={["none", "none", "flex"]} gap="5">
                 <Link href="/what-to-discard-problems">
                   <HStack gap="1">
                     <GiThink size={25} color="white" />
