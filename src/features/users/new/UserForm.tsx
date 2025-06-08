@@ -43,7 +43,7 @@ export default function UserForm() {
   const onSubmit: SubmitHandler<UserFormType> = async (
     formData: UserFormType,
   ) => {
-    if (loading) return;
+    if (loading) {return;}
     setLoading(true);
 
     try {
@@ -65,13 +65,13 @@ export default function UserForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-5">
-      <FormControl isRequired isInvalid={!!errors.name}>
+      <FormControl isRequired isInvalid={Boolean(errors.name)}>
         <FormLabel htmlFor="name">ハンドルネーム</FormLabel>
         <Input type="text" {...register("name", { required: "必須です" })} />
         <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
       </FormControl>
 
-      <FormControl isInvalid={!!errors.password} isRequired mt={5}>
+      <FormControl isInvalid={Boolean(errors.password)} isRequired mt={5}>
         <FormLabel htmlFor="name">パスワード</FormLabel>
         <Input
           type={passVisible ? "text" : "password"}
@@ -90,7 +90,7 @@ export default function UserForm() {
         </Flex>
       </FormControl>
 
-      <FormControl isInvalid={!!errors.password_confirmation} isRequired>
+      <FormControl isInvalid={Boolean(errors.password_confirmation)} isRequired>
         <FormLabel htmlFor="name">パスワード（確認）</FormLabel>
         <Input
           type={passConfVisible ? "text" : "password"}

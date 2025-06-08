@@ -31,7 +31,7 @@ export default function ProblemFormToggleButton() {
       </Box>
 
       <Box>
-        <ToggleWrapper flag={!!isCreateFormOpen}>
+        <ToggleWrapper flag={Boolean(isCreateFormOpen)}>
           <ProblemForm setIsCreateFormOpen={setIsCreateFormOpen} />
         </ToggleWrapper>
       </Box>

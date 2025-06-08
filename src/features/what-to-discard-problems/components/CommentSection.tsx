@@ -35,7 +35,7 @@ export default function CommentSection({ problemId }: { problemId: number }) {
   });
 
   const handleReplyClick = (commentId: string) => {
-    if (!CommentContentRef.current) return;
+    if (!CommentContentRef.current) {return;}
 
     CommentContentRef.current.scrollIntoView({
       block: "center",

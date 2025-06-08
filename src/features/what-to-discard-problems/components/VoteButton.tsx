@@ -35,7 +35,7 @@ export default function VoteButton({
       return;
     }
 
-    if (isLoading) return;
+    if (isLoading) {return;}
     setIsLoading(true);
 
     try {
@@ -50,7 +50,7 @@ export default function VoteButton({
         );
 
         const data: ProblemVote = response.data["what_to_discard_problem/vote"];
-        if (!data) throw new Error("作成した投票が取得できませんでした");
+        if (!data) {throw new Error("作成した投票が取得できませんでした");}
 
         setVotesCount((prev) => prev + 1);
         setMyVote(data);
@@ -94,7 +94,7 @@ export default function VoteButton({
         );
 
         const data: ProblemVote = response.data["what_to_discard_problem/vote"];
-        if (!data) throw new Error("作成した投票が取得できませんでした");
+        if (!data) {throw new Error("作成した投票が取得できませんでした");}
 
         setMyVote(data);
         setLoadResultFlag(true);

@@ -5,63 +5,58 @@ import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useRouter } from "next/navigation";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import axios from "axios";
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
+import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
 import MainButton from "@/src/components/MainButton";
 
-type AuthorizationSessionForm = {
-  email: string;
+type AuthorizationSessionFormType = {
+	email: string;
 };
 
 export default function AuthorizationSessionForm() {
-  const router = useRouter();
-  const errorToast = useErrorToast();
+	const router = useRouter();
+	const errorToast = useErrorToast();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<AuthorizationSessionForm>();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<AuthorizationSessionFormType>();
 
-  const onSubmit: SubmitHandler<AuthorizationSessionForm> = async (
-    formData: AuthorizationSessionForm,
-  ) => {
-    try {
-      await apiClient.post("/authorization_session", {
-        authorization_session: formData,
-      });
+	const onSubmit: SubmitHandler<AuthorizationSessionFormType> = async (
+		formData: AuthorizationSessionFormType,
+	) => {
+		try {
+			await apiClient.post("/authorization_session", {
+				authorization_session: formData,
+			});
 
-      router.push("/authorization");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        errorToast({
-          error,
-          title: "このメールアドレスは使用できません",
-        });
-      }
-    }
-  };
+			router.push("/authorization");
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				errorToast({
+					error,
+					title: "このメールアドレスは使用できません",
+				});
+			}
+		}
+	};
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
-      <FormControl isInvalid={!!errors.email} isRequired>
-        <FormLabel htmlFor="email">Email</FormLabel>
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} className="mt-6">
+			<FormControl isInvalid={Boolean(errors.email)} isRequired>
+				<FormLabel htmlFor="email">Email</FormLabel>
 
-        <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+				<FormErrorMessage>{errors.email?.message}</FormErrorMessage>
 
-        <Input
-          type="email"
-          placeholder="test@mahjong-yaritai.com"
-          autoComplete="email"
-          {...register("email")}
-        />
-      </FormControl>
+				<Input
+					type="email"
+					placeholder="test@mahjong-yaritai.com"
+					autoComplete="email"
+					{...register("email")}
+				/>
+			</FormControl>
 
-      <MainButton className="mt-4">確認メールを送信する</MainButton>
-    </form>
-  );
+			<MainButton className="mt-4">確認メールを送信する</MainButton>
+		</form>
+	);
 }

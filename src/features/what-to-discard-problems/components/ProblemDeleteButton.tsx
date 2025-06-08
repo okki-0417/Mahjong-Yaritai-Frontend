@@ -7,48 +7,45 @@ import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useState } from "react";
 import useErrorToast from "@/src/hooks/useErrorToast";
 
-export default function ProblemDeleteButton({
-  problemId,
-}: {
-  problemId: number;
-}) {
-  const toast = useToast();
-  const errorToast = useErrorToast();
-  const [loading, setLoading] = useState(false);
+export default function ProblemDeleteButton({ problemId }: { problemId: number }) {
+	const toast = useToast();
+	const errorToast = useErrorToast();
+	const [loading, setLoading] = useState(false);
 
-  const deleteProblem = async () => {
-    if (loading) return;
-    setLoading(true);
+	const deleteProblem = async () => {
+		if (loading) {
+			return;
+		}
+		setLoading(true);
 
-    const isConfirmed = confirm("この何切る問題を削除しますか？");
-    if (!isConfirmed) return;
+		/* eslint no-alert: 0 */
+		const isConfirmed = confirm("この何切る問題を削除しますか？");
+		if (!isConfirmed) {
+			return;
+		}
 
-    try {
-      await apiClient.delete(`/what_to_discard_problems/${problemId}`);
+		try {
+			await apiClient.delete(`/what_to_discard_problems/${problemId}`);
 
-      toast({
-        title: "何切る問題を削除しました",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      location.reload();
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        errorToast({ error, title: "削除に失敗しました" });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+			toast({
+				title: "何切る問題を削除しました",
+				status: "success",
+				duration: 3000,
+				isClosable: true,
+			});
+			location.reload();
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				errorToast({ error, title: "削除に失敗しました" });
+			}
+		} finally {
+			setLoading(false);
+		}
+	};
 
-  return (
-    <Button
-      bgColor="inherit"
-      _hover={{ bgColor: "green.400" }}
-      onClick={deleteProblem}
-    >
-      <IoMdTrash size={20} color="white" />
-    </Button>
-  );
+	return (
+		<Button bgColor="inherit" _hover={{ bgColor: "green.400" }} onClick={deleteProblem}>
+			<IoMdTrash size={20} color="white" />
+		</Button>
+	);
 }

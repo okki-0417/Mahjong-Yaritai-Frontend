@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
   const session = await getSession();
-  if (!session?.is_logged_in) redirect("/auth/login");
+  if (!session?.is_logged_in) {redirect("/auth/login");}
 
   redirect("/what-to-discard-problems");
 
