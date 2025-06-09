@@ -137,7 +137,7 @@ export default function Navigation() {
                     <IoIosArrowDown />
                   </div>
                   <ul className="h-0 overflow-hidden peer-checked:h-auto ml-4">
-                    <Link href="what-to-discard-problems">
+                    <Link href="/what-to-discard-problems">
                       <li className="flex gap-1 items-center">
                         <FaAngleRight size={12} />
                         <span>一覧</span>
