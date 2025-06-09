@@ -14,11 +14,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja">
       <body>
-        <AuthStateContextProvider>
-          <ModalContextProvider>
-            <DefaultLayout>{children}</DefaultLayout>
-          </ModalContextProvider>
-        </AuthStateContextProvider>
+        <CustomChakraProvider>
+          <AuthStateContextProvider>
+            <ModalContextProvider>
+              <DefaultLayout>{children}</DefaultLayout>
+            </ModalContextProvider>
+          </AuthStateContextProvider>
+        </CustomChakraProvider>
       </body>
     </html>
   );
