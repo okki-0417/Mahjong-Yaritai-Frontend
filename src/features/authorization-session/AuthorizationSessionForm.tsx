@@ -33,6 +33,8 @@ export default function AuthorizationSessionForm() {
       router.push("/authorization");
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        console.error(error.response?.data);
+
         errorToast({
           error,
           title: "このメールアドレスは使用できません",
