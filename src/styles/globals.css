@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body {
-  @apply bg-base font-serif overflow-x-hidden text-white;
+  @apply bg-slate-700 font-serif overflow-x-hidden text-white;
 }
 
 @keyframes fadeIn {
@@ -117,7 +117,8 @@ body {
   }
 
   .marquee-inner {
-    @apply h-full  shrink-0 marquee;
+    @apply h-full shrink-0 ;
+    animation: marquee 30s linear infinite;
   }
 
   .btn {
@@ -161,7 +162,7 @@ body {
   }
 
   .input-sm {
-    @apply py-1 px-2 border border-white bg-base w-full text-lg rounded-md font-sans;
+    @apply py-1 px-2 border border-white bg-slate-700 w-full text-lg rounded-md font-sans;
   }
 
   .input-error {

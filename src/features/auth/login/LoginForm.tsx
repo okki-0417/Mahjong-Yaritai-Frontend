@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
-import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import axios from "axios";
@@ -24,7 +23,6 @@ type LoginFormType = {
 
 export default function LoginForm() {
   const router = useRouter();
-  const { setAuth, setMyUserId } = useContext(AuthStateContext);
   const [passVisible, setPassVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -43,10 +41,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await apiClient.post("/session", { session: formData });
-
-      setAuth(true);
-      setMyUserId(response.data.user.id);
+      await apiClient.post("/session", { session: formData });
 
       router.push("/what-to-discard-problems");
     } catch (error) {

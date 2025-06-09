@@ -1,9 +1,8 @@
+import { ChakraProvider } from "@chakra-ui/react";
 import AuthStateContextProvider from "@/src/app/context-providers/providers/AuthStateContextProvider";
 import ModalContextProvider from "@/src/app/context-providers/providers/ModalContextProvider";
-import CustomChakraProvider from "@/src/components/layout/CustomChakraProvider";
 import DefaultLayout from "@/src/components/layout/DefaultLayout";
 import "@/src/styles/globals.css";
-import React from "react";
 
 export const metadata = {
   title: "麻雀ヤリタイ",
@@ -12,15 +11,15 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja">
+    <html lang="ja" suppressHydrationWarning>
       <body>
-        <CustomChakraProvider>
-          <AuthStateContextProvider>
-            <ModalContextProvider>
+        <AuthStateContextProvider>
+          <ModalContextProvider>
+            <ChakraProvider resetCSS={false}>
               <DefaultLayout>{children}</DefaultLayout>
-            </ModalContextProvider>
-          </AuthStateContextProvider>
-        </CustomChakraProvider>
+            </ChakraProvider>
+          </ModalContextProvider>
+        </AuthStateContextProvider>
       </body>
     </html>
   );

@@ -38,8 +38,6 @@ export default async function WhatToDiscardProblems() {
       `,
     });
 
-    // console.log(response.data.data.whatToDiscardProblems);
-
     const problems: FetchWhatToDiscardProblemsType = response.data.data.whatToDiscardProblems;
 
     return (
