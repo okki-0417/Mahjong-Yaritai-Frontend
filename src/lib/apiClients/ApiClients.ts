@@ -16,7 +16,7 @@ apiClient.interceptors.response.use(
   error => {
     if (axios.isAxiosError(error)) {
       console.error(
-        `API_PAGE_CLIENT_AXIOS_ERROR:\nSTATUS: "${error.status}"\nMESSAGE: "${error.message}"`,
+        `API_PAGE_CLIENT_AXIOS_ERROR:\n\tSTATUS: "${error.status}"\n\tMESSAGE: "${error.message}"`,
       );
     } else {
       console.error(`

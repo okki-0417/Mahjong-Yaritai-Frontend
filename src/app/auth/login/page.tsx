@@ -20,7 +20,7 @@ export default async function Login() {
 
       <Box mt={6}>
         <Link
-          href="authorization-session"
+          href="/authorization-session"
           className="text-blue-300 hover:text-blue-200 hover:underline flex items-center">
           新規会員登録はこちら
           <FaAngleRight />
