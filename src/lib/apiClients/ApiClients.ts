@@ -15,10 +15,9 @@ apiClient.interceptors.response.use(
   },
   error => {
     if (axios.isAxiosError(error)) {
-      console.error(`
-        API_PAGE_CLIENT_AXIOS_ERROR: \n
-          STATUS: "${error.status}"\n
-          MESSAGE: "${error.message}"`);
+      console.error(
+        `API_PAGE_CLIENT_AXIOS_ERROR:\nSTATUS: "${error.status}"\nMESSAGE: "${error.message}"`,
+      );
     } else {
       console.error(`
         API_PAGE_CLIENT_DEFAULT_ERROR: \n
