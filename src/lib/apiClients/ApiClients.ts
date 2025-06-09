@@ -15,14 +15,14 @@ apiClient.interceptors.response.use(
   },
   error => {
     if (axios.isAxiosError(error)) {
-      console.error(error.status);
-      console.error(error.message);
-
-      if (window.location.hostname != "murai.local") {
-        console.error("murai.localにしてください！！！！！！！！！！！！");
-      }
+      console.error(`
+        API_PAGE_CLIENT_AXIOS_ERROR: \n
+          STATUS: "${error.status}"\n
+          MESSAGE: "${error.message}"`);
     } else {
-      console.error(error);
+      console.error(`
+        API_PAGE_CLIENT_DEFAULT_ERROR: \n
+        ERROR: "${error}"`);
     }
     return Promise.reject(error);
   },
