@@ -40,10 +40,10 @@ export default function UserForm() {
     formState: { errors },
   } = useForm<UserFormType>();
 
-  const onSubmit: SubmitHandler<UserFormType> = async (
-    formData: UserFormType,
-  ) => {
-    if (loading) {return;}
+  const onSubmit: SubmitHandler<UserFormType> = async (formData: UserFormType) => {
+    if (loading) {
+      return;
+    }
     setLoading(true);
 
     try {
@@ -83,8 +83,7 @@ export default function UserForm() {
             type="button"
             size="sm"
             colorScheme="whiteAlpha"
-            onClick={() => setPassVisible(!passVisible)}
-          >
+            onClick={() => setPassVisible(!passVisible)}>
             パスワードを{passVisible && "非"}表示
           </Button>
         </Flex>
@@ -98,27 +97,20 @@ export default function UserForm() {
             required: "必須です",
           })}
         />
-        <FormErrorMessage>
-          {errors.password_confirmation?.message}
-        </FormErrorMessage>
+        <FormErrorMessage>{errors.password_confirmation?.message}</FormErrorMessage>
         <Flex mt={2} justifyContent="end">
           <Button
             type="button"
             size="sm"
             colorScheme="whiteAlpha"
-            onClick={() => setPassConfVisible(!passConfVisible)}
-          >
+            onClick={() => setPassConfVisible(!passConfVisible)}>
             パスワードを{passConfVisible && "非"}表示
           </Button>
         </Flex>
       </FormControl>
 
       <Box mt={4}>
-        <input
-          type="submit"
-          value="ユーザー登録する"
-          className="btn btn-main"
-        />
+        <input type="submit" value="ユーザー登録する" className="btn btn-main" />
       </Box>
     </form>
   );

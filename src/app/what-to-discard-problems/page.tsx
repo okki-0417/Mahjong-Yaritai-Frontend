@@ -40,8 +40,7 @@ export default async function WhatToDiscardProblems() {
 
     // console.log(response.data.data.whatToDiscardProblems);
 
-    const problems: FetchWhatToDiscardProblemsType =
-      response.data.data.whatToDiscardProblems;
+    const problems: FetchWhatToDiscardProblemsType = response.data.data.whatToDiscardProblems;
 
     return (
       <Box className="max-w-4xl lg:mx-auto mx-4 mt-36">
@@ -52,9 +51,7 @@ export default async function WhatToDiscardProblems() {
           <Text fontSize="lg">
             ここでは様々な状況での最適な選択を考えながら、他のプレイヤーと意見を交換したり、自分の判断力を磨いたりできます。
           </Text>
-          <Text fontSize="lg">
-            麻雀の奥深さを学びながら、より良い打牌選択を身につけましょう。
-          </Text>
+          <Text fontSize="lg">麻雀の奥深さを学びながら、より良い打牌選択を身につけましょう。</Text>
         </VStack>
 
         <VStack spacing={15}>

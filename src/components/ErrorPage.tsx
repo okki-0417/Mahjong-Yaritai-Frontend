@@ -23,9 +23,7 @@ export default function ErrorPage({
     <div className="mt-32 max-w-screen-lg mx-auto">
       <h1 className="text-center text-7xl">{status}</h1>
       <p className="mt-12 text-3xl text-center">
-        {message ||
-          errorMessage[status || Number(id)] ||
-          "サーバーに接続できませんでした。"}
+        {message || errorMessage[status || Number(id)] || "サーバーに接続できませんでした。"}
       </p>
     </div>
   );

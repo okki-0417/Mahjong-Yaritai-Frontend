@@ -35,24 +35,25 @@ export default function VoteButton({
       return;
     }
 
-    if (isLoading) {return;}
+    if (isLoading) {
+      return;
+    }
     setIsLoading(true);
 
     try {
       if (!myVote) {
-        const response = await apiClient.post(
-          `/what_to_discard_problems/${problemId}/votes`,
-          {
-            what_to_discard_problem_vote: {
-              tile_id: tileId,
-            },
+        const response = await apiClient.post(`/what_to_discard_problems/${problemId}/votes`, {
+          what_to_discard_problem_vote: {
+            tile_id: tileId,
           },
-        );
+        });
 
         const data: ProblemVote = response.data["what_to_discard_problem/vote"];
-        if (!data) {throw new Error("作成した投票が取得できませんでした");}
+        if (!data) {
+          throw new Error("作成した投票が取得できませんでした");
+        }
 
-        setVotesCount((prev) => prev + 1);
+        setVotesCount(prev => prev + 1);
         setMyVote(data);
         setLoadResultFlag(true);
 
@@ -63,13 +64,11 @@ export default function VoteButton({
           isClosable: true,
         });
       } else if (tileId == myVote.tile.id) {
-        await apiClient.delete(
-          `/what_to_discard_problems/${problemId}/votes/${myVote.id}`,
-        );
+        await apiClient.delete(`/what_to_discard_problems/${problemId}/votes/${myVote.id}`);
 
         console.log("削除");
 
-        setVotesCount((prev) => prev - 1);
+        setVotesCount(prev => prev - 1);
         setMyVote(null);
         setLoadResultFlag(true);
 
@@ -80,21 +79,18 @@ export default function VoteButton({
           isClosable: true,
         });
       } else {
-        await apiClient.delete(
-          `/what_to_discard_problems/${problemId}/votes/${myVote.id}`,
-        );
+        await apiClient.delete(`/what_to_discard_problems/${problemId}/votes/${myVote.id}`);
 
-        const response = await apiClient.post(
-          `/what_to_discard_problems/${problemId}/votes`,
-          {
-            what_to_discard_problem_vote: {
-              tile_id: tileId,
-            },
+        const response = await apiClient.post(`/what_to_discard_problems/${problemId}/votes`, {
+          what_to_discard_problem_vote: {
+            tile_id: tileId,
           },
-        );
+        });
 
         const data: ProblemVote = response.data["what_to_discard_problem/vote"];
-        if (!data) {throw new Error("作成した投票が取得できませんでした");}
+        if (!data) {
+          throw new Error("作成した投票が取得できませんでした");
+        }
 
         setMyVote(data);
         setLoadResultFlag(true);

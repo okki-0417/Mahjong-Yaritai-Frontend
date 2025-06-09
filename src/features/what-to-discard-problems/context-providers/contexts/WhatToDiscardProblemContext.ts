@@ -3,13 +3,10 @@ import { createContext } from "react";
 
 type WhatToDiscardProblemsContext = {
   whatToDiscardProblems: WhatToDiscardProblems;
-  setWhatToDiscardProblems: React.Dispatch<
-    React.SetStateAction<WhatToDiscardProblems>
-  >;
+  setWhatToDiscardProblems: React.Dispatch<React.SetStateAction<WhatToDiscardProblems>>;
 };
 
-export const WhatToDiscardProblemsContext =
-  createContext<WhatToDiscardProblemsContext>({
-    whatToDiscardProblems: [],
-    setWhatToDiscardProblems: () => {},
-  });
+export const WhatToDiscardProblemsContext = createContext<WhatToDiscardProblemsContext>({
+  whatToDiscardProblems: [],
+  setWhatToDiscardProblems: () => {},
+});

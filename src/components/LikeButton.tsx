@@ -10,12 +10,7 @@ type LikeButtonType = {
   handleClick: () => void;
 };
 
-export default function LikeButton({
-  isLiked,
-  likeCount,
-  isLoading,
-  handleClick,
-}: LikeButtonType) {
+export default function LikeButton({ isLiked, likeCount, isLoading, handleClick }: LikeButtonType) {
   return (
     <PopButton
       value={

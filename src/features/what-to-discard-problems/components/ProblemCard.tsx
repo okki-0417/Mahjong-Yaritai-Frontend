@@ -18,11 +18,7 @@ import getSession from "@/src/lib/getSession";
 import { WhatToDiscardProblem } from "@/src/types/ApiData";
 import { Box, Flex, Grid, GridItem, HStack, Text } from "@chakra-ui/react";
 
-export default async function ProblemCard({
-  problem,
-}: {
-  problem: WhatToDiscardProblem;
-}) {
+export default async function ProblemCard({ problem }: { problem: WhatToDiscardProblem }) {
   const session = await getSession();
 
   return (
@@ -52,7 +48,7 @@ export default async function ProblemCard({
               { label: "南家", point: problem.pointSouth },
               { label: "西家", point: problem.pointWest },
               { label: "北家", point: problem.pointNorth },
-            ].map((obj) => {
+            ].map(obj => {
               return (
                 <GridItem colSpan={[2, 1]} key={obj.label}>
                   <HStack>
@@ -64,12 +60,7 @@ export default async function ProblemCard({
             })}
           </Grid>
 
-          <Flex
-            flexDir={["column", "row-reverse"]}
-            justifyContent="center"
-            gap="3"
-            mt="3"
-          >
+          <Flex flexDir={["column", "row-reverse"]} justifyContent="center" gap="3" mt="3">
             <Flex flexDir={["row", "column"]} alignItems="center">
               <Text>ツモ</Text>
 
@@ -108,9 +99,7 @@ export default async function ProblemCard({
           <IsCommentSectionOpenContextProvider>
             <VotesCountContextProvider initialVotesCount={problem.votesCount}>
               <MyVotedTileContextProvider initialMyVote={problem.myVote}>
-                <VotesCountContextProvider
-                  initialVotesCount={problem.votesCount}
-                >
+                <VotesCountContextProvider initialVotesCount={problem.votesCount}>
                   <Box>
                     <VoteResultOpenButton />
 
@@ -127,8 +116,7 @@ export default async function ProblemCard({
                     px="4"
                     bgColor="white"
                     color="gray.700"
-                    className="rounded-b-md"
-                  >
+                    className="rounded-b-md">
                     <HStack>
                       <ProblemLikeButton problem={problem} />
 

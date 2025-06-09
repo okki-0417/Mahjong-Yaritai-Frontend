@@ -5,14 +5,8 @@ import { useContext } from "react";
 import { IsCommentSectionOpenContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/IsCommentSectionOpenContext";
 import PopButton from "@/src/components/PopButton";
 
-export default function CommentsCount({
-  commentsCount,
-}: {
-  commentsCount: number;
-}) {
-  const { isCommentSectionOpen, setIsCommentSectionOpen } = useContext(
-    IsCommentSectionOpenContext,
-  );
+export default function CommentsCount({ commentsCount }: { commentsCount: number }) {
+  const { isCommentSectionOpen, setIsCommentSectionOpen } = useContext(IsCommentSectionOpenContext);
 
   return (
     <PopButton

@@ -18,8 +18,7 @@ export default function Profile({ isMyPage }: { isMyPage: boolean }) {
           colorScheme={isEditMode ? "pink" : "whiteAlpha"}
           position="absolute"
           right="0"
-          onClick={() => setIsEditMode(!isEditMode)}
-        >
+          onClick={() => setIsEditMode(!isEditMode)}>
           <EditIcon />
         </Button>
       )}

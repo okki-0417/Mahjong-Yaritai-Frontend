@@ -6,23 +6,20 @@ import "@/src/styles/globals.css";
 import React from "react";
 
 export const metadata = {
-	title: "麻雀ヤリタイ",
-	description: "麻雀が好きな人、麻雀を新しく始めたい人が集まる場所です。",
+  title: "麻雀ヤリタイ",
+  description: "麻雀が好きな人、麻雀を新しく始めたい人が集まる場所です。",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-	return (
-		<html lang="ja">
-			<body>
-				<CustomChakraProvider>
-					<div className="text-3xl">こんにちは</div>
-					<AuthStateContextProvider>
-						<ModalContextProvider>
-							<DefaultLayout>{children}</DefaultLayout>
-						</ModalContextProvider>
-					</AuthStateContextProvider>
-				</CustomChakraProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="ja">
+      <body>
+        <AuthStateContextProvider>
+          <ModalContextProvider>
+            <DefaultLayout>{children}</DefaultLayout>
+          </ModalContextProvider>
+        </AuthStateContextProvider>
+      </body>
+    </html>
+  );
 }

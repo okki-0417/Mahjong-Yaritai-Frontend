@@ -9,54 +9,54 @@ import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/reac
 import MainButton from "@/src/components/MainButton";
 
 type AuthorizationSessionFormType = {
-	email: string;
+  email: string;
 };
 
 export default function AuthorizationSessionForm() {
-	const router = useRouter();
-	const errorToast = useErrorToast();
+  const router = useRouter();
+  const errorToast = useErrorToast();
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<AuthorizationSessionFormType>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AuthorizationSessionFormType>();
 
-	const onSubmit: SubmitHandler<AuthorizationSessionFormType> = async (
-		formData: AuthorizationSessionFormType,
-	) => {
-		try {
-			await apiClient.post("/authorization_session", {
-				authorization_session: formData,
-			});
+  const onSubmit: SubmitHandler<AuthorizationSessionFormType> = async (
+    formData: AuthorizationSessionFormType,
+  ) => {
+    try {
+      await apiClient.post("/authorization_session", {
+        authorization_session: formData,
+      });
 
-			router.push("/authorization");
-		} catch (error) {
-			if (axios.isAxiosError(error)) {
-				errorToast({
-					error,
-					title: "このメールアドレスは使用できません",
-				});
-			}
-		}
-	};
+      router.push("/authorization");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        errorToast({
+          error,
+          title: "このメールアドレスは使用できません",
+        });
+      }
+    }
+  };
 
-	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="mt-6">
-			<FormControl isInvalid={Boolean(errors.email)} isRequired>
-				<FormLabel htmlFor="email">Email</FormLabel>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
+      <FormControl isInvalid={Boolean(errors.email)} isRequired>
+        <FormLabel htmlFor="email">Email</FormLabel>
 
-				<FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+        <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
 
-				<Input
-					type="email"
-					placeholder="test@mahjong-yaritai.com"
-					autoComplete="email"
-					{...register("email")}
-				/>
-			</FormControl>
+        <Input
+          type="email"
+          placeholder="test@mahjong-yaritai.com"
+          autoComplete="email"
+          {...register("email")}
+        />
+      </FormControl>
 
-			<MainButton className="mt-4">確認メールを送信する</MainButton>
-		</form>
-	);
+      <MainButton className="mt-4">確認メールを送信する</MainButton>
+    </form>
+  );
 }

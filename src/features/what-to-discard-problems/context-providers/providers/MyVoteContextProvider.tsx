@@ -13,9 +13,5 @@ export default function MyVotedTileContextProvider({
 }) {
   const [myVote, setMyVote] = useState<ProblemVote | null>(initialMyVote);
 
-  return (
-    <MyVoteContext.Provider value={{ myVote, setMyVote }}>
-      {children}
-    </MyVoteContext.Provider>
-  );
+  return <MyVoteContext.Provider value={{ myVote, setMyVote }}>{children}</MyVoteContext.Provider>;
 }

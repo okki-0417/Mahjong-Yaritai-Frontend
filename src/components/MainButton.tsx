@@ -5,11 +5,5 @@ export default function MainButton({
   children: string;
   className?: string;
 }) {
-  return (
-    <input
-      type="submit"
-      value={children}
-      className={`btn btn-main ${className}`}
-    />
-  );
+  return <input type="submit" value={children} className={`btn btn-main ${className}`} />;
 }

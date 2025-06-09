@@ -4,14 +4,7 @@ import ProblemDeleteButton from "@/src/features/what-to-discard-problems/compone
 import UserModal from "@/src/features/what-to-discard-problems/components/UserModal";
 import { SessionType } from "@/src/lib/getSession";
 import { WhatToDiscardProblem } from "@/src/types/ApiData";
-import {
-  Button,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, Flex, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
 
 export default function ProblemCardHeader({
   problem,
@@ -42,9 +35,7 @@ export default function ProblemCardHeader({
         </HStack>
       )}
 
-      {isOpen && (
-        <UserModal userId={problem.user.id} isOpen={isOpen} onClose={onClose} />
-      )}
+      {isOpen && <UserModal userId={problem.user.id} isOpen={isOpen} onClose={onClose} />}
     </Flex>
   );
 }

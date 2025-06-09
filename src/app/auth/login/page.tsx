@@ -7,7 +7,9 @@ import LoginForm from "@/src/features/auth/login/LoginForm";
 
 export default async function Login() {
   const session = await getSession();
-  if (session?.is_logged_in) {redirect("/dashboard");}
+  if (session?.is_logged_in) {
+    redirect("/dashboard");
+  }
 
   return (
     <Container maxH="xl" mt={40}>
@@ -19,8 +21,7 @@ export default async function Login() {
       <Box mt={6}>
         <Link
           href="authorization-session"
-          className="text-blue-300 hover:text-blue-200 hover:underline flex items-center"
-        >
+          className="text-blue-300 hover:text-blue-200 hover:underline flex items-center">
           新規会員登録はこちら
           <FaAngleRight />
         </Link>

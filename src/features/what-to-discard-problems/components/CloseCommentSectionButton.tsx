@@ -7,7 +7,5 @@ import { useContext } from "react";
 export default function CloseCommentSectionButton() {
   const { setIsCommentSectionOpen } = useContext(IsCommentSectionOpenContext);
 
-  return (
-    <CloseAccordionButton onClick={() => setIsCommentSectionOpen(false)} />
-  );
+  return <CloseAccordionButton onClick={() => setIsCommentSectionOpen(false)} />;
 }

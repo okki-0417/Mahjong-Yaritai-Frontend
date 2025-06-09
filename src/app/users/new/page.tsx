@@ -7,13 +7,17 @@ import UserForm from "@/src/features/users/new/UserForm";
 
 export default async function UserCreate() {
   const session = await getSession();
-  if (session?.is_logged_in) {redirect("/dashboard");}
+  if (session?.is_logged_in) {
+    redirect("/dashboard");
+  }
 
   const client = await apiPageClient();
 
   const response = await client.get("/authorization");
   const data: Authorization = response.data;
-  if (!data.authorized) {redirect("/authorization-session");}
+  if (!data.authorized) {
+    redirect("/authorization-session");
+  }
 
   return (
     <Container mt={40} size="xl">

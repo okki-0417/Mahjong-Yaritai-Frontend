@@ -21,8 +21,9 @@ export type CommentType = {
 
 export default function CommentSection({ problemId }: { problemId: number }) {
   const CommentContentRef = useRef<HTMLTextAreaElement | null>(null);
-  const [whatToDiscardProblemComments, setWhatToDiscardProblemComments] =
-    useState<WhatToDiscardProblemParentComment[]>([]);
+  const [whatToDiscardProblemComments, setWhatToDiscardProblemComments] = useState<
+    WhatToDiscardProblemParentComment[]
+  >([]);
 
   const {
     register,
@@ -35,7 +36,9 @@ export default function CommentSection({ problemId }: { problemId: number }) {
   });
 
   const handleReplyClick = (commentId: string) => {
-    if (!CommentContentRef.current) {return;}
+    if (!CommentContentRef.current) {
+      return;
+    }
 
     CommentContentRef.current.scrollIntoView({
       block: "center",

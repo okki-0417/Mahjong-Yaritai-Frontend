@@ -14,8 +14,7 @@ export default function CloseAccordionButton({
         bgColor="inherit"
         onClick={() => {
           onClick();
-        }}
-      >
+        }}>
         <FaAngleUp color={arrowColor} />
       </Button>
     </Flex>

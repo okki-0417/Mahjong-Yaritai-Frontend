@@ -1,13 +1,5 @@
 import LogoutButton from "@/src/components/LogoutButton";
-import {
-  Box,
-  Center,
-  Container,
-  Divider,
-  HStack,
-  ListItem,
-  UnorderedList,
-} from "@chakra-ui/react";
+import { Box, Center, Container, Divider, HStack, ListItem, UnorderedList } from "@chakra-ui/react";
 import Link from "next/link";
 
 export default function Footer() {

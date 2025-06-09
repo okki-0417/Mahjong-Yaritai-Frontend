@@ -7,10 +7,5 @@ import { useContext } from "react";
 export default function CloseVoteResultButton() {
   const { setIsVoteResultOpen } = useContext(IsVoteResultOpenContext);
 
-  return (
-    <CloseAccordionButton
-      onClick={() => setIsVoteResultOpen(false)}
-      arrowColor="white"
-    />
-  );
+  return <CloseAccordionButton onClick={() => setIsVoteResultOpen(false)} arrowColor="white" />;
 }

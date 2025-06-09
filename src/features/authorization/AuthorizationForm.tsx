@@ -8,43 +8,43 @@ import useErrorToast from "@/src/hooks/useErrorToast";
 import MainButton from "@/src/components/MainButton";
 
 type AuthorizationFormType = {
-	token: string;
+  token: string;
 };
 
 export default function AuthorizationForm() {
-	const router = useRouter();
-	const errorToast = useErrorToast();
+  const router = useRouter();
+  const errorToast = useErrorToast();
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<AuthorizationFormType>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AuthorizationFormType>();
 
-	const onSubmit: SubmitHandler<AuthorizationFormType> = async formData => {
-		try {
-			await apiClient.post("/authorization", { authorization: formData });
+  const onSubmit: SubmitHandler<AuthorizationFormType> = async formData => {
+    try {
+      await apiClient.post("/authorization", { authorization: formData });
 
-			router.push("/users/new");
-		} catch (error) {
-			errorToast({
-				error,
-				title: "認証に失敗しました",
-			});
-		}
-	};
+      router.push("/users/new");
+    } catch (error) {
+      errorToast({
+        error,
+        title: "認証に失敗しました",
+      });
+    }
+  };
 
-	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<FormControl isInvalid={Boolean(errors.token)} isRequired>
-				<FormErrorMessage className="mt-4">{errors.token?.message}</FormErrorMessage>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl isInvalid={Boolean(errors.token)} isRequired>
+        <FormErrorMessage className="mt-4">{errors.token?.message}</FormErrorMessage>
 
-				<NumberInput mt={4}>
-					<NumberInputField {...register("token")} />
-				</NumberInput>
-			</FormControl>
+        <NumberInput mt={4}>
+          <NumberInputField {...register("token")} />
+        </NumberInput>
+      </FormControl>
 
-			<MainButton className="mt-4">認証を完了する</MainButton>
-		</form>
-	);
+      <MainButton className="mt-4">認証を完了する</MainButton>
+    </form>
+  );
 }

@@ -2,11 +2,7 @@ import { CsrfTokenContext } from "@/src/app/context-providers/contexts/CsrfToken
 import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { ReactNode, useEffect, useState } from "react";
 
-export default function CsrfTokenContextProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function CsrfTokenContextProvider({ children }: { children: ReactNode }) {
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,9 +21,5 @@ export default function CsrfTokenContextProvider({
     fetchCsrfToken();
   }, []);
 
-  return (
-    <CsrfTokenContext.Provider value={csrfToken}>
-      {children}
-    </CsrfTokenContext.Provider>
-  );
+  return <CsrfTokenContext.Provider value={csrfToken}>{children}</CsrfTokenContext.Provider>;
 }

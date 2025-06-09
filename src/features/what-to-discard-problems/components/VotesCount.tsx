@@ -10,9 +10,7 @@ import { VotesCountContext } from "@/src/features/what-to-discard-problems/conte
 export type MyVoteType = Tile | null;
 
 export default function VotesCount() {
-  const { isVoteResultOpen, setIsVoteResultOpen } = useContext(
-    IsVoteResultOpenContext,
-  );
+  const { isVoteResultOpen, setIsVoteResultOpen } = useContext(IsVoteResultOpenContext);
   const { myVote } = useContext(MyVoteContext);
 
   const { votesCount } = useContext(VotesCountContext);
@@ -21,8 +19,7 @@ export default function VotesCount() {
     <button
       onClick={() => {
         setIsVoteResultOpen(!isVoteResultOpen);
-      }}
-    >
+      }}>
       <div className="flex items-center gap-1">
         {myVote ? (
           <MdHowToVote color="#0080ff" size={26} />

@@ -5,8 +5,7 @@ type IsCommentSectionOpenContext = {
   setIsCommentSectionOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const IsCommentSectionOpenContext =
-  createContext<IsCommentSectionOpenContext>({
-    isCommentSectionOpen: false,
-    setIsCommentSectionOpen: () => {},
-  });
+export const IsCommentSectionOpenContext = createContext<IsCommentSectionOpenContext>({
+  isCommentSectionOpen: false,
+  setIsCommentSectionOpen: () => {},
+});

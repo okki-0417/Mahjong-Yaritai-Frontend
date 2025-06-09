@@ -14,16 +14,16 @@ export default function WhatToDiscardProblemsContextProvider({
   initialData: FetchWhatToDiscardProblemsType;
   children: ReactNode;
 }) {
-  const [whatToDiscardProblems, setWhatToDiscardProblems] =
-    useState<WhatToDiscardProblems>(initialData.data);
+  const [whatToDiscardProblems, setWhatToDiscardProblems] = useState<WhatToDiscardProblems>(
+    initialData.data,
+  );
 
   return (
     <WhatToDiscardProblemsContext.Provider
       value={{
         whatToDiscardProblems,
         setWhatToDiscardProblems,
-      }}
-    >
+      }}>
       {children}
     </WhatToDiscardProblemsContext.Provider>
   );

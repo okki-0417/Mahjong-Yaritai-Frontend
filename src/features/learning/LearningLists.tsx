@@ -21,8 +21,7 @@ const BeforeStart = () => {
       opened={opened}
       bgColor="bg-orange-500"
       handleClick={() => setOpened(!opened)}
-      text={"始める準備"}
-    >
+      text={"始める準備"}>
       <AccordionCardMid
         opened={opened2}
         bgColor="bg-orange-400"
@@ -63,8 +62,7 @@ const DuringGame = () => {
       opened={opened}
       bgColor="bg-blue-500"
       handleClick={() => setOpened(!opened)}
-      text={"ゲーム中"}
-    >
+      text={"ゲーム中"}>
       <AccordionCardMid
         opened={opened2}
         bgColor="bg-blue-400"
@@ -84,8 +82,7 @@ const AfterGame = () => {
       opened={opened}
       bgColor="bg-red-500"
       handleClick={() => setOpened(!opened)}
-      text={"局の終わり"}
-    >
+      text={"局の終わり"}>
       <AccordionCardMid
         opened={opened2}
         bgColor="bg-red-400"

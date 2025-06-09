@@ -9,8 +9,7 @@ export default function NotLoggedInModal() {
       <div className="opacity-100 md:w-1/2 md:h-1/2 rounded bg-white text-gray-700 px-4 relative py-8">
         <button
           onClick={() => setModalName(null)}
-          className="absolute -top-4 -right-4 leading-8 pb-1 w-9 bg-white border border-gray-500 rounded-full text-gray-700 text-2xl"
-        >
+          className="absolute -top-4 -right-4 leading-8 pb-1 w-9 bg-white border border-gray-500 rounded-full text-gray-700 text-2xl">
           ×
         </button>
 
@@ -21,19 +20,12 @@ export default function NotLoggedInModal() {
         <div className="mt-8">
           <div className="text-center">
             <Link href="/auth/login" onClick={() => setModalName(null)}>
-              <button className="btn btn-sm btn-main text-xl">
-                ログインする
-              </button>
+              <button className="btn btn-sm btn-main text-xl">ログインする</button>
             </Link>
           </div>
           <div className="mt-8 text-center">
-            <Link
-              href="/authorization-session"
-              onClick={() => setModalName(null)}
-            >
-              <button className="btn btn-main text-xl">
-                新規ユーザー登録する
-              </button>
+            <Link href="/authorization-session" onClick={() => setModalName(null)}>
+              <button className="btn btn-main text-xl">新規ユーザー登録する</button>
             </Link>
           </div>
         </div>
