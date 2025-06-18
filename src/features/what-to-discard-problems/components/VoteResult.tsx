@@ -3,11 +3,12 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { apiClient } from "@/src/lib/apiClients/ApiClients";
-import { Box, Center, Flex, IconButton, Spinner, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Spinner, Text } from "@chakra-ui/react";
 import { IoReloadCircleSharp } from "react-icons/io5";
-import { VoteResultType } from "@/src/types/ApiData";
+import { VoteResultType } from "@/types/ApiData";
 import VoteButton from "@/src/features/what-to-discard-problems/components/VoteButton";
 import { MyVoteContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/MyVoteContext";
+import PopButton from "@/src/components/PopButton";
 
 export default function VoteResult({ problemId }: { problemId: number }) {
   const { myVote } = useContext(MyVoteContext);
@@ -68,17 +69,14 @@ export default function VoteResult({ problemId }: { problemId: number }) {
   }, [voteResult]);
 
   return (
-    <Box>
-      <Flex justifyContent="end" px={[8, 16]}>
-        <IconButton
-          aria-label="Reload vote result"
-          variant="ghost"
-          color="white"
-          onClick={() => setLoadResultFlag(true)}>
+    <Box mb="4">
+      <Flex justifyContent="end" px={[8, 16]} mt={[4, 0]}>
+        <PopButton onClick={() => setLoadResultFlag(true)}>
           <IoReloadCircleSharp size="30" />
-        </IconButton>
+        </PopButton>
       </Flex>
-      <Center mt={[0, 6]} h={["auto", 280]}>
+
+      <Center mt={[0, 6]} h={["auto", 280]} mx="4">
         <Flex
           flexDir={["column", "row"]}
           justifyContent="center"
@@ -96,7 +94,11 @@ export default function VoteResult({ problemId }: { problemId: number }) {
                   justifyContent="flex-end"
                   gap={1}
                   key={index}>
-                  <Flex h={["auto", "52"]} w={["2xs", "auto"]} alignItems="flex-end">
+                  <Flex
+                    h={["auto", "52"]}
+                    w={[280, "auto"]}
+                    alignItems="flex-end"
+                    justifyContent="start">
                     <Box
                       display={["none", "flex"]}
                       className={`${

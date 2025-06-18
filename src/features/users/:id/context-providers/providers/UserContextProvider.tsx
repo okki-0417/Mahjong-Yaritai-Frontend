@@ -1,7 +1,7 @@
 "use client";
 
 import { UserContext } from "@/src/features/users/:id/context-providers/contexts/UserContext";
-import { User } from "@/src/types/ApiData";
+import { User } from "@/types/ApiData";
 import { ReactNode, useState } from "react";
 
 export default function UserContextProvider({

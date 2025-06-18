@@ -7,9 +7,5 @@ import { ReactNode, useContext } from "react";
 export default function IsCommentSectionOpenToggleWrapper({ children }: { children: ReactNode }) {
   const { isCommentSectionOpen } = useContext(IsCommentSectionOpenContext);
 
-  return (
-    <ToggleWrapper flag={isCommentSectionOpen}>
-      {isCommentSectionOpen && <div>{children}</div>}
-    </ToggleWrapper>
-  );
+  return <ToggleWrapper flag={isCommentSectionOpen}>{children}</ToggleWrapper>;
 }

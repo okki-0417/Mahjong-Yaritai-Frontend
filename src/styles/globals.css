@@ -1,7 +1,15 @@
 @import "tailwindcss";
 
-body {
-  @apply bg-slate-700 font-serif overflow-x-hidden text-white;
+@theme {
+  --color-primary: #171923;
+  --color-primary-light: #272933;
+  --color-secondary: #365158;
+  --color-secondary: #466163;
+  --color-accent: #fb64b6;
+  --color-accent-light: #f7c;
+  --color-neutral: #fefefe;
+  --color-mj-mat: #008236;
+  --color-mj-mat-light: #00a256;
 }
 
 @keyframes fadeIn {
@@ -46,6 +54,10 @@ body {
   100% {
     transform: translateY(0%);
   }
+}
+
+a, button, input {
+  cursor: pointer;
 }
 
 .fade-in {

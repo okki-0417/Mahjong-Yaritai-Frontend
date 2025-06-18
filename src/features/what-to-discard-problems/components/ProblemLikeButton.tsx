@@ -1,28 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import axios from "axios";
-import { useToast } from "@chakra-ui/react";
-import { ProblemLike, WhatToDiscardProblem } from "@/src/types/ApiData";
+import { useDisclosure, useToast } from "@chakra-ui/react";
+import { WhatToDiscardProblem } from "@/types/ApiData";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
-import { useSetModal } from "@/src/hooks/useSetModal";
 import LikeButton from "@/src/components/LikeButton";
+import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
+import { Configuration, Like, WhatToDiscardProblemLikeApi } from "@/api-client";
+import { API_BASE_URL } from "@/config/apiConfig";
+
+const apiClient = new WhatToDiscardProblemLikeApi(
+  new Configuration({
+    basePath: API_BASE_URL,
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+    },
+  }),
+);
 
 export default function ProblemLikeButton({ problem }: { problem: WhatToDiscardProblem }) {
-  const [myLike, setMyLike] = useState<ProblemLike | null>(problem.myLike);
+  const [myLike, setMyLike] = useState<Like | null>(problem.myLike);
   const [likesCount, setLikesCount] = useState(problem.likesCount);
 
   const [loading, setLoading] = useState(false);
 
   const auth = useIsLoggedIn();
-  const setModal = useSetModal();
   const toast = useToast();
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const handleClick = async () => {
-    if (!auth) {
-      return setModal("NotLoggedIn");
-    }
+    if (!auth) return onOpen();
 
     if (loading) {
       return null;
@@ -31,13 +41,12 @@ export default function ProblemLikeButton({ problem }: { problem: WhatToDiscardP
 
     try {
       if (myLike) {
-        const response = await apiClient.delete(
-          `/what_to_discard_problems/${problem.id}/likes/${myLike.id}`,
-        );
+        await apiClient.deleteLike({
+          whatToDiscardProblemId: String(problem.id),
+          id: String(myLike.id),
+        });
 
-        const data = response.data.what_to_discard_problem_like;
-
-        setMyLike(data);
+        setMyLike(null);
         setLikesCount(likesCount - 1);
 
         toast({
@@ -47,9 +56,9 @@ export default function ProblemLikeButton({ problem }: { problem: WhatToDiscardP
           isClosable: true,
         });
       } else {
-        const response = await apiClient.post(`/what_to_discard_problems/${problem.id}/likes`);
+        const response = await apiClient.createLike({ whatToDiscardProblemId: String(problem.id) });
 
-        const data: ProblemLike = response.data.what_to_discard_problem_like;
+        const data = response.whatToDiscardProblemLike.myLike;
 
         setMyLike(data);
         setLikesCount(likesCount + 1);
@@ -81,11 +90,14 @@ export default function ProblemLikeButton({ problem }: { problem: WhatToDiscardP
   };
 
   return (
-    <LikeButton
-      isLiked={Boolean(myLike)}
-      likeCount={likesCount}
-      handleClick={handleClick}
-      isLoading={loading}
-    />
+    <>
+      <LikeButton
+        isLiked={Boolean(myLike)}
+        likeCount={likesCount}
+        handleClick={handleClick}
+        isLoading={loading}
+      />
+      <NotLoggedInModal isOpen={isOpen} onClose={onClose} />
+    </>
   );
 }

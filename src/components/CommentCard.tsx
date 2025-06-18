@@ -27,7 +27,7 @@ export default function CommentCard({
   };
 
   return (
-    <div className="w-full py-3 px-2 font-semibold text-gray-700 border-b border-gray-300">
+    <div className="w-full py-3 px-2 font-semibold text-gray-700">
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Link href={`/users/${user_id}`}>
           <div className="flex items-center lg:gap-2 gap-1">

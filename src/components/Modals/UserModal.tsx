@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import Link from "next/link";
-import { User } from "@/src/types/ApiData";
+import { User } from "@/types/ApiData";
 
 export default function UserModal({
   userId,
@@ -53,7 +53,7 @@ export default function UserModal({
   }, [loadUserFlag, userId]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

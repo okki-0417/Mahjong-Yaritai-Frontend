@@ -1,67 +1,81 @@
+"use client";
+
 import {
   Box,
+  Button,
   Container,
   FormControl,
   FormErrorMessage,
-  Input,
+  HStack,
   Text,
   Textarea,
   useToast,
   VisuallyHiddenInput,
 } from "@chakra-ui/react";
-import {
-  FieldErrors,
-  SubmitHandler,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormResetField,
-} from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import Link from "next/link";
-import { WhatToDiscardProblemParentComment } from "@/src/features/what-to-discard-problems/components/CommentList";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
-import { useSetModal } from "@/src/hooks/useSetModal";
-import { WhatToDiscardProblemCommentSchemaType } from "@/src/schemas/WhatToDiscardProblemCommentSchema";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import ButtonAccent from "@/src/components/Buttons/ButtonAccent";
+import { Comment, WhatToDiscardProblemCommentApi } from "@/api-client";
+import ReplyContext from "@/src/features/what-to-discard-problems/context-providers/contexts/ReplyContext";
+import { apiConfig } from "@/config/apiConfig";
+
+type CommentFormType = {
+  parentCommentId: number | null;
+  content: string;
+};
+
+const apiClient = new WhatToDiscardProblemCommentApi(apiConfig);
 
 export default function CommentForm({
   problemId,
-  setWhatToDiscardProblemComments,
-  CommentContentRef,
-  // setCommentsCount,
-  form,
+  setParentComments,
 }: {
   problemId: number;
-  setWhatToDiscardProblemComments: React.Dispatch<
-    React.SetStateAction<WhatToDiscardProblemParentComment[]>
-  >;
-  CommentContentRef: React.MutableRefObject<HTMLTextAreaElement>;
-  // setCommentsCount: React.Dispatch<React.SetStateAction<number>>;
-  form: {
-    register: UseFormRegister<WhatToDiscardProblemCommentSchemaType>;
-    handleSubmit: UseFormHandleSubmit<WhatToDiscardProblemCommentSchemaType>;
-    errors: FieldErrors<WhatToDiscardProblemCommentSchemaType>;
-    resetField: UseFormResetField<WhatToDiscardProblemCommentSchemaType>;
-  };
+  setParentComments: React.Dispatch<React.SetStateAction<Comment[] | null>>;
 }) {
   const [loading, setLoading] = useState(false);
   const auth = useIsLoggedIn();
-  const setModal = useSetModal();
   const errorToast = useErrorToast();
   const toast = useToast();
 
-  const onSubmit: SubmitHandler<WhatToDiscardProblemCommentSchemaType> = async formData => {
-    if (!auth) return setModal("NotLoggedIn");
+  const { replyToComment, setReplyToComment, setRepliesFromContext } = useContext(ReplyContext);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    setFocus,
+    resetField,
+  } = useForm<CommentFormType>();
+
+  useEffect(() => {
+    if (!replyToComment) return;
+
+    setValue("parentCommentId", replyToComment.id);
+    setFocus("content");
+  }, [replyToComment]);
+
+  const onSubmit: SubmitHandler<CommentFormType> = async formData => {
+    if (!auth) return null;
     if (loading) return null;
     setLoading(true);
 
     try {
-      const response = await apiClient.post(`/what_to_discard_problems/${problemId}/comments`, {
-        what_to_discard_problem_comment: formData,
+      const response = await apiClient.createComment({
+        whatToDiscardProblemId: String(problemId),
+        createCommentRequest: {
+          whatToDiscardProblemComment: {
+            parentCommentId: replyToComment ? String(replyToComment.id) : null,
+            content: formData.content,
+          },
+        },
       });
 
-      const comments = response.data.what_to_discard_problem_comments;
+      const resComment: Comment = response.comment;
 
       toast({
         title: "コメントを投稿しました",
@@ -70,10 +84,13 @@ export default function CommentForm({
         isClosable: true,
       });
 
-      setWhatToDiscardProblemComments(comments.comments);
-      // setCommentsCount(comments.total_count);
+      if (resComment.parentCommentId) {
+        setRepliesFromContext(prev => [...prev, resComment]);
+      } else {
+        setParentComments(prev => [...prev, resComment]);
+      }
 
-      form.resetField("content");
+      resetField("content");
     } catch (error) {
       errorToast({
         error,
@@ -90,30 +107,36 @@ export default function CommentForm({
     <Box>
       {auth ? (
         <Box mt={2}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormControl
-              isInvalid={Boolean(form.errors.content) || Boolean(form.errors.parent_comment_id)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {replyToComment && (
+              <HStack justifyContent="space-between" mb="2">
+                <Text>{replyToComment.user.name}のコメントに返信中...</Text>
+                <Button
+                  bgColor="inherit"
+                  size="sm"
+                  color="#365158"
+                  h="fit-content"
+                  onClick={() => setReplyToComment(null)}>
+                  キャンセル
+                </Button>
+              </HStack>
+            )}
+
+            <FormControl isInvalid={Boolean(errors.content) || Boolean(errors.parentCommentId)}>
               <Box>
-                <Textarea
-                  placeholder="コメントする..."
-                  {...form.register("content")}
-                  ref={el => {
-                    form.register("content").ref(el);
-                    CommentContentRef.current = el;
-                  }}
-                />
+                <Textarea placeholder="コメントする..." {...register("content")} />
                 <FormErrorMessage color={"red.500"}>
-                  {form.errors.content && form.errors.content.message}
+                  {errors.content && errors.content.message}
                 </FormErrorMessage>
               </Box>
 
-              <VisuallyHiddenInput {...form.register("parent_comment_id")} />
+              <VisuallyHiddenInput {...register("parentCommentId")} defaultValue={null} />
               <FormErrorMessage color={"red.500"}>
-                {form.errors.parent_comment_id && form.errors.parent_comment_id.message}
+                {errors.parentCommentId && errors.parentCommentId.message}
               </FormErrorMessage>
 
               <Container mt={3} textAlign={"center"}>
-                <Input type="submit" border={"1px"} w={"fit-content"} />
+                <ButtonAccent type="submit">送信</ButtonAccent>
               </Container>
             </FormControl>
           </form>

@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
-import axios from "axios";
-import { Box, Center, Spinner } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import ParentCommentCard from "@/src/features/what-to-discard-problems/components/ParentCommentCard";
+import { Comment, Configuration, WhatToDiscardProblemCommentApi } from "@/api-client";
+import { API_BASE_URL } from "@/config/apiConfig";
+import CommentForm from "@/src/features/what-to-discard-problems/components/CommentForm";
+import ReplyContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/ReplyToCommentContextProvider";
 
 export type WhatToDiscardProblemParentComment = {
   id: number;
@@ -27,61 +29,48 @@ export type WhatToDiscardProblemParentComment = {
   }[];
 };
 
-export default function CommentList({
-  problemId,
-  handleReplyClick,
-  whatToDiscardProblemComments,
-  setWhatToDiscardProblemComments,
-}: {
-  problemId: number;
-  handleReplyClick: (commentId: string) => void;
-  whatToDiscardProblemComments: WhatToDiscardProblemParentComment[];
-  setWhatToDiscardProblemComments: React.Dispatch<
-    React.SetStateAction<WhatToDiscardProblemParentComment[]>
-  >;
-}) {
+const apiClient = new WhatToDiscardProblemCommentApi(
+  new Configuration({
+    basePath: API_BASE_URL,
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+    },
+  }),
+);
+
+export default function CommentList({ problemId }: { problemId: number }) {
+  const [parentComments, setParentComments] = useState<Comment[] | null>(null);
   const [canFetch, setCanFetch] = useState(true);
 
   useEffect(() => {
-    if (!canFetch) {
-      return;
-    }
+    if (!canFetch) return;
     setCanFetch(false);
 
-    const fetchWhatToDiscardProblemsComments = async () => {
-      try {
-        const response = await apiClient.get(`/what_to_discard_problems/${problemId}/comments`);
+    const fetchComments = async () => {
+      const response = await apiClient.getComments({ whatToDiscardProblemId: String(problemId) });
 
-        const comments = response.data.what_to_discard_problem_comments;
-
-        setWhatToDiscardProblemComments(comments);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.error(error.status);
-          console.error(error.message);
-        }
-      }
+      setParentComments(response.comments);
     };
 
-    fetchWhatToDiscardProblemsComments();
-  }, [canFetch, problemId, setWhatToDiscardProblemComments]);
+    fetchComments();
+  }, [canFetch]);
 
   return (
-    <Box>
-      {!whatToDiscardProblemComments && (
-        <Center>
-          <Spinner color="black" size="xl" />
-        </Center>
-      )}
-      {whatToDiscardProblemComments && !whatToDiscardProblemComments?.length && (
-        <div className="text-center text-lg font-bold">コメントはまだありません</div>
-      )}
-      {whatToDiscardProblemComments?.length &&
-        whatToDiscardProblemComments.map((comment, index) => {
-          return (
-            <ParentCommentCard handleReplyClick={handleReplyClick} comment={comment} key={index} />
-          );
-        })}
+    <Box minH={30}>
+      <ReplyContextProvider>
+        {parentComments?.length ? (
+          parentComments.map((comment, index) => {
+            return <ParentCommentCard comment={comment} key={index} />;
+          })
+        ) : (
+          <Text textAlign="center" fontSize="lg" fontWeight="bold">
+            コメントはまだありません
+          </Text>
+        )}
+
+        <CommentForm setParentComments={setParentComments} problemId={problemId} />
+      </ReplyContextProvider>
     </Box>
   );
 }

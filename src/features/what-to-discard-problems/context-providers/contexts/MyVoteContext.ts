@@ -1,4 +1,4 @@
-import { ProblemVote } from "@/src/types/ApiData";
+import { ProblemVote } from "@/types/ApiData";
 import { createContext } from "react";
 
 type MyVotedTileContext = {

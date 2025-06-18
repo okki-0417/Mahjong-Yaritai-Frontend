@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@/src/types/ApiData";
+import { User } from "@/types/ApiData";
 import { createContext } from "react";
 
 type UserContext = {

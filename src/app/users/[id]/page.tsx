@@ -2,8 +2,9 @@ import UserContextProvider from "@/src/features/users/:id/context-providers/prov
 import Profile from "@/src/features/users/:id/Profile";
 import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
 import getSession from "@/src/lib/getSession";
-import { User } from "@/src/types/ApiData";
+import { User } from "@/types/ApiData";
 import { Container, VStack } from "@chakra-ui/react";
+import { Suspense } from "react";
 
 export type UserType = {
   name: string;
@@ -24,9 +25,11 @@ export default async function UserShow({ params }: { params: Promise<{ id: strin
     return (
       <Container mt="40" maxW="xl">
         <VStack gap="3" position="relative" alignItems="center">
-          <UserContextProvider initialUser={user}>
-            <Profile isMyPage={isMyPage} />
-          </UserContextProvider>
+          <Suspense>
+            <UserContextProvider initialUser={user}>
+              <Profile isMyPage={isMyPage} />
+            </UserContextProvider>
+          </Suspense>
         </VStack>
       </Container>
     );

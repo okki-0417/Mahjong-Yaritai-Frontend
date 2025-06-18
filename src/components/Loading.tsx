@@ -1,12 +1,9 @@
-import { Flex } from "@chakra-ui/react";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Center, Spinner } from "@chakra-ui/react";
 
 export default function Loading() {
   return (
-    <Flex justify="center">
-      <div className="animate-spin w-fit">
-        <AiOutlineLoading3Quarters size={30} />
-      </div>
-    </Flex>
+    <Center>
+      <Spinner color="black" size="lg" />
+    </Center>
   );
 }

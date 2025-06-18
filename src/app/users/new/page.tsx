@@ -2,7 +2,7 @@ import { Container, Text } from "@chakra-ui/react";
 import getSession from "@/src/lib/getSession";
 import { redirect } from "next/navigation";
 import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
-import { Authorization } from "@/src/types/ApiData";
+import { Authorization } from "@/types/ApiData";
 import UserForm from "@/src/features/users/new/UserForm";
 
 export default async function UserCreate() {

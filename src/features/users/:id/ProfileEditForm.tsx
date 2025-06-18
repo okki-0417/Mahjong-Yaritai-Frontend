@@ -16,7 +16,7 @@ import { isAxiosError } from "axios";
 import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { UserContext } from "@/src/features/users/:id/context-providers/contexts/UserContext";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { User } from "@/src/types/ApiData";
+import { User } from "@/types/ApiData";
 
 type UserEditType = {
   name: string;

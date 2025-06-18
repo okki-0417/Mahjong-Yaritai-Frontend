@@ -2,10 +2,11 @@
 
 import { useContext } from "react";
 import { MdHowToVote } from "react-icons/md";
-import { Tile } from "@/src/types/ApiData";
+import { Tile } from "@/types/ApiData";
 import { IsVoteResultOpenContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/IsVoteResultOpenContext";
 import { MyVoteContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/MyVoteContext";
 import { VotesCountContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/VotesCountContext";
+import PopButton from "@/src/components/PopButton";
 
 export type MyVoteType = Tile | null;
 
@@ -16,7 +17,7 @@ export default function VotesCount() {
   const { votesCount } = useContext(VotesCountContext);
 
   return (
-    <button
+    <PopButton
       onClick={() => {
         setIsVoteResultOpen(!isVoteResultOpen);
       }}>
@@ -28,6 +29,6 @@ export default function VotesCount() {
         )}
         <div className="font-bold font-sans lg:text-lg">{votesCount}</div>
       </div>
-    </button>
+    </PopButton>
   );
 }

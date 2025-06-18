@@ -2,14 +2,14 @@
 
 import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useContext, useState } from "react";
-import { Box, useToast } from "@chakra-ui/react";
+import { Box, useDisclosure, useToast } from "@chakra-ui/react";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
-import { useSetModal } from "@/src/hooks/useSetModal";
-import { ProblemVote } from "@/src/types/ApiData";
+import { ProblemVote } from "@/types/ApiData";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import { MyVoteContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/MyVoteContext";
 import { VotesCountContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/VotesCountContext";
+import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 
 export default function VoteButton({
   problemId,
@@ -21,7 +21,6 @@ export default function VoteButton({
   setLoadResultFlag: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const auth = useIsLoggedIn();
-  const setModal = useSetModal();
   const toast = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -29,15 +28,15 @@ export default function VoteButton({
   const { myVote, setMyVote } = useContext(MyVoteContext);
   const { setVotesCount } = useContext(VotesCountContext);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const handleVote = async () => {
     if (!auth) {
-      setModal("NotLoggedIn");
-      return;
+      console.log(auth);
+      return onOpen();
     }
 
-    if (isLoading) {
-      return;
-    }
+    if (isLoading) return null;
     setIsLoading(true);
 
     try {
@@ -114,16 +113,22 @@ export default function VoteButton({
     } finally {
       setIsLoading(false);
     }
+
+    return null;
   };
 
   return (
-    <PopButton
-      onClick={handleVote}
-      value={
-        <Box w={["6", "12"]}>
-          <TileImage tile={tileId} />
-        </Box>
-      }
-    />
+    <Box content="">
+      <PopButton
+        onClick={handleVote}
+        value={
+          <Box h={["10", "16"]}>
+            <TileImage tile={tileId} />
+          </Box>
+        }
+      />
+
+      <NotLoggedInModal isOpen={isOpen} onClose={onClose} />
+    </Box>
   );
 }

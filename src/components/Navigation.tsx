@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
+import ButtonNeutral from "@/src/components/Buttons/ButtonNeutral";
 
 export default function Navigation() {
   const [checked, setChecked] = useState(false);
@@ -29,7 +30,7 @@ export default function Navigation() {
   return (
     <>
       <Box as="header" position="fixed" w="full" zIndex="50">
-        <Center as="nav" bgColor="gray.900" h="20" position="relative">
+        <Center as="nav" h="20" position="relative" className="bg-primary">
           <Container maxW="5xl">
             <HStack justifyContent={["center", "space-between"]}>
               <Link href="/">
@@ -43,21 +44,25 @@ export default function Navigation() {
                 </HStack>
               </Link>
 
-              <HStack display={["none", "none", "flex"]} gap="5">
+              <HStack display={["none", "none", "flex"]}>
                 <Link href="/what-to-discard-problems">
                   <HStack gap="1">
-                    <GiThink size={25} color="white" />
-                    <Text fontSize="lg">何切る問題</Text>
+                    <ButtonNeutral>
+                      <HStack mx="0">
+                        <GiThink size={25} color="white" />
+                        <Text>何切る問題</Text>
+                      </HStack>
+                    </ButtonNeutral>
                   </HStack>
                 </Link>
 
                 {!auth && (
                   <Flex gap={1}>
                     <Link href="/auth/login">
-                      <Button colorScheme="pink">ログイン</Button>
+                      <ButtonNeutral>ログイン</ButtonNeutral>
                     </Link>
                     <Link href="/authorization-session">
-                      <Button colorScheme="blue">新規登録</Button>
+                      <ButtonNeutral>新規登録</ButtonNeutral>
                     </Link>
                   </Flex>
                 )}

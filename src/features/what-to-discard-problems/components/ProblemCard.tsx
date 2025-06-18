@@ -1,9 +1,5 @@
 import TileImage from "@/src/components/TileImage";
-import CloseCommentSectionButton from "@/src/features/what-to-discard-problems/components/CloseCommentSectionButton";
-import CloseVoteResultButton from "@/src/features/what-to-discard-problems/components/CloseVoteResultButton";
 import CommentsCount from "@/src/features/what-to-discard-problems/components/CommentsCount";
-import CommentSection from "@/src/features/what-to-discard-problems/components/CommentSection";
-import IsCommentSectionOpenToggleWrapper from "@/src/features/what-to-discard-problems/components/IsCommentSectionOpenToggleWrapper";
 import IsVoteResultOpenToggleWrapper from "@/src/features/what-to-discard-problems/components/IsVoteResultOpenToggleWrapper";
 import ProblemCardHeader from "@/src/features/what-to-discard-problems/components/ProblemCardHeader";
 import ProblemLikeButton from "@/src/features/what-to-discard-problems/components/ProblemLikeButton";
@@ -15,8 +11,8 @@ import IsVoteResultOpenContextProvider from "@/src/features/what-to-discard-prob
 import MyVotedTileContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/MyVoteContextProvider";
 import VotesCountContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/VotesCountContextProvider";
 import getSession from "@/src/lib/getSession";
-import { WhatToDiscardProblem } from "@/src/types/ApiData";
-import { Box, Flex, Grid, GridItem, HStack, Text } from "@chakra-ui/react";
+import { WhatToDiscardProblem } from "@/types/ApiData";
+import { Box, Flex, HStack, Text, Wrap } from "@chakra-ui/react";
 
 export default async function ProblemCard({ problem }: { problem: WhatToDiscardProblem }) {
   const session = await getSession();
@@ -25,24 +21,24 @@ export default async function ProblemCard({ problem }: { problem: WhatToDiscardP
     <Box mt={12} w="full">
       <Text fontSize="xl">{new Date(problem.createdAt).toLocaleString()}</Text>
 
-      <Box boxShadow="base" borderRadius="md" className="bg-green-700">
+      <Box boxShadow="base" borderRadius="md" className="bg-mj-mat" shadow="md">
         <ProblemCardHeader problem={problem} session={session} />
 
         <Box px="3" mt="3">
           <HStack fontSize={[18, 20]}>
             <Text>{problem.round}局</Text>
-
+            <Text>{problem.wind}家</Text>
             <Text>{problem.turn}巡目</Text>
 
-            <Text>{problem.wind}家</Text>
-
-            <HStack h="8">
+            <HStack gap="1">
               <Text>ドラ</Text>
-              <TileImage tile={problem.dora.id} hover={false} />
+              <Box h="8">
+                <TileImage tile={problem.dora.id} hover={false} />
+              </Box>
             </HStack>
           </HStack>
 
-          <Grid templateColumns="repeat(4,1fr)" fontSize={[18, 20]} mt="2">
+          <Wrap fontSize={[18, 20]} mt="2" gap="4">
             {[
               { label: "東家", point: problem.pointEast },
               { label: "南家", point: problem.pointSouth },
@@ -50,21 +46,19 @@ export default async function ProblemCard({ problem }: { problem: WhatToDiscardP
               { label: "北家", point: problem.pointNorth },
             ].map(obj => {
               return (
-                <GridItem colSpan={[2, 1]} key={obj.label}>
-                  <HStack>
-                    <Text>{obj.label}</Text>
-                    <Text className="font-sans font-normal">{obj.point}点</Text>
-                  </HStack>
-                </GridItem>
+                <HStack key={obj.label} w="fit-content">
+                  <Text>{obj.label}</Text>
+                  <Text className="font-sans font-normal">{obj.point}点</Text>
+                </HStack>
               );
             })}
-          </Grid>
+          </Wrap>
 
           <Flex flexDir={["column", "row-reverse"]} justifyContent="center" gap="3" mt="3">
-            <Flex flexDir={["row", "column"]} alignItems="center">
+            <Flex flexDir={["row", "column"]} alignItems="center" gap={[2, 0]}>
               <Text>ツモ</Text>
 
-              <Box w={[8, "auto"]}>
+              <Box w={[6, "auto"]}>
                 <TileImage tile={problem.tsumo.id} hover={false} />
               </Box>
             </Flex>
@@ -87,7 +81,7 @@ export default async function ProblemCard({ problem }: { problem: WhatToDiscardP
               ].map((hand, index) => {
                 return (
                   <Box key={index}>
-                    <TileImage tile={hand.id} hover={false} />
+                    <TileImage tile={hand.id} hover={false} className="shadow-lg" />
                   </Box>
                 );
               })}
@@ -101,12 +95,12 @@ export default async function ProblemCard({ problem }: { problem: WhatToDiscardP
               <MyVotedTileContextProvider initialMyVote={problem.myVote}>
                 <VotesCountContextProvider initialVotesCount={problem.votesCount}>
                   <Box>
-                    <VoteResultOpenButton />
+                    <Box mt="6">
+                      <VoteResultOpenButton />
+                    </Box>
 
                     <IsVoteResultOpenToggleWrapper>
                       <VoteResult problemId={problem.id} />
-
-                      <CloseVoteResultButton />
                     </IsVoteResultOpenToggleWrapper>
                   </Box>
 
@@ -120,16 +114,10 @@ export default async function ProblemCard({ problem }: { problem: WhatToDiscardP
                     <HStack>
                       <ProblemLikeButton problem={problem} />
 
-                      <CommentsCount commentsCount={problem.commentsCount} />
+                      <CommentsCount commentsCount={problem.commentsCount} problemId={problem.id} />
 
                       <VotesCount />
                     </HStack>
-
-                    <IsCommentSectionOpenToggleWrapper>
-                      <CommentSection problemId={problem.id} />
-
-                      <CloseCommentSectionButton />
-                    </IsCommentSectionOpenToggleWrapper>
                   </Box>
                 </VotesCountContextProvider>
               </MyVotedTileContextProvider>

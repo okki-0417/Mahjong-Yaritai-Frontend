@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import axios from "axios";
@@ -15,6 +15,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 
 type LoginFormType = {
   email: string;
@@ -25,6 +26,7 @@ export default function LoginForm() {
   const router = useRouter();
   const [passVisible, setPassVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { setAuth } = useContext(AuthStateContext);
 
   const errorToast = useErrorToast();
 
@@ -43,6 +45,7 @@ export default function LoginForm() {
     try {
       await apiClient.post("/session", { session: formData });
 
+      setAuth(true);
       router.push("/what-to-discard-problems");
     } catch (error) {
       if (axios.isAxiosError(error)) {

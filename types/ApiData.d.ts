@@ -1,3 +1,5 @@
+import { Like } from "@/api-client";
+
 export type Authorization = {
   authorized: boolean;
 };
@@ -30,7 +32,7 @@ export type WhatToDiscardProblem = {
   likesCount: number;
   commentsCount: number;
   votesCount: number;
-  myLike: ProblemLike;
+  myLike: Like;
   myVote: ProblemVote;
   createdAt: string;
   updatedAt: string;

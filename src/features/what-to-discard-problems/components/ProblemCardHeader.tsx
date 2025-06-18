@@ -1,9 +1,9 @@
 "use client";
 
 import ProblemDeleteButton from "@/src/features/what-to-discard-problems/components/ProblemDeleteButton";
-import UserModal from "@/src/features/what-to-discard-problems/components/UserModal";
+import UserModal from "@/src/components/Modals/UserModal";
 import { SessionType } from "@/src/lib/getSession";
-import { WhatToDiscardProblem } from "@/src/types/ApiData";
+import { WhatToDiscardProblem } from "@/types/ApiData";
 import { Button, Flex, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
 
 export default function ProblemCardHeader({
@@ -35,7 +35,7 @@ export default function ProblemCardHeader({
         </HStack>
       )}
 
-      {isOpen && <UserModal userId={problem.user.id} isOpen={isOpen} onClose={onClose} />}
+      <UserModal userId={problem.user.id} isOpen={isOpen} onClose={onClose} />
     </Flex>
   );
 }
