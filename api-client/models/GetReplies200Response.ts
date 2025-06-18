@@ -32,14 +32,14 @@ export interface GetReplies200Response {
      * @type {Array<Comment>}
      * @memberof GetReplies200Response
      */
-    whatToDiscardProblemCommentReplies: Array<Comment>;
+    comments: Array<Comment>;
 }
 
 /**
  * Check if a given object implements the GetReplies200Response interface.
  */
 export function instanceOfGetReplies200Response(value: object): value is GetReplies200Response {
-    if (!('whatToDiscardProblemCommentReplies' in value) || value['whatToDiscardProblemCommentReplies'] === undefined) return false;
+    if (!('comments' in value) || value['comments'] === undefined) return false;
     return true;
 }
 
@@ -53,7 +53,7 @@ export function GetReplies200ResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'whatToDiscardProblemCommentReplies': ((json['what_to_discard_problem_comment_replies'] as Array<any>).map(CommentFromJSON)),
+        'comments': ((json['comments'] as Array<any>).map(CommentFromJSON)),
     };
 }
 
@@ -68,7 +68,7 @@ export function GetReplies200ResponseToJSONTyped(value?: GetReplies200Response |
 
     return {
         
-        'what_to_discard_problem_comment_replies': ((value['whatToDiscardProblemCommentReplies'] as Array<any>).map(CommentToJSON)),
+        'comments': ((value['comments'] as Array<any>).map(CommentToJSON)),
     };
 }
 

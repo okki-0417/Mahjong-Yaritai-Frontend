@@ -1,34 +1,50 @@
-import CommentCard from "@/src/components/CommentCard";
+import { Comment } from "@/api-client";
+import UserModal from "@/src/components/Modals/UserModal";
+import useMyUserId from "@/src/hooks/useMyUserId";
+import { Box, Button, Circle, Flex, HStack, Img, Text, useDisclosure } from "@chakra-ui/react";
+import { IoMdTrash } from "react-icons/io";
 
-export default function ChildCommentCard({
-  parentCommentId,
-  user_id,
-  user_name,
-  created_at,
-  content,
-  handleReplyClick,
-}: {
-  parentCommentId: number;
-  user_id: number;
-  user_name: string;
-  created_at: string;
-  content: string;
-  /* eslint no-unused-vars: 0 */
-  handleReplyClick: (ParentCommentId: string) => void;
-}) {
+export default function ChildCommentCard({ reply }: { reply: Comment }) {
+  const isMyComment = reply.user.id == useMyUserId();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
-    <div className="pl-4">
-      <div className="flex lg:gap-4 gap-1">
-        <div className="w-1 min-h-full bg-gray-400 rounded-full my-2"></div>
-        <CommentCard
-          comment_id={parentCommentId}
-          user_id={user_id}
-          user_name={user_name}
-          created_at={created_at}
-          content={content}
-          handleReplyClick={handleReplyClick}
-        />
-      </div>
-    </div>
+    <Box w="full" h="24">
+      <Flex alignItems="center" justifyContent="space-between">
+        <Button bgColor="inherit" h="fit-content" p="0" pr="2" onClick={onOpen}>
+          <HStack>
+            <Circle size="8" overflow="hidden" border="1px">
+              <Img
+                src={reply.user.avatarUrl || "/no-image.webp"}
+                className="w-full h-full object-cover"
+              />
+            </Circle>
+            <Text fontWeight="bold" color="#365158">
+              {reply.user.name}
+            </Text>
+          </HStack>
+        </Button>
+
+        <Box>
+          {isMyComment && (
+            <Button size="sm" px="1" bgColor="inherit">
+              <IoMdTrash size={20} color="#365158" />
+            </Button>
+          )}
+        </Box>
+      </Flex>
+
+      <Text fontFamily="sans-serif" fontSize="xs" color="#466163">
+        {new Date(reply.createdAt).toLocaleString()}
+      </Text>
+
+      <Box className="pl-1 mt-2">
+        <Text>{reply.content}</Text>
+
+        {/* <LikeButton /> */}
+      </Box>
+
+      <UserModal userId={reply.user.id} isOpen={isOpen} onClose={onClose} />
+    </Box>
   );
 }

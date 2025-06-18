@@ -1,8 +1,10 @@
 "use client";
 
-import { Comment, Configuration, WhatToDiscardProblemCommentReplyApi } from "@/api-client";
-import { API_BASE_URL } from "@/config/apiConfig";
+import { Comment } from "@/api-client";
 import UserModal from "@/src/components/Modals/UserModal";
+import ChildCommentCard from "@/src/features/what-to-discard-problems/components/ChildCommentCard";
+import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/DeleteCommentButton";
+import FetchRepliesButton from "@/src/features/what-to-discard-problems/components/FetchRepliesButton";
 import ReplyContext from "@/src/features/what-to-discard-problems/context-providers/contexts/ReplyContext";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useMyUserId from "@/src/hooks/useMyUserId";
@@ -10,31 +12,20 @@ import {
   Box,
   Button,
   Circle,
-  Divider,
   Flex,
   HStack,
   Img,
   Text,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import { MdOutlineReply } from "react-icons/md";
-
-const apiClient = new WhatToDiscardProblemCommentReplyApi(
-  new Configuration({
-    basePath: API_BASE_URL,
-    credentials: "include",
-    headers: {
-      Accept: "application/json",
-    },
-  }),
-);
 
 export default function ParentCommentCard({ comment }: { comment: Comment }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isMyComment = comment.user.id == useMyUserId();
-  const [canFetchReplies, setCanFetchReplies] = useState(false);
 
   const auth = useIsLoggedIn();
 
@@ -42,28 +33,8 @@ export default function ParentCommentCard({ comment }: { comment: Comment }) {
 
   const { setReplyToComment, setSetRepliesFromContext } = useContext(ReplyContext);
 
-  useEffect(() => {
-    if (!canFetchReplies) return;
-    setCanFetchReplies(false);
-
-    const fetchReplies = async () => {
-      try {
-        const response = await apiClient.getReplies({
-          whatToDiscardProblemId: String(comment.commentableId),
-          commentId: String(comment.id),
-        });
-
-        setReplies(response.whatToDiscardProblemCommentReplies);
-      } catch (error) {
-        console.error("返信fetch:", error);
-      }
-    };
-
-    fetchReplies();
-  }, [canFetchReplies]);
-
   return (
-    <Box>
+    <Box w="full" pb="4">
       <Flex alignItems="center" justifyContent="space-between">
         <Button bgColor="inherit" h="fit-content" p="0" pr="2" onClick={onOpen}>
           <HStack>
@@ -80,7 +51,7 @@ export default function ParentCommentCard({ comment }: { comment: Comment }) {
         </Button>
 
         <Box>
-          {auth && (
+          {auth && !isMyComment && (
             <Button
               size="sm"
               px="1"
@@ -93,11 +64,7 @@ export default function ParentCommentCard({ comment }: { comment: Comment }) {
             </Button>
           )}
 
-          {isMyComment && (
-            <Button size="sm" px="1" bgColor="inherit">
-              <IoMdTrash size={20} color="#365158" />
-            </Button>
-          )}
+          {isMyComment && <DeleteCommentButton comment={comment} />}
         </Box>
       </Flex>
 
@@ -111,25 +78,22 @@ export default function ParentCommentCard({ comment }: { comment: Comment }) {
         {/* <LikeButton /> */}
       </Box>
 
-      <Divider mt="8" />
+      {!replies && Boolean(comment.repliesCount) && (
+        <FetchRepliesButton setReplies={setReplies} comment={comment} />
+      )}
 
-      {comment.repliesCount ? (
-        <Flex justifyContent="end">
-          <Button
-            colorScheme=""
-            h="fit-content"
-            py="2"
-            color="#365158"
-            fontSize="sm"
-            _hover={{ bgColor: "gray.200" }}>
-            返信を見る
-          </Button>
-        </Flex>
-      ) : null}
-
-      {replies?.map(reply => {
-        return <Box>{JSON.stringify(reply)}</Box>;
-      })}
+      {replies && (
+        <VStack mt="4">
+          {replies.map((reply, index) => {
+            return (
+              <HStack w="full" pl="4" h="24" key={index}>
+                <Box w="1" h="full" bgColor="#466163" rounded="full" />
+                <ChildCommentCard reply={reply} />
+              </HStack>
+            );
+          })}
+        </VStack>
+      )}
 
       <UserModal userId={comment.user.id} isOpen={isOpen} onClose={onClose} />
     </Box>

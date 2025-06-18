@@ -124,7 +124,10 @@ export default function CommentForm({
 
             <FormControl isInvalid={Boolean(errors.content) || Boolean(errors.parentCommentId)}>
               <Box>
-                <Textarea placeholder="コメントする..." {...register("content")} />
+                <Textarea
+                  placeholder="コメントする..."
+                  {...register("content", { required: true })}
+                />
                 <FormErrorMessage color={"red.500"}>
                   {errors.content && errors.content.message}
                 </FormErrorMessage>

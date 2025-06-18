@@ -17,15 +17,15 @@ import * as runtime from '../runtime';
 import type {
   CreateComment201Response,
   CreateCommentRequest,
-  GetComments200Response,
+  GetReplies200Response,
 } from '../models/index';
 import {
     CreateComment201ResponseFromJSON,
     CreateComment201ResponseToJSON,
     CreateCommentRequestFromJSON,
     CreateCommentRequestToJSON,
-    GetComments200ResponseFromJSON,
-    GetComments200ResponseToJSON,
+    GetReplies200ResponseFromJSON,
+    GetReplies200ResponseToJSON,
 } from '../models/index';
 
 export interface CreateCommentOperationRequest {
@@ -125,7 +125,7 @@ export class WhatToDiscardProblemCommentApi extends runtime.BaseAPI {
     /**
      * list comments
      */
-    async getCommentsRaw(requestParameters: GetCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetComments200Response>> {
+    async getCommentsRaw(requestParameters: GetCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetReplies200Response>> {
         if (requestParameters['whatToDiscardProblemId'] == null) {
             throw new runtime.RequiredError(
                 'whatToDiscardProblemId',
@@ -144,13 +144,13 @@ export class WhatToDiscardProblemCommentApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GetComments200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => GetReplies200ResponseFromJSON(jsonValue));
     }
 
     /**
      * list comments
      */
-    async getComments(requestParameters: GetCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetComments200Response> {
+    async getComments(requestParameters: GetCommentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetReplies200Response> {
         const response = await this.getCommentsRaw(requestParameters, initOverrides);
         return await response.value();
     }

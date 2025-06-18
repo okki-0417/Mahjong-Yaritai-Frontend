@@ -15,26 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
-  CreateReply201Response,
   GetReplies200Response,
 } from '../models/index';
 import {
-    CreateReply201ResponseFromJSON,
-    CreateReply201ResponseToJSON,
     GetReplies200ResponseFromJSON,
     GetReplies200ResponseToJSON,
 } from '../models/index';
-
-export interface CreateReplyRequest {
-    whatToDiscardProblemId: string;
-    commentId: string;
-}
-
-export interface DeleteReplyRequest {
-    whatToDiscardProblemId: string;
-    commentId: string;
-    id: string;
-}
 
 export interface GetRepliesRequest {
     whatToDiscardProblemId: string;
@@ -45,92 +31,6 @@ export interface GetRepliesRequest {
  * 
  */
 export class WhatToDiscardProblemCommentReplyApi extends runtime.BaseAPI {
-
-    /**
-     * create reply
-     */
-    async createReplyRaw(requestParameters: CreateReplyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateReply201Response>> {
-        if (requestParameters['whatToDiscardProblemId'] == null) {
-            throw new runtime.RequiredError(
-                'whatToDiscardProblemId',
-                'Required parameter "whatToDiscardProblemId" was null or undefined when calling createReply().'
-            );
-        }
-
-        if (requestParameters['commentId'] == null) {
-            throw new runtime.RequiredError(
-                'commentId',
-                'Required parameter "commentId" was null or undefined when calling createReply().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/what_to_discard_problems/{what_to_discard_problem_id}/comments/{comment_id}/replies`.replace(`{${"what_to_discard_problem_id"}}`, encodeURIComponent(String(requestParameters['whatToDiscardProblemId']))).replace(`{${"comment_id"}}`, encodeURIComponent(String(requestParameters['commentId']))),
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CreateReply201ResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * create reply
-     */
-    async createReply(requestParameters: CreateReplyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateReply201Response> {
-        const response = await this.createReplyRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * delete reply
-     */
-    async deleteReplyRaw(requestParameters: DeleteReplyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['whatToDiscardProblemId'] == null) {
-            throw new runtime.RequiredError(
-                'whatToDiscardProblemId',
-                'Required parameter "whatToDiscardProblemId" was null or undefined when calling deleteReply().'
-            );
-        }
-
-        if (requestParameters['commentId'] == null) {
-            throw new runtime.RequiredError(
-                'commentId',
-                'Required parameter "commentId" was null or undefined when calling deleteReply().'
-            );
-        }
-
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling deleteReply().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/what_to_discard_problems/{what_to_discard_problem_id}/comments/{comment_id}/replies/{id}`.replace(`{${"what_to_discard_problem_id"}}`, encodeURIComponent(String(requestParameters['whatToDiscardProblemId']))).replace(`{${"comment_id"}}`, encodeURIComponent(String(requestParameters['commentId']))).replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * delete reply
-     */
-    async deleteReply(requestParameters: DeleteReplyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.deleteReplyRaw(requestParameters, initOverrides);
-    }
 
     /**
      * list replies

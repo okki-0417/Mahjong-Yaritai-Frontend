@@ -31,9 +31,7 @@ export default function UserModal({
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (!loadUserFlag) {
-      return;
-    }
+    if (!loadUserFlag) return;
 
     const fetchUser = async () => {
       try {
