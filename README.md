@@ -1,13 +1,20 @@
-# 麻雀ヤリタイ フロントエンド
+# Mahjong Yaritai Frontend
 
-* Setup .env
+* Requirements
 ```
+Node.js 18.17+
+Next.js 5.3.2+
+```
+
+## 1. Set Up Environment Variables
+
+```bash
 touch .env
 cp .env.local .env
 ```
 
-* Setup Git Hooks
-```
+## 2. Setup Git Hooks
+```bash
 git config core.hooksPath .githooks
 chmod +x .githooks/*
 ```
