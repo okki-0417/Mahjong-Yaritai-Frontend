@@ -1,34 +1,16 @@
 # 麻雀ヤリタイ フロントエンド
 
-1. .envを作成し、.env.localの内容をコピー
+* Setup .env
 
 ```
 touch .env
 cp .env.local .env
 ```
 
-2. 起動
+* Setup Git Hooks
 
 ```
-npm run dev
+git config core.hooksPath .githooks
+chmod +x .githooks/*
 ```
 
-3. CSSビルド
-
-```
-npm run build-css
-```
-
-**formatter**
-
-- Prettierを使用
-
-**UI**
-
-- ChakraUIを途中から使用
-- ReactIconsを使用
-- TalwindCSSを使用
-
-**デプロイ**
-
-- Netlifyを使用

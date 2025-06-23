@@ -1,0 +1,20 @@
+#!/bin/sh
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|ts|jsx|tsx)$')
+
+if [ -z "$files" ]; then
+  echo "✅ No JavaScript/TypeScript files to lint."
+  exit 0
+fi
+
+npx eslint $files
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint failed. Commit aborted."
+  exit 1
+fi
+
+npx prettier --check $files
+if [ $? -ne 0 ]; then
+  echo "❌ Prettier check failed. Commit aborted."
+  exit 1
+fi
