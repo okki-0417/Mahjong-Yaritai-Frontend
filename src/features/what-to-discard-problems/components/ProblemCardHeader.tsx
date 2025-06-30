@@ -3,14 +3,15 @@
 import ProblemDeleteButton from "@/src/features/what-to-discard-problems/components/ProblemDeleteButton";
 import UserModal from "@/src/components/Modals/UserModal";
 import { SessionType } from "@/src/lib/getSession";
-import { WhatToDiscardProblem } from "@/types/ApiData";
 import { Button, Flex, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
 export default function ProblemCardHeader({
   problem,
   session,
 }: {
-  problem: WhatToDiscardProblem;
+  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
   session: SessionType | null;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

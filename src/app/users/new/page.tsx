@@ -1,9 +1,8 @@
 import { Container, Text } from "@chakra-ui/react";
 import getSession from "@/src/lib/getSession";
 import { redirect } from "next/navigation";
-import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
-import { Authorization } from "@/types/ApiData";
 import UserForm from "@/src/features/users/new/UserForm";
+import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
 
 export default async function UserCreate() {
   const session = await getSession();
@@ -13,8 +12,8 @@ export default async function UserCreate() {
 
   const client = await apiPageClient();
 
-  const response = await client.get("/authorization");
-  const data: Authorization = response.data;
+  const response = await client.get("/session");
+  const data = response.data;
   if (!data.authorized) {
     redirect("/authorization-session");
   }

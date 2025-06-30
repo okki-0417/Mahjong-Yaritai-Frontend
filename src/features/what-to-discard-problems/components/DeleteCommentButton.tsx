@@ -1,14 +1,17 @@
-import { Comment, WhatToDiscardProblemCommentApi } from "@/api-client";
-import { apiConfig } from "@/config/apiConfig";
+import { apiClient } from "@/config/apiConfig";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
+import { schemas } from "@/src/zodios/api";
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
+import { z } from "zod";
 
-const apiClient = new WhatToDiscardProblemCommentApi(apiConfig);
-
-export default function DeleteCommentButton({ comment }: { comment: Comment }) {
+export default function DeleteCommentButton({
+  comment,
+}: {
+  comment: z.infer<typeof schemas.Comment>;
+}) {
   const [deleting, setDeleting] = useState(false);
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
@@ -22,9 +25,11 @@ export default function DeleteCommentButton({ comment }: { comment: Comment }) {
 
       if (!isConfirmed) return;
 
-      await apiClient.deleteComment({
-        whatToDiscardProblemId: String(comment.commentableId),
-        id: String(comment.id),
+      await apiClient.deleteComment([], {
+        params: {
+          what_to_discard_problem_id: String(comment.commentable_id),
+          id: String(comment.id),
+        },
       });
 
       successToast({

@@ -3,9 +3,9 @@
 import { Button, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { IoMdTrash } from "react-icons/io";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useState } from "react";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import { apiClient } from "@/config/apiConfig";
 
 export default function ProblemDeleteButton({ problemId }: { problemId: number }) {
   const toast = useToast();
@@ -25,7 +25,11 @@ export default function ProblemDeleteButton({ problemId }: { problemId: number }
     }
 
     try {
-      await apiClient.delete(`/what_to_discard_problems/${problemId}`);
+      await apiClient.deleteWhatToDiscardProblem([], {
+        params: {
+          id: String(problemId),
+        },
+      });
 
       toast({
         title: "何切る問題を削除しました",

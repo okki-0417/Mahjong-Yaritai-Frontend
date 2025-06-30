@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import axios from "axios";
 import {
   Box,
@@ -16,11 +15,11 @@ import {
 } from "@chakra-ui/react";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
+import { apiClient } from "@/config/apiConfig";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
-type LoginFormType = {
-  email: string;
-  password: string;
-};
+type LoginFormType = z.infer<typeof schemas.createSession_Body>;
 
 export default function LoginForm() {
   const router = useRouter();
@@ -43,7 +42,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      await apiClient.post("/session", { session: formData });
+      await apiClient.createSession({ session: formData });
 
       setAuth(true);
       router.push("/what-to-discard-problems");

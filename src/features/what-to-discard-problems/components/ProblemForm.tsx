@@ -18,10 +18,10 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import { WhatToDiscardProblemsContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/WhatToDiscardProblemContext";
+import { apiClient } from "@/config/apiConfig";
 
 type WhatToDiscardProblemCreateFormType = {
   round: string;
@@ -343,12 +343,12 @@ export default function ProblemForm({
     setIsLoading(true);
 
     try {
-      const response = await apiClient.post("/what_to_discard_problems", {
-        what_to_discard_problem: formData,
+      const response = await apiClient.createWhatToDiscardProblem({
+        what_to_discard_problem: { formData },
       });
-      const data = response.data;
+      const data = response.what_to_discard_problem;
 
-      setWhatToDiscardProblems([...whatToDiscardProblems, data.what_to_discard_problem]);
+      setWhatToDiscardProblems([...whatToDiscardProblems, data]);
 
       // setNextPage(data.meta.pagination.next_page);
 

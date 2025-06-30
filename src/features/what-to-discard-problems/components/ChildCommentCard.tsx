@@ -1,10 +1,11 @@
-import { Comment } from "@/api-client";
 import UserModal from "@/src/components/Modals/UserModal";
 import useMyUserId from "@/src/hooks/useMyUserId";
+import { schemas } from "@/src/zodios/api";
 import { Box, Button, Circle, Flex, HStack, Img, Text, useDisclosure } from "@chakra-ui/react";
 import { IoMdTrash } from "react-icons/io";
+import { z } from "zod";
 
-export default function ChildCommentCard({ reply }: { reply: Comment }) {
+export default function ChildCommentCard({ reply }: { reply: z.infer<typeof schemas.Comment> }) {
   const isMyComment = reply.user.id == useMyUserId();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -15,7 +16,7 @@ export default function ChildCommentCard({ reply }: { reply: Comment }) {
           <HStack>
             <Circle size="8" overflow="hidden" border="1px">
               <Img
-                src={reply.user.avatarUrl || "/no-image.webp"}
+                src={reply.user.avatar_url || "/no-image.webp"}
                 className="w-full h-full object-cover"
               />
             </Circle>
@@ -35,7 +36,7 @@ export default function ChildCommentCard({ reply }: { reply: Comment }) {
       </Flex>
 
       <Text fontFamily="sans-serif" fontSize="xs" color="#466163">
-        {new Date(reply.createdAt).toLocaleString()}
+        {new Date(reply.created_at).toLocaleString()}
       </Text>
 
       <Box className="pl-1 mt-2">

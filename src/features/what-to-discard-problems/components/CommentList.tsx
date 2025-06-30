@@ -3,15 +3,16 @@
 import { useEffect, useState } from "react";
 import { Box, Text, VStack } from "@chakra-ui/react";
 import ParentCommentCard from "@/src/features/what-to-discard-problems/components/ParentCommentCard";
-import { Comment, WhatToDiscardProblemCommentApi } from "@/api-client";
-import { apiConfig } from "@/config/apiConfig";
 import CommentForm from "@/src/features/what-to-discard-problems/components/CommentForm";
 import ReplyContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/ReplyToCommentContextProvider";
-
-const apiClient = new WhatToDiscardProblemCommentApi(apiConfig);
+import { schemas } from "@/src/zodios/api";
+import { z } from "zod";
+import { apiClient } from "@/config/apiConfig";
 
 export default function CommentList({ problemId }: { problemId: number }) {
-  const [parentComments, setParentComments] = useState<Comment[] | null>(null);
+  const [parentComments, setParentComments] = useState<z.infer<typeof schemas.Comment>[] | null>(
+    null,
+  );
   const [canFetch, setCanFetch] = useState(true);
 
   useEffect(() => {
@@ -19,9 +20,15 @@ export default function CommentList({ problemId }: { problemId: number }) {
     setCanFetch(false);
 
     const fetchComments = async () => {
-      const response = await apiClient.getComments({ whatToDiscardProblemId: String(problemId) });
+      const response = await apiClient.getComments({
+        params: {
+          what_to_discard_problem_id: String(problemId),
+        },
+      });
 
-      setParentComments(response.comments);
+      const data = response.what_to_discard_problem_comments;
+
+      setParentComments(data);
     };
 
     fetchComments();

@@ -1,16 +1,16 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useRouter } from "next/navigation";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import axios from "axios";
 import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
 import MainButton from "@/src/components/MainButton";
+import { apiClient } from "@/config/apiConfig";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
-type AuthorizationSessionFormType = {
-  email: string;
-};
+type AuthorizationSessionFormType = z.infer<typeof schemas.createAuthorizationSession_Body>;
 
 export default function AuthorizationSessionForm() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function AuthorizationSessionForm() {
     formData: AuthorizationSessionFormType,
   ) => {
     try {
-      await apiClient.post("/authorization_session", {
+      await apiClient.createAuthorizationSession({
         authorization_session: formData,
       });
 

@@ -1,17 +1,16 @@
-import { Comment, WhatToDiscardProblemCommentReplyApi } from "@/api-client";
-import { apiConfig } from "@/config/apiConfig";
+import { apiClient } from "@/config/apiConfig";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import { schemas } from "@/src/zodios/api";
 import { Button, Flex } from "@chakra-ui/react";
 import { useState } from "react";
-
-const apiClient = new WhatToDiscardProblemCommentReplyApi(apiConfig);
+import { z } from "zod";
 
 export default function FetchRepliesButton({
   setReplies,
   comment,
 }: {
-  setReplies: React.Dispatch<React.SetStateAction<Comment[]>>;
-  comment: Comment;
+  setReplies: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>[]>>;
+  comment: z.infer<typeof schemas.Comment>;
 }) {
   const [fetching, setFetching] = useState(false);
 
@@ -22,12 +21,16 @@ export default function FetchRepliesButton({
     setFetching(true);
 
     try {
-      const response = await apiClient.getReplies({
-        whatToDiscardProblemId: String(comment.commentableId),
-        commentId: String(comment.id),
+      const response = await apiClient.getWhatToDiscardProblemCommentReplies({
+        params: {
+          what_to_discard_problem_id: String(comment.commentable_id),
+          comment_id: String(comment.id),
+        },
       });
 
-      setReplies(response.comments);
+      const data = response.what_to_discard_problem_comment_replies;
+
+      setReplies(data);
     } catch (error) {
       errorToast({
         error,

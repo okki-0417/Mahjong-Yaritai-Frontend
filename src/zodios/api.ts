@@ -4,7 +4,7 @@ import { z } from "zod";
 const createAuthorizationSession_Body = z
   .object({ authorization_session: z.object({ email: z.string().max(64) }).passthrough() })
   .passthrough();
-const postAuthorization_Body = z
+const createAuthorization_Body = z
   .object({ authorization: z.object({ token: z.string() }).passthrough() })
   .passthrough();
 const createSession_Body = z
@@ -17,7 +17,7 @@ const Session = z
       .passthrough(),
   })
   .passthrough();
-const postUsers_Body = z
+const createUser_Body = z
   .object({
     user: z
       .object({
@@ -63,8 +63,19 @@ const createComment_Body = z
       .passthrough(),
   })
   .passthrough();
+const Like = z
+  .object({
+    id: z.number().int(),
+    user_id: z.number().int(),
+    likable_type: z.string(),
+    likable_id: z.number().int(),
+    created_at: z.string(),
+    updated_at: z.string(),
+  })
+  .passthrough();
 const Tile = z
   .object({
+    id: z.number().int(),
     suit: z.string(),
     ordinal_number_in_suit: z.number().int(),
     name: z.string(),
@@ -77,6 +88,7 @@ const createVote_Body = z
   .passthrough();
 const WhatToDiscardProblem_NoRel = z
   .object({
+    id: z.number().int().optional(),
     user_id: z.number().int(),
     round: z.string(),
     turn: z.number().int(),
@@ -119,6 +131,7 @@ const WhatToDiscardProblemVote = z
   .passthrough();
 const WhatToDiscardProblem = z
   .object({
+    id: z.number().int(),
     user: User,
     round: z.string(),
     turn: z.number().int(),
@@ -163,36 +176,68 @@ const Pagination = z
       .passthrough(),
   })
   .passthrough();
+const createWhatToDiscardProblem_Body = z
+  .object({
+    what_to_discard_problem: z
+      .object({
+        round: z.string(),
+        turn: z.number().int(),
+        wind: z.string(),
+        dora_id: z.number().int(),
+        point_east: z.number().int(),
+        point_south: z.number().int(),
+        point_west: z.number().int(),
+        point_north: z.number().int(),
+        hand1_id: z.number().int(),
+        hand2_id: z.number().int(),
+        hand3_id: z.number().int(),
+        hand4_id: z.number().int(),
+        hand5_id: z.number().int(),
+        hand6_id: z.number().int(),
+        hand7_id: z.number().int(),
+        hand8_id: z.number().int(),
+        hand9_id: z.number().int(),
+        hand10_id: z.number().int(),
+        hand11_id: z.number().int(),
+        hand12_id: z.number().int(),
+        hand13_id: z.number().int(),
+        tsumo_id: z.number().int(),
+      })
+      .passthrough(),
+  })
+  .passthrough();
 
 export const schemas = {
   createAuthorizationSession_Body,
-  postAuthorization_Body,
+  createAuthorization_Body,
   createSession_Body,
   Session,
-  postUsers_Body,
+  createUser_Body,
   User,
   updateUser_Body,
   Comment,
   createComment_Body,
+  Like,
   Tile,
   createVote_Body,
   WhatToDiscardProblem_NoRel,
   WhatToDiscardProblemVote,
   WhatToDiscardProblem,
   Pagination,
+  createWhatToDiscardProblem_Body,
 };
 
 const endpoints = makeApi([
   {
     method: "post",
     path: "/authorization",
-    alias: "postAuthorization",
+    alias: "createAuthorization",
     requestFormat: "json",
     parameters: [
       {
         name: "body",
         type: "Body",
-        schema: postAuthorization_Body,
+        schema: createAuthorization_Body,
       },
     ],
     response: z.void(),
@@ -288,13 +333,13 @@ const endpoints = makeApi([
   {
     method: "post",
     path: "/users",
-    alias: "postUsers",
+    alias: "createUser",
     requestFormat: "json",
     parameters: [
       {
         name: "body",
         type: "Body",
-        schema: postUsers_Body,
+        schema: createUser_Body,
       },
     ],
     response: z.void(),
@@ -342,7 +387,7 @@ const endpoints = makeApi([
         schema: z.string(),
       },
     ],
-    response: z.void(),
+    response: z.object({ user: User }).passthrough(),
     errors: [
       {
         status: 401,
@@ -387,6 +432,48 @@ const endpoints = makeApi([
       .passthrough(),
   },
   {
+    method: "post",
+    path: "/what_to_discard_problems",
+    alias: "createWhatToDiscardProblem",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: createWhatToDiscardProblem_Body,
+      },
+    ],
+    response: z.object({ what_to_discard_problem: WhatToDiscardProblem }).passthrough(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/what_to_discard_problems/:id",
+    alias: "deleteWhatToDiscardProblem",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
     method: "get",
     path: "/what_to_discard_problems/:what_to_discard_problem_id/comments",
     alias: "getComments",
@@ -398,7 +485,7 @@ const endpoints = makeApi([
         schema: z.string(),
       },
     ],
-    response: z.object({ type: z.unknown().optional(), items: Comment.optional() }).passthrough(),
+    response: z.object({ what_to_discard_problem_comments: z.array(Comment) }).passthrough(),
   },
   {
     method: "post",
@@ -488,7 +575,7 @@ const endpoints = makeApi([
         schema: z.string(),
       },
     ],
-    response: z.object({ what_to_discard_problem_like: z.unknown() }).passthrough(),
+    response: z.object({ what_to_discard_problem_like: Like }).passthrough(),
     errors: [
       {
         status: 401,
@@ -562,7 +649,7 @@ const endpoints = makeApi([
   {
     method: "delete",
     path: "/what_to_discard_problems/:what_to_discard_problem_id/votes/:id",
-    alias: "deleteWhat_to_discard_problemsWhat_to_discard_problem_idvotesId",
+    alias: "deleteVote",
     requestFormat: "json",
     parameters: [
       {

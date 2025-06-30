@@ -3,7 +3,7 @@ import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
+import { apiClient } from "@/config/apiConfig";
 
 export default function useLogout(): () => Promise<void> {
   const { auth, setAuth, setMyUserId } = useContext(AuthStateContext);
@@ -20,7 +20,7 @@ export default function useLogout(): () => Promise<void> {
     if (!isConfirmed) return;
 
     try {
-      await apiClient.delete("/session");
+      await apiClient.deleteSession([]);
       setAuth(false);
       setMyUserId(null);
       toast({ title: "ログアウトしました", status: "success" });

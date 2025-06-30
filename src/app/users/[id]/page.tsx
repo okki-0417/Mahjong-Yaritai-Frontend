@@ -2,9 +2,10 @@ import UserContextProvider from "@/src/features/users/:id/context-providers/prov
 import Profile from "@/src/features/users/:id/Profile";
 import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
 import getSession from "@/src/lib/getSession";
-import { User } from "@/types/ApiData";
+import { schemas } from "@/src/zodios/api";
 import { Container, VStack } from "@chakra-ui/react";
 import { Suspense } from "react";
+import { z } from "zod";
 
 export type UserType = {
   name: string;
@@ -20,7 +21,7 @@ export default async function UserShow({ params }: { params: Promise<{ id: strin
 
   try {
     const response = await client.get(`/users/${id}`);
-    const user: User = response.data.user;
+    const user: z.infer<typeof schemas.User> = response.data.user;
 
     return (
       <Container mt="40" maxW="xl">

@@ -2,13 +2,14 @@
 
 import { useContext } from "react";
 import { MdHowToVote } from "react-icons/md";
-import { Tile } from "@/types/ApiData";
 import { IsVoteResultOpenContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/IsVoteResultOpenContext";
 import { MyVoteContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/MyVoteContext";
 import { VotesCountContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/VotesCountContext";
 import PopButton from "@/src/components/PopButton";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
-export type MyVoteType = Tile | null;
+export type MyVoteType = z.infer<typeof schemas.Tile> | null;
 
 export default function VotesCount() {
   const { isVoteResultOpen, setIsVoteResultOpen } = useContext(IsVoteResultOpenContext);

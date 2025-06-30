@@ -1,18 +1,16 @@
 "use client";
 
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useContext, useState } from "react";
 import { Box, useDisclosure, useToast } from "@chakra-ui/react";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
-import { ProblemVote } from "@/types/ApiData";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import { MyVoteContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/MyVoteContext";
 import { VotesCountContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/VotesCountContext";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
+import { apiClient } from "@/config/apiConfig";
 
 export default function VoteButton({
-  problemId,
   tileId,
   setLoadResultFlag,
 }: {
@@ -41,13 +39,14 @@ export default function VoteButton({
 
     try {
       if (!myVote) {
-        const response = await apiClient.post(`/what_to_discard_problems/${problemId}/votes`, {
+        const response = await apiClient.createVote({
           what_to_discard_problem_vote: {
-            tile_id: tileId,
+            tile_id: String(tileId),
           },
         });
 
-        const data: ProblemVote = response.data["what_to_discard_problem/vote"];
+        const data = response.what_to_discard_problem_vote;
+
         if (!data) {
           throw new Error("作成した投票が取得できませんでした");
         }
@@ -63,9 +62,11 @@ export default function VoteButton({
           isClosable: true,
         });
       } else if (tileId == myVote.tile.id) {
-        await apiClient.delete(`/what_to_discard_problems/${problemId}/votes/${myVote.id}`);
-
-        console.log("削除");
+        await apiClient.deleteVote([], {
+          params: {
+            what_to_discard_problem_id: String(myVote.id),
+          },
+        });
 
         setVotesCount(prev => prev - 1);
         setMyVote(null);
@@ -78,15 +79,20 @@ export default function VoteButton({
           isClosable: true,
         });
       } else {
-        await apiClient.delete(`/what_to_discard_problems/${problemId}/votes/${myVote.id}`);
-
-        const response = await apiClient.post(`/what_to_discard_problems/${problemId}/votes`, {
-          what_to_discard_problem_vote: {
-            tile_id: tileId,
+        await apiClient.deleteVote([], {
+          params: {
+            what_to_discard_problem_id: String(myVote.id),
           },
         });
 
-        const data: ProblemVote = response.data["what_to_discard_problem/vote"];
+        const response = await apiClient.createVote({
+          what_to_discard_problem_vote: {
+            tile_id: String(tileId),
+          },
+        });
+
+        const data = response.what_to_discard_problem_vote;
+
         if (!data) {
           throw new Error("作成した投票が取得できませんでした");
         }

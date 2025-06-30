@@ -18,23 +18,18 @@ import { useContext, useEffect, useState } from "react";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import ButtonAccent from "@/src/components/Buttons/ButtonAccent";
-import { Comment, WhatToDiscardProblemCommentApi } from "@/api-client";
 import ReplyContext from "@/src/features/what-to-discard-problems/context-providers/contexts/ReplyContext";
-import { apiConfig } from "@/config/apiConfig";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
+import { apiClient } from "@/config/apiConfig";
 
-type CommentFormType = {
-  parentCommentId: number | null;
-  content: string;
-};
-
-const apiClient = new WhatToDiscardProblemCommentApi(apiConfig);
+type CommentFormType = z.infer<typeof schemas.Comment>;
 
 export default function CommentForm({
-  problemId,
   setParentComments,
 }: {
   problemId: number;
-  setParentComments: React.Dispatch<React.SetStateAction<Comment[] | null>>;
+  setParentComments: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>[] | null>>;
 }) {
   const [loading, setLoading] = useState(false);
   const auth = useIsLoggedIn();
@@ -66,16 +61,13 @@ export default function CommentForm({
 
     try {
       const response = await apiClient.createComment({
-        whatToDiscardProblemId: String(problemId),
-        createCommentRequest: {
-          whatToDiscardProblemComment: {
-            parentCommentId: replyToComment ? String(replyToComment.id) : null,
-            content: formData.content,
-          },
+        what_to_discard_problem_comment: {
+          parent_comment_id: replyToComment ? String(replyToComment.id) : null,
+          content: formData.content,
         },
       });
 
-      const resComment: Comment = response.comment;
+      const resComment = response.what_to_discard_problem_comment;
 
       toast({
         title: "コメントを投稿しました",

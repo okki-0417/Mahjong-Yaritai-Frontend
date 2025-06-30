@@ -2,14 +2,14 @@
 
 import { FormControl, FormErrorMessage, NumberInput, NumberInputField } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { useRouter } from "next/navigation";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import MainButton from "@/src/components/MainButton";
+import { apiClient } from "@/config/apiConfig";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
-type AuthorizationFormType = {
-  token: string;
-};
+type AuthorizationFormType = z.infer<typeof schemas.createAuthorization_Body>;
 
 export default function AuthorizationForm() {
   const router = useRouter();
@@ -23,7 +23,9 @@ export default function AuthorizationForm() {
 
   const onSubmit: SubmitHandler<AuthorizationFormType> = async formData => {
     try {
-      await apiClient.post("/authorization", { authorization: formData });
+      await apiClient.createAuthorization({
+        authorization: formData,
+      });
 
       router.push("/users/new");
     } catch (error) {

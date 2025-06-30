@@ -3,26 +3,20 @@
 import { useState } from "react";
 import axios from "axios";
 import { useDisclosure, useToast } from "@chakra-ui/react";
-import { WhatToDiscardProblem } from "@/types/ApiData";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import LikeButton from "@/src/components/LikeButton";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
-import { Configuration, Like, WhatToDiscardProblemLikeApi } from "@/api-client";
-import { API_BASE_URL } from "@/config/apiConfig";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
+import { apiClient } from "@/config/apiConfig";
 
-const apiClient = new WhatToDiscardProblemLikeApi(
-  new Configuration({
-    basePath: API_BASE_URL,
-    credentials: "include",
-    headers: {
-      Accept: "application/json",
-    },
-  }),
-);
-
-export default function ProblemLikeButton({ problem }: { problem: WhatToDiscardProblem }) {
-  const [myLike, setMyLike] = useState<Like | null>(problem.myLike);
-  const [likesCount, setLikesCount] = useState(problem.likesCount);
+export default function ProblemLikeButton({
+  problem,
+}: {
+  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+}) {
+  const [myLike, setMyLike] = useState<z.infer<typeof schemas.Like> | null>(null);
+  const [likesCount, setLikesCount] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -41,9 +35,11 @@ export default function ProblemLikeButton({ problem }: { problem: WhatToDiscardP
 
     try {
       if (myLike) {
-        await apiClient.deleteLike({
-          whatToDiscardProblemId: String(problem.id),
-          id: String(myLike.id),
+        await apiClient.deleteWhatToDiscardProblemLike([], {
+          params: {
+            what_to_discard_problem_id: String(problem.id),
+            id: String(myLike.id),
+          },
         });
 
         setMyLike(null);
@@ -56,9 +52,13 @@ export default function ProblemLikeButton({ problem }: { problem: WhatToDiscardP
           isClosable: true,
         });
       } else {
-        const response = await apiClient.createLike({ whatToDiscardProblemId: String(problem.id) });
+        const response = await apiClient.createWhatToDiscardProblemLike([], {
+          params: {
+            what_to_discard_problem_id: String(problem.id),
+          },
+        });
 
-        const data = response.whatToDiscardProblemLike.myLike;
+        const data = response.what_to_discard_problem_like;
 
         setMyLike(data);
         setLikesCount(likesCount + 1);

@@ -11,15 +11,20 @@ import IsVoteResultOpenContextProvider from "@/src/features/what-to-discard-prob
 import MyVotedTileContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/MyVoteContextProvider";
 import VotesCountContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/VotesCountContextProvider";
 import getSession from "@/src/lib/getSession";
-import { WhatToDiscardProblem } from "@/types/ApiData";
+import { schemas } from "@/src/zodios/api";
 import { Box, Flex, HStack, Text, Wrap } from "@chakra-ui/react";
+import { z } from "zod";
 
-export default async function ProblemCard({ problem }: { problem: WhatToDiscardProblem }) {
+export default async function ProblemCard({
+  problem,
+}: {
+  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+}) {
   const session = await getSession();
 
   return (
     <Box mt={12} w="full">
-      <Text fontSize="xl">{new Date(problem.createdAt).toLocaleString()}</Text>
+      <Text fontSize="xl">{new Date(problem.created_at).toLocaleString()}</Text>
 
       <Box boxShadow="base" borderRadius="md" className="bg-mj-mat" shadow="md">
         <ProblemCardHeader problem={problem} session={session} />
@@ -40,10 +45,10 @@ export default async function ProblemCard({ problem }: { problem: WhatToDiscardP
 
           <Wrap fontSize={[18, 20]} mt="2" gap="4">
             {[
-              { label: "東家", point: problem.pointEast },
-              { label: "南家", point: problem.pointSouth },
-              { label: "西家", point: problem.pointWest },
-              { label: "北家", point: problem.pointNorth },
+              { label: "東家", point: problem.point_east },
+              { label: "南家", point: problem.point_south },
+              { label: "西家", point: problem.point_west },
+              { label: "北家", point: problem.point_north },
             ].map(obj => {
               return (
                 <HStack key={obj.label} w="fit-content">
@@ -91,35 +96,27 @@ export default async function ProblemCard({ problem }: { problem: WhatToDiscardP
 
         <IsVoteResultOpenContextProvider>
           <IsCommentSectionOpenContextProvider>
-            <VotesCountContextProvider initialVotesCount={problem.votesCount}>
-              <MyVotedTileContextProvider initialMyVote={problem.myVote}>
-                <VotesCountContextProvider initialVotesCount={problem.votesCount}>
-                  <Box>
-                    <Box mt="6">
-                      <VoteResultOpenButton />
-                    </Box>
-
-                    <IsVoteResultOpenToggleWrapper>
-                      <VoteResult problemId={problem.id} />
-                    </IsVoteResultOpenToggleWrapper>
+            <VotesCountContextProvider initialVotesCount={problem.votes_count}>
+              <MyVotedTileContextProvider initialMyVote={null}>
+                <Box>
+                  <Box mt="6">
+                    <VoteResultOpenButton />
                   </Box>
 
-                  <Box
-                    mt="4"
-                    py="2"
-                    px="4"
-                    bgColor="white"
-                    color="gray.700"
-                    className="rounded-b-md">
-                    <HStack>
-                      <ProblemLikeButton problem={problem} />
+                  <IsVoteResultOpenToggleWrapper>
+                    <VoteResult problemId={problem.id} />
+                  </IsVoteResultOpenToggleWrapper>
+                </Box>
 
-                      <CommentsCount commentsCount={problem.commentsCount} problemId={problem.id} />
+                <Box mt="4" py="2" px="4" bgColor="white" color="gray.700" className="rounded-b-md">
+                  <HStack>
+                    <ProblemLikeButton problem={problem} />
 
-                      <VotesCount />
-                    </HStack>
-                  </Box>
-                </VotesCountContextProvider>
+                    <CommentsCount commentsCount={problem.comments_count} problemId={problem.id} />
+
+                    <VotesCount />
+                  </HStack>
+                </Box>
               </MyVotedTileContextProvider>
             </VotesCountContextProvider>
           </IsCommentSectionOpenContextProvider>

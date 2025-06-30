@@ -1,17 +1,10 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
-import { Pagination } from "@/types/Meta";
-import { WhatToDiscardProblem } from "@/types/ApiData";
 import { Suspense } from "react";
 import ProblemsSection from "@/src/features/what-to-discard-problems/components/ProblemsSection";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
-export type WhatToDiscardProblems = WhatToDiscardProblem[] | [];
-
-export type FetchWhatToDiscardProblemsType = {
-  data: WhatToDiscardProblems;
-  meta: {
-    pagination: Pagination;
-  };
-};
+export type WhatToDiscardProblems = z.infer<typeof schemas.WhatToDiscardProblem>[] | [];
 
 export default function WhatToDiscardProblems() {
   return (

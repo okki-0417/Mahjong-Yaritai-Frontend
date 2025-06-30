@@ -13,9 +13,9 @@ import { useRouter } from "next/navigation";
 import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import axios from "axios";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import { apiClient } from "@/config/apiConfig";
 
 type UserFormType = {
   name: string;
@@ -47,7 +47,7 @@ export default function UserForm() {
     setLoading(true);
 
     try {
-      await apiClient.post("/users", { user: formData });
+      await apiClient.createUser({ user: formData });
 
       setAuth(true);
       router.push("/dashboard");

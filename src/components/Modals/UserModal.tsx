@@ -13,10 +13,11 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import Link from "next/link";
-import { User } from "@/types/ApiData";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
+import { apiClient } from "@/config/apiConfig";
 
 export default function UserModal({
   userId,
@@ -28,16 +29,16 @@ export default function UserModal({
   onClose: () => void;
 }) {
   const [loadUserFlag, setLoadUserFlag] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<z.infer<typeof schemas.User> | null>(null);
 
   useEffect(() => {
     if (!loadUserFlag) return;
 
     const fetchUser = async () => {
       try {
-        const response = await apiClient.get(`/users/${userId}`);
+        const response = await apiClient.getUser({ params: { id: String(userId) } });
 
-        const data: User = response.data.user;
+        const data = response.user;
 
         setUser(data);
       } catch (error) {

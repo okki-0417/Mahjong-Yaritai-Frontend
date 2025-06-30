@@ -13,10 +13,9 @@ import { SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { isAxiosError } from "axios";
-import { apiClient } from "@/src/lib/apiClients/ApiClients";
 import { UserContext } from "@/src/features/users/:id/context-providers/contexts/UserContext";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { User } from "@/types/ApiData";
+import { apiClient } from "@/config/apiConfig";
 
 type UserEditType = {
   name: string;
@@ -69,13 +68,21 @@ export default function ProfileEditForm({
     }
 
     try {
-      const response = await apiClient.patch(`users/${user?.id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const response = await apiClient.updateUser(
+        {
+          user: {
+            name: name,
+            avatar: file,
+          },
         },
-      });
+        {
+          params: {
+            id: String(user?.id),
+          },
+        },
+      );
 
-      const userData: User = response.data.user;
+      const userData = response.user;
 
       setUser(userData);
       setIsEditMode(false);
