@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "npx prettier . --write",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "gen-client": "npx openapi-zod-client ../api/swagger/v1/swagger.yaml -o src/zodios/api.ts"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
@@ -23,6 +24,7 @@
     "@mui/styled-engine-sc": "^6.4.3",
     "@sentry/nextjs": "^9.31.0",
     "@tailwindcss/postcss": "^4.1.8",
+    "@zodios/core": "^10.9.6",
     "axios": "^1.8.4",
     "framer-motion": "^12.7.3",
     "next": "^15.3.2",
@@ -52,6 +54,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^15.15.0",
+    "openapi-zod-client": "^1.18.3",
     "prettier": "^3.5.3",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.33.1"
