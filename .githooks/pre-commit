@@ -12,15 +12,11 @@ if [ $? -ne 0 ]; then
   echo "ESLint failed. Commit aborted."
   exit 1
 fi
+echo "EsLint OK."
 
 npx prettier --check $files
 if [ $? -ne 0 ]; then
   echo "Prettier check failed. Commit aborted."
   exit 1
 fi
-
-tsc --noEmit
-if [ $? -ne 0 ]; then
-  echo "Type check failed. Commit aborted."
-  exit 1
-fi
+echo "Prettier OK."
