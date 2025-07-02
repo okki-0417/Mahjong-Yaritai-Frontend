@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import { Box, Container } from "@chakra-ui/react";
+import { Box, Container, Divider, HStack, Text, VStack } from "@chakra-ui/react";
 import { FaAngleRight } from "react-icons/fa";
-import Link from "next/link";
 import getSession from "@/src/lib/getSession";
 import LoginForm from "@/src/features/auth/login/LoginForm";
+import LinkText from "@/src/components/LinkText";
 
 export default async function Login() {
   const session = await getSession();
@@ -12,20 +12,26 @@ export default async function Login() {
   }
 
   return (
-    <Container maxH="xl" mt={40}>
-      <h1 className="lg:text-4xl text-2xl font-semibold mb-3">ログイン</h1>
-      <hr />
+    <Container mt={40}>
+      <VStack alignItems="stretch" gap="5">
+        <Box>
+          <Text as="h1" fontSize="3xl">
+            ログイン
+          </Text>
+          <Divider />
+        </Box>
 
-      <LoginForm />
+        <Box h="full">
+          <LoginForm />
+        </Box>
 
-      <Box mt={6}>
-        <Link
-          href="/authorization-session"
-          className="text-blue-300 hover:text-blue-200 hover:underline flex items-center">
-          新規会員登録はこちら
-          <FaAngleRight />
-        </Link>
-      </Box>
+        <LinkText href="/authorization-session">
+          <HStack>
+            <Text>新規会員登録はこちら</Text>
+            <FaAngleRight />
+          </HStack>
+        </LinkText>
+      </VStack>
     </Container>
   );
 }
