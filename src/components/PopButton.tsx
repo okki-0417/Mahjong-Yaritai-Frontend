@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactNode, useState } from "react";
 
 export type ButtonType = "button" | "submit" | "reset";
@@ -18,7 +20,7 @@ export default function PopButton({
   className,
   onClick = () => null,
   type = "button",
-  disabled,
+  disabled = false,
   children,
 }: PopButtonType) {
   const [animate, setAnimate] = useState<boolean>(false);
@@ -34,7 +36,7 @@ export default function PopButton({
     <button
       type={type}
       onClick={handleClick}
-      className={`cursor-pointer drop-shadow-accent ${defaultClassName} ${className} ${animate ? "pop" : ""} hover:scale-[102%] transition-all`}
+      className={`cursor-pointer drop-shadow-accent ${defaultClassName} ${className} ${animate ? "pop" : ""} hover:scale-105 transition-all`}
       disabled={disabled}>
       {value}
       {children}

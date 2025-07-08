@@ -6,7 +6,7 @@ import useErrorToast from "@/src/hooks/useErrorToast";
 import axios from "axios";
 import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
 import MainButton from "@/src/components/MainButton";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 

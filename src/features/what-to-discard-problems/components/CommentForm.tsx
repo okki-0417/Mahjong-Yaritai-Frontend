@@ -21,7 +21,7 @@ import ButtonAccent from "@/src/components/Buttons/ButtonAccent";
 import ReplyContext from "@/src/features/what-to-discard-problems/context-providers/contexts/ReplyContext";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 
 type CommentFormType = z.infer<typeof schemas.Comment>;
 

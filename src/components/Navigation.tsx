@@ -6,7 +6,6 @@ import { FaAngleRight } from "react-icons/fa6";
 import { GiThink } from "react-icons/gi";
 import {
   Box,
-  Button,
   Center,
   Checkbox,
   Circle,

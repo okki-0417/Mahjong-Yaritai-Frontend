@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";

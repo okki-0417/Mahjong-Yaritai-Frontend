@@ -2,18 +2,21 @@
 
 import { Button, Circle, Image, Text, VStack } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ProfileEditForm from "@/src/features/users/:id/ProfileEditForm";
-import { UserContext } from "@/src/features/users/:id/context-providers/contexts/UserContext";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
+import useMyUserId from "@/src/hooks/useMyUserId";
 
-export default function Profile({ isMyPage }: { isMyPage: boolean }) {
-  const { user } = useContext(UserContext);
+export default function Profile({ initialUser }: { initialUser: z.infer<typeof schemas.User> }) {
+  const [user, setUser] = useState<z.infer<typeof schemas.User>>(initialUser);
 
   const [isEditMode, setIsEditMode] = useState(false);
+  const isMyProfile = useMyUserId() == user.id;
 
   return (
     <VStack gap="4">
-      {isMyPage && (
+      {isMyProfile && (
         <Button
           colorScheme={isEditMode ? "pink" : "whiteAlpha"}
           position="absolute"
@@ -23,9 +26,11 @@ export default function Profile({ isMyPage }: { isMyPage: boolean }) {
         </Button>
       )}
 
-      {isEditMode ? (
-        <ProfileEditForm setIsEditMode={setIsEditMode} />
-      ) : (
+      {isEditMode && (
+        <ProfileEditForm user={user} setUser={setUser} setIsEditMode={setIsEditMode} />
+      )}
+
+      {!isEditMode && (
         <VStack>
           <Circle size="200" overflow="hidden">
             <Image

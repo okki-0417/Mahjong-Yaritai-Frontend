@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import MainButton from "@/src/components/MainButton";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 

@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "@/config/apiConfig";
+import { createApiClient } from "@/src/zodios/api";
 import axios from "axios";
 import { cookies } from "next/headers";
 
-export const apiPageClient = async () => {
+const createApiPageClient = async () => {
   const cookieStore = await cookies();
   const cookieHeader = cookieStore
     .getAll()
@@ -9,7 +11,7 @@ export const apiPageClient = async () => {
     .join("; ");
 
   const instance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL: API_BASE_URL,
     timeout: 10000,
     headers: {
       Cookie: cookieHeader,
@@ -17,5 +19,9 @@ export const apiPageClient = async () => {
     },
   });
 
-  return instance;
+  return createApiClient(API_BASE_URL, {
+    axiosInstance: instance,
+  });
 };
+
+export default createApiPageClient;

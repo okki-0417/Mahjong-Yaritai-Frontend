@@ -7,12 +7,10 @@ import LinkText from "@/src/components/LinkText";
 
 export default async function Login() {
   const session = await getSession();
-  if (session?.is_logged_in) {
-    redirect("/dashboard");
-  }
+  if (session?.is_logged_in) redirect("/dashboard");
 
   return (
-    <Container mt={40}>
+    <Container>
       <VStack alignItems="stretch" gap="5">
         <Box>
           <Text as="h1" fontSize="3xl">

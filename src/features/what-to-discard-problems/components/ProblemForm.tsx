@@ -21,7 +21,7 @@ import useErrorToast from "@/src/hooks/useErrorToast";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import { WhatToDiscardProblemsContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/WhatToDiscardProblemContext";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 
 type WhatToDiscardProblemCreateFormType = {
   round: string;

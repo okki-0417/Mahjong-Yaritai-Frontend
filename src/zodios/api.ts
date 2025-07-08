@@ -7,15 +7,11 @@ const createAuthorizationSession_Body = z
 const createAuthorization_Body = z
   .object({ authorization: z.object({ token: z.string() }).passthrough() })
   .passthrough();
+const Session = z
+  .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
+  .passthrough();
 const createSession_Body = z
   .object({ session: z.object({ email: z.string(), password: z.string() }).passthrough() })
-  .passthrough();
-const Session = z
-  .object({
-    session: z
-      .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
-      .passthrough(),
-  })
   .passthrough();
 const createUser_Body = z
   .object({
@@ -39,9 +35,7 @@ const User = z
   })
   .passthrough();
 const updateUser_Body = z
-  .object({
-    user: z.object({ name: z.string().max(20), avatar: z.instanceof(File) }).passthrough(),
-  })
+  .object({ name: z.string().max(20), avatar: z.instanceof(File) })
   .passthrough();
 const Comment = z
   .object({
@@ -66,25 +60,12 @@ const createComment_Body = z
 const Like = z
   .object({
     id: z.number().int(),
-    user_id: z.number().int(),
+    user_id: z.number().int().optional(),
     likable_type: z.string(),
     likable_id: z.number().int(),
     created_at: z.string(),
     updated_at: z.string(),
   })
-  .passthrough();
-const Tile = z
-  .object({
-    id: z.number().int(),
-    suit: z.string(),
-    ordinal_number_in_suit: z.number().int(),
-    name: z.string(),
-    created_at: z.string(),
-    updated_at: z.string(),
-  })
-  .passthrough();
-const createVote_Body = z
-  .object({ what_to_discard_problem_vote: z.object({ tile_id: z.string() }).passthrough() })
   .passthrough();
 const WhatToDiscardProblem_NoRel = z
   .object({
@@ -115,6 +96,18 @@ const WhatToDiscardProblem_NoRel = z
     comments_count: z.number().int(),
     likes_count: z.number().int(),
     votes_count: z.number().int(),
+    is_liked_by_me: z.boolean().optional(),
+    my_vote_tile_id: z.number().int().nullish(),
+    created_at: z.string(),
+    updated_at: z.string(),
+  })
+  .passthrough();
+const Tile = z
+  .object({
+    id: z.number().int(),
+    suit: z.string(),
+    ordinal_number_in_suit: z.number().int(),
+    name: z.string(),
     created_at: z.string(),
     updated_at: z.string(),
   })
@@ -129,6 +122,18 @@ const WhatToDiscardProblemVote = z
     updated_at: z.string(),
   })
   .passthrough();
+const createWhatToDiscardProblemMyVote_Body = z
+  .object({
+    what_to_discard_problem_my_vote: z.object({ tile_id: z.number().int() }).passthrough(),
+  })
+  .passthrough();
+const WhatToDiscardProblemVoteResult = z
+  .object({
+    tile_id: z.number().int(),
+    count: z.number().int(),
+    is_voted_bys_me: z.boolean().optional(),
+  })
+  .passthrough();
 const WhatToDiscardProblem = z
   .object({
     id: z.number().int(),
@@ -140,40 +145,28 @@ const WhatToDiscardProblem = z
     point_south: z.number().int(),
     point_west: z.number().int(),
     point_north: z.number().int(),
-    dora: Tile,
-    hand1: Tile,
-    hand2: Tile,
-    hand3: Tile,
-    hand4: Tile,
-    hand5: Tile,
-    hand6: Tile,
-    hand7: Tile,
-    hand8: Tile,
-    hand9: Tile,
-    hand10: Tile,
-    hand11: Tile,
-    hand12: Tile,
-    hand13: Tile,
-    tsumo: Tile,
+    dora_id: z.number().int(),
+    hand1_id: z.number().int(),
+    hand2_id: z.number().int(),
+    hand3_id: z.number().int(),
+    hand4_id: z.number().int(),
+    hand5_id: z.number().int(),
+    hand6_id: z.number().int(),
+    hand7_id: z.number().int(),
+    hand8_id: z.number().int(),
+    hand9_id: z.number().int(),
+    hand10_id: z.number().int(),
+    hand11_id: z.number().int(),
+    hand12_id: z.number().int(),
+    hand13_id: z.number().int(),
+    tsumo_id: z.number().int(),
     comments_count: z.number().int(),
     likes_count: z.number().int(),
     votes_count: z.number().int(),
+    is_liked_by_me: z.boolean(),
+    my_vote_tile_id: z.number().int().nullable(),
     created_at: z.string(),
     updated_at: z.string(),
-  })
-  .passthrough();
-const Pagination = z
-  .object({
-    pagination: z
-      .object({
-        total_pages: z.number().int(),
-        current_page: z.number().int(),
-        prev_page: z.number().int().nullable(),
-        next_page: z.number().int().nullable(),
-        first_page: z.number().int(),
-        last_page: z.number().int(),
-      })
-      .passthrough(),
   })
   .passthrough();
 const createWhatToDiscardProblem_Body = z
@@ -210,20 +203,20 @@ const createWhatToDiscardProblem_Body = z
 export const schemas = {
   createAuthorizationSession_Body,
   createAuthorization_Body,
-  createSession_Body,
   Session,
+  createSession_Body,
   createUser_Body,
   User,
   updateUser_Body,
   Comment,
   createComment_Body,
   Like,
-  Tile,
-  createVote_Body,
   WhatToDiscardProblem_NoRel,
+  Tile,
   WhatToDiscardProblemVote,
+  createWhatToDiscardProblemMyVote_Body,
+  WhatToDiscardProblemVoteResult,
   WhatToDiscardProblem,
-  Pagination,
   createWhatToDiscardProblem_Body,
 };
 
@@ -285,10 +278,7 @@ const endpoints = makeApi([
     path: "/session",
     alias: "getSession",
     requestFormat: "json",
-    response: z
-      .object({ is_logged_in: z.boolean().nullable(), user_id: z.number().int().nullable() })
-      .partial()
-      .passthrough(),
+    response: z.object({ session: Session }).passthrough(),
   },
   {
     method: "delete",
@@ -316,7 +306,7 @@ const endpoints = makeApi([
         schema: createSession_Body,
       },
     ],
-    response: Session,
+    response: z.object({ session: Session }).passthrough(),
     errors: [
       {
         status: 403,
@@ -374,7 +364,7 @@ const endpoints = makeApi([
     method: "put",
     path: "/users/:id",
     alias: "updateUser",
-    requestFormat: "json",
+    requestFormat: "form-data",
     parameters: [
       {
         name: "body",
@@ -428,7 +418,7 @@ const endpoints = makeApi([
     alias: "getWhatToDiscardProblems",
     requestFormat: "json",
     response: z
-      .object({ what_to_discard_problems: z.array(WhatToDiscardProblem), meta: Pagination })
+      .object({ what_to_discard_problems: z.array(WhatToDiscardProblem), meta: z.unknown() })
       .passthrough(),
   },
   {
@@ -564,9 +554,9 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: "post",
-    path: "/what_to_discard_problems/:what_to_discard_problem_id/likes",
-    alias: "createWhatToDiscardProblemLike",
+    method: "get",
+    path: "/what_to_discard_problems/:what_to_discard_problem_id/likes/my_like",
+    alias: "getWhatToDiscardProblemMyLike",
     requestFormat: "json",
     parameters: [
       {
@@ -575,64 +565,21 @@ const endpoints = makeApi([
         schema: z.string(),
       },
     ],
-    response: z.object({ what_to_discard_problem_like: Like }).passthrough(),
-    errors: [
-      {
-        status: 401,
-        description: `not_logged_in`,
-        schema: z.void(),
-      },
-      {
-        status: 422,
-        description: `unprocessable_entity`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "delete",
-    path: "/what_to_discard_problems/:what_to_discard_problem_id/likes/:id",
-    alias: "deleteWhatToDiscardProblemLike",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "what_to_discard_problem_id",
-        type: "Path",
-        schema: z.string(),
-      },
-      {
-        name: "id",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: z.void(),
-    errors: [
-      {
-        status: 401,
-        description: `not_logged_in`,
-        schema: z.void(),
-      },
-    ],
+    response: z.object({ my_like: Like }).passthrough(),
   },
   {
     method: "post",
-    path: "/what_to_discard_problems/:what_to_discard_problem_id/votes",
-    alias: "createVote",
+    path: "/what_to_discard_problems/:what_to_discard_problem_id/likes/my_like",
+    alias: "createWhatToDiscardProblemMyLike",
     requestFormat: "json",
     parameters: [
-      {
-        name: "body",
-        type: "Body",
-        schema: createVote_Body,
-      },
       {
         name: "what_to_discard_problem_id",
         type: "Path",
         schema: z.string(),
       },
     ],
-    response: z.object({ what_to_discard_problem_vote: WhatToDiscardProblemVote }).passthrough(),
+    response: z.object({ what_to_discard_problem_my_like: Like }).passthrough(),
     errors: [
       {
         status: 401,
@@ -648,27 +595,29 @@ const endpoints = makeApi([
   },
   {
     method: "delete",
-    path: "/what_to_discard_problems/:what_to_discard_problem_id/votes/:id",
-    alias: "deleteVote",
+    path: "/what_to_discard_problems/:what_to_discard_problem_id/likes/my_like",
+    alias: "deleteWhatToDiscardProblemMyLike",
     requestFormat: "json",
     parameters: [
       {
         name: "what_to_discard_problem_id",
-        type: "Path",
-        schema: z.string(),
-      },
-      {
-        name: "id",
         type: "Path",
         schema: z.string(),
       },
     ],
     response: z.void(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+    ],
   },
   {
     method: "get",
     path: "/what_to_discard_problems/:what_to_discard_problem_id/votes/my_vote",
-    alias: "getMyVote",
+    alias: "getWhatToDiscardProblemMyVote",
     requestFormat: "json",
     parameters: [
       {
@@ -677,7 +626,75 @@ const endpoints = makeApi([
         schema: z.string(),
       },
     ],
-    response: z.object({ id: z.number().int(), tile: Tile }).partial().passthrough().nullable(),
+    response: z.object({ what_to_discard_problem_my_vote: WhatToDiscardProblemVote }).passthrough(),
+  },
+  {
+    method: "post",
+    path: "/what_to_discard_problems/:what_to_discard_problem_id/votes/my_vote",
+    alias: "createWhatToDiscardProblemMyVote",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: createWhatToDiscardProblemMyVote_Body,
+      },
+      {
+        name: "what_to_discard_problem_id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ what_to_discard_problem_my_vote: WhatToDiscardProblemVote }).passthrough(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+      {
+        status: 422,
+        description: `unprocessable_entity`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/what_to_discard_problems/:what_to_discard_problem_id/votes/my_vote",
+    alias: "deleteWhatToDiscardProblemMyVote",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "what_to_discard_problem_id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/what_to_discard_problems/:what_to_discard_problem_id/votes/result",
+    alias: "getWhatToDiscardProblemVoteResult",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "what_to_discard_problem_id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z
+      .object({ what_to_discard_problem_vote_result: z.array(WhatToDiscardProblemVoteResult) })
+      .passthrough(),
   },
 ]);
 

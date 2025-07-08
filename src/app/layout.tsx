@@ -1,6 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import AuthStateContextProvider from "@/src/app/context-providers/providers/AuthStateContextProvider";
-import ModalContextProvider from "@/src/app/context-providers/providers/ModalContextProvider";
 import DefaultLayout from "@/src/components/layout/DefaultLayout";
 import "@/src/styles/globals.css";
 
@@ -14,11 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" suppressHydrationWarning>
       <body>
         <AuthStateContextProvider>
-          <ModalContextProvider>
-            <ChakraProvider resetCSS={false}>
-              <DefaultLayout>{children}</DefaultLayout>
-            </ChakraProvider>
-          </ModalContextProvider>
+          <ChakraProvider resetCSS={false}>
+            <DefaultLayout>{children}</DefaultLayout>
+          </ChakraProvider>
         </AuthStateContextProvider>
       </body>
     </html>

@@ -2,41 +2,42 @@
 
 import ProblemDeleteButton from "@/src/features/what-to-discard-problems/components/ProblemDeleteButton";
 import UserModal from "@/src/components/Modals/UserModal";
-import { SessionType } from "@/src/lib/getSession";
-import { Button, Flex, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Circle, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import useMyUserId from "@/src/hooks/useMyUserId";
 
 export default function ProblemCardHeader({
   problem,
-  session,
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
-  session: SessionType | null;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const myUserId = useMyUserId();
 
   return (
-    <Flex justifyContent="space-between" px="3" pt="2">
+    <HStack justifyContent="space-between">
       <Button onClick={onOpen} colorScheme="" p="0">
         <HStack>
-          <Image
-            borderRadius="full"
-            objectFit="cover"
-            h="8"
-            src={problem.user.avatar_url || "/no-image.webp"}
-          />
+          <Circle overflow="hidden" size="10">
+            <Image
+              borderRadius="full"
+              objectFit="cover"
+              h="full"
+              src={problem.user.avatar_url || "/no-image.webp"}
+            />
+          </Circle>
           <Text fontSize="md">{problem.user.name}</Text>
         </HStack>
       </Button>
 
-      {problem.id == session?.user_id && (
+      {problem.user.id == myUserId && (
         <HStack>
           <ProblemDeleteButton problemId={problem.id} />
         </HStack>
       )}
 
-      <UserModal userId={problem.user.id} isOpen={isOpen} onClose={onClose} />
-    </Flex>
+      <UserModal user={problem.user} isOpen={isOpen} onClose={onClose} />
+    </HStack>
   );
 }

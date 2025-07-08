@@ -2,13 +2,14 @@
 
 import { ReactNode, useState } from "react";
 import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
-import { SessionType } from "@/src/lib/getSession";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
 export default function AuthStateContextInner({
   session,
   children,
 }: {
-  session: SessionType | null;
+  session: z.infer<typeof schemas.Session> | null;
   children: ReactNode;
 }) {
   const [auth, setAuth] = useState(Boolean(session?.is_logged_in));

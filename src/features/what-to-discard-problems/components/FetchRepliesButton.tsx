@@ -1,4 +1,4 @@
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { schemas } from "@/src/zodios/api";
 import { Button, Flex } from "@chakra-ui/react";

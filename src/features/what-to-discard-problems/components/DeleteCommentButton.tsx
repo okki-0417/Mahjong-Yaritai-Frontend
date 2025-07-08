@@ -1,4 +1,4 @@
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { schemas } from "@/src/zodios/api";

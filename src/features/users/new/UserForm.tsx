@@ -15,7 +15,7 @@ import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 
 type UserFormType = {
   name: string;

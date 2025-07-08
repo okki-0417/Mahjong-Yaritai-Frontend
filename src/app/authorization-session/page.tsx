@@ -7,9 +7,7 @@ import AuthorizationSessionForm from "@/src/features/authorization-session/Autho
 
 export default async function AuthorizationSession() {
   const session = await getSession();
-  if (session?.is_logged_in) {
-    redirect("/dashboard");
-  }
+  if (session?.is_logged_in) redirect("/dashboard");
 
   return (
     <Container mt={40} maxW="2xl">

@@ -7,7 +7,7 @@ import CommentForm from "@/src/features/what-to-discard-problems/components/Comm
 import ReplyContextProvider from "@/src/features/what-to-discard-problems/context-providers/providers/ReplyToCommentContextProvider";
 import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 
 export default function CommentList({ problemId }: { problemId: number }) {
   const [parentComments, setParentComments] = useState<z.infer<typeof schemas.Comment>[] | null>(

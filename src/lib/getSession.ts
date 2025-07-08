@@ -1,18 +1,16 @@
-import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
+import createApiPageClient from "@/src/lib/apiClients/ApiPageClient";
+import { schemas } from "@/src/zodios/api";
+import { z } from "zod";
 
-export type SessionType = {
-  is_logged_in: boolean;
-  user_id: number | null;
-};
+export type SessionType = z.infer<typeof schemas.Session>;
 
 export default async function getSession() {
-  const apiClient = await apiPageClient();
+  const apiPageClient = await createApiPageClient();
 
   try {
-    const response = await apiClient.get(`/session`);
-    const session: SessionType = response.data.session;
+    const response = await apiPageClient.getSession();
 
-    return session;
+    return response.session;
   } catch (error) {
     console.error(error);
     return null;

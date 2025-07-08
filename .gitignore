@@ -7,3 +7,4 @@ dist
 .env.sentry-build-plugin
 
 tsconfig.tsbuildinfo
+.aider*

@@ -5,7 +5,7 @@ import axios from "axios";
 import { IoMdTrash } from "react-icons/io";
 import { useState } from "react";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { apiClient } from "@/config/apiConfig";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 
 export default function ProblemDeleteButton({ problemId }: { problemId: number }) {
   const toast = useToast();
