@@ -75,6 +75,7 @@ export default function VoteButton({
         );
 
         setVoteResult(tileUniqueResult);
+        handleDisplayVoteResult();
 
         successToast({ title: "投票しました" });
       } else if (myVoteTileId == tileId) {
