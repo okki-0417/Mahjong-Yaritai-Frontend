@@ -99,7 +99,7 @@ export default function ParentCommentCard({
         </VStack>
       )}
 
-      <UserModal userId={comment.user.id} isOpen={isOpen} onClose={onClose} />
+      <UserModal user={comment.user} isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }

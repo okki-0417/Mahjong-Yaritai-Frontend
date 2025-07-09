@@ -9,14 +9,12 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  HStack,
   Image,
   Input,
-  VisuallyHiddenInput,
   VStack,
 } from "@chakra-ui/react";
 import { SetStateAction, useRef, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { isAxiosError } from "axios";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
@@ -43,33 +41,31 @@ export default function ProfileEditForm({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+
     if (!files?.length) return null;
 
-    if (previousImageUrlRef.current) URL.revokeObjectURL(previousImageUrlRef.current);
+    if (previousImageUrlRef.current) {
+      URL.revokeObjectURL(previousImageUrlRef.current);
+    }
 
     const url = URL.createObjectURL(files[0]);
     previousImageUrlRef.current = url;
-    console.log(imageInputRef.current?.files?.[0]);
 
-    return setImageUrl(url);
+    setImageUrl(url);
+
+    return files[0];
   };
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<{ name: string }>();
+    control,
+    formState: { errors, isSubmitting, isDirty },
+  } = useForm<z.infer<typeof schemas.updateUser_Body>>();
 
-  const onSubmit: SubmitHandler<{ name: string }> = async formInputs => {
-    const formData = new FormData();
-
-    formData.append("user[name]", formInputs.name);
-
-    const file = imageInputRef.current?.files?.[0];
-    if (file) formData.append("user[avatar]", file);
-
+  const onSubmit: SubmitHandler<z.infer<typeof schemas.updateUser_Body>> = async formInputs => {
     try {
-      const response = await apiClient.updateUser(formData, {
+      const response = await apiClient.updateUser(formInputs, {
         params: {
           id: String(user?.id),
         },
@@ -104,13 +100,25 @@ export default function ProfileEditForm({
             bgColor="white"
           />
         </Circle>
-
-        <FormControl isRequired isInvalid={Boolean(errors.avatar)}>
-          <VisuallyHiddenInput
-            type="file"
-            accept="image/png, image/jpeg, image/webp image/svg, image/gif"
-            ref={imageInputRef}
-            onChange={handleFileChange}
+        <FormControl>
+          <Controller
+            control={control}
+            name="avatar"
+            render={({ field: { onChange, ref } }) => (
+              <Input
+                type="file"
+                accept="image/png, image/jpeg, image/webp"
+                ref={element => {
+                  ref(element);
+                  imageInputRef.current = element;
+                }}
+                onChange={event => {
+                  const file = handleFileChange(event);
+                  onChange(file);
+                }}
+                display="none"
+              />
+            )}
           />
 
           <Center>
@@ -122,7 +130,7 @@ export default function ProfileEditForm({
           <FormErrorMessage>{errors.avatar?.message}</FormErrorMessage>
         </FormControl>
 
-        <FormControl isRequired isInvalid={Boolean(errors.name)}>
+        <FormControl isInvalid={Boolean(errors.name)}>
           <Flex alignItems="start">
             <Input
               type="text"

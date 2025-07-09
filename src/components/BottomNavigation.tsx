@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { BsGraphUpArrow } from "react-icons/bs";
-import { FaGear } from "react-icons/fa6";
 import { GiThink } from "react-icons/gi";
 import { IoHomeOutline } from "react-icons/io5";
 

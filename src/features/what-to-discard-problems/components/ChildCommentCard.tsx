@@ -45,7 +45,7 @@ export default function ChildCommentCard({ reply }: { reply: z.infer<typeof sche
         {/* <LikeButton /> */}
       </Box>
 
-      <UserModal userId={reply.user.id} isOpen={isOpen} onClose={onClose} />
+      <UserModal user={reply.user} isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }
