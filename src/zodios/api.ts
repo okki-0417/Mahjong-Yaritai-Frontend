@@ -35,7 +35,7 @@ const User = z
   })
   .passthrough();
 const updateUser_Body = z
-  .object({ name: z.string().max(20), avatar: z.instanceof(File).optional() })
+  .object({ name: z.string().max(20), avatar: z.instanceof(File).nullable() })
   .passthrough();
 const Comment = z
   .object({
@@ -67,41 +67,6 @@ const Like = z
     updated_at: z.string(),
   })
   .passthrough();
-const WhatToDiscardProblem_NoRel = z
-  .object({
-    id: z.number().int().optional(),
-    user_id: z.number().int(),
-    round: z.string(),
-    turn: z.number().int(),
-    wind: z.string(),
-    point_east: z.number().int(),
-    point_south: z.number().int(),
-    point_west: z.number().int(),
-    point_north: z.number().int(),
-    dora_id: z.number().int(),
-    hand1_id: z.number().int(),
-    hand2_id: z.number().int(),
-    hand3_id: z.number().int(),
-    hand4_id: z.number().int(),
-    hand5_id: z.number().int(),
-    hand6_id: z.number().int(),
-    hand7_id: z.number().int(),
-    hand8_id: z.number().int(),
-    hand9_id: z.number().int(),
-    hand10_id: z.number().int(),
-    hand11_id: z.number().int(),
-    hand12_id: z.number().int(),
-    hand13_id: z.number().int(),
-    tsumo_id: z.number().int(),
-    comments_count: z.number().int(),
-    likes_count: z.number().int(),
-    votes_count: z.number().int(),
-    is_liked_by_me: z.boolean().optional(),
-    my_vote_tile_id: z.number().int().nullish(),
-    created_at: z.string(),
-    updated_at: z.string(),
-  })
-  .passthrough();
 const Tile = z
   .object({
     id: z.number().int(),
@@ -115,8 +80,8 @@ const Tile = z
 const WhatToDiscardProblemVote = z
   .object({
     id: z.number().int(),
-    user: User,
-    what_to_discard_problem: WhatToDiscardProblem_NoRel,
+    user_id: z.number().int(),
+    what_to_discard_problem_id: z.number().int(),
     tile: Tile,
     created_at: z.string(),
     updated_at: z.string(),
@@ -211,7 +176,6 @@ export const schemas = {
   Comment,
   createComment_Body,
   Like,
-  WhatToDiscardProblem_NoRel,
   Tile,
   WhatToDiscardProblemVote,
   createWhatToDiscardProblemMyVote_Body,

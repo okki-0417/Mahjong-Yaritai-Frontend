@@ -18,7 +18,7 @@ export default function ProblemLikeSection({
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
 }) {
   const [isLiked, setIsLiked] = useState(Boolean(problem.is_liked_by_me));
-  const [likesCount, setLikesCount] = useState(problem.comments_count);
+  const [likesCount, setLikesCount] = useState(problem.likes_count);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const successToast = useSuccessToast();
