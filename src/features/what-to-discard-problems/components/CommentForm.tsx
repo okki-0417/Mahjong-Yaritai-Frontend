@@ -3,155 +3,136 @@
 import {
   Box,
   Button,
+  Center,
   Container,
   FormControl,
   FormErrorMessage,
   HStack,
   Text,
   Textarea,
-  useToast,
   VisuallyHiddenInput,
+  VStack,
 } from "@chakra-ui/react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  FieldErrors,
+  SubmitHandler,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormResetField,
+} from "react-hook-form";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import ButtonAccent from "@/src/components/Buttons/ButtonAccent";
-import ReplyContext from "@/src/features/what-to-discard-problems/context-providers/contexts/ReplyContext";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
-
-type CommentFormType = z.infer<typeof schemas.Comment>;
+import useSuccessToast from "@/src/hooks/useSuccessToast";
 
 export default function CommentForm({
-  setParentComments,
+  problemId,
+  register,
+  handleSubmit,
+  errors,
+  resetField,
+  isSubmitting,
+  insertCommentToThread,
+  replyingToComment,
+  setReplyingToComment,
 }: {
   problemId: number;
-  setParentComments: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>[] | null>>;
+  register: UseFormRegister<z.infer<typeof schemas.createComment_Body>>;
+  handleSubmit: UseFormHandleSubmit<z.infer<typeof schemas.createComment_Body>>;
+  errors: FieldErrors<z.infer<typeof schemas.createComment_Body>>;
+  resetField: UseFormResetField<z.infer<typeof schemas.createComment_Body>>;
+  isSubmitting: boolean;
+  /* eslint no-unused-vars: 0 */
+  insertCommentToThread: (comment: z.infer<typeof schemas.Comment>) => void;
+  replyingToComment: z.infer<typeof schemas.Comment>;
+  setReplyingToComment: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>>>;
 }) {
-  const [loading, setLoading] = useState(false);
-  const auth = useIsLoggedIn();
+  const isLoggedIn = useIsLoggedIn();
   const errorToast = useErrorToast();
-  const toast = useToast();
+  const successToast = useSuccessToast();
 
-  const { replyToComment, setReplyToComment, setRepliesFromContext } = useContext(ReplyContext);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    setFocus,
-    resetField,
-  } = useForm<CommentFormType>();
-
-  useEffect(() => {
-    if (!replyToComment) return;
-
-    setValue("parentCommentId", replyToComment.id);
-    setFocus("content");
-  }, [replyToComment]);
-
-  const onSubmit: SubmitHandler<CommentFormType> = async formData => {
-    if (!auth) return null;
-    if (loading) return null;
-    setLoading(true);
-
+  const onSubmit: SubmitHandler<z.infer<typeof schemas.createComment_Body>> = async formData => {
     try {
-      const response = await apiClient.createComment({
-        what_to_discard_problem_comment: {
-          parent_comment_id: replyToComment ? String(replyToComment.id) : null,
-          content: formData.content,
+      const response = await apiClient.createComment(formData, {
+        params: {
+          what_to_discard_problem_id: String(problemId),
         },
       });
 
-      const resComment = response.what_to_discard_problem_comment;
+      insertCommentToThread(response.what_to_discard_problem_comment);
 
-      toast({
-        title: "コメントを投稿しました",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      resetField("what_to_discard_problem_comment.content");
+      resetField("what_to_discard_problem_comment.parent_comment_id");
 
-      if (resComment.parentCommentId) {
-        setRepliesFromContext(prev => [...prev, resComment]);
-      } else {
-        setParentComments(prev => [...prev, resComment]);
-      }
-
-      resetField("content");
+      successToast({ title: "コメントを投稿しました" });
     } catch (error) {
-      errorToast({
-        error,
-        title: "コメントを投稿できませんでした",
-      });
-    } finally {
-      setLoading(false);
+      errorToast({ error, title: "コメントを投稿できませんでした" });
     }
-
-    return null;
   };
 
   return (
-    <Box>
-      {auth ? (
-        <Box mt={2}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {replyToComment && (
-              <HStack justifyContent="space-between" mb="2">
-                <Text>{replyToComment.user.name}のコメントに返信中...</Text>
+    <Box w="full" fontFamily="serif">
+      {!isLoggedIn && (
+        <Container>
+          <Text textAlign="center">コメントを投稿するにはログインしてください</Text>
+          <Container textAlign="center">
+            <Link href="/isLoggedIn/login" className="btn btn-main">
+              ログインする
+            </Link>
+          </Container>
+        </Container>
+      )}
+
+      {isLoggedIn && (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <VStack alignItems="stretch" gap="1">
+            {replyingToComment && (
+              <HStack justifyContent="space-between">
+                <Text>{replyingToComment.user.name}のコメントに返信中...</Text>
                 <Button
                   bgColor="inherit"
-                  size="sm"
+                  size="xs"
+                  fontSize="sm"
                   color="#365158"
-                  h="fit-content"
-                  onClick={() => setReplyToComment(null)}>
+                  onClick={() => setReplyingToComment(null)}>
                   キャンセル
                 </Button>
               </HStack>
             )}
 
-            <FormControl isInvalid={Boolean(errors.content) || Boolean(errors.parentCommentId)}>
-              <Box>
-                <Textarea
-                  placeholder="コメントする..."
-                  {...register("content", { required: true })}
-                />
-                <FormErrorMessage color={"red.500"}>
-                  {errors.content && errors.content.message}
-                </FormErrorMessage>
-              </Box>
-
-              <VisuallyHiddenInput {...register("parentCommentId")} defaultValue={null} />
-              <FormErrorMessage color={"red.500"}>
-                {errors.parentCommentId && errors.parentCommentId.message}
+            <FormControl>
+              <VisuallyHiddenInput
+                {...register("what_to_discard_problem_comment.parent_comment_id")}
+                defaultValue={null}
+              />
+              <FormErrorMessage>
+                {errors.what_to_discard_problem_comment?.parentCommentId?.message}
               </FormErrorMessage>
-
-              <Container mt={3} textAlign={"center"}>
-                <ButtonAccent type="submit">送信</ButtonAccent>
-              </Container>
             </FormControl>
-          </form>
-        </Box>
-      ) : (
-        <NotLoggedInCommentForm />
+
+            <FormControl
+              isRequired
+              isInvalid={Boolean(errors.what_to_discard_problem_comment?.content)}>
+              <Textarea
+                placeholder="コメントする..."
+                {...register("what_to_discard_problem_comment.content")}
+              />
+              <FormErrorMessage>
+                {errors.what_to_discard_problem_comment?.content?.message}
+              </FormErrorMessage>
+            </FormControl>
+
+            <Center>
+              <Button type="submit" colorScheme="pink" isLoading={isSubmitting}>
+                送信
+              </Button>
+            </Center>
+          </VStack>
+        </form>
       )}
     </Box>
   );
 }
-
-const NotLoggedInCommentForm = () => {
-  return (
-    <Container pt={4}>
-      <Text textAlign="center">コメントを投稿するにはログインしてください</Text>
-      <Container textAlign="center" mt={4}>
-        <Link href="/auth/login" className="btn btn-main">
-          ログインする
-        </Link>
-      </Container>
-    </Container>
-  );
-};

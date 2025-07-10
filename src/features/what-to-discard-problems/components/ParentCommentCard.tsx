@@ -2,9 +2,9 @@
 
 import UserModal from "@/src/components/Modals/UserModal";
 import ChildCommentCard from "@/src/features/what-to-discard-problems/components/ChildCommentCard";
+import { InsertCommentToThread } from "@/src/features/what-to-discard-problems/components/CommentsModal";
 import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/DeleteCommentButton";
 import FetchRepliesButton from "@/src/features/what-to-discard-problems/components/FetchRepliesButton";
-import ReplyContext from "@/src/features/what-to-discard-problems/context-providers/contexts/ReplyContext";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useMyUserId from "@/src/hooks/useMyUserId";
 import { schemas } from "@/src/zodios/api";
@@ -19,23 +19,38 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useState } from "react";
+import { UseFormSetFocus, UseFormSetValue } from "react-hook-form";
 import { MdOutlineReply } from "react-icons/md";
 import { z } from "zod";
 
 export default function ParentCommentCard({
-  comment,
+  parentComment,
+  setValue,
+  setFocus,
+  setInsertCommentToThread,
+  setReplyingToComment,
 }: {
-  comment: z.infer<typeof schemas.Comment>;
+  parentComment: z.infer<typeof schemas.Comment>;
+  setValue: UseFormSetValue<z.infer<typeof schemas.createComment_Body>>;
+  setFocus: UseFormSetFocus<z.infer<typeof schemas.createComment_Body>>;
+  setInsertCommentToThread: React.Dispatch<React.SetStateAction<InsertCommentToThread>>;
+  setReplyingToComment: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>>>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const isMyComment = comment.user.id == useMyUserId();
+  const isLoggedIn = useIsLoggedIn();
+  const myUserId = useMyUserId();
 
-  const auth = useIsLoggedIn();
+  const [replies, setReplies] = useState<z.infer<typeof schemas.Comment>[] | []>([]);
 
-  const [replies, setReplies] = useState<z.infer<typeof schemas.Comment>[] | null>(null);
-
-  const { setReplyToComment, setSetRepliesFromContext } = useContext(ReplyContext);
+  const handleReply = () => {
+    setFocus("what_to_discard_problem_comment.content");
+    setValue("what_to_discard_problem_comment.parent_comment_id", String(parentComment.id));
+    setReplyingToComment(parentComment);
+    setInsertCommentToThread(() => (reply: z.infer<typeof schemas.Comment>) => {
+      setReplies(prev => [...prev, reply]);
+    });
+  };
 
   return (
     <Box w="full" pb="4">
@@ -44,51 +59,44 @@ export default function ParentCommentCard({
           <HStack>
             <Circle size="8" overflow="hidden" border="1px">
               <Img
-                src={comment.user.avatar_url || "/no-image.webp"}
+                src={parentComment.user.avatar_url || "/no-image.webp"}
                 className="w-full h-full object-cover"
               />
             </Circle>
             <Text fontWeight="bold" color="#365158">
-              {comment.user.name}
+              {parentComment.user.name}
             </Text>
           </HStack>
         </Button>
 
         <Box>
-          {auth && !isMyComment && (
-            <Button
-              size="sm"
-              px="1"
-              onClick={() => {
-                setReplyToComment(comment);
-                setSetRepliesFromContext(setReplies);
-              }}
-              bgColor="inherit">
+          {parentComment.user.id == myUserId && <DeleteCommentButton comment={parentComment} />}
+
+          {parentComment.user.id != myUserId && isLoggedIn && (
+            <Button size="sm" px="1" onClick={handleReply} bgColor="inherit">
               <MdOutlineReply size={18} color="#365158" />
             </Button>
           )}
-
-          {isMyComment && <DeleteCommentButton comment={comment} />}
         </Box>
       </Flex>
 
       <Text fontFamily="sans-serif" fontSize="xs" color="#466163">
-        {new Date(comment.created_at).toLocaleString()}
+        {new Date(parentComment.created_at).toLocaleString()}
       </Text>
 
       <Box className="pl-1 mt-2">
-        <Text>{comment.content}</Text>
+        <Text>{parentComment.content}</Text>
 
         {/* <LikeButton /> */}
       </Box>
 
-      {!replies && Boolean(comment.repliesCount) && (
-        <FetchRepliesButton setReplies={setReplies} comment={comment} />
+      {Boolean(parentComment.replies_count) && Boolean(!replies.length) && (
+        <FetchRepliesButton setReplies={setReplies} comment={parentComment} />
       )}
 
-      {replies && (
+      {Boolean(replies.length) && (
         <VStack mt="4">
-          {replies.map((reply, index) => {
+          {replies.map((reply: z.infer<typeof schemas.Comment>, index: number) => {
             return (
               <HStack w="full" pl="4" h="24" key={index}>
                 <Box w="1" h="full" bgColor="#466163" rounded="full" />
@@ -99,7 +107,7 @@ export default function ParentCommentCard({
         </VStack>
       )}
 
-      <UserModal user={comment.user} isOpen={isOpen} onClose={onClose} />
+      <UserModal user={parentComment.user} isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }

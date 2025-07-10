@@ -12,13 +12,12 @@ export default function FetchRepliesButton({
   setReplies: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>[]>>;
   comment: z.infer<typeof schemas.Comment>;
 }) {
-  const [fetching, setFetching] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const errorToast = useErrorToast();
 
   const fetchReplies = async () => {
-    if (fetching) return;
-    setFetching(true);
+    if (isLoading) return;
+    setIsLoading(true);
 
     try {
       const response = await apiClient.getWhatToDiscardProblemCommentReplies({
@@ -28,16 +27,11 @@ export default function FetchRepliesButton({
         },
       });
 
-      const data = response.what_to_discard_problem_comment_replies;
-
-      setReplies(data);
+      setReplies(response.what_to_discard_problem_comment_replies);
     } catch (error) {
-      errorToast({
-        error,
-        title: "返信の取得に失敗しました",
-      });
+      errorToast({ error, title: "返信の取得に失敗しました" });
     } finally {
-      setFetching(false);
+      setIsLoading(false);
     }
   };
 
@@ -50,7 +44,8 @@ export default function FetchRepliesButton({
         color="#365158"
         fontSize="sm"
         _hover={{ bgColor: "gray.200" }}
-        onClick={fetchReplies}>
+        onClick={fetchReplies}
+        isLoading={isLoading}>
         返信を見る
       </Button>
     </Flex>

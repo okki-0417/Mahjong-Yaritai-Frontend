@@ -6,6 +6,8 @@ import { HStack, Text, useDisclosure } from "@chakra-ui/react";
 import CommentsModal from "@/src/features/what-to-discard-problems/components/CommentsModal";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { useState } from "react";
 
 export default function ProblemCommentSection({
   problem,
@@ -13,10 +15,24 @@ export default function ProblemCommentSection({
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [parentComments, setParentComments] = useState<z.infer<typeof schemas.Comment>[] | null>(
+    null,
+  );
+
+  const handleOpenModal = async () => {
+    const response = await apiClient.getComments({
+      params: {
+        what_to_discard_problem_id: String(problem.id),
+      },
+    });
+
+    setParentComments(response.what_to_discard_problem_comments);
+    onOpen();
+  };
 
   return (
     <>
-      <PopButton onClick={() => onOpen()}>
+      <PopButton onClick={handleOpenModal}>
         <HStack>
           <FaRegComment color="#333" size={24} />
           <Text fontFamily="sans-serif" fontWeight="bold">
@@ -25,7 +41,13 @@ export default function ProblemCommentSection({
         </HStack>
       </PopButton>
 
-      <CommentsModal isOpen={isOpen} onClose={onClose} problemId={problem.id} />
+      <CommentsModal
+        isOpen={isOpen}
+        onClose={onClose}
+        problemId={problem.id}
+        parentComments={parentComments}
+        setParentComments={setParentComments}
+      />
     </>
   );
 }
