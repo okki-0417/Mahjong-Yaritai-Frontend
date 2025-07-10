@@ -62,12 +62,14 @@ export default function CommentsModal({
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl" scrollBehavior="inside">
       <ModalOverlay />
 
-      <ModalContent bgColor="blue.400/40">
-        <ModalHeader fontFamily="serif">コメント</ModalHeader>
+      <ModalContent overflow="hidden">
+        <ModalHeader fontFamily="serif" className="bg-secondary text-neutral">
+          コメント
+        </ModalHeader>
 
-        <ModalCloseButton className="text-primary" />
+        <ModalCloseButton className="text-neutral" />
 
-        <ModalBody className="text-primary" fontFamily="serif">
+        <ModalBody className="text-neutral bg-secondary" fontFamily="serif">
           <Box minH={30}>
             {parentComments == null && (
               <Box textAlign="center" py={8}>
@@ -79,7 +81,7 @@ export default function CommentsModal({
             )}
 
             {parentComments != null && parentComments.length > 0 && (
-              <VStack divider={<StackDivider />} gap="4">
+              <VStack divider={<StackDivider />} gap="0">
                 {parentComments.map((parentComment, index) => {
                   return (
                     <ParentCommentCard
@@ -103,7 +105,7 @@ export default function CommentsModal({
           </Box>
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter className="bg-secondary">
           <CommentForm
             problemId={problemId}
             register={register}

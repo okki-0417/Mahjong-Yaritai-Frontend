@@ -74,7 +74,7 @@ export default function CommentForm({
   };
 
   return (
-    <Box w="full" fontFamily="serif">
+    <Box w="full" fontFamily="serif" className="text-primary">
       {!isLoggedIn && (
         <Container>
           <Text textAlign="center">コメントを投稿するにはログインしてください</Text>
@@ -117,6 +117,7 @@ export default function CommentForm({
               isRequired
               isInvalid={Boolean(errors.what_to_discard_problem_comment?.content)}>
               <Textarea
+                className="text-neutral"
                 placeholder="コメントする..."
                 {...register("what_to_discard_problem_comment.content")}
               />

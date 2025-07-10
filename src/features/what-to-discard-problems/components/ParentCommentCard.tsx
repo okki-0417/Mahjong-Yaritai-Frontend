@@ -8,17 +8,7 @@ import FetchRepliesButton from "@/src/features/what-to-discard-problems/componen
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useMyUserId from "@/src/hooks/useMyUserId";
 import { schemas } from "@/src/zodios/api";
-import {
-  Box,
-  Button,
-  Circle,
-  Flex,
-  HStack,
-  Img,
-  Text,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Circle, HStack, Img, Text, useDisclosure, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { UseFormSetFocus, UseFormSetValue } from "react-hook-form";
 import { MdOutlineReply } from "react-icons/md";
@@ -53,61 +43,64 @@ export default function ParentCommentCard({
   };
 
   return (
-    <Box w="full" pb="4">
-      <Flex alignItems="center" justifyContent="space-between">
-        <Button bgColor="inherit" h="fit-content" p="0" pr="2" onClick={onOpen}>
-          <HStack>
-            <Circle size="8" overflow="hidden" border="1px">
-              <Img
-                src={parentComment.user.avatar_url || "/no-image.webp"}
-                className="w-full h-full object-cover"
-              />
-            </Circle>
-            <Text fontWeight="bold" color="#365158">
-              {parentComment.user.name}
-            </Text>
-          </HStack>
-        </Button>
-
+    <>
+      <Box w="full" py="2">
         <Box>
-          {parentComment.user.id == myUserId && <DeleteCommentButton comment={parentComment} />}
-
-          {parentComment.user.id != myUserId && isLoggedIn && (
-            <Button size="sm" px="1" onClick={handleReply} bgColor="inherit">
-              <MdOutlineReply size={18} color="#365158" />
+          <HStack alignItems="center" justifyContent="space-between">
+            <Button
+              bgColor="inherit"
+              _hover={{ bgColor: "gray.400" }}
+              p="0"
+              pr="1"
+              h="fit-content"
+              onClick={onOpen}>
+              <HStack>
+                <Circle size="8" overflow="hidden" border="1px">
+                  <Img
+                    src={parentComment.user.avatar_url || "/no-image.webp"}
+                    className="w-full h-full object-cover"
+                  />
+                </Circle>
+                <Text fontWeight="bold" className="text-neutral">
+                  {parentComment.user.name}
+                </Text>
+              </HStack>
             </Button>
-          )}
+
+            {parentComment.user.id == myUserId && <DeleteCommentButton comment={parentComment} />}
+            {parentComment.user.id != myUserId && isLoggedIn && (
+              <Button size="sm" px="1" onClick={handleReply} bgColor="inherit">
+                <MdOutlineReply size={18} className="text-neutral" />
+              </Button>
+            )}
+          </HStack>
+
+          <Text fontFamily="sans-serif" fontSize="xs" className="text-neutral">
+            {new Date(parentComment.created_at).toLocaleString()}
+          </Text>
         </Box>
-      </Flex>
 
-      <Text fontFamily="sans-serif" fontSize="xs" color="#466163">
-        {new Date(parentComment.created_at).toLocaleString()}
-      </Text>
+        <Text mt="2">{parentComment.content}</Text>
 
-      <Box className="pl-1 mt-2">
-        <Text>{parentComment.content}</Text>
+        {Boolean(parentComment.replies_count) && Boolean(!replies.length) && (
+          <FetchRepliesButton setReplies={setReplies} comment={parentComment} />
+        )}
 
-        {/* <LikeButton /> */}
+        {Boolean(replies.length) && (
+          <VStack mt="4">
+            {replies.map((reply: z.infer<typeof schemas.Comment>, index: number) => {
+              return (
+                <HStack w="full" pl="4" h="24" key={index} gap="4">
+                  <Box w="1" h="full" className="bg-neutral" rounded="full" />
+                  <ChildCommentCard reply={reply} />
+                </HStack>
+              );
+            })}
+          </VStack>
+        )}
       </Box>
 
-      {Boolean(parentComment.replies_count) && Boolean(!replies.length) && (
-        <FetchRepliesButton setReplies={setReplies} comment={parentComment} />
-      )}
-
-      {Boolean(replies.length) && (
-        <VStack mt="4">
-          {replies.map((reply: z.infer<typeof schemas.Comment>, index: number) => {
-            return (
-              <HStack w="full" pl="4" h="24" key={index}>
-                <Box w="1" h="full" bgColor="#466163" rounded="full" />
-                <ChildCommentCard reply={reply} />
-              </HStack>
-            );
-          })}
-        </VStack>
-      )}
-
       <UserModal user={parentComment.user} isOpen={isOpen} onClose={onClose} />
-    </Box>
+    </>
   );
 }
