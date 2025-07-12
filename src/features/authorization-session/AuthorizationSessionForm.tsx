@@ -3,7 +3,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import axios from "axios";
 import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
 import MainButton from "@/src/components/MainButton";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
@@ -32,14 +31,10 @@ export default function AuthorizationSessionForm() {
 
       router.push("/authorization");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.response?.data);
-
-        errorToast({
-          error,
-          title: "このメールアドレスは使用できません",
-        });
-      }
+      errorToast({
+        error,
+        title: "このメールアドレスは使用できません",
+      });
     }
   };
 

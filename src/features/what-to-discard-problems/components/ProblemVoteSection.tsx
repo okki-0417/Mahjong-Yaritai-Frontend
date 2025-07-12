@@ -6,6 +6,7 @@ import PopButton from "@/src/components/PopButton";
 import { HStack, Text } from "@chakra-ui/react";
 import { MdHowToVote } from "react-icons/md";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import useErrorToast from "@/src/hooks/useErrorToast";
 
 export type MyVoteType = z.infer<typeof schemas.Tile> | null;
 
@@ -24,6 +25,8 @@ export default function ProblemVoteSection({
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
   handleDisplayVoteResult: () => void;
 }) {
+  const errorToast = useErrorToast();
+
   const handleClick = async () => {
     try {
       const response = await apiClient.getWhatToDiscardProblemVoteResult({
@@ -41,7 +44,7 @@ export default function ProblemVoteSection({
       setVoteResult(tileUniqueResult);
       handleDisplayVoteResult();
     } catch (error) {
-      console.error(error);
+      errorToast({ title: "投票に失敗しました", error });
     }
   };
 

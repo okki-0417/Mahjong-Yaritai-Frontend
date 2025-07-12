@@ -10,6 +10,7 @@ const createAuthorization_Body = z
 const Session = z
   .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
   .passthrough();
+const Errors = z.array(z.object({ message: z.string() }).passthrough());
 const createSession_Body = z
   .object({ session: z.object({ email: z.string(), password: z.string() }).passthrough() })
   .passthrough();
@@ -172,6 +173,7 @@ export const schemas = {
   createAuthorizationSession_Body,
   createAuthorization_Body,
   Session,
+  Errors,
   createSession_Body,
   createUser_Body,
   User,
@@ -258,7 +260,7 @@ const endpoints = makeApi([
       {
         status: 401,
         description: `unauthorized`,
-        schema: z.void(),
+        schema: z.object({ errors: Errors }).passthrough(),
       },
     ],
   },
@@ -279,12 +281,12 @@ const endpoints = makeApi([
       {
         status: 403,
         description: `forbidden`,
-        schema: z.void(),
+        schema: z.object({ errors: Errors }).passthrough(),
       },
       {
         status: 422,
-        description: `successful`,
-        schema: z.void(),
+        description: `unprocessable_entity`,
+        schema: z.object({ errors: Errors }).passthrough(),
       },
     ],
   },
@@ -305,12 +307,12 @@ const endpoints = makeApi([
       {
         status: 403,
         description: `forbidden`,
-        schema: z.void(),
+        schema: z.object({ errors: Errors }).passthrough(),
       },
       {
         status: 422,
         description: `unprocessable_entity`,
-        schema: z.void(),
+        schema: z.object({ errors: Errors }).passthrough(),
       },
     ],
   },

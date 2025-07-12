@@ -8,7 +8,6 @@ import useErrorToast from "@/src/hooks/useErrorToast";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import { useDisclosure } from "@chakra-ui/react";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
-import axios from "axios";
 import LikeButton from "@/src/components/LikeButton";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 
@@ -59,12 +58,6 @@ export default function ProblemLikeSection({
         successToast({ title: "いいねしました" });
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.status);
-        console.error(error.message);
-      }
-      console.error(error);
-
       errorToast({ error, title: "いいねの操作に失敗しました" });
     } finally {
       setIsSubmitting(false);

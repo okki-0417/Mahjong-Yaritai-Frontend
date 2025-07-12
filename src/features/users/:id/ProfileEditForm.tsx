@@ -16,12 +16,10 @@ import {
 import { SetStateAction, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { isAxiosError } from "axios";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function ProfileEditForm({
   setIsEditMode,
@@ -60,7 +58,7 @@ export default function ProfileEditForm({
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof schemas.updateUser_Body>>();
 
   const onSubmit: SubmitHandler<z.infer<typeof schemas.updateUser_Body>> = async formInputs => {
@@ -75,15 +73,10 @@ export default function ProfileEditForm({
       setIsEditMode(false);
       successToast({ title: "プロフィールを更新しました" });
     } catch (error) {
-      if (isAxiosError(error)) {
-        errorToast({
-          error,
-          title: "プロフィールを更新できませんでした",
-        });
-      } else {
-        console.error(error);
-      }
-      errorToast({ title: "ネットワークエラー" });
+      errorToast({
+        error,
+        title: "プロフィールを更新できませんでした",
+      });
     }
   };
 

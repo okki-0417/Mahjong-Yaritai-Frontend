@@ -19,7 +19,6 @@ export default async function ProblemsSection() {
       />
     );
   } catch (error) {
-    console.error(error);
     return (
       <Box textAlign="center" py={16}>
         <VStack spacing={4}>

@@ -142,8 +142,6 @@ export default function VoteButton({
         successToast({ title: "投票しました" });
       }
     } catch (error) {
-      console.error(error);
-
       errorToast({ error, title: "投票の操作に失敗しました" });
     } finally {
       setIsSubmitting(false);
