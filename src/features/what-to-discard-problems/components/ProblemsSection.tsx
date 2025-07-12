@@ -8,7 +8,7 @@ export default async function ProblemsSection() {
   try {
     const response = await apiPageClient.getWhatToDiscardProblems({
       queries: {
-        limit: 20,
+        limit: String(20),
       },
     });
 
@@ -18,7 +18,8 @@ export default async function ProblemsSection() {
         initialCursor={response.meta.cursor}
       />
     );
-  } catch (_) {
+  } catch (error) {
+    console.error(error);
     return (
       <Box textAlign="center" py={16}>
         <VStack spacing={4}>

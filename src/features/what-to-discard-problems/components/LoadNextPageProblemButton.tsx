@@ -26,8 +26,7 @@ export default function LoadNextPageProblemButton({
     try {
       const response = await apiClient.getWhatToDiscardProblems({
         queries: {
-          cursor: cursor.next,
-          limit: cursor.limit,
+          limit: String(cursor.limit),
         },
       });
 

@@ -84,12 +84,6 @@ export default function ProblemForm({
     getValues,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>({
-    defaultValues: {
-      "what_to_discard_problem.point_east": 25000,
-      "what_to_discard_problem.point_south": 25000,
-      "what_to_discard_problem.point_west": 25000,
-      "what_to_discard_problem.point_north": 25000,
-    },
     resolver: zodResolver(customCreateWhatToDiscardProblem_BodySchema),
     mode: "onChange",
   });
@@ -129,8 +123,8 @@ export default function ProblemForm({
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
 
-  const handleTileInputted = (tileId: number) => {
-    setValue(focussedTileFieldName, Number(tileId));
+  const handleTileInputted = (tileId: string) => {
+    setValue(focussedTileFieldName, tileId);
     tileFieldNames.some(fieldName => {
       if (getValues(fieldName)) {
         return false;
@@ -205,7 +199,7 @@ export default function ProblemForm({
               {Array(MAX_TURN)
                 .fill(null)
                 .map((_, index) => {
-                  const turn = index + 1;
+                  const turn = String(index + 1);
                   return (
                     <PopButton
                       onClick={() => setValue("what_to_discard_problem.turn", turn)}
@@ -278,7 +272,11 @@ export default function ProblemForm({
                     <FormLabel htmlFor={obj.inputName} m="0">
                       {obj.label}
                     </FormLabel>
-                    <VisuallyHiddenInput {...register(obj.inputName)} readOnly />
+                    <VisuallyHiddenInput
+                      {...register(obj.inputName)}
+                      readOnly
+                      defaultValue={Number(25000)}
+                    />
                     <DisplayInput
                       className={`form-button ${
                         focussedPointFieldName == obj.inputName
@@ -287,7 +285,7 @@ export default function ProblemForm({
                       }`}
                       onClick={() => setFocussedPointFieldName(obj.inputName)}>
                       {watch(obj.inputName) &&
-                        new Intl.NumberFormat("en-US").format(watch(obj.inputName))}
+                        new Intl.NumberFormat("en-US").format(Number(watch(obj.inputName)))}
                     </DisplayInput>
                   </Box>
                 );
@@ -303,7 +301,7 @@ export default function ProblemForm({
                     onClick={() =>
                       setValue(
                         focussedPointFieldName,
-                        Number(getValues(focussedPointFieldName)) + addend,
+                        String(Number(getValues(focussedPointFieldName)) + addend),
                       )
                     }>
                     {`${addend > 0 ? "+" : ""} ${new Intl.NumberFormat("en-US").format(addend)}`}
@@ -313,7 +311,9 @@ export default function ProblemForm({
 
               <PopButton
                 className="form-button"
-                onClick={() => pointFieldNames.map(fieldName => setValue(fieldName, 25000))}>
+                onClick={() =>
+                  pointFieldNames.map(fieldName => setValue(fieldName, String(25000)))
+                }>
                 得点をリセット
               </PopButton>
             </Wrap>
@@ -343,7 +343,7 @@ export default function ProblemForm({
                 }
                       w-9 h-12 rounded-sm border`}>
                 {watch("what_to_discard_problem.dora_id") && (
-                  <TileImage tile={getValues("what_to_discard_problem.dora_id")} hover={false} />
+                  <TileImage tileId={getValues("what_to_discard_problem.dora_id")} hover={false} />
                 )}
               </button>
             </Box>
@@ -373,7 +373,7 @@ export default function ProblemForm({
                               : "border-secondary"
                           }`}>
                           {watch(fieldName) && (
-                            <TileImage tile={getValues(fieldName)} hover={false} />
+                            <TileImage tileId={getValues(fieldName)} hover={false} />
                           )}
                         </button>
                       </Box>
@@ -418,7 +418,7 @@ export default function ProblemForm({
             {Array(ALL_TILES_NUM)
               .fill(null)
               .map((_, index) => {
-                const tileId = index + 1;
+                const tileId = String(index + 1);
 
                 return (
                   <Flex flexDir="column" alignItems="center" key={index}>

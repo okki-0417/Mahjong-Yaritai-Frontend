@@ -85,7 +85,7 @@ function validatePointUpperLimit(
   ] as const;
 
   pointFields.forEach(({ fieldName, label }) => {
-    const point = data.what_to_discard_problem[fieldName];
+    const point = Number(data.what_to_discard_problem[fieldName]);
     if (point !== null && point !== undefined && point > POINT_UPPER_LIMIT) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -105,7 +105,7 @@ function validatePointSum(
   ctx: z.RefinementCtx,
 ) {
   const pointSum = pointFieldNames.reduce((sum, fieldName) => {
-    const point = data.what_to_discard_problem[fieldName];
+    const point = Number(data.what_to_discard_problem[fieldName]);
     return sum + (point || 0);
   }, 0);
 
@@ -123,11 +123,11 @@ export const customCreateWhatToDiscardProblem_BodySchema =
   schemas.createWhatToDiscardProblem_Body.superRefine((data, ctx) => {
     // 入力された牌IDを抽出（null/undefinedを除外）
     const inputtedTileIds = tileFieldNames
-      .map(fieldName => data.what_to_discard_problem[fieldName])
+      .map(fieldName => Number(data.what_to_discard_problem[fieldName]))
       .filter(v => v !== null && v !== undefined);
 
     const inputtedHandTileIds = handFieldNames
-      .map(fieldName => data.what_to_discard_problem[fieldName])
+      .map(fieldName => Number(data.what_to_discard_problem[fieldName]))
       .filter(v => v !== null && v !== undefined);
 
     // 牌に関するバリデーション
