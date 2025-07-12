@@ -1,7 +1,3 @@
-import {
-  MAX_DUPLICATE_TILES_NUM,
-  tileFieldNames,
-} from "@/src/features/what-to-discard-problems/schema/customWhatToDiscardProbemSchema";
 import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
@@ -138,6 +134,9 @@ const WhatToDiscardProblem = z
     updated_at: z.string(),
   })
   .passthrough();
+const CursorPagination = z
+  .object({ next: z.number().int().nullish(), has_next: z.boolean(), limit: z.number().int() })
+  .passthrough();
 const createWhatToDiscardProblem_Body = z
   .object({
     what_to_discard_problem: z
@@ -185,6 +184,7 @@ export const schemas = {
   createWhatToDiscardProblemMyVote_Body,
   WhatToDiscardProblemVoteResult,
   WhatToDiscardProblem,
+  CursorPagination,
   createWhatToDiscardProblem_Body,
 };
 
@@ -385,8 +385,23 @@ const endpoints = makeApi([
     path: "/what_to_discard_problems",
     alias: "getWhatToDiscardProblems",
     requestFormat: "json",
+    parameters: [
+      {
+        name: "cursor",
+        type: "Query",
+        schema: z.number().int().optional(),
+      },
+      {
+        name: "limit",
+        type: "Query",
+        schema: z.number().int().optional(),
+      },
+    ],
     response: z
-      .object({ what_to_discard_problems: z.array(WhatToDiscardProblem), meta: z.unknown() })
+      .object({
+        what_to_discard_problems: z.array(WhatToDiscardProblem),
+        meta: z.object({ cursor: CursorPagination }).partial().passthrough(),
+      })
       .passthrough(),
   },
   {

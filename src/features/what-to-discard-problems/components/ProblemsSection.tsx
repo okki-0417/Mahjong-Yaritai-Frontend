@@ -6,9 +6,18 @@ export default async function ProblemsSection() {
   const apiPageClient = await createApiPageClient();
 
   try {
-    const response = await apiPageClient.getWhatToDiscardProblems();
+    const response = await apiPageClient.getWhatToDiscardProblems({
+      queries: {
+        limit: 20,
+      },
+    });
 
-    return <ClientProblemSection initialProblems={response.what_to_discard_problems} />;
+    return (
+      <ClientProblemSection
+        initialProblems={response.what_to_discard_problems}
+        initialCursor={response.meta.cursor}
+      />
+    );
   } catch (_) {
     return (
       <Box textAlign="center" py={16}>
@@ -16,7 +25,7 @@ export default async function ProblemsSection() {
           <Text fontSize="xl" fontWeight="bold" color="red.500">
             エラーが発生しました
           </Text>
-          <Text fontSize="md" color="gray.600">
+          <Text fontSize="md">
             何切る問題の読み込み中にエラーが発生しました。しばらく時間をおいてから再度お試しください。
           </Text>
         </VStack>

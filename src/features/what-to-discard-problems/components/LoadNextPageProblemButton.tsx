@@ -1,52 +1,55 @@
 "use client";
 
-import { Button } from "@chakra-ui/react";
-import { useState } from "react";
-// import useErrorToast from "@/src/hooks/useErrorToast";
+import useErrorToast from "@/src/hooks/useErrorToast";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { schemas } from "@/src/zodios/api";
+import { Button, Text } from "@chakra-ui/react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { z } from "zod";
 
-export default function LoadNextPageProblemButton() {
-  // const { whatToDiscardProblems, setWhatToDiscardProblems } = useContext(
-  //   WhatToDiscardProblemsContext
-  // );
+export default function LoadNextPageProblemButton({
+  setProblem,
+  cursor,
+  setCursor,
+}: {
+  setProblem: Dispatch<SetStateAction<z.infer<typeof schemas.WhatToDiscardProblem>[]>>;
+  cursor: z.infer<typeof schemas.CursorPagination> | null;
+  setCursor: Dispatch<SetStateAction<z.infer<typeof schemas.CursorPagination> | null>>;
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const errorToast = useErrorToast();
 
-  const [nextPageLoading] = useState(false);
-  // const errorToast = useErrorToast();
+  const handleLoadNextPage = async () => {
+    if (!cursor?.has_next || !cursor.next || isLoading) return;
 
-  // const fetchNextPageProblems = async ({
-  //   nextPage,
-  //   whatToDiscardProblems,
-  // }: {
-  //   nextPage: number | null;
-  //   whatToDiscardProblems: WhatToDiscardProblems;
-  // }) => {
-  //   if (!nextPage) return;
+    setIsLoading(true);
+    try {
+      const response = await apiClient.getWhatToDiscardProblems({
+        queries: {
+          cursor: cursor.next,
+          limit: cursor.limit,
+        },
+      });
 
-  //   if (nextPageLoading) return;
-  //   setNextPageLoading(true);
+      setProblem(prev => [...prev, ...response.what_to_discard_problems]);
+      setCursor(response.meta.cursor || null);
+    } catch (error) {
+      errorToast({
+        error,
+        title: "何切る問題の読み込みに失敗しました",
+        description: "しばらく時間をおいてから再度お試しください。",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  //   try {
-  //     const response = await apiClient.get(
-  //       `what_to_discard_problems?page=${nextPage}`
-  //     );
-  //     const data: FetchWhatToDiscardProblemsType = response.data;
-
-  //     setWhatToDiscardProblems([...whatToDiscardProblems, ...data.data]);
-
-  //     setNextPage(data.meta.pagination.nextPage);
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       errorToast({ error, title: "何切る問題の取得に失敗しました" });
-  //     }
-  //   } finally {
-  //     setNextPageLoading(false);
-  //   }
-  // };
+  if (!cursor?.has_next) {
+    return <Text textAlign="center">すべての問題を読み込みました 🎉</Text>;
+  }
 
   return (
-    <Button
-      isLoading={nextPageLoading}
-      // onClick={() => {}} fetchNextPageProblems({ nextPage, whatToDiscardProblems })}
-    >
+    <Button isLoading={isLoading} onClick={handleLoadNextPage}>
       さらに読み込む
     </Button>
   );

@@ -24,11 +24,15 @@ import ProblemForm from "@/src/features/what-to-discard-problems/components/Prob
 
 export default function ClientProblemSection({
   initialProblems,
+  initialCursor,
 }: {
   initialProblems: z.infer<typeof schemas.WhatToDiscardProblem>[];
+  initialCursor: z.infer<typeof schemas.CursorPagination>;
 }) {
   const [problems, setProblems] =
     useState<z.infer<typeof schemas.WhatToDiscardProblem>[]>(initialProblems);
+  const [cursor, setCursor] =
+    useState<z.infer<typeof schemas.CursorPagination | null>>(initialCursor);
 
   const {
     onOpen: onOpenNotLoggedIn,
@@ -69,7 +73,7 @@ export default function ClientProblemSection({
       </VStack>
 
       <Flex justify="center" mt={5}>
-        <LoadNextPageProblemButton />
+        <LoadNextPageProblemButton setProblem={setProblems} cursor={cursor} setCursor={setCursor} />
       </Flex>
     </Box>
   );
