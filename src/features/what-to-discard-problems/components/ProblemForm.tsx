@@ -63,10 +63,10 @@ const pointFieldNames = [
 ] as const;
 
 export default function ProblemForm({
-  setIsFormOpen,
+  setIsCreateFormOpen,
   setProblems,
 }: {
-  setIsFormOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
   setProblems: Dispatch<SetStateAction<z.infer<typeof schemas.WhatToDiscardProblem>[]>>;
 }) {
   const [focussedPointFieldName, setFocussedPointFieldName] = useState<
@@ -150,7 +150,7 @@ export default function ProblemForm({
       const response = await apiClient.createWhatToDiscardProblem(formData);
 
       setProblems(prev => [response.what_to_discard_problem, ...prev]);
-      setIsFormOpen(false);
+      setIsCreateFormOpen(false);
       successToast({ title: "何切る問題を作成しました" });
     } catch (error) {
       errorToast({ error, title: "何切る問題の作成に失敗しました" });

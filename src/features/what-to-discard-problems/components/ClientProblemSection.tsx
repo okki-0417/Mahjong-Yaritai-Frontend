@@ -61,7 +61,7 @@ export default function ClientProblemSection({
           <ModalHeader>何切る問題を作成</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <ProblemForm setIsFormOpen={onCloseForm} setProblems={setProblems} />
+            <ProblemForm setIsCreateFormOpen={onCloseForm} setProblems={setProblems} />
           </ModalBody>
         </ModalContent>
       </Modal>
