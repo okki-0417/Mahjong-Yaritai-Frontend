@@ -1,3 +1,7 @@
+import {
+  MAX_DUPLICATE_TILES_NUM,
+  tileFieldNames,
+} from "@/src/features/what-to-discard-problems/schema/customWhatToDiscardProbemSchema";
 import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
@@ -138,9 +142,9 @@ const createWhatToDiscardProblem_Body = z
   .object({
     what_to_discard_problem: z
       .object({
-        round: z.string(),
+        round: z.string().min(2).max(2),
         turn: z.number().int(),
-        wind: z.string(),
+        wind: z.string().min(1).max(1),
         dora_id: z.number().int(),
         point_east: z.number().int(),
         point_south: z.number().int(),

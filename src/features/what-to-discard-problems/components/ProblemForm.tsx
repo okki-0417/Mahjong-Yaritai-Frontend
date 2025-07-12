@@ -1,7 +1,7 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Box,
   Button,
@@ -11,95 +11,439 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Text,
-  useToast,
   VisuallyHiddenInput,
+  VStack,
   Wrap,
 } from "@chakra-ui/react";
-import axios from "axios";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
-import { WhatToDiscardProblemsContext } from "@/src/features/what-to-discard-problems/context-providers/contexts/WhatToDiscardProblemContext";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
-
-type WhatToDiscardProblemCreateFormType = {
-  round: string;
-  turn: number;
-  wind: string;
-  dora_id: number;
-
-  totalPoints: number;
-  point_east: number;
-  point_south: number;
-  point_west: number;
-  point_north: number;
-
-  tileUsage: string;
-  handSort: string;
-  hand1_id: number;
-  hand2_id: number;
-  hand3_id: number;
-  hand4_id: number;
-  hand5_id: number;
-  hand6_id: number;
-  hand7_id: number;
-  hand8_id: number;
-  hand9_id: number;
-  hand10_id: number;
-  hand11_id: number;
-  hand12_id: number;
-  hand13_id: number;
-  tsumo_id: number;
-};
-
-type TileInputNameType =
-  | "hand1_id"
-  | "hand2_id"
-  | "hand3_id"
-  | "hand4_id"
-  | "hand5_id"
-  | "hand6_id"
-  | "hand7_id"
-  | "hand8_id"
-  | "hand9_id"
-  | "hand10_id"
-  | "hand11_id"
-  | "hand12_id"
-  | "hand13_id"
-  | "tsumo_id"
-  | "dora_id";
-
-type PointInputs = "point_east" | "point_south" | "point_west" | "point_north";
+import { schemas } from "@/src/zodios/api";
+import { z } from "zod";
+import useSuccessToast from "@/src/hooks/useSuccessToast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { customDefaultErrorMap } from "@/src/lib/zodErrorMap";
+import {
+  customCreateWhatToDiscardProblem_BodySchema,
+  TOTAL_POINTS,
+} from "@/src/features/what-to-discard-problems/schema/customWhatToDiscardProbemSchema";
 
 const MAX_TURN = 18;
 const ALL_TILES_NUM = 34;
-const TOTAL_POINTS = 100000;
-const MAX_DUPLICATE_TILES_NUM = 4;
+export const handFieldNames = [
+  "what_to_discard_problem.hand1_id",
+  "what_to_discard_problem.hand2_id",
+  "what_to_discard_problem.hand3_id",
+  "what_to_discard_problem.hand4_id",
+  "what_to_discard_problem.hand5_id",
+  "what_to_discard_problem.hand6_id",
+  "what_to_discard_problem.hand7_id",
+  "what_to_discard_problem.hand8_id",
+  "what_to_discard_problem.hand9_id",
+  "what_to_discard_problem.hand10_id",
+  "what_to_discard_problem.hand11_id",
+  "what_to_discard_problem.hand12_id",
+  "what_to_discard_problem.hand13_id",
+] as const;
 
-const isNoTileOverused = (sameIdTilesCount: { [key: number]: number }) => {
-  return Object.entries(sameIdTilesCount).every(([tileId, count]) => {
-    if (!tileId) {
-      return true;
-    }
-    return count <= MAX_DUPLICATE_TILES_NUM;
+const tileFieldNames = [
+  ...handFieldNames,
+  "what_to_discard_problem.dora_id",
+  "what_to_discard_problem.tsumo_id",
+] as const;
+
+const pointFieldNames = [
+  "what_to_discard_problem.point_east",
+  "what_to_discard_problem.point_south",
+  "what_to_discard_problem.point_west",
+  "what_to_discard_problem.point_north",
+] as const;
+
+export default function ProblemForm({
+  setIsFormOpen,
+  setProblems,
+}: {
+  setIsFormOpen: Dispatch<SetStateAction<boolean>>;
+  setProblems: Dispatch<SetStateAction<z.infer<typeof schemas.WhatToDiscardProblem>[]>>;
+}) {
+  const [focussedPointFieldName, setFocussedPointFieldName] = useState<
+    (typeof pointFieldNames)[number]
+  >("what_to_discard_problem.point_east");
+  const [focussedTileFieldName, setFocussedTileFieldName] = useState<
+    (typeof tileFieldNames)[number]
+  >("what_to_discard_problem.dora_id");
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    getValues,
+    formState: { errors, isSubmitting },
+  } = useForm<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>({
+    defaultValues: {
+      "what_to_discard_problem.point_east": 25000,
+      "what_to_discard_problem.point_south": 25000,
+      "what_to_discard_problem.point_west": 25000,
+      "what_to_discard_problem.point_north": 25000,
+    },
+    resolver: zodResolver(customCreateWhatToDiscardProblem_BodySchema),
+    mode: "onChange",
   });
-};
+  z.setErrorMap(customDefaultErrorMap);
 
-const isSorted = (array: number[]) => {
-  return array.every((num, index) => {
-    if (index == 0) {
-      return true;
+  const pointSum =
+    Number(watch("what_to_discard_problem.point_east")) +
+    Number(watch("what_to_discard_problem.point_south")) +
+    Number(watch("what_to_discard_problem.point_west")) +
+    Number(watch("what_to_discard_problem.point_north"));
+
+  const tileFiledErrors = [
+    errors.what_to_discard_problem?.dora_id,
+    errors.what_to_discard_problem?.hand1_id,
+    errors.what_to_discard_problem?.hand2_id,
+    errors.what_to_discard_problem?.hand3_id,
+    errors.what_to_discard_problem?.hand4_id,
+    errors.what_to_discard_problem?.hand5_id,
+    errors.what_to_discard_problem?.hand6_id,
+    errors.what_to_discard_problem?.hand7_id,
+    errors.what_to_discard_problem?.hand8_id,
+    errors.what_to_discard_problem?.hand9_id,
+    errors.what_to_discard_problem?.hand10_id,
+    errors.what_to_discard_problem?.hand11_id,
+    errors.what_to_discard_problem?.hand12_id,
+    errors.what_to_discard_problem?.hand13_id,
+    errors.what_to_discard_problem?.tsumo_id,
+  ];
+
+  const pointFieldErrors = [
+    errors.what_to_discard_problem?.point_east,
+    errors.what_to_discard_problem?.point_south,
+    errors.what_to_discard_problem?.point_west,
+    errors.what_to_discard_problem?.point_north,
+  ];
+
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
+
+  const handleTileInputted = (tileId: number) => {
+    setValue(focussedTileFieldName, Number(tileId));
+    tileFieldNames.some(fieldName => {
+      if (getValues(fieldName)) {
+        return false;
+      } else {
+        setFocussedTileFieldName(fieldName);
+        return true;
+      }
+    });
+  };
+
+  const onSubmit: SubmitHandler<
+    z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>
+  > = async formData => {
+    const isConfirmed = confirm("これで作成しますか？");
+    if (!isConfirmed) return;
+    try {
+      const response = await apiClient.createWhatToDiscardProblem(formData);
+
+      setProblems(prev => [response.what_to_discard_problem, ...prev]);
+      setIsFormOpen(false);
+      successToast({ title: "何切る問題を作成しました" });
+    } catch (error) {
+      errorToast({ error, title: "何切る問題の作成に失敗しました" });
     }
-    if (!Number(num) || !Number(array[index - 1])) {
-      return true;
-    }
+  };
 
-    return num >= array[index - 1];
-  });
-};
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-neutral text-primary">
+      <VStack gap={6} align="stretch">
+        <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.round)} isRequired>
+          <VStack alignItems="start">
+            <FormLabel fontSize="lg" m="0">
+              局数
+            </FormLabel>
+            <VisuallyHiddenInput {...register("what_to_discard_problem.round")} readOnly />
+            <FormErrorMessage>{errors.what_to_discard_problem?.round?.message}</FormErrorMessage>
+            <DisplayInput>
+              {watch("what_to_discard_problem.round") &&
+                `${watch("what_to_discard_problem.round")}局`}
+            </DisplayInput>
 
-const InputTemplate = ({
+            <Wrap gap={2}>
+              {["東一", "東二", "東三", "東四", "南一", "南二", "南三", "南四"].map(
+                (roundName, index) => {
+                  return (
+                    <PopButton
+                      key={index}
+                      onClick={() => setValue("what_to_discard_problem.round", roundName)}
+                      className="form-button">
+                      {roundName}
+                    </PopButton>
+                  );
+                },
+              )}
+            </Wrap>
+          </VStack>
+        </FormControl>
+
+        <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.turn)} isRequired>
+          <VStack alignItems="start">
+            <FormLabel fontSize="lg" m="0">
+              巡目
+            </FormLabel>
+            <FormErrorMessage>{errors.what_to_discard_problem?.turn?.message}</FormErrorMessage>
+            <VisuallyHiddenInput {...register("what_to_discard_problem.turn")} readOnly />
+            <DisplayInput>
+              {watch("what_to_discard_problem.turn") &&
+                `${getValues("what_to_discard_problem.turn")}巡目`}
+            </DisplayInput>
+
+            <Wrap gap={2}>
+              {Array(MAX_TURN)
+                .fill(null)
+                .map((_, index) => {
+                  const turn = index + 1;
+                  return (
+                    <PopButton
+                      onClick={() => setValue("what_to_discard_problem.turn", turn)}
+                      className="form-button"
+                      key={index}>
+                      {`${turn}巡目`}
+                    </PopButton>
+                  );
+                })}
+            </Wrap>
+          </VStack>
+        </FormControl>
+
+        <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.wind)} isRequired>
+          <VStack alignItems="start">
+            <FormLabel fontSize="lg" m="0">
+              風
+            </FormLabel>
+            <FormErrorMessage>{errors.what_to_discard_problem?.wind?.message}</FormErrorMessage>
+            <VisuallyHiddenInput {...register("what_to_discard_problem.wind")} readOnly />
+            <DisplayInput>
+              {watch("what_to_discard_problem.wind") &&
+                `${getValues("what_to_discard_problem.wind")}家`}
+            </DisplayInput>
+
+            <Wrap gap={2}>
+              {["東", "南", "西", "北"].map((windName, index) => {
+                return (
+                  <PopButton
+                    key={index}
+                    onClick={() => setValue("what_to_discard_problem.wind", windName)}
+                    className="form-button">
+                    {windName}
+                  </PopButton>
+                );
+              })}
+            </Wrap>
+          </VStack>
+        </FormControl>
+
+        <FormControl isRequired isInvalid={pointFieldErrors.some(Boolean)}>
+          <VStack alignItems="start">
+            <FormLabel as="legend" fontSize="lg" m="0">
+              点数状況
+            </FormLabel>
+
+            <HStack>
+              <Text>合計</Text>
+              <Text
+                fontFamily="sans-serif"
+                fontWeight="bold"
+                className={`${pointSum == TOTAL_POINTS ? "text-green-500" : "text-red-500"}`}>
+                {new Intl.NumberFormat("en-US").format(pointSum)}
+              </Text>
+              <Text fontFamily="sans-serif">/ 100,000</Text>点
+            </HStack>
+
+            <FormErrorMessage>{pointFieldErrors.find(Boolean)?.message}</FormErrorMessage>
+            <Wrap gap={2}>
+              {(
+                [
+                  { label: "東家", inputName: "what_to_discard_problem.point_east" },
+                  { label: "南家", inputName: "what_to_discard_problem.point_south" },
+                  { label: "西家", inputName: "what_to_discard_problem.point_west" },
+                  { label: "北家", inputName: "what_to_discard_problem.point_north" },
+                ] as const
+              ).map((obj, index) => {
+                return (
+                  <Box key={index}>
+                    <FormLabel htmlFor={obj.inputName} m="0">
+                      {obj.label}
+                    </FormLabel>
+                    <VisuallyHiddenInput {...register(obj.inputName)} readOnly />
+                    <DisplayInput
+                      className={`form-button ${
+                        focussedPointFieldName == obj.inputName
+                          ? "scale-105 border-blue-500 shadow shadow-blue-500"
+                          : "border border-primary"
+                      }`}
+                      onClick={() => setFocussedPointFieldName(obj.inputName)}>
+                      {watch(obj.inputName) &&
+                        new Intl.NumberFormat("en-US").format(watch(obj.inputName))}
+                    </DisplayInput>
+                  </Box>
+                );
+              })}
+            </Wrap>
+
+            <Wrap gap={2}>
+              {[10000, -10000, 1000, -1000, 100, -100].map((addend, index) => {
+                return (
+                  <PopButton
+                    key={index}
+                    className="form-button"
+                    onClick={() =>
+                      setValue(
+                        focussedPointFieldName,
+                        Number(getValues(focussedPointFieldName)) + addend,
+                      )
+                    }>
+                    {`${addend > 0 ? "+" : ""} ${new Intl.NumberFormat("en-US").format(addend)}`}
+                  </PopButton>
+                );
+              })}
+
+              <PopButton
+                className="form-button"
+                onClick={() => pointFieldNames.map(fieldName => setValue(fieldName, 25000))}>
+                得点をリセット
+              </PopButton>
+            </Wrap>
+          </VStack>
+        </FormControl>
+
+        <FormControl isRequired isInvalid={tileFiledErrors.some(Boolean)}>
+          <VStack alignItems="start">
+            <FormLabel as="legend" fontSize="lg" m="0">
+              手牌状況
+            </FormLabel>
+
+            <FormErrorMessage>{tileFiledErrors.find(Boolean)?.message}</FormErrorMessage>
+
+            <Box>
+              <FormLabel fontSize="lg" m="0">
+                ドラ
+              </FormLabel>
+              <VisuallyHiddenInput {...register("what_to_discard_problem.dora_id")} readOnly />
+              <button
+                type="button"
+                onClick={() => setFocussedTileFieldName("what_to_discard_problem.dora_id")}
+                className={`${
+                  focussedTileFieldName == "what_to_discard_problem.dora_id"
+                    ? "scale-105 border-blue-500 shadow shadow-blue-500"
+                    : "border-primary"
+                }
+                      w-9 h-12 rounded-sm border`}>
+                {watch("what_to_discard_problem.dora_id") && (
+                  <TileImage tile={getValues("what_to_discard_problem.dora_id")} hover={false} />
+                )}
+              </button>
+            </Box>
+
+            <Box>
+              <FormLabel fontSize="lg" m="0">
+                手牌
+              </FormLabel>
+
+              <Flex gap={1}>
+                {tileFieldNames
+                  .filter(
+                    fieldName =>
+                      fieldName != "what_to_discard_problem.dora_id" &&
+                      fieldName != "what_to_discard_problem.tsumo_id",
+                  )
+                  .map((fieldName, index) => {
+                    return (
+                      <Box key={index}>
+                        <VisuallyHiddenInput {...register(fieldName)} readOnly />
+                        <button
+                          type="button"
+                          onClick={() => setFocussedTileFieldName(fieldName)}
+                          className={`w-9 h-12 rounded-sm border ${
+                            focussedTileFieldName == fieldName
+                              ? "scale-105 border-blue-500 shadow shadow-blue-500"
+                              : "border-secondary"
+                          }`}>
+                          {watch(fieldName) && (
+                            <TileImage tile={getValues(fieldName)} hover={false} />
+                          )}
+                        </button>
+                      </Box>
+                    );
+                  })}
+              </Flex>
+            </Box>
+
+            <Box>
+              <FormLabel>ツモ</FormLabel>
+              <VisuallyHiddenInput {...register("what_to_discard_problem.tsumo_id")} readOnly />
+              <button
+                type="button"
+                onClick={() => setFocussedTileFieldName("what_to_discard_problem.tsumo_id")}
+                className={`${
+                  focussedTileFieldName == "what_to_discard_problem.tsumo_id"
+                    ? "scale-105 border-blue-500 shadow shadow-blue-500"
+                    : "border border-primary"
+                }
+                      w-9 h-12 rounded-sm border`}>
+                {watch("what_to_discard_problem.tsumo_id") && (
+                  <TileImage tile={getValues("what_to_discard_problem.tsumo_id")} hover={false} />
+                )}
+              </button>
+            </Box>
+
+            <PopButton
+              className="form-button"
+              onClick={() => {
+                tileFieldNames.map(fieldName => setValue(fieldName, null));
+                setFocussedTileFieldName("what_to_discard_problem.dora_id");
+              }}>
+              牌をリセット
+            </PopButton>
+          </VStack>
+        </FormControl>
+
+        <Divider borderColor="gray.500" variant="dashed" />
+
+        <Box>
+          <Wrap>
+            {Array(ALL_TILES_NUM)
+              .fill(null)
+              .map((_, index) => {
+                const tileId = index + 1;
+
+                return (
+                  <Flex flexDir="column" alignItems="center" key={index}>
+                    <PopButton
+                      onClick={() => handleTileInputted(tileId)}
+                      className="w-10 border  border-primary rounded-sm">
+                      <TileImage tile={tileId} hover={false} />
+                    </PopButton>
+                  </Flex>
+                );
+              })}
+          </Wrap>
+        </Box>
+
+        <Center>
+          <Button type="submit" colorScheme="teal" size="lg" isLoading={isSubmitting}>
+            作成する
+          </Button>
+        </Center>
+      </VStack>
+    </form>
+  );
+}
+
+const DisplayInput = ({
   children,
   className,
   onClick,
@@ -126,565 +470,3 @@ const InputTemplate = ({
     </Text>
   );
 };
-
-export default function ProblemForm({
-  setIsCreateFormOpen,
-}: {
-  setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
-}) {
-  const { whatToDiscardProblems, setWhatToDiscardProblems } = useContext(
-    WhatToDiscardProblemsContext,
-  );
-  const [focussedTileInput, setFocussedTileInput] = useState<TileInputNameType>("dora_id");
-
-  const [focussedPointInput, setFocussedPointInput] = useState<PointInputs | null>("point_east");
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    setError,
-    clearErrors,
-    formState: { errors },
-  } = useForm<WhatToDiscardProblemCreateFormType>({
-    defaultValues: {
-      point_east: 25000,
-      point_south: 25000,
-      point_west: 25000,
-      point_north: 25000,
-    },
-  });
-
-  const pointSum =
-    Number(watch("point_east")) +
-    Number(watch("point_south")) +
-    Number(watch("point_west")) +
-    Number(watch("point_north"));
-
-  const [
-    hand1_id,
-    hand2_id,
-    hand3_id,
-    hand4_id,
-    hand5_id,
-    hand6_id,
-    hand7_id,
-    hand8_id,
-    hand9_id,
-    hand10_id,
-    hand11_id,
-    hand12_id,
-    hand13_id,
-    dora_id,
-    tsumo_id,
-  ] = [
-    watch("hand1_id"),
-    watch("hand2_id"),
-    watch("hand3_id"),
-    watch("hand4_id"),
-    watch("hand5_id"),
-    watch("hand6_id"),
-    watch("hand7_id"),
-    watch("hand8_id"),
-    watch("hand9_id"),
-    watch("hand10_id"),
-    watch("hand11_id"),
-    watch("hand12_id"),
-    watch("hand13_id"),
-    watch("dora_id"),
-    watch("tsumo_id"),
-  ];
-
-  useEffect(() => {
-    if (pointSum == TOTAL_POINTS) {
-      clearErrors("totalPoints");
-    } else {
-      setError("totalPoints", {
-        type: "manual",
-        message: "持ち点の合計を100,000点にしてください。",
-      });
-    }
-  }, [pointSum, setError, clearErrors]);
-
-  useEffect(() => {
-    if (
-      isSorted([
-        hand1_id,
-        hand2_id,
-        hand3_id,
-        hand4_id,
-        hand5_id,
-        hand6_id,
-        hand7_id,
-        hand8_id,
-        hand9_id,
-        hand10_id,
-        hand11_id,
-        hand12_id,
-        hand13_id,
-      ])
-    ) {
-      clearErrors("handSort");
-    } else {
-      setError("handSort", {
-        type: "manual",
-        message: "「萬子 → 筒子 → 索子 → 字牌（東南西北白發中）」の順番で理牌してください。",
-      });
-    }
-  }, [
-    hand1_id,
-    hand2_id,
-    hand3_id,
-    hand4_id,
-    hand5_id,
-    hand6_id,
-    hand7_id,
-    hand8_id,
-    hand9_id,
-    hand10_id,
-    hand11_id,
-    hand12_id,
-    hand13_id,
-    setError,
-    clearErrors,
-  ]);
-
-  useEffect(() => {
-    const usedTilesCountTally = [
-      hand1_id,
-      hand2_id,
-      hand3_id,
-      hand4_id,
-      hand5_id,
-      hand6_id,
-      hand7_id,
-      hand8_id,
-      hand9_id,
-      hand10_id,
-      hand11_id,
-      hand12_id,
-      hand13_id,
-      dora_id,
-      tsumo_id,
-    ].reduce<Record<string, number>>((accumulator, tileId) => {
-      accumulator[String(tileId)] = (accumulator[String(tileId)] || 0) + 1;
-      return accumulator;
-    }, {});
-
-    if (isNoTileOverused(usedTilesCountTally)) {
-      clearErrors("tileUsage");
-    } else {
-      setError("tileUsage", {
-        type: "manual",
-        message: "4枚以上使っている牌があります。",
-      });
-    }
-  }, [
-    hand1_id,
-    hand2_id,
-    hand3_id,
-    hand4_id,
-    hand5_id,
-    hand6_id,
-    hand7_id,
-    hand8_id,
-    hand9_id,
-    hand10_id,
-    hand11_id,
-    hand12_id,
-    hand13_id,
-    dora_id,
-    tsumo_id,
-    setError,
-    clearErrors,
-  ]);
-
-  const setNextFocussedTile = () => {
-    (
-      [
-        "hand1_id",
-        "hand2_id",
-        "hand3_id",
-        "hand4_id",
-        "hand5_id",
-        "hand6_id",
-        "hand7_id",
-        "hand8_id",
-        "hand9_id",
-        "hand10_id",
-        "hand11_id",
-        "hand12_id",
-        "hand13_id",
-        "tsumo_id",
-        "dora_id",
-      ] as const
-    ).some(fieldName => {
-      if (watch(fieldName)) {
-        return false;
-      } else {
-        setFocussedTileInput(fieldName);
-        return true;
-      }
-    });
-  };
-
-  const toast = useToast();
-  const errorToast = useErrorToast();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const onSubmit: SubmitHandler<WhatToDiscardProblemCreateFormType> = async formData => {
-    const isConfirmed = confirm("これで作成しますか？");
-    if (!isConfirmed) return;
-
-    if (isLoading) {
-      return;
-    }
-    setIsLoading(true);
-
-    try {
-      const response = await apiClient.createWhatToDiscardProblem({
-        what_to_discard_problem: { formData },
-      });
-      const data = response.what_to_discard_problem;
-
-      setWhatToDiscardProblems([...whatToDiscardProblems, data]);
-
-      // setNextPage(data.meta.pagination.next_page);
-
-      setIsCreateFormOpen(false);
-      toast({
-        title: "何切る問題を作成しました",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        errorToast({ error, title: "何切る問題の作成に失敗しました" });
-      }
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-4 bg-white rounded-md text-gray-700 p-4">
-      <FormControl isRequired isInvalid={Boolean(errors.round)}>
-        <FormLabel htmlFor="round" fontSize={20}>
-          局数
-        </FormLabel>
-
-        <FormErrorMessage>{errors?.round?.message}</FormErrorMessage>
-
-        <VisuallyHiddenInput {...register("round", { required: "局数は必須です。" })} />
-
-        <InputTemplate>{watch("round") ? `${watch("round")}局` : ""}</InputTemplate>
-
-        <Wrap gap={2} mt={2}>
-          {["東一", "東二", "東三", "東四", "南一", "南二", "南三", "南四"].map(
-            (roundName, index) => {
-              return (
-                <PopButton
-                  key={index}
-                  value={roundName}
-                  onClick={() => setValue("round", roundName)}
-                  defaultClassName="form-button"
-                />
-              );
-            },
-          )}
-        </Wrap>
-      </FormControl>
-
-      <FormControl mt={4} isRequired isInvalid={Boolean(errors.turn)}>
-        <FormLabel htmlFor="turn" fontSize={20}>
-          巡目
-        </FormLabel>
-
-        <FormErrorMessage>{errors?.turn?.message}</FormErrorMessage>
-
-        <VisuallyHiddenInput {...register("turn", { required: "巡目は必須です。" })} />
-
-        <InputTemplate>{watch("turn") ? `${watch("turn")}巡目` : ""}</InputTemplate>
-        <Wrap gap={2} mt={2}>
-          {Array(MAX_TURN)
-            .fill(null)
-            .map((_, index) => {
-              const turn = index + 1;
-
-              return (
-                <PopButton
-                  value={`${turn}巡目`}
-                  onClick={() => setValue("turn", turn)}
-                  defaultClassName="form-button"
-                  key={index}
-                />
-              );
-            })}
-        </Wrap>
-      </FormControl>
-
-      <FormControl mt={4} isRequired isInvalid={Boolean(errors.wind)}>
-        <FormLabel htmlFor="wind" fontSize={20}>
-          風
-        </FormLabel>
-
-        <FormErrorMessage>{errors.wind?.message}</FormErrorMessage>
-
-        <VisuallyHiddenInput {...register("wind", { required: "風は必須です。" })} />
-
-        <InputTemplate>{watch("wind") ? `${watch("wind")}家` : ""}</InputTemplate>
-
-        <Wrap gap={2} mt={2}>
-          {["東", "南", "西", "北"].map((windName, index) => {
-            return (
-              <PopButton
-                key={index}
-                value={windName}
-                onClick={() => setValue("wind", windName)}
-                defaultClassName="form-button"
-              />
-            );
-          })}
-        </Wrap>
-      </FormControl>
-
-      <FormControl isInvalid={Boolean(errors.totalPoints)} mt={4}>
-        <FormLabel as="legend" fontSize={20}>
-          点数状況
-        </FormLabel>
-
-        <Flex gap={2}>
-          <Text>合計</Text>
-          <Text
-            className={`${pointSum == TOTAL_POINTS ? "text-green-500" : "text-red-500"}`}
-            fontFamily="sans-serif">
-            {new Intl.NumberFormat("en-US").format(pointSum)}
-          </Text>
-          <Text fontFamily="sans-serif">/ 100,000</Text>点
-        </Flex>
-
-        <FormErrorMessage>{errors.totalPoints?.message}</FormErrorMessage>
-
-        <Flex mt={2} gap={2}>
-          {(
-            [
-              { label: "東家", inputName: "point_east" },
-              { label: "南家", inputName: "point_south" },
-              { label: "西家", inputName: "point_west" },
-              { label: "北家", inputName: "point_north" },
-            ] as const
-          ).map((obj, index) => {
-            return (
-              <FormControl isInvalid={Boolean(errors[obj.inputName])} key={index}>
-                <FormLabel htmlFor={obj.inputName}>{obj.label}</FormLabel>
-
-                <VisuallyHiddenInput
-                  {...register(obj.inputName as PointInputs, {
-                    validate: {
-                      pointsLimit: data => {
-                        if (data > 200000) {
-                          return `${obj.label}の点数を200,000点以下にしてください。`;
-                        } else {
-                          return null;
-                        }
-                      },
-                    },
-                  })}
-                />
-
-                <InputTemplate
-                  className={`form-button ${
-                    focussedPointInput == obj.inputName
-                      ? "scale-105 border-blue-500 shadow shadow-blue-500"
-                      : "border-gray-700"
-                  }`}
-                  onClick={() => {
-                    if (focussedPointInput == obj.inputName) {
-                      setFocussedPointInput(null);
-                    } else {
-                      setFocussedPointInput(obj.inputName);
-                    }
-                  }}>
-                  {watch(obj.inputName) &&
-                    new Intl.NumberFormat("en-US").format(watch(obj.inputName))}
-                </InputTemplate>
-              </FormControl>
-            );
-          })}
-        </Flex>
-
-        <FormErrorMessage>
-          {errors?.point_east?.message}
-          {errors?.point_west?.message}
-          {errors?.point_south?.message}
-          {errors?.point_north?.message}
-        </FormErrorMessage>
-
-        <Wrap mt={2} gap={2}>
-          {[10000, -10000, 1000, -1000, 100, -100].map((value, index) => {
-            return (
-              <PopButton
-                key={index}
-                value={`${value > 0 ? "+" : ""} ${new Intl.NumberFormat("en-US").format(value)}`}
-                defaultClassName="form-button"
-                onClick={() => {
-                  if (!focussedPointInput) {
-                    return;
-                  }
-                  setValue(focussedPointInput, Number(watch(focussedPointInput)) + value);
-                }}
-              />
-            );
-          })}
-
-          <PopButton
-            value="リセット"
-            defaultClassName="form-button"
-            onClick={() => {
-              if (!focussedPointInput) {
-                return;
-              }
-              setValue(focussedPointInput, 25000);
-            }}
-          />
-        </Wrap>
-      </FormControl>
-
-      <FormControl mt={4} isRequired isInvalid={Boolean(errors.tileUsage || errors.handSort)}>
-        <FormLabel as="legend" fontSize={20}>
-          手牌状況
-        </FormLabel>
-
-        {(errors.dora_id ||
-          errors.hand1_id ||
-          errors.hand2_id ||
-          errors.hand3_id ||
-          errors.hand4_id ||
-          errors.hand5_id ||
-          errors.hand6_id ||
-          errors.hand7_id ||
-          errors.hand8_id ||
-          errors.hand9_id ||
-          errors.hand10_id ||
-          errors.hand11_id ||
-          errors.hand12_id ||
-          errors.hand13_id ||
-          errors.tsumo_id) && <FormErrorMessage>選択していない手牌があります</FormErrorMessage>}
-
-        <Box>
-          <FormErrorMessage>{errors.tileUsage?.message}</FormErrorMessage>
-          <FormErrorMessage>{errors.handSort?.message}</FormErrorMessage>
-        </Box>
-
-        <Box>
-          <FormLabel htmlFor="dora">ドラ</FormLabel>
-          <VisuallyHiddenInput {...register("dora_id", { required: "ドラは必須です。" })} />
-          <button
-            type="button"
-            onClick={() => setFocussedTileInput("dora_id")}
-            className={`${
-              focussedTileInput == "dora_id"
-                ? "scale-105 border-blue-500 shadow shadow-blue-500"
-                : "border-gray-700"
-            }
-                    w-9 h-12 rounded-sm border`}>
-            {watch("dora_id") && <TileImage tile={watch("dora_id")} hover={false} />}
-          </button>
-        </Box>
-
-        <Box>
-          <FormLabel mt={2}>手牌</FormLabel>
-          <Flex gap={1}>
-            {(
-              [
-                "hand1_id",
-                "hand2_id",
-                "hand3_id",
-                "hand4_id",
-                "hand5_id",
-                "hand6_id",
-                "hand7_id",
-                "hand8_id",
-                "hand9_id",
-                "hand10_id",
-                "hand11_id",
-                "hand12_id",
-                "hand13_id",
-              ] as const
-            ).map((name, index) => {
-              return (
-                <Box key={index}>
-                  <VisuallyHiddenInput
-                    {...register(name, {
-                      required: `手牌${index + 1}は必須です。`,
-                    })}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setFocussedTileInput(name)}
-                    className={`w-9 h-12 rounded-sm border ${
-                      focussedTileInput == name
-                        ? "scale-105 border-blue-500 shadow shadow-blue-500"
-                        : "border-gray-700"
-                    }`}>
-                    {watch(name) && <TileImage tile={watch(name)} hover={false} />}
-                  </button>
-                </Box>
-              );
-            })}
-          </Flex>
-        </Box>
-
-        <Box>
-          <FormLabel>ツモ</FormLabel>
-          <VisuallyHiddenInput {...register("tsumo_id")} />
-          <button
-            type="button"
-            onClick={() => setFocussedTileInput("tsumo_id")}
-            className={`${
-              focussedTileInput == "tsumo_id"
-                ? "scale-105 border-blue-500 shadow shadow-blue-500"
-                : "border-gray-700"
-            }
-                    w-9 h-12 rounded-sm border`}>
-            {watch("tsumo_id") && <TileImage tile={watch("tsumo_id")} hover={false} />}
-          </button>
-        </Box>
-      </FormControl>
-
-      <Divider borderColor="gray.500" mt={4} variant="dashed" />
-
-      <Box mt={4}>
-        <Wrap>
-          {Array(ALL_TILES_NUM)
-            .fill(null)
-            .map((_, index) => {
-              const tileId = index + 1;
-
-              return (
-                <Flex flexDir="column" alignItems="center" key={index}>
-                  <PopButton
-                    value={<TileImage tile={tileId} hover={false} />}
-                    onClick={() => {
-                      setValue(focussedTileInput, tileId);
-                      setNextFocussedTile();
-                    }}
-                    defaultClassName="w-10 border border-gray-700 rounded-sm"
-                  />
-                </Flex>
-              );
-            })}
-        </Wrap>
-      </Box>
-
-      <Center mt={4}>
-        <Button type="submit" colorScheme="teal" size="lg">
-          作成する
-        </Button>
-      </Center>
-    </form>
-  );
-}

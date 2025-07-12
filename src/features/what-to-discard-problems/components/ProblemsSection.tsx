@@ -1,33 +1,26 @@
-import ProblemCard from "@/src/features/what-to-discard-problems/components/ProblemCard";
+import ClientProblemSection from "@/src/features/what-to-discard-problems/components/ClientProblemSection";
 import createApiPageClient from "@/src/lib/apiClients/ApiPageClient";
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, Text, VStack } from "@chakra-ui/react";
 
 export default async function ProblemsSection() {
   const apiPageClient = await createApiPageClient();
 
   try {
     const response = await apiPageClient.getWhatToDiscardProblems();
-    const data = response.what_to_discard_problems;
 
+    return <ClientProblemSection initialProblems={response.what_to_discard_problems} />;
+  } catch (_) {
     return (
-      <Box>
-        <VStack gap="16">
-          {data.map((problem, index: number) => (
-            <ProblemCard key={index} problem={problem} />
-          ))}
+      <Box textAlign="center" py={16}>
+        <VStack spacing={4}>
+          <Text fontSize="xl" fontWeight="bold" color="red.500">
+            エラーが発生しました
+          </Text>
+          <Text fontSize="md" color="gray.600">
+            何切る問題の読み込み中にエラーが発生しました。しばらく時間をおいてから再度お試しください。
+          </Text>
         </VStack>
-
-        {/* <WhatToDiscardProblemsContextProvider initialData={data}>
-          <ProblemFormToggleButton />
-
-          <Flex justify="center" mt={5}>
-            <LoadNextPageProblemButton />
-          </Flex>
-        </WhatToDiscardProblemsContextProvider> */}
       </Box>
     );
-  } catch (error) {
-    console.error(error);
-    return null;
   }
 }

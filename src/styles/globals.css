@@ -56,7 +56,9 @@
   }
 }
 
-a, button, input {
+a,
+button,
+input {
   cursor: pointer;
 }
 
@@ -129,7 +131,7 @@ a, button, input {
   }
 
   .marquee-inner {
-    @apply h-full shrink-0 ;
+    @apply h-full shrink-0;
     animation: marquee 30s linear infinite;
   }
 

@@ -9,6 +9,7 @@ This is "麻雀ヤリタイ" (Mahjong Yaritai) - a Japanese mahjong community pl
 ## Development Commands
 
 ### Core Development
+
 ```bash
 # Start development server
 npm run dev
@@ -31,11 +32,12 @@ npm run gen-client
 ```
 
 ### Environment Setup
+
 ```bash
 # Set up environment variables
 cp .env.local .env
 
-# Set up Git hooks
+# Set up Git hooks (auto-runs ESLint & Prettier on commit)
 git config core.hooksPath .githooks
 chmod +x .githooks/*
 ```
@@ -43,12 +45,14 @@ chmod +x .githooks/*
 ## Architecture Overview
 
 ### Application Structure
+
 - **Next.js App Router**: Uses Next.js 15 with App Router pattern
 - **Feature-Based Architecture**: Each feature is self-contained in `src/features/`
 - **Context-Based State Management**: Uses React Context API with feature-specific providers
 - **Type-Safe API Integration**: Auto-generated Zodios client from OpenAPI spec
 
 ### Key Directories
+
 - `src/app/` - Next.js App Router pages and global providers
 - `src/features/` - Feature-specific components, contexts, and types
 - `src/components/` - Shared UI components
@@ -56,24 +60,29 @@ chmod +x .githooks/*
 - `src/lib/apiClients/` - API client wrappers for SSR/CSR
 
 ### State Management Pattern
+
 The app uses a hierarchical Context provider pattern:
+
 1. **Global Auth Context** (`AuthStateContextProvider`) - Wraps entire app
 2. **Feature-Specific Contexts** - Each feature has its own context providers
 3. **Server-Side Data Fetching** - Uses async server components for initial data
 
 ### API Integration
+
 - **Generated Client**: `src/zodios/api.ts` - Auto-generated from `../api/swagger/v1/swagger.yaml`
 - **Server-Side API**: `ApiPageClient.ts` - For SSR with cookie handling
 - **Client-Side API**: `ApiClient.ts` - For CSR with credentials
 - **Type Safety**: Full TypeScript coverage with Zod schema validation
 
 ### Component Architecture
+
 - **Hybrid Rendering**: Server components for data fetching, client components for interactivity
 - **UI Framework**: Chakra UI 2.x + Tailwind CSS 4.x
 - **Japanese Language**: All UI text and metadata in Japanese
 
 ### Main Features
-1. **what-to-discard-problems** - Core feature with voting, commenting, and problem-solving
+
+1. **what-to-discard-problems** - Core feature with voting, commenting, and problem-solving (currently undergoing refactoring to schema-based validation)
 2. **Auth System** - Login/logout with session management
 3. **User Profiles** - User management and profile editing
 4. **Learning Module** - Educational content
@@ -81,21 +90,25 @@ The app uses a hierarchical Context provider pattern:
 ## Development Patterns
 
 ### API Client Usage
+
 ```typescript
 // Server-side (in server components)
-import { apiPageClient } from '@/src/lib/apiClients/ApiPageClient';
+import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
 
 // Client-side (in client components)
-import { apiClient } from '@/src/lib/apiClients/ApiClient';
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 ```
 
 ### Context Provider Pattern
+
 Each feature follows this pattern:
+
 - `contexts/` - Context definitions
 - `providers/` - Provider components
 - Providers are composed in feature pages or globally
 
 ### File Organization
+
 - Server components: No 'use client' directive
 - Client components: Start with 'use client'
 - Types: Feature-specific types in `features/[feature]/types/`
@@ -104,24 +117,46 @@ Each feature follows this pattern:
 ## Important Technical Details
 
 ### Sentry Integration
+
 - Error monitoring configured in `next.config.mjs`
 - Automatic error tracking for both client and server
 - Source maps uploaded in CI environment
 
 ### TypeScript Configuration
+
 - Strict mode disabled but comprehensive type checking
 - Path aliases: `@/*` maps to `src/*`
 - Modern ESNext target with lib configuration
 
 ### Styling System
+
 - Chakra UI with custom theme
 - Tailwind CSS 4.x with modern features
 - Global styles in `src/styles/globals.css`
 - Package imports optimized in Next.js config
 
 ### API Generation
+
 When backend API changes, regenerate the client:
+
 ```bash
 npm run gen-client
 ```
+
 This updates `src/zodios/api.ts` from the OpenAPI spec at `../api/swagger/v1/swagger.yaml`.
+
+### Testing
+
+Currently, no test framework is configured. Consider implementing tests with Jest or Vitest for critical components.
+
+### Development Workflow
+
+1. The pre-commit hook automatically runs ESLint and Prettier on staged files
+2. Use `npm run typecheck` to verify TypeScript types before committing
+3. The backend API must be running on `http://localhost:3001` (configured in `.env`)
+
+### Current Architecture Notes
+
+- The `what-to-discard-problems` feature is transitioning from context-based to schema-based validation
+- Multiple context providers are being consolidated into a cleaner architecture
+- New client-side components are being introduced for better separation of concerns

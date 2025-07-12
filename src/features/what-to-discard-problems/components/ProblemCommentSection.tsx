@@ -36,7 +36,7 @@ export default function ProblemCommentSection({
         <HStack>
           <FaRegComment color="#333" size={24} />
           <Text fontFamily="sans-serif" fontWeight="bold">
-            {problem.comments_count}
+            {parentComments?.length || problem.comments_count}
           </Text>
         </HStack>
       </PopButton>

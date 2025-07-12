@@ -52,6 +52,7 @@ const config = defineConfig([
       "@shopify/binary-assignment-parens": "off",
       "no-redeclare": "off",
       "no-warning-comments": "warn",
+      "id-length": "off",
     },
   },
 ]);
