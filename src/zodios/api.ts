@@ -1,16 +1,25 @@
 import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
-const createAuthorizationSession_Body = z
-  .object({ authorization_session: z.object({ email: z.string().max(64) }).passthrough() })
+const createAuthRequest_Body = z
+  .object({ auth_request: z.object({ email: z.string().max(64) }).passthrough() })
   .passthrough();
-const createAuthorization_Body = z
-  .object({ authorization: z.object({ token: z.string() }).passthrough() })
+const createAuthVerification_Body = z
+  .object({ auth_verification: z.object({ token: z.string() }).passthrough() })
   .passthrough();
+const User = z
+  .object({
+    id: z.number().int(),
+    name: z.string(),
+    avatar_url: z.string().nullable(),
+    created_at: z.string(),
+    updated_at: z.string(),
+  })
+  .passthrough();
+const Errors = z.array(z.object({ message: z.string() }).passthrough());
 const Session = z
   .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
   .passthrough();
-const Errors = z.array(z.object({ message: z.string() }).passthrough());
 const createSession_Body = z
   .object({ session: z.object({ email: z.string(), password: z.string() }).passthrough() })
   .passthrough();
@@ -24,15 +33,6 @@ const createUser_Body = z
         password_confirmation: z.string().optional(),
       })
       .passthrough(),
-  })
-  .passthrough();
-const User = z
-  .object({
-    id: z.number().int(),
-    name: z.string(),
-    avatar_url: z.string().nullable(),
-    created_at: z.string(),
-    updated_at: z.string(),
   })
   .passthrough();
 const updateUser_Body = z
@@ -170,13 +170,13 @@ const createWhatToDiscardProblem_Body = z
   .passthrough();
 
 export const schemas = {
-  createAuthorizationSession_Body,
-  createAuthorization_Body,
-  Session,
+  createAuthRequest_Body,
+  createAuthVerification_Body,
+  User,
   Errors,
+  Session,
   createSession_Body,
   createUser_Body,
-  User,
   updateUser_Body,
   Comment,
   createComment_Body,
@@ -193,14 +193,14 @@ export const schemas = {
 const endpoints = makeApi([
   {
     method: "post",
-    path: "/authorization",
-    alias: "createAuthorization",
+    path: "/auth/request",
+    alias: "createAuthRequest",
     requestFormat: "json",
     parameters: [
       {
         name: "body",
         type: "Body",
-        schema: createAuthorization_Body,
+        schema: createAuthRequest_Body,
       },
     ],
     response: z.void(),
@@ -219,14 +219,14 @@ const endpoints = makeApi([
   },
   {
     method: "post",
-    path: "/authorization_session",
-    alias: "createAuthorizationSession",
+    path: "/auth/verification",
+    alias: "createAuthVerification",
     requestFormat: "json",
     parameters: [
       {
         name: "body",
         type: "Body",
-        schema: createAuthorizationSession_Body,
+        schema: createAuthVerification_Body,
       },
     ],
     response: z.void(),
@@ -239,7 +239,7 @@ const endpoints = makeApi([
       {
         status: 422,
         description: `unprocessable_entity`,
-        schema: z.void(),
+        schema: z.object({ errors: Errors }).passthrough(),
       },
     ],
   },
@@ -307,12 +307,12 @@ const endpoints = makeApi([
       {
         status: 403,
         description: `forbidden`,
-        schema: z.object({ errors: Errors }).passthrough(),
+        schema: z.void(),
       },
       {
         status: 422,
         description: `unprocessable_entity`,
-        schema: z.object({ errors: Errors }).passthrough(),
+        schema: z.void(),
       },
     ],
   },

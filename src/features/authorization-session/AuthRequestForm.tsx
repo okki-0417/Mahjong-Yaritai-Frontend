@@ -9,9 +9,9 @@ import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 
-type AuthorizationSessionFormType = z.infer<typeof schemas.createAuthorizationSession_Body>;
+type AuthRequestFormType = z.infer<typeof schemas.createAuthRequest_Body>;
 
-export default function AuthorizationSessionForm() {
+export default function AuthRequestForm() {
   const router = useRouter();
   const errorToast = useErrorToast();
 
@@ -19,17 +19,15 @@ export default function AuthorizationSessionForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AuthorizationSessionFormType>();
+  } = useForm<AuthRequestFormType>();
 
-  const onSubmit: SubmitHandler<AuthorizationSessionFormType> = async (
-    formData: AuthorizationSessionFormType,
-  ) => {
+  const onSubmit: SubmitHandler<AuthRequestFormType> = async (formData: AuthRequestFormType) => {
     try {
-      await apiClient.createAuthorizationSession({
-        authorization_session: formData,
+      await apiClient.createAuthRequest({
+        auth_request: formData,
       });
 
-      router.push("/authorization");
+      router.push("/auth/verification");
     } catch (error) {
       errorToast({
         error,
@@ -40,16 +38,16 @@ export default function AuthorizationSessionForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
-      <FormControl isInvalid={Boolean(errors.email)} isRequired>
+      <FormControl isInvalid={Boolean(errors.auth_request?.email)} isRequired>
         <FormLabel htmlFor="email">Email</FormLabel>
 
-        <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+        <FormErrorMessage>{errors.auth_request?.email?.message}</FormErrorMessage>
 
         <Input
           type="email"
           placeholder="test@mahjong-yaritai.com"
           autoComplete="email"
-          {...register("email")}
+          {...register("auth_request.email")}
         />
       </FormControl>
 

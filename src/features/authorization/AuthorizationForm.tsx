@@ -9,7 +9,7 @@ import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 
-type AuthorizationFormType = z.infer<typeof schemas.createAuthorization_Body>;
+type AuthVerificationFormType = z.infer<typeof schemas.createAuthVerification_Body>;
 
 export default function AuthorizationForm() {
   const router = useRouter();
@@ -19,12 +19,12 @@ export default function AuthorizationForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AuthorizationFormType>();
+  } = useForm<AuthVerificationFormType>();
 
-  const onSubmit: SubmitHandler<AuthorizationFormType> = async formData => {
+  const onSubmit: SubmitHandler<AuthVerificationFormType> = async formData => {
     try {
-      await apiClient.createAuthorization({
-        authorization: formData,
+      await apiClient.createAuthVerification({
+        auth_verification: formData,
       });
 
       router.push("/users/new");
@@ -38,11 +38,13 @@ export default function AuthorizationForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FormControl isInvalid={Boolean(errors.token)} isRequired>
-        <FormErrorMessage className="mt-4">{errors.token?.message}</FormErrorMessage>
+      <FormControl isInvalid={Boolean(errors.auth_verification?.token)} isRequired>
+        <FormErrorMessage className="mt-4">
+          {errors.auth_verification?.token?.message}
+        </FormErrorMessage>
 
         <NumberInput mt={4}>
-          <NumberInputField {...register("token")} />
+          <NumberInputField {...register("auth_verification.token")} />
         </NumberInput>
       </FormControl>
 
