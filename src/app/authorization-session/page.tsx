@@ -10,8 +10,8 @@ export default async function AuthorizationSession() {
   if (session?.is_logged_in) redirect("/dashboard");
 
   return (
-    <Container mt={40} maxW="2xl">
-      <h1 className="lg:text-4xl text-2xl font-semibold mb-3">ユーザー登録</h1>
+    <Container mt="20" maxW="2xl">
+      <h1 className="text-4xl font-bold mb-3">ユーザー登録</h1>
       <hr />
 
       <AuthorizationSessionForm />

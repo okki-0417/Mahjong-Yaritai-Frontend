@@ -8,8 +8,8 @@ export default async function UserCreate() {
   if (session?.is_logged_in) redirect("/dashboard");
 
   return (
-    <Container mt={40} size="xl">
-      <Text as="h1" fontSize="4xl">
+    <Container mt="20" size="xl">
+      <Text as="h1" fontSize="4xl" fontWeight="bold">
         新規ユーザー登録
       </Text>
 

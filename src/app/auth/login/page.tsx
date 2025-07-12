@@ -10,10 +10,10 @@ export default async function Login() {
   if (session?.is_logged_in) redirect("/dashboard");
 
   return (
-    <Container>
+    <Container mt="20">
       <VStack alignItems="stretch" gap="5">
         <Box>
-          <Text as="h1" fontSize="3xl">
+          <Text as="h1" fontSize="4xl" fontWeight="bold">
             ログイン
           </Text>
           <Divider />

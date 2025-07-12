@@ -8,8 +8,10 @@ export default async function Authorization() {
   if (session?.is_logged_in) redirect("/dashboard");
 
   return (
-    <Container maxW="xl" mt={40}>
-      <Text fontSize="2xl">認証メールを送信しました。</Text>
+    <Container maxW="xl" mt="20">
+      <Text as="h1" fontSize="4xl" fontWeight="bold">
+        認証メールを送信しました。
+      </Text>
 
       <Text mt={2}>メール内の認証コードを入力してください</Text>
 

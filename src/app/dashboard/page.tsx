@@ -7,5 +7,5 @@ export default async function Dashboard() {
 
   redirect("/what-to-discard-problems");
 
-  return <div className="bg-red-200"></div>;
+  return <div className="bg-red-200 mt-20"></div>;
 }
