@@ -307,12 +307,12 @@ const endpoints = makeApi([
       {
         status: 403,
         description: `forbidden`,
-        schema: z.object({ errors: Errors }).passthrough(),
+        schema: z.void(),
       },
       {
         status: 422,
         description: `unprocessable_entity`,
-        schema: z.object({ errors: Errors }).passthrough(),
+        schema: z.void(),
       },
     ],
   },
