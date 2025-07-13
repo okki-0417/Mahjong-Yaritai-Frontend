@@ -9,6 +9,7 @@ import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
+import Link from "next/link";
 
 export default function ClientWithdrawalSummary({
   summary,
@@ -88,9 +89,11 @@ export default function ClientWithdrawalSummary({
           退会する
         </Button>
 
-        <Button variant="outline" size="lg" onClick={() => router.push("/dashboard")} w="full">
-          キャンセル
-        </Button>
+        <Link className="w-full block" href="/dashboard">
+          <Button variant="outline" size="lg" w="full">
+            キャンセル
+          </Button>
+        </Link>
       </VStack>
     </VStack>
   );

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
-import { FaAngleRight } from "react-icons/fa6";
+import { useContext, useState } from "react";
+import { IoMdLogOut } from "react-icons/io";
+import { FaUser, FaUserTimes } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
 import {
   Box,
+  Button,
   Center,
   Checkbox,
   Circle,
@@ -13,18 +14,43 @@ import {
   Flex,
   HStack,
   Image,
-  List,
   Text,
-  UnorderedList,
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
+import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
+import useMyUserId from "@/src/hooks/useMyUserId";
+import useErrorToast from "@/src/hooks/useErrorToast";
+import useSuccessToast from "@/src/hooks/useSuccessToast";
 import ButtonNeutral from "@/src/components/Buttons/ButtonNeutral";
 
 export default function Navigation() {
   const [checked, setChecked] = useState(false);
   const auth = useIsLoggedIn();
+  const myUserId = useMyUserId();
+  const router = useRouter();
+  const { setAuth, setMyUserId } = useContext(AuthStateContext);
+  const errorToast = useErrorToast();
+  const successToast = useSuccessToast();
+
+  const handleLogout = async () => {
+    const isConfirmed = confirm("ログアウトしますか？");
+    if (!isConfirmed) return;
+
+    try {
+      await apiClient.deleteSession([]);
+      setAuth(false);
+      setMyUserId(null);
+      successToast({ title: "ログアウトしました" });
+      router.push("/");
+      setChecked(false);
+    } catch (error) {
+      errorToast({ error, title: "ログアウトに失敗しました" });
+    }
+  };
 
   return (
     <>
@@ -108,68 +134,75 @@ export default function Navigation() {
           zIndex="50"
           className={`h-screen bg-base transition-all ${!checked && "translate-x-full"}`}>
           <Container maxW="xs" mt="20" px="8">
-            <UnorderedList listStyleType="none">
-              <VStack alignItems="start">
-                <List>
-                  <label htmlFor="profile" className="cursor-pointer">
-                    <HStack>
-                      <Checkbox id="profile" hidden className="peer" />
+            <VStack alignItems="start" spacing={3}>
+              {!auth && (
+                <Link href="/auth/request" onClick={() => setChecked(false)} className="w-full">
+                  <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
+                    <FaUser size={18} />
+                    <Text fontSize="lg">ログイン / 新規登録</Text>
+                  </HStack>
+                </Link>
+              )}
 
-                      <Text className="text-lg inline-flex items-center gap-1">プロフィール</Text>
-                      <div className="w-fit ml-1 inline-block peer-checked:hidden">
-                        <IoIosArrowBack />
-                      </div>
-                      <div className="w-fit ml-1 hidden peer-checked:inline-block">
-                        <IoIosArrowDown />
-                      </div>
-                    </HStack>
-                  </label>
+              {auth && (
+                <Link
+                  href={`/users/${myUserId}`}
+                  onClick={() => setChecked(false)}
+                  className="w-full ">
+                  <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
+                    <FaUser size={18} />
+                    <Text fontSize="lg">プロフィール</Text>
+                  </HStack>
+                </Link>
+              )}
 
-                  <ul className="h-0 overflow-hidden peer-checked:h-auto ml-4">
-                    {/* <Link href="profile">
-                      <li className="flex gap-1 items-center">
-                        <FaAngleRight size={12} />
-                        <span>プロフィール</span>
-                      </li>
-                    </Link> */}
-                    {/* <Link href="profile/edit">
-											<li className="flex gap-1 items-center">
-												<FaAngleRight size={12} />
-												<span>編集</span>
-											</li>
-										</Link> */}
-                  </ul>
-                </List>
-                <li>
-                  <input id="what-to-discard-problems" type="checkbox" className="hidden peer" />
-                  <label
-                    htmlFor="what-to-discard-problems"
-                    className="text-lg inline-flex items-center gap-1">
-                    <span>何切る問題</span>
-                  </label>
-                  <div className="w-fit ml-1 inline-block peer-checked:hidden">
-                    <IoIosArrowBack />
-                  </div>
-                  <div className="w-fit ml-1 hidden peer-checked:inline-block">
-                    <IoIosArrowDown />
-                  </div>
-                  <ul className="h-0 overflow-hidden peer-checked:h-auto ml-4">
-                    <Link href="/what-to-discard-problems">
-                      <li className="flex gap-1 items-center">
-                        <FaAngleRight size={12} />
-                        <span>一覧</span>
-                      </li>
+              <Link
+                href="/what-to-discard-problems"
+                onClick={() => setChecked(false)}
+                className="w-full">
+                <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
+                  <GiThink size={20} />
+                  <Text fontSize="lg">何切る問題</Text>
+                </HStack>
+              </Link>
+
+              {auth && (
+                <>
+                  <Box w="full" mt={4} pt={4} borderTop="1px" borderColor="gray.300">
+                    <Button
+                      onClick={handleLogout}
+                      w="full"
+                      variant="ghost"
+                      color="red.500"
+                      _hover={{ bg: "red.50" }}
+                      py={3}
+                      px={4}
+                      justifyContent="flex-start">
+                      <HStack>
+                        <IoMdLogOut size={18} />
+                        <Text fontSize="lg">ログアウト</Text>
+                      </HStack>
+                    </Button>
+
+                    <Link href="/me/withdrawal" onClick={() => setChecked(false)}>
+                      <Box
+                        w="full"
+                        py={3}
+                        px={4}
+                        borderRadius="md"
+                        color="red.500"
+                        _hover={{ bg: "red.50" }}
+                        transition="background-color 0.2s">
+                        <HStack>
+                          <FaUserTimes size={18} />
+                          <Text fontSize="lg">退会</Text>
+                        </HStack>
+                      </Box>
                     </Link>
-                    {/* <Link href="what-to-discard-problems/new">
-											<li className="flex gap-1 items-center">
-												<FaAngleRight size={12} />
-												<span>新規作成</span>
-											</li>
-										</Link> */}
-                  </ul>
-                </li>
-              </VStack>
-            </UnorderedList>
+                  </Box>
+                </>
+              )}
+            </VStack>
           </Container>
         </Box>
       </Box>
