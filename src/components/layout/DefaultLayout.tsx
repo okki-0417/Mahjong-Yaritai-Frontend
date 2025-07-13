@@ -6,7 +6,9 @@ import { ReactNode } from "react";
 
 export default function DefaultLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
+    <div
+      className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral"
+      style={{ overscrollBehavior: "none" }}>
       <Navigation />
       <Box bgColor="gray.700"></Box>
 

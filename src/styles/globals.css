@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* オーバースクロール（バウンス効果）を無効化 */
+html,
+body {
+  overscroll-behavior: none;
+}
+
 @theme {
   --color-primary: #171923;
   --color-primary-light: #272933;
