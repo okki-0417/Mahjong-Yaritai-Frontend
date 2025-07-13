@@ -17,6 +17,9 @@ const User = z
   })
   .passthrough();
 const Errors = z.array(z.object({ message: z.string() }).passthrough());
+const WithdrawalSummary = z
+  .object({ what_to_discard_problems_count: z.number().int() })
+  .passthrough();
 const Session = z
   .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
   .passthrough();
@@ -162,6 +165,7 @@ export const schemas = {
   createAuthVerification_Body,
   User,
   Errors,
+  WithdrawalSummary,
   Session,
   createUser_Body,
   updateUser_Body,
@@ -226,6 +230,39 @@ const endpoints = makeApi([
       {
         status: 422,
         description: `unprocessable_entity`,
+        schema: z.object({ errors: Errors }).passthrough(),
+      },
+    ],
+  },
+  {
+    method: "post",
+    path: "/me/withdrawal",
+    alias: "withdrawUser",
+    requestFormat: "json",
+    response: z.void(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+      {
+        status: 422,
+        description: `unprocessable_entity`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/me/withdrawal/summary",
+    alias: "getWithdrawalSummary",
+    requestFormat: "json",
+    response: z.object({ withdrawal_summary: WithdrawalSummary }).passthrough(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
         schema: z.object({ errors: Errors }).passthrough(),
       },
     ],

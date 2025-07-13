@@ -8,11 +8,13 @@ import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useSuccessToast from "@/src/hooks/useSuccessToast";
 
 type AuthRequestFormType = z.infer<typeof schemas.createAuthRequest_Body>;
 
 export default function AuthRequestForm() {
   const router = useRouter();
+  const successToast = useSuccessToast();
   const errorToast = useErrorToast();
 
   const {
@@ -29,6 +31,10 @@ export default function AuthRequestForm() {
     try {
       await apiClient.createAuthRequest(formData);
 
+      successToast({
+        title: "認証リクエストを送信しました",
+        description: "確認メールを送信しました。メールを確認してください。",
+      });
       router.push("/auth/verification");
     } catch (error) {
       errorToast({

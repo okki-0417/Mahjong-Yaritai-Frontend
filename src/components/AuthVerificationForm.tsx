@@ -1,7 +1,6 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from "@chakra-ui/react";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
@@ -10,11 +9,14 @@ import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import { useContext } from "react";
-import useSuccessToast from "@/src/hooks/useSuccessToast";
 
-export default function AuthVerificationForm() {
-  const router = useRouter();
-  const successToast = useSuccessToast();
+export default function AuthVerificationForm({
+  verifiedCallback,
+  loggedInCallback,
+}: {
+  verifiedCallback?: () => void;
+  loggedInCallback?: () => void;
+}) {
   const errorToast = useErrorToast();
 
   const { setAuth } = useContext(AuthStateContext);
@@ -36,17 +38,9 @@ export default function AuthVerificationForm() {
       setAuth(true);
 
       if (response.auth_verification) {
-        successToast({
-          title: "認証が完了しました",
-          description: "ダッシュボードにリダイレクトします。",
-        });
-        router.push("/dashboard");
+        loggedInCallback?.();
       } else {
-        successToast({
-          title: "認証が完了しました",
-          description: "新規ユーザー登録ページにリダイレクトします。",
-        });
-        router.push("/users/new");
+        verifiedCallback?.();
       }
     } catch (error) {
       errorToast({ error, title: "認証に失敗しました" });

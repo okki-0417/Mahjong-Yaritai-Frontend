@@ -65,7 +65,8 @@ export default function Navigation() {
               </HStack>
 
               <button
-                className="absolute z-50 inset-y-0 my-auto right-8 size-8"
+                className="absolute inset-y-0 my-auto right-8 size-8"
+                style={{ zIndex: 60 }}
                 onClick={() => setChecked(!checked)}>
                 <Checkbox hidden defaultChecked={checked} />
 
@@ -83,6 +84,20 @@ export default function Navigation() {
           </Container>
         </Center>
 
+        {/* Background overlay */}
+        {checked && (
+          <Box
+            position="fixed"
+            top="0"
+            left="0"
+            w="100vw"
+            h="100vh"
+            bg="blackAlpha.600"
+            zIndex="40"
+            onClick={() => setChecked(false)}
+          />
+        )}
+
         <Box
           as="nav"
           position="fixed"
@@ -90,6 +105,7 @@ export default function Navigation() {
           right="0"
           w="xs"
           shadow="dark-lg"
+          zIndex="50"
           className={`h-screen bg-base transition-all ${!checked && "translate-x-full"}`}>
           <Container maxW="xs" mt="20" px="8">
             <UnorderedList listStyleType="none">
