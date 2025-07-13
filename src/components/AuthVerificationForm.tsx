@@ -7,19 +7,18 @@ import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import { useContext } from "react";
+import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
+import useSuccessToast from "@/src/hooks/useSuccessToast";
+import { useRouter } from "next/navigation";
 
-export default function AuthVerificationForm({
-  verifiedCallback,
-  loggedInCallback,
-}: {
-  verifiedCallback?: () => void;
-  loggedInCallback?: () => void;
-}) {
+export default function AuthVerificationForm() {
   const errorToast = useErrorToast();
+  const successToast = useSuccessToast();
 
-  const { setAuth } = useContext(AuthStateContext);
+  const router = useRouter();
+
+  const { setAuth, setMyUserId } = useContext(AuthStateContext);
 
   const {
     register,
@@ -35,12 +34,21 @@ export default function AuthVerificationForm({
     try {
       const response = await apiClient.createAuthVerification(formData);
 
-      setAuth(true);
-
       if (response.auth_verification) {
-        loggedInCallback?.();
+        setAuth(true);
+        setMyUserId(response.auth_verification.id);
+
+        successToast({
+          title: "認証が完了しました",
+          description: "ダッシュボードにリダイレクトします。",
+        });
+        router.push("/dashboard");
       } else {
-        verifiedCallback?.();
+        successToast({
+          title: "認証が完了しました",
+          description: "新規ユーザー登録ページにリダイレクトします。",
+        });
+        router.push("/users/new");
       }
     } catch (error) {
       errorToast({ error, title: "認証に失敗しました" });

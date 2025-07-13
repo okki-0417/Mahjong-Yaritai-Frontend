@@ -1,5 +1,5 @@
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
-import VerificationSection from "@/src/features/auth/verification/VerificationSection";
+import AuthVerificationForm from "@/src/components/AuthVerificationForm";
 
 export default function AuthVerification() {
   return (
@@ -12,7 +12,7 @@ export default function AuthVerification() {
       <Text mt="8">メール内の認証コードを入力してください</Text>
 
       <Box mt="4">
-        <VerificationSection />
+        <AuthVerificationForm />
       </Box>
     </Container>
   );
