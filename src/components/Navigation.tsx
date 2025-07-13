@@ -58,7 +58,7 @@ export default function Navigation() {
                 {!auth && (
                   <Flex gap={1}>
                     <Link href="/auth/request">
-                      <ButtonNeutral>認証</ButtonNeutral>
+                      <ButtonNeutral>ログイン / 新規登録</ButtonNeutral>
                     </Link>
                   </Flex>
                 )}

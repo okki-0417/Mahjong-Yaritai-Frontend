@@ -1,21 +1,19 @@
-import AuthorizationForm from "@/src/features/authorization/AuthorizationForm";
-import getSession from "@/src/lib/getSession";
-import { Container, Text } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
+import { Box, Container, Divider, Text } from "@chakra-ui/react";
+import AuthVerificationForm from "@/src/features/auth/verification/AuthVerificationForm";
 
-export default async function AuthVerification() {
-  const session = await getSession();
-  if (session?.is_logged_in) redirect("/dashboard");
-
+export default function AuthVerification() {
   return (
-    <Container maxW="xl" mt="20">
-      <Text as="h1" fontSize="4xl" fontWeight="bold">
-        認証メールを送信しました。
+    <Container maxW="2xl" mt="20">
+      <Text fontSize="4xl" fontWeight="bold">
+        認証メールを送信しました
       </Text>
+      <Divider />
 
-      <Text mt={2}>メール内の認証コードを入力してください</Text>
+      <Text mt="8">メール内の認証コードを入力してください</Text>
 
-      <AuthorizationForm />
+      <Box mt="4">
+        <AuthVerificationForm />
+      </Box>
     </Container>
   );
 }

@@ -1,7 +1,7 @@
-import { Container } from "@chakra-ui/react";
+import { Box, Container, Divider, Text } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 import getSession from "@/src/lib/getSession";
-import AuthRequestForm from "@/src/features/authorization-session/AuthRequestForm";
+import AuthRequestForm from "@/src/features/auth/request/AuthRequestForm";
 
 export default async function AuthRequest() {
   const session = await getSession();
@@ -9,10 +9,14 @@ export default async function AuthRequest() {
 
   return (
     <Container mt="20" maxW="2xl">
-      <h1 className="text-4xl font-bold mb-3">認証リクエスト</h1>
-      <hr />
+      <Text fontSize="4xl" fontWeight="bold">
+        認証リクエスト
+      </Text>
+      <Divider />
 
-      <AuthRequestForm />
+      <Box mt="8">
+        <AuthRequestForm />
+      </Box>
     </Container>
   );
 }
