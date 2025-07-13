@@ -38,11 +38,9 @@ export default function FetchRepliesButton({
   return (
     <Flex justifyContent="end">
       <Button
-        colorScheme=""
-        _hover={{ bgColor: "gray.400" }}
         h="fit-content"
         py="2"
-        className="text-neutral"
+        className="text-primary"
         size="xs"
         onClick={fetchReplies}
         isLoading={isLoading}>

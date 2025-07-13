@@ -61,7 +61,7 @@ export default function ParentCommentCard({
                     className="w-full h-full object-cover"
                   />
                 </Circle>
-                <Text fontWeight="bold" className="text-neutral">
+                <Text fontWeight="bold" className="text-primary">
                   {parentComment.user.name}
                 </Text>
               </HStack>
@@ -70,12 +70,12 @@ export default function ParentCommentCard({
             {parentComment.user.id == myUserId && <DeleteCommentButton comment={parentComment} />}
             {parentComment.user.id != myUserId && isLoggedIn && (
               <Button size="sm" px="1" onClick={handleReply} bgColor="inherit">
-                <MdOutlineReply size={18} className="text-neutral" />
+                <MdOutlineReply size={18} className="text-primary" />
               </Button>
             )}
           </HStack>
 
-          <Text fontFamily="sans-serif" fontSize="xs" className="text-neutral">
+          <Text fontFamily="sans-serif" fontSize="xs" className="text-primary">
             {new Date(parentComment.created_at).toLocaleString()}
           </Text>
         </Box>
@@ -91,7 +91,7 @@ export default function ParentCommentCard({
             {replies.map((reply: z.infer<typeof schemas.Comment>, index: number) => {
               return (
                 <HStack w="full" pl="4" h="24" key={index} gap="4">
-                  <Box w="1" h="full" className="bg-neutral" rounded="full" />
+                  <Box w="1" h="full" className="bg-secondary" rounded="full" />
                   <ChildCommentCard reply={reply} />
                 </HStack>
               );

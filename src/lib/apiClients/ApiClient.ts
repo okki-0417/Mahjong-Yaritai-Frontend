@@ -11,22 +11,4 @@ const axiosInstance = axios.create({
   },
 });
 
-axiosInstance.interceptors.response.use(
-  response => {
-    return response;
-  },
-  error => {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        `API_PAGE_CLIENT_AXIOS_ERROR:\n\tSTATUS: "${error.status}"\n\tMESSAGE: "${error.message}"`,
-      );
-    } else {
-      console.error(`
-        API_PAGE_CLIENT_DEFAULT_ERROR: \n
-        ERROR: "${error}"`);
-    }
-    return Promise.reject(error);
-  },
-);
-
 export const apiClient = createApiClient(API_BASE_URL, { axiosInstance });
