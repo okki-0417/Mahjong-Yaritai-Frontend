@@ -75,7 +75,7 @@ export default function UserForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack gap="4" w="sm" mx="auto">
+      <VStack gap="4" mx="auto">
         <Circle size="200" overflow="hidden">
           <Image
             src={imageUrl || "/no-image.webp"}

@@ -12,7 +12,7 @@ export default function WhatToDiscardProblems() {
     <Container mt="20" maxW="4xl" px="2">
       <VStack gap="4" alignItems="stretch">
         <Box>
-          <Text as="h1" fontSize="4xl" fontWeight="bold">
+          <Text as="h1" fontSize={["2xl", "4xl"]} fontWeight="bold">
             何切る問題
           </Text>
           <Divider />

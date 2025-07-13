@@ -9,7 +9,7 @@ export default async function AuthRequest() {
 
   return (
     <Container mt="20" maxW="2xl">
-      <Text fontSize="4xl" fontWeight="bold">
+      <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
         認証リクエスト
       </Text>
       <Divider />

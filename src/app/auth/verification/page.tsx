@@ -4,7 +4,7 @@ import AuthVerificationForm from "@/src/components/AuthVerificationForm";
 export default function AuthVerification() {
   return (
     <Container maxW="2xl" mt="20">
-      <Text fontSize="4xl" fontWeight="bold">
+      <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
         認証メールを送信しました
       </Text>
       <Divider />

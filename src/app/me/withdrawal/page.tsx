@@ -10,7 +10,7 @@ export default async function WithdrawalSummaryPage() {
 
   return (
     <Container mt="20" maxW="2xl">
-      <Text fontSize="4xl" fontWeight="bold">
+      <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
         退会前の確認
       </Text>
       <Divider />

@@ -9,7 +9,7 @@ export default async function UserCreate() {
 
   return (
     <Container mt="20" size="xl">
-      <Text as="h1" fontSize="4xl" fontWeight="bold">
+      <Text as="h1" fontSize={["2xl", "4xl"]} fontWeight="bold">
         新規ユーザー登録
       </Text>
       <Divider />
