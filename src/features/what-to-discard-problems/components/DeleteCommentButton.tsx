@@ -47,13 +47,8 @@ export default function DeleteCommentButton({
   };
 
   return (
-    <Button
-      size="sm"
-      px="1"
-      bgColor="inherit"
-      _hover={{ bgColor: "gray.400" }}
-      onClick={deleteComment}>
-      <IoMdTrash size="20" className="text-neutral" />
+    <Button size="sm" bgColor="inherit" px="1" onClick={deleteComment}>
+      <IoMdTrash size="20" className="text-secondary hover:text-red-500" />
     </Button>
   );
 }

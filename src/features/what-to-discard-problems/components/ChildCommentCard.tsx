@@ -1,8 +1,8 @@
 import UserModal from "@/src/components/Modals/UserModal";
+import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/DeleteCommentButton";
 import useMyUserId from "@/src/hooks/useMyUserId";
 import { schemas } from "@/src/zodios/api";
 import { Box, Button, Circle, Flex, HStack, Img, Text, useDisclosure } from "@chakra-ui/react";
-import { IoMdTrash } from "react-icons/io";
 import { z } from "zod";
 
 export default function ChildCommentCard({ reply }: { reply: z.infer<typeof schemas.Comment> }) {
@@ -27,22 +27,16 @@ export default function ChildCommentCard({ reply }: { reply: z.infer<typeof sche
                   className="w-full h-full object-cover"
                 />
               </Circle>
-              <Text fontWeight="bold" className="text-neutral">
+              <Text fontWeight="bold" className="text-primary">
                 {reply.user.name}
               </Text>
             </HStack>
           </Button>
 
-          <Box>
-            {isMyComment && (
-              <Button size="sm" px="1" bgColor="inherit" _hover={{ bgColor: "gray.400" }}>
-                <IoMdTrash size={20} className="text-neutral" />
-              </Button>
-            )}
-          </Box>
+          <Box>{isMyComment && <DeleteCommentButton comment={reply} />}</Box>
         </Flex>
 
-        <Text fontFamily="sans-serif" fontSize="xs" className="text-neutral">
+        <Text fontFamily="sans-serif" fontSize="xs" className="text-primary">
           {new Date(reply.created_at).toLocaleString()}
         </Text>
 

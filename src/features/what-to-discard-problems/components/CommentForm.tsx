@@ -78,9 +78,9 @@ export default function CommentForm({
       {!isLoggedIn && (
         <Container>
           <Text textAlign="center">コメントを投稿するにはログインしてください</Text>
-          <Container textAlign="center">
-            <Link href="/isLoggedIn/login" className="btn btn-main">
-              ログインする
+          <Container textAlign="center" mt={2}>
+            <Link href="/isLoggedIn/login">
+              <Button colorScheme="pink">ログイン / 新規登録する</Button>
             </Link>
           </Container>
         </Container>
@@ -117,7 +117,7 @@ export default function CommentForm({
               isRequired
               isInvalid={Boolean(errors.what_to_discard_problem_comment?.content)}>
               <Textarea
-                className="text-neutral"
+                className="text-primary"
                 placeholder="コメントする..."
                 {...register("what_to_discard_problem_comment.content")}
               />

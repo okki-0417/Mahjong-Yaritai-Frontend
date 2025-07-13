@@ -63,13 +63,13 @@ export default function CommentsModal({
       <ModalOverlay />
 
       <ModalContent overflow="hidden">
-        <ModalHeader fontFamily="serif" className="bg-secondary text-neutral">
+        <ModalHeader fontFamily="serif" className="bg-neutral text-primary">
           コメント
         </ModalHeader>
 
-        <ModalCloseButton className="text-neutral" />
+        <ModalCloseButton className="text-primary" />
 
-        <ModalBody className="text-neutral bg-secondary" fontFamily="serif">
+        <ModalBody className="text-primary bg-neutral" fontFamily="serif">
           <Box minH={30}>
             {parentComments == null && (
               <Box textAlign="center" py={8}>
@@ -105,7 +105,7 @@ export default function CommentsModal({
           </Box>
         </ModalBody>
 
-        <ModalFooter className="bg-secondary">
+        <ModalFooter className="bg-neutral">
           <CommentForm
             problemId={problemId}
             register={register}
