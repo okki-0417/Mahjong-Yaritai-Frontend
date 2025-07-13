@@ -1,117 +1,134 @@
 "use client";
 
+import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Flex,
+  Center,
+  Circle,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Image,
   Input,
+  VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
-import { useContext, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import axios from "axios";
+import { useContext, useRef, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
-
-type UserFormType = {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-};
+import { schemas } from "@/src/zodios/api";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function UserForm() {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const previousImageUrlRef = useRef<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
   const router = useRouter();
   const errorToast = useErrorToast();
+  const successToast = useSuccessToast();
 
   const { setAuth } = useContext(AuthStateContext);
 
-  const [passVisible, setPassVisible] = useState(false);
-  const [passConfVisible, setPassConfVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (!files?.length) return null;
+
+    if (previousImageUrlRef.current) {
+      URL.revokeObjectURL(previousImageUrlRef.current);
+    }
+
+    const url = URL.createObjectURL(files[0]);
+    previousImageUrlRef.current = url;
+
+    setImageUrl(url);
+
+    return files[0];
+  };
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<UserFormType>();
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<z.infer<typeof schemas.createUser_Body>>({
+    resolver: zodResolver(schemas.createUser_Body),
+  });
 
-  const onSubmit: SubmitHandler<UserFormType> = async (formData: UserFormType) => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-
+  const onSubmit: SubmitHandler<z.infer<typeof schemas.createUser_Body>> = async formData => {
     try {
-      await apiClient.createUser({ user: formData });
+      await apiClient.createUser(formData);
 
       setAuth(true);
+      successToast({ title: "ユーザーを作成しました" });
       router.push("/dashboard");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        errorToast({
-          error,
-          title: "ユーザーの作成に失敗しました",
-        });
-      }
-    } finally {
-      setLoading(false);
+      errorToast({ error, title: "ユーザーの作成に失敗しました" });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-5">
-      <FormControl isRequired isInvalid={Boolean(errors.name)}>
-        <FormLabel htmlFor="name">ハンドルネーム</FormLabel>
-        <Input type="text" {...register("name", { required: "必須です" })} />
-        <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
-      </FormControl>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <VStack gap="4" w="sm" mx="auto">
+        <Circle size="200" overflow="hidden">
+          <Image
+            src={imageUrl || "/no-image.webp"}
+            w="full"
+            h="full"
+            objectFit="cover"
+            draggable="false"
+            bgColor="white"
+          />
+        </Circle>
 
-      <FormControl isInvalid={Boolean(errors.password)} isRequired mt={5}>
-        <FormLabel htmlFor="name">パスワード</FormLabel>
-        <Input
-          type={passVisible ? "text" : "password"}
-          {...register("password", { required: "必須です" })}
-        />
+        <FormControl>
+          <Controller
+            control={control}
+            name="avatar"
+            render={({ field: { onChange, ref } }) => (
+              <Input
+                type="file"
+                accept="image/png, image/jpeg, image/webp"
+                ref={element => {
+                  ref(element);
+                  imageInputRef.current = element;
+                }}
+                onChange={event => {
+                  const file = handleFileChange(event);
+                  onChange(file);
+                }}
+                display="none"
+              />
+            )}
+          />
 
-        <Flex mt={2} justifyContent="end">
-          <Button
-            type="button"
-            size="sm"
-            colorScheme="whiteAlpha"
-            onClick={() => setPassVisible(!passVisible)}>
-            パスワードを{passVisible && "非"}表示
+          <Center>
+            <Button onClick={() => imageInputRef.current?.click()}>
+              <AttachmentIcon />
+            </Button>
+          </Center>
+
+          <FormErrorMessage>{errors.avatar?.message}</FormErrorMessage>
+        </FormControl>
+
+        <FormControl isRequired isInvalid={Boolean(errors.name)}>
+          <FormLabel htmlFor="name">ハンドルネーム</FormLabel>
+          <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+          <Input {...register("name")} />
+        </FormControl>
+
+        <Box w="full" textAlign="right">
+          <Button type="submit" colorScheme="pink" isLoading={isSubmitting}>
+            登録
           </Button>
-        </Flex>
-      </FormControl>
-
-      <FormControl isInvalid={Boolean(errors.password_confirmation)} isRequired>
-        <FormLabel htmlFor="name">パスワード（確認）</FormLabel>
-        <Input
-          type={passConfVisible ? "text" : "password"}
-          {...register("password_confirmation", {
-            required: "必須です",
-          })}
-        />
-        <FormErrorMessage>{errors.password_confirmation?.message}</FormErrorMessage>
-        <Flex mt={2} justifyContent="end">
-          <Button
-            type="button"
-            size="sm"
-            colorScheme="whiteAlpha"
-            onClick={() => setPassConfVisible(!passConfVisible)}>
-            パスワードを{passConfVisible && "非"}表示
-          </Button>
-        </Flex>
-      </FormControl>
-
-      <Box mt={4}>
-        <input type="submit" value="ユーザー登録する" className="btn btn-main" />
-      </Box>
+        </Box>
+      </VStack>
     </form>
   );
 }

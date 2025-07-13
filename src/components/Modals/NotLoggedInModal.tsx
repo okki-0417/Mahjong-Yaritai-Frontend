@@ -31,11 +31,8 @@ export default function NotLoggedInModal({
           <Text>この機能はログインしている時のみ利用できます。</Text>
 
           <HStack mt="4">
-            <Link href="/auth/login">
-              <ButtonAccent>ログイン</ButtonAccent>
-            </Link>
-            <Link href="/authorization-session">
-              <ButtonAccent>新規登録</ButtonAccent>
+            <Link href="/auth/request">
+              <ButtonAccent>認証</ButtonAccent>
             </Link>
           </HStack>
         </ModalBody>
