@@ -82,17 +82,19 @@ export default function Home() {
             </p>
             <div className="mt-8 leading-loose">
               <ul className="mt-4 grid sm:grid-cols-2 grid-cols-1 gap-4 sm:text-[clamp(16px,2vw,20px)]">
-                <Link
-                  href="/learning"
-                  className="rounded hover:underline transition-all border-2 border-white">
+                <div className="rounded border-2 border-gray-500 opacity-60 cursor-not-allowed relative">
                   <li className="flex justify-between items-center gap-1 py-4 px-6 h-full">
                     <div className="flex items-center gap-5">
-                      <img src="/beginner-icon.webp" alt="" className="w-10" />
-                      <span className="lg:text-2xl text-lg font-bold">麻雀ハジメタイ</span>
+                      <img src="/beginner-icon.webp" alt="" className="w-10 grayscale" />
+                      <span className="lg:text-2xl text-lg font-bold text-gray-400">
+                        麻雀ハジメタイ
+                      </span>
                     </div>
-                    <FaAngleRight />
+                    <span className="text-sm text-gray-400 absolute top-2 right-2">
+                      Coming Soon
+                    </span>
                   </li>
-                </Link>
+                </div>
 
                 <Link
                   href="/what-to-discard-problems"
@@ -106,29 +108,33 @@ export default function Home() {
                   </li>
                 </Link>
 
-                <Link
-                  href="/what-to-discard-problems"
-                  className="rounded hover:underline transition-all border-2 border-white">
+                <div className="rounded border-2 border-gray-500 opacity-60 cursor-not-allowed relative">
                   <li className="flex justify-between items-center gap-1 py-4 px-6 h-full">
                     <div className="flex items-center gap-5">
-                      <RiArticleFill size={30} color="white" />
-                      <span className="lg:text-2xl text-lg font-bold">麻雀に関する記事</span>
+                      <RiArticleFill size={30} color="gray" />
+                      <span className="lg:text-2xl text-lg font-bold text-gray-400">
+                        麻雀に関する記事
+                      </span>
                     </div>
-                    <FaAngleRight />
+                    <span className="text-sm text-gray-400 absolute top-2 right-2">
+                      Coming Soon
+                    </span>
                   </li>
-                </Link>
+                </div>
 
-                <Link
-                  href="/what-to-discard-problems"
-                  className="rounded hover:underline transition-all border-2 border-white">
+                <div className="rounded border-2 border-gray-500 opacity-60 cursor-not-allowed relative">
                   <li className="flex justify-between items-center gap-1 py-4 px-6 h-full">
                     <div className="flex items-center gap-5">
-                      <BsGraphUpArrow size={30} color="white" />
-                      <span className="lg:text-2xl text-lg font-bold">戦績の記録</span>
+                      <BsGraphUpArrow size={30} color="gray" />
+                      <span className="lg:text-2xl text-lg font-bold text-gray-400">
+                        戦績の記録
+                      </span>
                     </div>
-                    <FaAngleRight />
+                    <span className="text-sm text-gray-400 absolute top-2 right-2">
+                      Coming Soon
+                    </span>
                   </li>
-                </Link>
+                </div>
               </ul>
             </div>
           </div>

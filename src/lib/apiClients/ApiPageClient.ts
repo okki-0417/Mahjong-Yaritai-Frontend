@@ -5,14 +5,11 @@ import { cookies } from "next/headers";
 
 const createApiPageClient = async () => {
   const cookieStore = await cookies();
-  console.log("************************************** CookieStore", cookieStore);
 
   const cookieHeader = cookieStore
     .getAll()
     .map(({ name, value }) => `${name}=${value}`)
     .join("; ");
-
-  console.log("************************************** Cookie Header:", cookieHeader);
 
   const instance = axios.create({
     baseURL: API_BASE_URL,
