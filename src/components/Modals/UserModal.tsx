@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Box,
   Button,
   Circle,
   Image,
@@ -14,10 +15,10 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
-import Link from "next/link";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import useMyUserId from "@/src/hooks/useMyUserId";
+import Link from "next/link";
 
 export default function UserModal({
   user,
@@ -28,10 +29,12 @@ export default function UserModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const myUserId = useMyUserId();
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent fontFamily="serif" className="text-primary">
         <ModalHeader>
           <Text fontSize="2xl" color="black">
             {user.name}
@@ -41,8 +44,8 @@ export default function UserModal({
         <ModalCloseButton color="black" />
 
         <ModalBody color="black">
-          <VStack>
-            <Circle size="200" overflow="hidden">
+          <VStack spacing="6">
+            <Circle size="200" overflow="hidden" border="1px solid">
               <Image
                 src={user.avatar_url || "/no-image.webp"}
                 w="full"
@@ -52,15 +55,23 @@ export default function UserModal({
                 bgColor="white"
               />
             </Circle>
+
+            {user.profile_text && (
+              <Box w="full">
+                <Text whiteSpace="pre-wrap" wordBreak="break-word">
+                  {user.profile_text}
+                </Text>
+              </Box>
+            )}
           </VStack>
         </ModalBody>
 
         <ModalFooter>
-          <Link href={`/users/${user.id}`}>
-            <Button colorScheme="blue">
-              <ExternalLinkIcon />
-            </Button>
-          </Link>
+          {user?.id == myUserId && (
+            <Link href={`/users/${user.id}`}>
+              <Button>プロフィール</Button>
+            </Link>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

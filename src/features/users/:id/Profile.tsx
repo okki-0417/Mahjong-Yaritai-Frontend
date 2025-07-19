@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Circle, Image, Text, VStack } from "@chakra-ui/react";
+import { Button, Circle, Image, Text, VStack, Box } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import ProfileEditForm from "@/src/features/users/:id/ProfileEditForm";
@@ -15,15 +15,15 @@ export default function Profile({ initialUser }: { initialUser: z.infer<typeof s
   const isMyProfile = useMyUserId() == user.id;
 
   return (
-    <VStack gap="4">
+    <VStack gap="4" align="stretch">
       {isMyProfile && (
-        <Button
-          colorScheme={isEditMode ? "pink" : "whiteAlpha"}
-          position="absolute"
-          right="0"
-          onClick={() => setIsEditMode(!isEditMode)}>
-          <EditIcon />
-        </Button>
+        <Box textAlign="right">
+          <Button
+            colorScheme={isEditMode ? "pink" : "whiteAlpha"}
+            onClick={() => setIsEditMode(!isEditMode)}>
+            <EditIcon />
+          </Button>
+        </Box>
       )}
 
       {isEditMode && (
@@ -31,7 +31,7 @@ export default function Profile({ initialUser }: { initialUser: z.infer<typeof s
       )}
 
       {!isEditMode && (
-        <VStack>
+        <VStack spacing={4}>
           <Circle size="200" overflow="hidden">
             <Image
               src={user?.avatar_url || "/no-image.webp"}
@@ -43,9 +43,23 @@ export default function Profile({ initialUser }: { initialUser: z.infer<typeof s
             />
           </Circle>
 
-          <Text fontSize="4xl" textAlign="center">
-            {user?.name}
-          </Text>
+          <Box textAlign="center" maxW="md" mx="auto">
+            <Text fontSize="4xl" wordBreak="break-word">
+              {user?.name}
+            </Text>
+          </Box>
+
+          <Box maxW="md" mx="auto">
+            {user?.profile_text ? (
+              <Text fontSize="lg" whiteSpace="pre-wrap" wordBreak="break-word">
+                {user.profile_text}
+              </Text>
+            ) : (
+              <Text fontSize="lg" color="gray.500" fontStyle="italic">
+                自己紹介文が設定されていません
+              </Text>
+            )}
+          </Box>
         </VStack>
       )}
     </VStack>

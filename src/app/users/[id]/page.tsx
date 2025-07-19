@@ -1,5 +1,5 @@
 import ProfileSection from "@/src/features/users/:id/ProfileSection";
-import { Container, VStack } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
 
 export type UserType = {
@@ -11,12 +11,10 @@ export default async function UserShow({ params }: { params: Promise<{ id: strin
   const { id } = await params;
 
   return (
-    <Container mt="20" maxW="xl">
-      <VStack gap="3" position="relative" alignItems="center">
-        <Suspense>
-          <ProfileSection id={id} />
-        </Suspense>
-      </VStack>
+    <Container mt="20" size="2xl">
+      <Suspense>
+        <ProfileSection id={id} />
+      </Suspense>
     </Container>
   );
 }

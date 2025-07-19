@@ -4,13 +4,13 @@ import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Center,
   Circle,
-  Flex,
   FormControl,
   FormErrorMessage,
+  FormLabel,
   Image,
   Input,
+  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { SetStateAction, useRef, useState } from "react";
@@ -63,6 +63,7 @@ export default function ProfileEditForm({
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof schemas.updateUser_Body>>({
     resolver: zodResolver(schemas.updateUser_Body),
+    defaultValues: { name: user.name, profile_text: user.profile_text },
   });
   z.setErrorMap(customDefaultErrorMap);
 
@@ -87,17 +88,23 @@ export default function ProfileEditForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack gap="4">
-        <Circle size="200" overflow="hidden">
-          <Image
-            src={imageUrl || user?.avatar_url || "/no-image.webp"}
-            w="full"
-            h="full"
-            objectFit="cover"
-            draggable="false"
-            bgColor="white"
-          />
-        </Circle>
+      <VStack align="stretch" gap="4">
+        <VStack>
+          <Circle size="200" overflow="hidden">
+            <Image
+              src={imageUrl || user?.avatar_url || "/no-image.webp"}
+              w="full"
+              h="full"
+              objectFit="cover"
+              draggable="false"
+              bgColor="white"
+            />
+          </Circle>
+          <Button onClick={() => imageInputRef.current?.click()}>
+            <AttachmentIcon />
+          </Button>
+        </VStack>
+
         <FormControl>
           <Controller
             control={control}
@@ -119,31 +126,37 @@ export default function ProfileEditForm({
             )}
           />
 
-          <Center>
-            <Button onClick={() => imageInputRef.current?.click()}>
-              <AttachmentIcon />
-            </Button>
-          </Center>
-
           <FormErrorMessage>{errors.avatar?.message}</FormErrorMessage>
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.name)}>
-          <Flex alignItems="start">
-            <Input
-              type="text"
-              placeholder={user.name}
-              fontSize="3xl"
-              w="full"
-              h="fit-content"
-              {...register("name")}
-            />
-          </Flex>
+          <FormLabel color="white">ハンドルネーム</FormLabel>
+          <Input
+            type="text"
+            placeholder={user.name}
+            fontSize="2xl"
+            w="full"
+            h="fit-content"
+            {...register("name")}
+          />
           <FormErrorMessage color="red.200">{errors.name?.message}</FormErrorMessage>
         </FormControl>
 
+        <FormControl isInvalid={Boolean(errors.profile_text)}>
+          <FormLabel color="white">自己紹介</FormLabel>
+          <Textarea
+            placeholder="自己紹介を入力してください（500文字まで）"
+            defaultValue={user?.profile_text || ""}
+            maxLength={500}
+            resize="vertical"
+            minH="120px"
+            {...register("profile_text")}
+          />
+          <FormErrorMessage color="red.200">{errors.profile_text?.message}</FormErrorMessage>
+        </FormControl>
+
         <Box w="full" textAlign="right">
-          <Button type="submit" colorScheme="whiteAlpha" isLoading={isSubmitting}>
+          <Button type="submit" colorScheme="pink" isLoading={isSubmitting}>
             送信
           </Button>
         </Box>

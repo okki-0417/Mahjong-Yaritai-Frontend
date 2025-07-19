@@ -11,6 +11,7 @@ const User = z
   .object({
     id: z.number().int(),
     name: z.string(),
+    profile_text: z.string().nullish(),
     avatar_url: z.string().nullable(),
     created_at: z.string(),
     updated_at: z.string(),
@@ -24,10 +25,18 @@ const Session = z
   .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
   .passthrough();
 const createUser_Body = z
-  .object({ name: z.string().max(20), avatar: z.instanceof(File) })
+  .object({
+    name: z.string().min(1).max(20),
+    profile_text: z.string().max(500).optional(),
+    avatar: z.instanceof(File),
+  })
   .passthrough();
 const updateUser_Body = z
-  .object({ name: z.string().min(1).max(20), avatar: z.instanceof(File).optional() })
+  .object({
+    name: z.string().min(1).max(20),
+    profile_text: z.string().max(500).optional(),
+    avatar: z.instanceof(File).optional(),
+  })
   .passthrough();
 const Comment = z
   .object({

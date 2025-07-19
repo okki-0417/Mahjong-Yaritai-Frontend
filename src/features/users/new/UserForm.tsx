@@ -4,13 +4,13 @@ import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
-  Center,
   Circle,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Image,
   Input,
+  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -75,17 +75,22 @@ export default function UserForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack gap="4" mx="auto">
-        <Circle size="200" overflow="hidden">
-          <Image
-            src={imageUrl || "/no-image.webp"}
-            w="full"
-            h="full"
-            objectFit="cover"
-            draggable="false"
-            bgColor="white"
-          />
-        </Circle>
+      <VStack align="stretch" gap="4">
+        <VStack>
+          <Circle size="200" overflow="hidden">
+            <Image
+              src={imageUrl || "/no-image.webp"}
+              w="full"
+              h="full"
+              objectFit="cover"
+              draggable="false"
+              bgColor="white"
+            />
+          </Circle>
+          <Button onClick={() => imageInputRef.current?.click()}>
+            <AttachmentIcon />
+          </Button>
+        </VStack>
 
         <FormControl>
           <Controller
@@ -108,19 +113,25 @@ export default function UserForm() {
             )}
           />
 
-          <Center>
-            <Button onClick={() => imageInputRef.current?.click()}>
-              <AttachmentIcon />
-            </Button>
-          </Center>
-
           <FormErrorMessage>{errors.avatar?.message}</FormErrorMessage>
         </FormControl>
 
         <FormControl isRequired isInvalid={Boolean(errors.name)}>
-          <FormLabel htmlFor="name">ハンドルネーム</FormLabel>
-          <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
-          <Input {...register("name")} />
+          <FormLabel color="white">ハンドルネーム</FormLabel>
+          <Input type="text" fontSize="2xl" w="full" h="fit-content" {...register("name")} />
+          <FormErrorMessage color="red.200">{errors.name?.message}</FormErrorMessage>
+        </FormControl>
+
+        <FormControl isInvalid={Boolean(errors.profile_text)}>
+          <FormLabel color="white">自己紹介</FormLabel>
+          <Textarea
+            placeholder="自己紹介を入力してください（500文字まで）"
+            maxLength={500}
+            resize="vertical"
+            minH="120px"
+            {...register("profile_text")}
+          />
+          <FormErrorMessage color="red.200">{errors.profile_text?.message}</FormErrorMessage>
         </FormControl>
 
         <Box w="full" textAlign="right">
