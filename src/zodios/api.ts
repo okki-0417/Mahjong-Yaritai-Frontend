@@ -27,7 +27,7 @@ const createUser_Body = z
   .object({ name: z.string().max(20), avatar: z.instanceof(File) })
   .passthrough();
 const updateUser_Body = z
-  .object({ name: z.string().max(20), avatar: z.instanceof(File).nullable() })
+  .object({ name: z.string().min(1).max(20), avatar: z.instanceof(File).optional() })
   .passthrough();
 const Comment = z
   .object({

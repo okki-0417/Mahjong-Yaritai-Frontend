@@ -20,6 +20,8 @@ import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { apiClient } from "@/src/lib/apiClients/ApiClient";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { customDefaultErrorMap } from "@/src/lib/zodErrorMap";
 
 export default function ProfileEditForm({
   setIsEditMode,
@@ -59,7 +61,10 @@ export default function ProfileEditForm({
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof schemas.updateUser_Body>>();
+  } = useForm<z.infer<typeof schemas.updateUser_Body>>({
+    resolver: zodResolver(schemas.updateUser_Body),
+  });
+  z.setErrorMap(customDefaultErrorMap);
 
   const onSubmit: SubmitHandler<z.infer<typeof schemas.updateUser_Body>> = async formInputs => {
     try {
@@ -127,14 +132,14 @@ export default function ProfileEditForm({
           <Flex alignItems="start">
             <Input
               type="text"
-              defaultValue={user?.name}
+              placeholder={user.name}
               fontSize="3xl"
               w="full"
               h="fit-content"
               {...register("name")}
             />
           </Flex>
-          <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
+          <FormErrorMessage color="red.200">{errors.name?.message}</FormErrorMessage>
         </FormControl>
 
         <Box w="full" textAlign="right">
