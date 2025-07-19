@@ -83,15 +83,8 @@ export default function Navigation() {
 
                 {!auth && (
                   <Flex gap={1}>
-                    <Button
-                      colorScheme=""
-                      cursor="not-allowed"
-                      disabled
-                      _hover={{ bgColor: "#364153" }}>
+                    <Button colorScheme="" _hover={{ bgColor: "#364153" }}>
                       <Text>ログイン / 新規登録</Text>
-                      <Text fontSize="xs" ml={2}>
-                        (一時停止中)
-                      </Text>
                     </Button>
                   </Flex>
                 )}
@@ -143,21 +136,12 @@ export default function Navigation() {
           <Container maxW="xs" mt="20" px="8">
             <VStack alignItems="start" spacing={3}>
               {!auth && (
-                <Box className="w-full">
-                  <HStack
-                    className="py-3 px-4 rounded transition-colors"
-                    opacity={0.5}
-                    cursor="not-allowed"
-                    bg="gray.700">
+                <Link href="/auth/request" onClick={() => setChecked(false)} className="w-full ">
+                  <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                     <FaUser size={18} />
-                    <VStack align="start" spacing={0}>
-                      <Text fontSize="lg">ログイン / 新規登録</Text>
-                      <Text fontSize="xs" color="gray.400">
-                        セキュリティ対策のため一時停止中
-                      </Text>
-                    </VStack>
+                    <Text fontSize="lg">ログイン / 新規登録</Text>
                   </HStack>
-                </Box>
+                </Link>
               )}
 
               {auth && (
