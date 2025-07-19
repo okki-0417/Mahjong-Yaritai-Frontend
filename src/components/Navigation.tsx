@@ -11,7 +11,6 @@ import {
   Checkbox,
   Circle,
   Container,
-  Flex,
   HStack,
   Image,
   Text,
@@ -82,11 +81,13 @@ export default function Navigation() {
                 </Link>
 
                 {!auth && (
-                  <Flex gap={1}>
-                    <Button colorScheme="" _hover={{ bgColor: "#364153" }}>
-                      <Text>ログイン / 新規登録</Text>
-                    </Button>
-                  </Flex>
+                  <Link href="/auth/request">
+                    <HStack gap="1">
+                      <ButtonNeutral>
+                        <Text>ログイン / 新規登録</Text>
+                      </ButtonNeutral>
+                    </HStack>
+                  </Link>
                 )}
               </HStack>
 
