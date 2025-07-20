@@ -5,6 +5,18 @@ import { RiArticleFill } from "react-icons/ri";
 import Link from "next/link";
 import useTileImagePathProvider from "@/src/lib/utils/useTileImagePathProvider";
 import TileImage from "@/src/components/TileImage";
+import { Metadata } from "next";
+
+export const dynamic = "force-static";
+
+export const metadata: Metadata = {
+  title: "ホーム",
+  description: "麻雀ヤリタイは、麻雀を愛する人が集まり、語らう場所です。",
+  openGraph: {
+    title: "麻雀ヤリタイ - ホーム",
+    description: "麻雀を愛する人が集まり、語らう場所。",
+  },
+};
 
 export default function Home() {
   const { tileImagePathByTileId } = useTileImagePathProvider();

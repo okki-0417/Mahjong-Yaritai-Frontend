@@ -27,7 +27,7 @@ export default function Footer() {
           </UnorderedList>
         </Container>
         <Center py={2} bg="gray.900">
-          &copy; 2025 All Rights Rereded
+          &copy; 2025 All Rights Reserved
         </Center>
       </Box>
     </Box>

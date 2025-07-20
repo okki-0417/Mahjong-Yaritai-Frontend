@@ -6,13 +6,12 @@ import { ReactNode } from "react";
 
 export default function DefaultLayout({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral"
-      style={{ overscrollBehavior: "none" }}>
+    <div className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
       <Navigation />
-      <Box bgColor="gray.700"></Box>
 
-      <main className="flex-grow mt-16">{children}</main>
+      <Box as="main" flexGrow="grow" mt="16">
+        {children}
+      </Box>
 
       <Footer />
       <BottomNavigation />
