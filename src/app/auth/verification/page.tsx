@@ -1,5 +1,5 @@
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
-import AuthVerificationForm from "@/src/components/AuthVerificationForm";
+import AuthVerificationForm from "@/src/features/auth/verification/AuthVerificationForm";
 
 export default function AuthVerification() {
   return (

@@ -3,12 +3,12 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from "@chakra-ui/react";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext } from "react";
-import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
+import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { useRouter } from "next/navigation";
 

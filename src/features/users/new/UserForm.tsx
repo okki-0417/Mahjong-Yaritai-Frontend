@@ -14,12 +14,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
+import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
 import { useContext, useRef, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler } from "react-hook-form";
+import { useCustomForm } from "@/src/hooks/useCustomForm";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,7 +58,7 @@ export default function UserForm() {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof schemas.createUser_Body>>({
+  } = useCustomForm<z.infer<typeof schemas.createUser_Body>>({
     resolver: zodResolver(schemas.createUser_Body),
   });
 

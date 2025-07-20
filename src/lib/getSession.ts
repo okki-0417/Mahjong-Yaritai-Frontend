@@ -1,4 +1,4 @@
-import createApiPageClient from "@/src/lib/apiClients/ApiPageClient";
+import createApiPageClient from "@/src/lib/api/server";
 import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
 

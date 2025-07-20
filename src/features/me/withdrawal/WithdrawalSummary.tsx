@@ -1,5 +1,5 @@
 import ClientWithdrawalSummary from "@/src/features/me/withdrawal/ClientWithdrawalSummary";
-import createApiPageClient from "@/src/lib/apiClients/ApiPageClient";
+import createApiPageClient from "@/src/lib/api/server";
 
 export default async function WithdrawalSummary() {
   const apiPageClient = await createApiPageClient();

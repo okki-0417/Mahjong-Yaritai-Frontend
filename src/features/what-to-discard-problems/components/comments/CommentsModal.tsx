@@ -16,8 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import CommentForm from "@/src/features/what-to-discard-problems/components/CommentForm";
-import ParentCommentCard from "@/src/features/what-to-discard-problems/components/ParentCommentCard";
+import CommentForm from "@/src/features/what-to-discard-problems/components/comments/CommentForm";
+import ParentCommentCard from "@/src/features/what-to-discard-problems/components/comments/ParentCommentCard";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";

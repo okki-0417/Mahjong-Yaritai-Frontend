@@ -1,10 +1,10 @@
 "use client";
 
 import UserModal from "@/src/components/Modals/UserModal";
-import ChildCommentCard from "@/src/features/what-to-discard-problems/components/ChildCommentCard";
-import { InsertCommentToThread } from "@/src/features/what-to-discard-problems/components/CommentsModal";
-import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/DeleteCommentButton";
-import FetchRepliesButton from "@/src/features/what-to-discard-problems/components/FetchRepliesButton";
+import ChildCommentCard from "@/src/features/what-to-discard-problems/components/comments/ChildCommentCard";
+import { InsertCommentToThread } from "@/src/features/what-to-discard-problems/components/comments/CommentsModal";
+import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/comments/DeleteCommentButton";
+import FetchRepliesButton from "@/src/features/what-to-discard-problems/components/comments/FetchRepliesButton";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useMyUserId from "@/src/hooks/useMyUserId";
 import { schemas } from "@/src/zodios/api";

@@ -1,6 +1,7 @@
 "use client";
 
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
+import { useCustomForm } from "@/src/hooks/useCustomForm";
 import { Dispatch, SetStateAction, useState } from "react";
 import {
   Box,
@@ -20,12 +21,11 @@ import {
 import useErrorToast from "@/src/hooks/useErrorToast";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { customDefaultErrorMap } from "@/src/lib/zodErrorMap";
 import {
   customCreateWhatToDiscardProblem_BodySchema,
   TOTAL_POINTS,
@@ -83,11 +83,10 @@ export default function ProblemForm({
     watch,
     getValues,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>({
+  } = useCustomForm<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>({
     resolver: zodResolver(customCreateWhatToDiscardProblem_BodySchema),
     mode: "onChange",
   });
-  z.setErrorMap(customDefaultErrorMap);
 
   const pointSum =
     Number(watch("what_to_discard_problem.point_east")) +

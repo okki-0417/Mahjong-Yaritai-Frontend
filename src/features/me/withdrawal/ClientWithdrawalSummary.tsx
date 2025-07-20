@@ -3,8 +3,8 @@
 import { Box, Button, Card, CardBody, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
+import { apiClient } from "@/src/lib/api/client";
 import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
 import useErrorToast from "@/src/hooks/useErrorToast";

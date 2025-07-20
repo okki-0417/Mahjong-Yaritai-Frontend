@@ -14,14 +14,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { SetStateAction, useRef, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler } from "react-hook-form";
+import { useCustomForm } from "@/src/hooks/useCustomForm";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { customDefaultErrorMap } from "@/src/lib/zodErrorMap";
 
 export default function ProfileEditForm({
   setIsEditMode,
@@ -61,11 +61,10 @@ export default function ProfileEditForm({
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof schemas.updateUser_Body>>({
+  } = useCustomForm<z.infer<typeof schemas.updateUser_Body>>({
     resolver: zodResolver(schemas.updateUser_Body),
     defaultValues: { name: user.name, profile_text: user.profile_text },
   });
-  z.setErrorMap(customDefaultErrorMap);
 
   const onSubmit: SubmitHandler<z.infer<typeof schemas.updateUser_Body>> = async formInputs => {
     try {

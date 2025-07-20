@@ -1,7 +1,7 @@
 "use client";
 
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import { schemas } from "@/src/zodios/api";
 import { Button, Text } from "@chakra-ui/react";
 import { Dispatch, SetStateAction, useState } from "react";

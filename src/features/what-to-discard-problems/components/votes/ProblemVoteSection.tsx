@@ -5,7 +5,7 @@ import { schemas } from "@/src/zodios/api";
 import PopButton from "@/src/components/PopButton";
 import { HStack, Text } from "@chakra-ui/react";
 import { MdHowToVote } from "react-icons/md";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import useErrorToast from "@/src/hooks/useErrorToast";
 
 export type MyVoteType = z.infer<typeof schemas.Tile> | null;

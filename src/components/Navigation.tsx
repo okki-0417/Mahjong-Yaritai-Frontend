@@ -18,8 +18,8 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
+import { apiClient } from "@/src/lib/api/client";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useMyUserId from "@/src/hooks/useMyUserId";
 import useErrorToast from "@/src/hooks/useErrorToast";

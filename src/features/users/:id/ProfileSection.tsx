@@ -1,6 +1,6 @@
 import { Box, VStack, Alert, AlertIcon, AlertTitle, AlertDescription } from "@chakra-ui/react";
 import Profile from "@/src/features/users/:id/Profile";
-import createApiPageClient from "@/src/lib/apiClients/ApiPageClient";
+import createApiPageClient from "@/src/lib/api/server";
 
 export default async function ProfileSection({ id }: { id: string }) {
   const apiPageClient = await createApiPageClient();

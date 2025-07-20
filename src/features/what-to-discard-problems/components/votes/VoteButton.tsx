@@ -6,12 +6,12 @@ import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { getUniqueObjectArrayByKey } from "@/src/lib/getUniqueObjectByKey";
+import { getUniqueObjectArrayByKey } from "@/src/lib/utils/getUniqueObjectByKey";
 
 export default function VoteButton({
   problem,

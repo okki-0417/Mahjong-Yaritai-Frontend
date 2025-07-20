@@ -2,14 +2,14 @@
 
 import TileImage from "@/src/components/TileImage";
 import ProblemCardHeader from "@/src/features/what-to-discard-problems/components/ProblemCardHeader";
-import ProblemLikeSection from "@/src/features/what-to-discard-problems/components/ProblemLikeSection";
+import ProblemLikeSection from "@/src/features/what-to-discard-problems/components/likes/ProblemLikeSection";
 import { schemas } from "@/src/zodios/api";
 import { Box, Flex, HStack, Text, useDisclosure, VStack, Wrap } from "@chakra-ui/react";
 import { z } from "zod";
-import ProblemVoteSection from "@/src/features/what-to-discard-problems/components/ProblemVoteSection";
-import ProblemCommentSection from "@/src/features/what-to-discard-problems/components/ProblemCommentSection";
+import ProblemVoteSection from "@/src/features/what-to-discard-problems/components/votes/ProblemVoteSection";
+import ProblemCommentSection from "@/src/features/what-to-discard-problems/components/comments/ProblemCommentSection";
 import { useState } from "react";
-import VoteButton from "@/src/features/what-to-discard-problems/components/VoteButton";
+import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 
 export default function ProblemCard({

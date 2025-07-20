@@ -1,5 +1,5 @@
 import ClientProblemSection from "@/src/features/what-to-discard-problems/components/ClientProblemSection";
-import createApiPageClient from "@/src/lib/apiClients/ApiPageClient";
+import createApiPageClient from "@/src/lib/api/server";
 import { Box, Text, VStack } from "@chakra-ui/react";
 
 export default async function ProblemsSection() {

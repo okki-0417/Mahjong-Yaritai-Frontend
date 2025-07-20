@@ -25,7 +25,7 @@ import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 
 export default function CommentForm({

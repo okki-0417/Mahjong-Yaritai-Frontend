@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from "@chakra-ui/react";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";

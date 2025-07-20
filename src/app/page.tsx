@@ -3,7 +3,7 @@ import { FaAngleRight } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
 import { RiArticleFill } from "react-icons/ri";
 import Link from "next/link";
-import useTileImagePathProvider from "@/src/hooks/useTileImagePathProvider";
+import useTileImagePathProvider from "@/src/lib/utils/useTileImagePathProvider";
 import TileImage from "@/src/components/TileImage";
 
 export default function Home() {

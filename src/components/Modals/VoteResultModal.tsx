@@ -1,4 +1,4 @@
-import VoteButton from "@/src/features/what-to-discard-problems/components/VoteButton";
+import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
 import { schemas } from "@/src/zodios/api";
 import {
   Box,

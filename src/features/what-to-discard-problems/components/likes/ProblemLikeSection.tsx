@@ -7,7 +7,7 @@ import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import { useDisclosure } from "@chakra-ui/react";
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 import LikeButton from "@/src/components/LikeButton";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { AuthStateContext } from "@/src/app/context-providers/contexts/AuthContext";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
 
 export default function AuthStateContextInner({
   session,

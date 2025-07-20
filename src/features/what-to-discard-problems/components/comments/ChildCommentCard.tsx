@@ -1,5 +1,5 @@
 import UserModal from "@/src/components/Modals/UserModal";
-import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/DeleteCommentButton";
+import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/comments/DeleteCommentButton";
 import useMyUserId from "@/src/hooks/useMyUserId";
 import { schemas } from "@/src/zodios/api";
 import { Box, Button, Circle, Flex, HStack, Img, Text, useDisclosure } from "@chakra-ui/react";

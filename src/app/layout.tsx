@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import AuthStateContextProvider from "@/src/app/context-providers/providers/AuthStateContextProvider";
+import AuthStateContextProvider from "@/src/context-providers/providers/AuthStateContextProvider";
 import DefaultLayout from "@/src/components/layout/DefaultLayout";
 import "@/src/styles/globals.css";
 
