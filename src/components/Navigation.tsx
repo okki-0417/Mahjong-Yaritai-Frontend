@@ -130,10 +130,10 @@ export default function Navigation() {
           position="fixed"
           top="0"
           right="0"
-          w="xs"
+          w={["72", "xs"]}
           shadow="dark-lg"
           zIndex="50"
-          className={`h-screen bg-primary transition-all ${!checked && "translate-x-full"}`}>
+          className={`h-screen bg-primary-light transition-all ${!checked && "translate-x-full"}`}>
           <Container maxW="xs" mt="20" px="8">
             <VStack alignItems="start" spacing={3}>
               {!auth && (

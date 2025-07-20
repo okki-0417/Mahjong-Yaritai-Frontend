@@ -38,7 +38,12 @@ export default function VoteResultModal({
   >;
 }) {
   return (
-    <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose} isCentered size="2xl">
+    <Modal
+      blockScrollOnMount={true}
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      size={["xs", "2xl"]}>
       <ModalOverlay />
 
       <ModalContent overflow="hidden">

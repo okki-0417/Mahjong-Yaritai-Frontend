@@ -34,8 +34,8 @@ export default function ProblemCard({
         borderTopRadius="md"
         className="bg-mj-mat"
         shadow="md"
-        pt="3"
-        px="4"
+        pt={["2", "3"]}
+        px={["2", "4"]}
         pb="6">
         <VStack alignItems="stretch">
           <ProblemCardHeader problem={problem} />
@@ -71,23 +71,25 @@ export default function ProblemCard({
           <Flex
             flexDir={["column", "row-reverse"]}
             justifyContent="center"
-            alignItems={["start", "flex-end"]}
+            alignItems={["stretch", "flex-end"]}
             gap="3"
             px={[0, 4]}>
             <Flex flexDir={["row", "column"]} alignItems="center" h="full" gap={[2, 0]}>
               <Text>ツモ</Text>
-              <VoteButton
-                problem={problem}
-                tileId={problem.tsumo_id}
-                myVoteTileId={myVoteTileId}
-                setMyVoteTileId={setMyVoteTileId}
-                setVotesCount={setVotesCount}
-                setVoteResult={setVoteResult}
-                handleDisplayVoteResult={onOpen}
-              />
+              <Box w={["7", "auto"]}>
+                <VoteButton
+                  problem={problem}
+                  tileId={problem.tsumo_id}
+                  myVoteTileId={myVoteTileId}
+                  setMyVoteTileId={setMyVoteTileId}
+                  setVotesCount={setVotesCount}
+                  setVoteResult={setVoteResult}
+                  handleDisplayVoteResult={onOpen}
+                />
+              </Box>
             </Flex>
 
-            <HStack gap="0" alignItems="flex-end">
+            <HStack gap="0" justify="center" alignItems="flex-end">
               {[
                 problem.hand1_id,
                 problem.hand2_id,
@@ -121,7 +123,7 @@ export default function ProblemCard({
         </VStack>
       </Box>
 
-      <HStack px="4" py="2" bgColor="white" color="gray.700" className="rounded-b-md">
+      <HStack px={["3", "4"]} py="2" bgColor="white" color="gray.700" className="rounded-b-md">
         <ProblemLikeSection problem={problem} />
 
         <ProblemCommentSection problem={problem} />

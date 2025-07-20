@@ -20,7 +20,12 @@ export default function NotLoggedInModal({
   onClose: () => void;
 }) {
   return (
-    <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal
+      blockScrollOnMount={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      size={["xs", "2xl"]}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader fontFamily="serif">未ログイン</ModalHeader>

@@ -32,7 +32,7 @@ export default function UserModal({
   const myUserId = useMyUserId();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size={["xs", "2xl"]}>
       <ModalOverlay />
       <ModalContent fontFamily="serif" className="text-primary">
         <ModalHeader>

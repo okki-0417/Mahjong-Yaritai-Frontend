@@ -152,7 +152,10 @@ export default function VoteButton({
 
   return (
     <>
-      <PopButton onClick={handleClick} disabled={isSubmitting} className="h-full relative">
+      <PopButton
+        onClick={handleClick}
+        disabled={isSubmitting}
+        className="h-full aspect-7/9 relative overflow-hidden">
         <TileImage tile={tileId} />
         <Box
           position="absolute"

@@ -49,7 +49,7 @@ export default function ClientProblemSection({
 
   return (
     <Box>
-      <PopButton className="btn-circle btn-main" onClick={handleFormOpen}>
+      <PopButton className="btn-circle btn-main mb-8" onClick={handleFormOpen}>
         ＋
       </PopButton>
 

@@ -14,7 +14,7 @@ export default function TileImage({
       src={`/tiles/${tileId || tile}.webp`}
       alt=""
       draggable="false"
-      className={`h-full object-contain transition-all rounded ${className} ${hover && "hover:scale-110"}`}
+      className={`h-full aspect-7/9 object-contain transition-all rounded ${className} ${hover && "hover:scale-110"}`}
       loading="lazy"
     />
   );

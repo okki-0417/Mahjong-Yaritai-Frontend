@@ -19,7 +19,7 @@ export default function ProblemCardHeader({
     <HStack justifyContent="space-between">
       <Button onClick={onOpen} colorScheme="" p="0">
         <HStack>
-          <Circle overflow="hidden" size="10">
+          <Circle overflow="hidden" size={["8", "10"]}>
             <Image
               borderRadius="full"
               objectFit="cover"
