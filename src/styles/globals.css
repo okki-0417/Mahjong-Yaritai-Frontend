@@ -1,11 +1,5 @@
 @import "tailwindcss";
 
-/* オーバースクロール（バウンス効果）を無効化 */
-html,
-body {
-  overscroll-behavior: none;
-}
-
 @theme {
   --color-primary: #171923;
   --color-primary-light: #272933;
@@ -16,6 +10,10 @@ body {
   --color-neutral: #fefefe;
   --color-mj-mat: #008236;
   --color-mj-mat-light: #00a256;
+}
+
+html {
+  background-color: var(--color-primary);
 }
 
 @keyframes fadeIn {

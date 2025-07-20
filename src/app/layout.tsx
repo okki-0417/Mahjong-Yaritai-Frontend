@@ -45,9 +45,14 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  viewport: "width=device-width, initial-scale=1",
-  themeColor: "#1a202c",
 };
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+};
+
+export const themeColor = "#171923";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

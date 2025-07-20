@@ -4,7 +4,7 @@ import { IoHomeOutline } from "react-icons/io5";
 
 export default function BottomNavigation() {
   return (
-    <nav className="md:hidden block w-full h-16 bg-gray-900 fixed z-50 bottom-0">
+    <nav className="md:hidden block w-full h-16 bg-primary fixed z-50 bottom-0">
       <ul className="flex justify-around items-center h-full">
         <Link href="/">
           <li className="flex items-center flex-col">
