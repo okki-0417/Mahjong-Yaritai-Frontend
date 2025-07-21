@@ -32,7 +32,12 @@ export default function UserModal({
   const myUserId = useMyUserId();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size={["xs", "2xl"]}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      scrollBehavior="inside"
+      size={["xs", "2xl"]}>
       <ModalOverlay />
       <ModalContent fontFamily="serif" className="text-primary">
         <ModalHeader>
