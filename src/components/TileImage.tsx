@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function TileImage({
   tile,
   tileId,
@@ -10,7 +12,9 @@ export default function TileImage({
   className?: string;
 }) {
   return (
-    <img
+    <Image
+      width={49}
+      height={63}
       src={`/tiles/${tileId || tile}.webp`}
       alt=""
       draggable="false"

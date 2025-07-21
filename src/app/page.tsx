@@ -6,6 +6,7 @@ import Link from "next/link";
 import useTileImagePathProvider from "@/src/lib/utils/useTileImagePathProvider";
 import TileImage from "@/src/components/TileImage";
 import { Metadata } from "next";
+import Image from "next/image";
 
 export const dynamic = "force-static";
 
@@ -35,31 +36,25 @@ export default function Home() {
           </h2>
         </div>
         <div className="absolute top-0 left-0 w-full h-full bg-blue-900 opacity-[0.5] z-10"></div>
-        <img
+        <Image
+          width={1800}
+          height={1200}
           src="/main-visual.webp"
           alt="新しく麻雀を始めたい人が集まる場所"
           className="w-full h-full object-cover contrast-125"
         />
       </div>
 
-      <div className="mt-12 h-20 marquee-container">
+      <div className="mt-12 h-24 marquee-container">
         <div className="flex gap-3 marquee-inner">
-          {Object.keys(tileImagePathByTileId).map((id, index) => {
-            return (
-              <div className="drop-shadow-lg" key={index}>
-                <TileImage tile={Number(id)} hover={false} />
-              </div>
-            );
-          })}
+          {Object.keys(tileImagePathByTileId).map((id, index) => (
+            <TileImage tile={Number(id)} hover={false} key={index} />
+          ))}
         </div>
         <div className="flex gap-3 marquee-inner">
-          {Object.keys(tileImagePathByTileId).map((id, index) => {
-            return (
-              <div className="drop-shadow-lg" key={index}>
-                <TileImage tile={Number(id)} hover={false} />
-              </div>
-            );
-          })}
+          {Object.keys(tileImagePathByTileId).map((id, index) => (
+            <TileImage tile={Number(id)} hover={false} key={index} />
+          ))}
         </div>
       </div>
 
