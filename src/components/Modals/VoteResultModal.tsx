@@ -38,12 +38,7 @@ export default function VoteResultModal({
   >;
 }) {
   return (
-    <Modal
-      blockScrollOnMount={true}
-      isOpen={isOpen}
-      onClose={onClose}
-      isCentered
-      size={["xs", "2xl"]}>
+    <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose} isCentered size="2xl">
       <ModalOverlay />
 
       <ModalContent overflow="hidden">
@@ -54,7 +49,7 @@ export default function VoteResultModal({
         <ModalCloseButton className="text-primary" />
 
         <ModalBody py="8" className=" bg-mj-mat" fontFamily="serif">
-          <HStack className="bg-mj-mat" justifyContent="center">
+          <HStack className="bg-mj-mat" justifyContent="center" gap={["1", "2"]}>
             {voteResult?.map((result, index) => {
               return (
                 <Grid key={index} gridTemplateRows="repeat(5,minmax(0,1fr))" gap="1">
@@ -76,7 +71,7 @@ export default function VoteResultModal({
                     />
                   </VStack>
 
-                  <Box gridRow="span 1/span 1" h="14">
+                  <Box gridRow="span 1/span 1" w={["5", "auto"]}>
                     <VoteButton
                       problem={problem}
                       tileId={result.tile_id}
