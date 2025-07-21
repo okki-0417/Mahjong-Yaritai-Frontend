@@ -46,7 +46,7 @@ export default function ProblemCard({
             <Text>{problem.turn}巡目</Text>
             <HStack gap="1">
               <Text>ドラ</Text>
-              <Box h="8">
+              <Box h="10">
                 <TileImage tile={problem.dora_id} hover={false} />
               </Box>
             </HStack>
@@ -74,9 +74,9 @@ export default function ProblemCard({
             alignItems={["stretch", "flex-end"]}
             gap="3"
             px={[0, 4]}>
-            <Flex flexDir={["row", "column"]} alignItems="center" h="full" gap={[2, 0]}>
+            <Flex flexDir={["row", "column"]} alignItems="center" gap={[2, 0]}>
               <Text>ツモ</Text>
-              <Box w={["7", "auto"]}>
+              <VStack w={["6", "auto"]} justify="end">
                 <VoteButton
                   problem={problem}
                   tileId={problem.tsumo_id}
@@ -86,7 +86,7 @@ export default function ProblemCard({
                   setVoteResult={setVoteResult}
                   handleDisplayVoteResult={onOpen}
                 />
-              </Box>
+              </VStack>
             </Flex>
 
             <HStack gap="0" justify="center" alignItems="flex-end">

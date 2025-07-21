@@ -52,8 +52,6 @@ export const viewport = {
   initialScale: 1.0,
 };
 
-export const themeColor = "#171923";
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja" suppressHydrationWarning>
