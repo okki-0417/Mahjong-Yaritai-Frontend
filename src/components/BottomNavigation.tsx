@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GiThink } from "react-icons/gi";
 import { IoHomeOutline } from "react-icons/io5";
+import Image from "next/image";
 
 export default function BottomNavigation() {
   return (
@@ -18,6 +19,12 @@ export default function BottomNavigation() {
             <span className="text-[10px]">記録</span>
           </li>
         </Link> */}
+        <Link href="/learning">
+          <li className="flex items-center flex-col w-10 aspect-square">
+            <Image src="/beginner-icon.webp" alt="ハジメタイ" width={25} height={25} />
+            <span className="text-[10px]">ハジメル</span>
+          </li>
+        </Link>
         <Link href="/what-to-discard-problems">
           <li className="flex items-center flex-col w-10 aspect-square">
             <GiThink color="white" size={25} title="何切る問題" />

@@ -9,7 +9,7 @@ export default function DefaultLayout({ children }: { children: ReactNode }) {
     <div className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
       <Navigation />
 
-      <Box as="main" className="grow" mt={["10", "16"]} mb={["32", "0"]}>
+      <Box as="main" flex="1" mt={["10", "16"]} mb={["32", "0"]}>
         {children}
       </Box>
 

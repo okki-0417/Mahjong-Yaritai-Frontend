@@ -12,7 +12,6 @@ import {
   Circle,
   Container,
   HStack,
-  Image,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -25,6 +24,7 @@ import useMyUserId from "@/src/hooks/useMyUserId";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import ButtonNeutral from "@/src/components/Buttons/ButtonNeutral";
+import Image from "next/image";
 
 export default function Navigation() {
   const [checked, setChecked] = useState(false);
@@ -60,7 +60,7 @@ export default function Navigation() {
               <Link href="/">
                 <HStack>
                   <Circle overflow="hidden">
-                    <Image src="/logo.webp" alt="麻雀好きが集まる場所" boxSize="10" />
+                    <Image src="/logo.webp" alt="麻雀好きが集まる場所" width={40} height={40} />
                   </Circle>
                   <Text fontWeight="bold" fontSize={["2xl", "3xl"]}>
                     麻雀ヤリタイ
@@ -69,11 +69,18 @@ export default function Navigation() {
               </Link>
 
               <HStack display={["none", "none", "flex"]}>
+                <Link href="/learning">
+                  <HStack gap="1">
+                    <ButtonNeutral>
+                      <Text>ハジメタイ</Text>
+                    </ButtonNeutral>
+                  </HStack>
+                </Link>
+
                 <Link href="/what-to-discard-problems">
                   <HStack gap="1">
                     <ButtonNeutral>
                       <HStack mx="0">
-                        <GiThink size={25} color="white" />
                         <Text>何切る問題</Text>
                       </HStack>
                     </ButtonNeutral>
@@ -164,6 +171,13 @@ export default function Navigation() {
                 <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                   <GiThink size={20} />
                   <Text fontSize="lg">何切る問題</Text>
+                </HStack>
+              </Link>
+
+              <Link href="/learning" onClick={() => setChecked(false)} className="w-full">
+                <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
+                  <Image src="/beginner-icon.webp" alt="ハジメタイ" width={20} height={20} />
+                  <Text fontSize="lg">ハジメタイ</Text>
                 </HStack>
               </Link>
 

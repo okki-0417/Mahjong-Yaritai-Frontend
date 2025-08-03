@@ -18,6 +18,25 @@ const User = z
   })
   .passthrough();
 const Errors = z.array(z.object({ message: z.string() }).passthrough());
+const LearningCategory = z
+  .object({
+    id: z.number().int(),
+    name: z.string(),
+    description: z.string(),
+    created_at: z.string(),
+    updated_at: z.string(),
+  })
+  .passthrough();
+const LearningQuestion = z
+  .object({
+    id: z.number().int(),
+    statement: z.string(),
+    answer: z.string(),
+    category: LearningCategory,
+    created_at: z.string(),
+    updated_at: z.string(),
+  })
+  .passthrough();
 const WithdrawalSummary = z
   .object({ what_to_discard_problems_count: z.number().int() })
   .passthrough();
@@ -174,6 +193,8 @@ export const schemas = {
   createAuthVerification_Body,
   User,
   Errors,
+  LearningCategory,
+  LearningQuestion,
   WithdrawalSummary,
   Session,
   createUser_Body,
@@ -242,6 +263,60 @@ const endpoints = makeApi([
         schema: z.object({ errors: Errors }).passthrough(),
       },
     ],
+  },
+  {
+    method: "get",
+    path: "/learnings/categories",
+    alias: "getLearningCategories",
+    requestFormat: "json",
+    response: z.object({ learning_categories: z.array(LearningCategory) }).passthrough(),
+  },
+  {
+    method: "get",
+    path: "/learnings/categories/:category_id/questions",
+    alias: "getLearningQuestions",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "category_id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ learning_questions: z.array(LearningQuestion) }).passthrough(),
+  },
+  {
+    method: "get",
+    path: "/learnings/categories/:category_id/questions/:id",
+    alias: "getLearningQuestion",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "category_id",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ learning_question: LearningQuestion }).passthrough(),
+  },
+  {
+    method: "get",
+    path: "/learnings/categories/:id",
+    alias: "getLearningCategory",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ learning_category: LearningCategory }).passthrough(),
   },
   {
     method: "post",
