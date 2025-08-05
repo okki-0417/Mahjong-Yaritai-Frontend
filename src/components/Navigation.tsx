@@ -181,6 +181,12 @@ export default function Navigation() {
                 </HStack>
               </Link>
 
+              <Link href="/privacy" onClick={() => setChecked(false)} className="w-full">
+                <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
+                  <Text fontSize="md">プライバシーポリシー</Text>
+                </HStack>
+              </Link>
+
               {auth && (
                 <>
                   <Box w="full" mt={4} pt={4} borderTop="1px" borderColor="gray.300">

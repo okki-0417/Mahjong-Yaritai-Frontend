@@ -14,15 +14,28 @@ export default function Footer() {
                 <ButtonNeutral>ホーム</ButtonNeutral>
               </ListItem>
             </Link>
+
             <Center h={8}>
               <Divider orientation="vertical" borderColor="white" />
             </Center>
+
             <Link href="/what-to-discard-problems">
               <ListItem>
                 <ButtonNeutral>何切る問題</ButtonNeutral>
               </ListItem>
             </Link>
-            <Center h={10}>
+
+            <Center h={8}>
+              <Divider orientation="vertical" borderColor="white" />
+            </Center>
+
+            <Link href="/privacy">
+              <ListItem>
+                <ButtonNeutral>プライバシーポリシー</ButtonNeutral>
+              </ListItem>
+            </Link>
+
+            <Center h={8}>
               <Divider orientation="vertical" borderColor="white" />
             </Center>
 
@@ -30,6 +43,7 @@ export default function Footer() {
           </HStack>
         </UnorderedList>
       </Container>
+
       <Center py={2} bg="gray.900">
         &copy; 2025 All Rights Reserved
       </Center>
