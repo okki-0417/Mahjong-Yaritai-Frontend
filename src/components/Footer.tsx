@@ -1,6 +1,6 @@
 import ButtonNeutral from "@/src/components/Buttons/ButtonNeutral";
 import LogoutButton from "@/src/components/LogoutButton";
-import { Box, Center, Container, Divider, HStack, ListItem, UnorderedList } from "@chakra-ui/react";
+import { Box, Center, Container, Divider, ListItem, UnorderedList, Wrap } from "@chakra-ui/react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -8,7 +8,7 @@ export default function Footer() {
     <Box as="footer" mt="100" display={["none", "block"]} className="bg-primary text-neutral">
       <Container as="nav" maxW="5xl" pt={20} pb={16}>
         <UnorderedList styleType="none">
-          <HStack spacing="12">
+          <Wrap spacing="12">
             <Link href="/">
               <ListItem>
                 <ButtonNeutral>ホーム</ButtonNeutral>
@@ -49,8 +49,18 @@ export default function Footer() {
               <Divider orientation="vertical" borderColor="white" />
             </Center>
 
+            <Link href="/terms">
+              <ListItem>
+                <ButtonNeutral>利用規約</ButtonNeutral>
+              </ListItem>
+            </Link>
+
+            <Center h={8}>
+              <Divider orientation="vertical" borderColor="white" />
+            </Center>
+
             <LogoutButton />
-          </HStack>
+          </Wrap>
         </UnorderedList>
       </Container>
 
