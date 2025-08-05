@@ -81,17 +81,23 @@ export default function AuthRequestForm() {
         </FormControl>
 
         <FormControl>
-          <Checkbox isChecked={agreeToTerms} onChange={e => setAgreeToTerms(e.target.checked)}>
-            <Text fontSize="sm">
-              <Link href="/terms" color="blue.400" textDecoration="underline" isExternal>
-                利用規約
-              </Link>
-              と
-              <Link href="/privacy" color="blue.400" textDecoration="underline" isExternal>
-                プライバシーポリシー
-              </Link>
-              に同意します
-            </Text>
+          <Text fontSize="sm">
+            本サービスは
+            <Link href="/terms" color="blue.200" textDecoration="underline" isExternal>
+              利用規約
+            </Link>
+            と
+            <Link href="/privacy" color="blue.200" textDecoration="underline" isExternal>
+              プライバシーポリシー
+            </Link>
+            を遵守してメールアドレス等を保管・利用いたします。
+          </Text>
+
+          <Checkbox
+            mt="2"
+            isChecked={agreeToTerms}
+            onChange={e => setAgreeToTerms(e.target.checked)}>
+            <Text fontSize="sm">利用規約とプライバシーポリシーに同意する</Text>
           </Checkbox>
         </FormControl>
 
