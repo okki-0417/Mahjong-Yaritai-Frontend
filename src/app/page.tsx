@@ -18,6 +18,7 @@ export const metadata: Metadata = {
     title: "麻雀ヤリタイ - ホーム",
     description: "麻雀を愛する人が集まり、語らう場所。",
   },
+  keywords: ["麻雀", "麻雀やりたい", "麻雀好き", "麻雀初心者"],
 };
 
 export default function Home() {
