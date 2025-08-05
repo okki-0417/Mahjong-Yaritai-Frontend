@@ -2,8 +2,19 @@
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  VStack,
+  Checkbox,
+  Text,
+  Link,
+} from "@chakra-ui/react";
 import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
@@ -16,6 +27,7 @@ export default function AuthRequestForm() {
   const router = useRouter();
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const {
     register,
@@ -28,6 +40,14 @@ export default function AuthRequestForm() {
   const onSubmit: SubmitHandler<AuthRequestFormType> = async (
     formData: z.infer<typeof schemas.createAuthRequest_Body>,
   ) => {
+    if (!agreeToTerms) {
+      errorToast({
+        title: "利用規約への同意が必要です",
+        description: "利用規約とプライバシーポリシーに同意してください。",
+      });
+      return;
+    }
+
     try {
       await apiClient.createAuthRequest(formData);
 
@@ -60,7 +80,26 @@ export default function AuthRequestForm() {
           />
         </FormControl>
 
-        <Button type="submit" isLoading={isSubmitting} colorScheme="pink">
+        <FormControl>
+          <Checkbox isChecked={agreeToTerms} onChange={e => setAgreeToTerms(e.target.checked)}>
+            <Text fontSize="sm">
+              <Link href="/terms" color="blue.400" textDecoration="underline" isExternal>
+                利用規約
+              </Link>
+              と
+              <Link href="/privacy" color="blue.400" textDecoration="underline" isExternal>
+                プライバシーポリシー
+              </Link>
+              に同意します
+            </Text>
+          </Checkbox>
+        </FormControl>
+
+        <Button
+          type="submit"
+          isLoading={isSubmitting}
+          colorScheme="pink"
+          isDisabled={!agreeToTerms}>
           確認メールを送信する
         </Button>
       </VStack>
