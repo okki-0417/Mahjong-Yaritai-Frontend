@@ -1,7 +1,8 @@
-import { Box, Container, Divider, Text } from "@chakra-ui/react";
+import { Container, Divider, Text, VStack } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 import getSession from "@/src/lib/getSession";
 import AuthRequestForm from "@/src/features/auth/request/AuthRequestForm";
+import SocialLoginSection from "@/src/features/auth/components/SocialLoginSection";
 
 export default async function AuthRequest() {
   const session = await getSession();
@@ -14,9 +15,11 @@ export default async function AuthRequest() {
       </Text>
       <Divider />
 
-      <Box mt="8">
+      <VStack mt="8" gap="12">
+        <SocialLoginSection />
+
         <AuthRequestForm />
-      </Box>
+      </VStack>
     </Container>
   );
 }

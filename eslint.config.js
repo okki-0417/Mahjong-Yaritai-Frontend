@@ -13,6 +13,7 @@ const config = defineConfig([
       parser,
       globals: {
         ...globals.browser,
+        ...globals.node,
         React: "readonly",
       },
     },

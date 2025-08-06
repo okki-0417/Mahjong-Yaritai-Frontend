@@ -13,13 +13,14 @@ import {
   VStack,
   Checkbox,
   Text,
-  Link,
+  Box,
 } from "@chakra-ui/react";
 import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
+import Link from "next/link";
 
 type AuthRequestFormType = z.infer<typeof schemas.createAuthRequest_Body>;
 
@@ -65,50 +66,51 @@ export default function AuthRequestForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack align="start" spacing={4}>
-        <FormControl isInvalid={Boolean(errors.auth_request?.email)} isRequired>
-          <FormLabel htmlFor="auth_request.email">Email</FormLabel>
+    <Box>
+      <Text fontSize="lg" fontWeight="bold" w="full">
+        メールアドレスで認証リクエストを送信する
+      </Text>
 
-          <FormErrorMessage>{errors.auth_request?.email?.message}</FormErrorMessage>
-
-          <Input
-            type="email"
-            placeholder="test@mahjong-yaritai.com"
-            autoComplete="email"
-            {...register("auth_request.email")}
-          />
-        </FormControl>
-
-        <FormControl>
-          <Text fontSize="sm">
-            本サービスは
-            <Link href="/terms" color="blue.200" textDecoration="underline" isExternal>
-              利用規約
-            </Link>
-            と
-            <Link href="/privacy" color="blue.200" textDecoration="underline" isExternal>
-              プライバシーポリシー
-            </Link>
-            を遵守してメールアドレス等を保管・利用いたします。
-          </Text>
-
-          <Checkbox
-            mt="2"
-            isChecked={agreeToTerms}
-            onChange={e => setAgreeToTerms(e.target.checked)}>
-            <Text fontSize="sm">利用規約とプライバシーポリシーに同意する</Text>
-          </Checkbox>
-        </FormControl>
-
-        <Button
-          type="submit"
-          isLoading={isSubmitting}
-          colorScheme="pink"
-          isDisabled={!agreeToTerms}>
-          確認メールを送信する
-        </Button>
-      </VStack>
-    </form>
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-2">
+        <VStack align="start" spacing={4}>
+          <FormControl isInvalid={Boolean(errors.auth_request?.email)} isRequired>
+            <FormLabel htmlFor="auth_request.email">Email</FormLabel>
+            <FormErrorMessage>{errors.auth_request?.email?.message}</FormErrorMessage>
+            <Input
+              type="email"
+              placeholder="test@mahjong-yaritai.com"
+              autoComplete="email"
+              {...register("auth_request.email")}
+            />
+          </FormControl>
+          <FormControl>
+            <Text fontSize="sm">
+              本サービスは
+              <Link href="/terms" className="text-blue-200 underline" target="_blank">
+                利用規約
+              </Link>
+              と
+              <Link href="/privacy" className="text-blue-200 underline" target="_blank">
+                プライバシーポリシー
+              </Link>
+              を遵守してメールアドレス等を保管・利用いたします。
+            </Text>
+            <Checkbox
+              mt="2"
+              isChecked={agreeToTerms}
+              onChange={e => setAgreeToTerms(e.target.checked)}>
+              <Text fontSize="sm">利用規約とプライバシーポリシーに同意する</Text>
+            </Checkbox>
+          </FormControl>
+          <Button
+            type="submit"
+            isLoading={isSubmitting}
+            colorScheme="pink"
+            isDisabled={!agreeToTerms}>
+            確認メールを送信する
+          </Button>
+        </VStack>
+      </form>
+    </Box>
   );
 }
