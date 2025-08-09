@@ -14,6 +14,7 @@ const createApiPageClient = async () => {
   const instance = axios.create({
     baseURL: API_BASE_URL,
     timeout: 10000,
+    withCredentials: true,
     headers: {
       Cookie: cookieHeader,
       Accept: "application/json",
