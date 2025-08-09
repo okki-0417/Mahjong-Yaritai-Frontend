@@ -1,6 +1,9 @@
 import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
+const Session = z
+  .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
+  .passthrough();
 const createAuthRequest_Body = z
   .object({ auth_request: z.object({ email: z.string().max(64) }).passthrough() })
   .passthrough();
@@ -39,9 +42,6 @@ const LearningQuestion = z
   .passthrough();
 const WithdrawalSummary = z
   .object({ what_to_discard_problems_count: z.number().int() })
-  .passthrough();
-const Session = z
-  .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
   .passthrough();
 const createUser_Body = z
   .object({
@@ -189,6 +189,7 @@ const createWhatToDiscardProblem_Body = z
   .passthrough();
 
 export const schemas = {
+  Session,
   createAuthRequest_Body,
   createAuthVerification_Body,
   User,
@@ -196,7 +197,6 @@ export const schemas = {
   LearningCategory,
   LearningQuestion,
   WithdrawalSummary,
-  Session,
   createUser_Body,
   updateUser_Body,
   Comment,
@@ -212,6 +212,39 @@ export const schemas = {
 };
 
 const endpoints = makeApi([
+  {
+    method: "post",
+    path: "/auth/google/callback",
+    alias: "createGoogleCallback",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: z.object({ code: z.string() }).passthrough(),
+      },
+    ],
+    response: z.object({ session: Session }).passthrough(),
+    errors: [
+      {
+        status: 400,
+        description: `bad request`,
+        schema: z.void(),
+      },
+      {
+        status: 422,
+        description: `unprocessable entity - token exchange failed`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/auth/google/login",
+    alias: "getGoogleLogin",
+    requestFormat: "json",
+    response: z.object({ redirect_url: z.string() }).passthrough(),
+  },
   {
     method: "post",
     path: "/auth/request",

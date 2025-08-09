@@ -1,27 +1,30 @@
+"use client";
+
+import useErrorToast from "@/src/hooks/useErrorToast";
+import { apiClient } from "@/src/lib/api/client";
 import { Button, Circle, Container, HStack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function SocialLoginSection() {
-  /* eslint-disable no-process-env */
-  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
-  const redirectUri = `${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/auth/google-callback`;
-  /* eslint-enable no-process-env */
+  const errorToast = useErrorToast();
+  const router = useRouter();
 
-  let googleAuthUrl = "";
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await apiClient.getGoogleLogin();
 
-  if (clientId) {
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      response_type: "code",
-      scope: "email",
-      access_type: "offline",
-      prompt: "select_account",
-    });
+      if (!response.redirect_url) throw new Error("Googleの認証ページに遷移できません");
 
-    googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-  }
+      router.push(response.redirect_url);
+    } catch (error) {
+      errorToast({
+        error,
+        title: "Googleでのログインに失敗しました",
+      });
+    }
+  };
 
   return (
     <VStack w="full" align="center" spacing="2">
@@ -42,21 +45,22 @@ export default function SocialLoginSection() {
       </Text>
 
       <Container maxW="xs" mt="2">
-        {googleAuthUrl && (
-          <Link href={googleAuthUrl} target="_blank">
-            <Button rounded="full" bgColor="white" fontWeight="normal" py="1">
-              <HStack>
-                <Circle size="8">
-                  <Image src="/social-login/google.png" alt="" width="160" height="160" />
-                </Circle>
+        <Button
+          onClick={handleGoogleLogin}
+          rounded="full"
+          bgColor="white"
+          fontWeight="normal"
+          py="1">
+          <HStack>
+            <Circle size="8">
+              <Image src="/social-login/google.png" alt="" width="160" height="160" />
+            </Circle>
 
-                <Text w="full" textAlign="center" className="text-primary">
-                  Googleでログイン/登録
-                </Text>
-              </HStack>
-            </Button>
-          </Link>
-        )}
+            <Text w="full" textAlign="center" className="text-primary">
+              Googleでログイン/登録
+            </Text>
+          </HStack>
+        </Button>
       </Container>
     </VStack>
   );
