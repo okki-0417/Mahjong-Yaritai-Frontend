@@ -2,7 +2,7 @@
 
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { apiClient } from "@/src/lib/api/client";
-import { Button, Circle, HStack, Text, VStack } from "@chakra-ui/react";
+import { Button, Circle, HStack, ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,7 +27,7 @@ export default function SocialLoginSection() {
   };
 
   return (
-    <VStack w="full" align="center" spacing="2">
+    <VStack w="full" align="stretch" spacing="2">
       <Text fontSize="lg" fontWeight="bold" w="full">
         持っているアカウントでログイン/登録
       </Text>
@@ -43,24 +43,29 @@ export default function SocialLoginSection() {
         に同意の上、ログイン/登録を行ってください。
       </Text>
 
-      <VStack maxW="xs" mt="2">
-        <Button
-          onClick={handleGoogleLogin}
-          rounded="full"
-          bgColor="white"
-          fontWeight="normal"
-          py="1">
-          <HStack>
-            <Circle size="8">
-              <Image src="/social-login/google.png" alt="" width="160" height="160" />
-            </Circle>
-
-            <Text w="full" textAlign="center" className="text-primary">
-              Googleでログイン/登録
-            </Text>
-          </HStack>
-        </Button>
-      </VStack>
+      <UnorderedList>
+        <VStack gap="2">
+          <ListItem listStyleType="none">
+            <VStack maxW="xs" mt="2" align="center">
+              <Button
+                onClick={handleGoogleLogin}
+                rounded="full"
+                bgColor="white"
+                fontWeight="normal"
+                py="1">
+                <HStack>
+                  <Circle size="8">
+                    <Image src="/social-login/google.png" alt="" width="160" height="160" />
+                  </Circle>
+                  <Text w="full" textAlign="center" className="text-primary">
+                    Googleでログイン/登録
+                  </Text>
+                </HStack>
+              </Button>
+            </VStack>
+          </ListItem>
+        </VStack>
+      </UnorderedList>
     </VStack>
   );
 }
