@@ -15,7 +15,7 @@ export default async function AuthRequest() {
       </Text>
       <Divider />
 
-      <VStack mt="8" gap="12">
+      <VStack mt="8" gap="12" w="full" align="stretch">
         <SocialLoginSection />
 
         <AuthRequestForm />
