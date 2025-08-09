@@ -43,6 +43,8 @@ export default async function GoogleCallbackPage({
     );
   }
 
+  let redirectUrl = "";
+
   try {
     const apiPageClient = await createApiPageClient();
     const response = await apiPageClient.createGoogleCallback({
@@ -50,9 +52,9 @@ export default async function GoogleCallbackPage({
     });
 
     if (response.session?.is_logged_in) {
-      redirect("/dashboard");
+      redirectUrl = "/dashboard";
     } else {
-      redirect("/users/new");
+      redirectUrl = "/users/new";
     }
   } catch (error) {
     return (
@@ -80,4 +82,6 @@ export default async function GoogleCallbackPage({
       </Container>
     );
   }
+
+  if (redirectUrl.length) redirect(redirectUrl);
 }
