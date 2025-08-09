@@ -2,10 +2,10 @@
 
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { apiClient } from "@/src/lib/api/client";
-import { Button, Circle, Container, HStack, Text, VStack } from "@chakra-ui/react";
+import { Button, Circle, HStack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function SocialLoginSection() {
   const errorToast = useErrorToast();
@@ -29,11 +29,10 @@ export default function SocialLoginSection() {
   return (
     <VStack w="full" align="center" spacing="2">
       <Text fontSize="lg" fontWeight="bold" w="full">
-        持っているアカウントでログイン/登録する
+        持っているアカウントでログイン/登録
       </Text>
 
       <Text fontSize="sm">
-        本サービスは
         <Link href="/terms" className="text-blue-200 underline" target="_blank">
           利用規約
         </Link>
@@ -41,10 +40,10 @@ export default function SocialLoginSection() {
         <Link href="/privacy" className="text-blue-200 underline" target="_blank">
           プライバシーポリシー
         </Link>
-        を遵守してメールアドレス等を保管・利用いたします。
+        に同意の上、ログイン/登録を行ってください。
       </Text>
 
-      <Container maxW="xs" mt="2">
+      <VStack maxW="xs" mt="2">
         <Button
           onClick={handleGoogleLogin}
           rounded="full"
@@ -61,7 +60,7 @@ export default function SocialLoginSection() {
             </Text>
           </HStack>
         </Button>
-      </Container>
+      </VStack>
     </VStack>
   );
 }

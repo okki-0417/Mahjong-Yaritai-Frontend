@@ -2,7 +2,6 @@
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import {
   Button,
@@ -11,7 +10,6 @@ import {
   FormLabel,
   Input,
   VStack,
-  Checkbox,
   Text,
   Box,
 } from "@chakra-ui/react";
@@ -28,7 +26,6 @@ export default function AuthRequestForm() {
   const router = useRouter();
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const {
     register,
@@ -41,14 +38,6 @@ export default function AuthRequestForm() {
   const onSubmit: SubmitHandler<AuthRequestFormType> = async (
     formData: z.infer<typeof schemas.createAuthRequest_Body>,
   ) => {
-    if (!agreeToTerms) {
-      errorToast({
-        title: "利用規約への同意が必要です",
-        description: "利用規約とプライバシーポリシーに同意してください。",
-      });
-      return;
-    }
-
     try {
       await apiClient.createAuthRequest(formData);
 
@@ -68,7 +57,7 @@ export default function AuthRequestForm() {
   return (
     <Box>
       <Text fontSize="lg" fontWeight="bold" w="full">
-        メールアドレスで認証リクエストを送信する
+        メールアドレスでログイン/登録
       </Text>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-2">
@@ -85,7 +74,6 @@ export default function AuthRequestForm() {
           </FormControl>
           <FormControl>
             <Text fontSize="sm">
-              本サービスは
               <Link href="/terms" className="text-blue-200 underline" target="_blank">
                 利用規約
               </Link>
@@ -93,20 +81,10 @@ export default function AuthRequestForm() {
               <Link href="/privacy" className="text-blue-200 underline" target="_blank">
                 プライバシーポリシー
               </Link>
-              を遵守してメールアドレス等を保管・利用いたします。
+              に同意の上、ログイン/登録を行ってください。
             </Text>
-            <Checkbox
-              mt="2"
-              isChecked={agreeToTerms}
-              onChange={e => setAgreeToTerms(e.target.checked)}>
-              <Text fontSize="sm">利用規約とプライバシーポリシーに同意する</Text>
-            </Checkbox>
           </FormControl>
-          <Button
-            type="submit"
-            isLoading={isSubmitting}
-            colorScheme="pink"
-            isDisabled={!agreeToTerms}>
+          <Button type="submit" isLoading={isSubmitting} colorScheme="pink">
             確認メールを送信する
           </Button>
         </VStack>
