@@ -1,4 +1,3 @@
-import createApiPageClient from "@/src/lib/api/server";
 import { redirect } from "next/navigation";
 import {
   Container,
@@ -11,6 +10,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import createApiPageClientWithCookieSet from "@/src/lib/api/server-with-cookie-set";
 
 export default async function GoogleCallbackPage({
   searchParams,
@@ -46,7 +46,7 @@ export default async function GoogleCallbackPage({
   let redirectUrl = "";
 
   try {
-    const apiPageClient = await createApiPageClient();
+    const apiPageClient = await createApiPageClientWithCookieSet();
     const response = await apiPageClient.createGoogleCallback({
       code: resolvedSearchParams.code,
     });
