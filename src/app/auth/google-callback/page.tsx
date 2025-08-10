@@ -46,7 +46,7 @@ export default async function GoogleCallbackPage({
 
   try {
     /* eslint-disable no-process-env */
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_URL;
     /* eslint-enable no-process-env */
     const response = await fetch(`${baseUrl}/api/auth/google-callback`, {
       method: "POST",
