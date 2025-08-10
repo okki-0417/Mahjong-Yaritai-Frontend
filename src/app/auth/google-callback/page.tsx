@@ -10,7 +10,6 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { callApiWithCookies } from "@/src/lib/api/server-with-cookie-set";
 
 export default async function GoogleCallbackPage({
   searchParams,
@@ -46,18 +45,22 @@ export default async function GoogleCallbackPage({
   let redirectUrl = "";
 
   try {
-    const response = await callApiWithCookies("/auth/google/callback", {
+    const response = await fetch("/api/auth/google-callback", {
       method: "POST",
-      data: {
-        code: resolvedSearchParams.code,
-      },
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
       },
+      body: JSON.stringify({
+        code: resolvedSearchParams.code,
+      }),
     });
 
-    const data = response.data;
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "認証に失敗しました");
+    }
+
+    const data = await response.json();
 
     if (data.session?.is_logged_in) {
       redirectUrl = "/dashboard";
