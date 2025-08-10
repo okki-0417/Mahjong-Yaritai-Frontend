@@ -7,17 +7,24 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { code } = body;
 
+  console.log("[DEBUG] Google callback - received code:", code ? "present" : "missing");
+
   if (!code) {
     return NextResponse.json({ error: "認証コードが見つかりません" }, { status: 400 });
   }
 
   const cookieStore = await cookies();
-  const cookieHeader = cookieStore
-    .getAll()
-    .map(({ name, value }) => `${name}=${value}`)
-    .join("; ");
+  const existingCookies = cookieStore.getAll();
+  console.log(
+    "[DEBUG] Existing cookies:",
+    existingCookies.map(c => c.name),
+  );
+
+  const cookieHeader = existingCookies.map(({ name, value }) => `${name}=${value}`).join("; ");
 
   try {
+    console.log("[DEBUG] Calling backend API:", `${API_BASE_URL}/auth/google/callback`);
+
     const response = await axios({
       method: "POST",
       url: `${API_BASE_URL}/auth/google/callback`,
@@ -30,34 +37,54 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    console.log("[DEBUG] Backend response status:", response.status);
+    console.log("[DEBUG] Response headers:", response.headers);
+
     const setCookieHeaders = response.headers["set-cookie"];
+    console.log("[DEBUG] Set-Cookie headers from backend:", setCookieHeaders);
+
     if (setCookieHeaders) {
       const cookieArray = Array.isArray(setCookieHeaders) ? setCookieHeaders : [setCookieHeaders];
 
       cookieArray.forEach(cookieString => {
+        console.log("[DEBUG] Processing cookie string:", cookieString);
         const [nameValue, ...attributes] = cookieString.split(";");
         const [name, value] = nameValue.split("=");
 
         if (name && value) {
           const cookieOptions = parseCookieAttributes(attributes);
+          console.log("[DEBUG] Setting cookie:", name.trim(), "with options:", cookieOptions);
           cookieStore.set(name.trim(), value.trim(), cookieOptions);
         }
       });
     }
 
+    console.log("[DEBUG] Returning response data:", response.data);
     return NextResponse.json(response.data);
   } catch (error) {
+    console.log("[DEBUG] Error occurred:", error);
+
     if (axios.isAxiosError(error)) {
+      console.log("[DEBUG] Axios error response:", error.response?.data);
+      console.log("[DEBUG] Axios error headers:", error.response?.headers);
+
       const setCookieHeaders = error.response?.headers["set-cookie"];
       if (setCookieHeaders) {
         const cookieArray = Array.isArray(setCookieHeaders) ? setCookieHeaders : [setCookieHeaders];
 
         cookieArray.forEach(cookieString => {
+          console.log("[DEBUG] Processing error cookie string:", cookieString);
           const [nameValue, ...attributes] = cookieString.split(";");
           const [name, value] = nameValue.split("=");
 
           if (name && value) {
             const cookieOptions = parseCookieAttributes(attributes);
+            console.log(
+              "[DEBUG] Setting error cookie:",
+              name.trim(),
+              "with options:",
+              cookieOptions,
+            );
             cookieStore.set(name.trim(), value.trim(), cookieOptions);
           }
         });
