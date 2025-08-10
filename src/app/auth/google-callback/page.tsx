@@ -33,10 +33,10 @@ export default async function GoogleCallbackPage({
           </AlertTitle>
         </Alert>
 
-        <Text mt="4">もう一度ログイン画面からお試しください。</Text>
+        <Text mt="4">もう一度ログイン/登録画面からお試しください。</Text>
 
-        <Button as={Link} href="/auth/request" colorScheme="red" mt="4">
-          ログイン画面へ戻る
+        <Button as={Link} href="/auth/request" colorScheme="blue" mt="4">
+          ログイン/登録画面へ戻る
         </Button>
       </Container>
     );
@@ -45,7 +45,10 @@ export default async function GoogleCallbackPage({
   let redirectUrl = "";
 
   try {
-    const response = await fetch("/api/auth/google-callback", {
+    /* eslint-disable no-process-env */
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    /* eslint-enable no-process-env */
+    const response = await fetch(`${baseUrl}/api/auth/google-callback`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,8 +90,8 @@ export default async function GoogleCallbackPage({
 
         <Text mt="4">しばらく時間をおいてから再度お試しください。</Text>
 
-        <Button as={Link} href="/auth/login" colorScheme="blue" mt="4">
-          ログイン画面へ戻る
+        <Button as={Link} href="/auth/request" colorScheme="blue" mt="4">
+          ログイン/登録画面へ戻る
         </Button>
       </Container>
     );
