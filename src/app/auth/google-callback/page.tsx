@@ -10,7 +10,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import createApiPageClientWithCookieSet from "@/src/lib/api/server-with-cookie-set";
+import { callApiWithCookies } from "@/src/lib/api/server-with-cookie-set";
 
 export default async function GoogleCallbackPage({
   searchParams,
@@ -46,12 +46,20 @@ export default async function GoogleCallbackPage({
   let redirectUrl = "";
 
   try {
-    const apiPageClient = await createApiPageClientWithCookieSet();
-    const response = await apiPageClient.createGoogleCallback({
-      code: resolvedSearchParams.code,
+    const response = await callApiWithCookies("/auth/google/callback", {
+      method: "POST",
+      data: {
+        code: resolvedSearchParams.code,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
     });
 
-    if (response.session?.is_logged_in) {
+    const data = response.data;
+
+    if (data.session?.is_logged_in) {
       redirectUrl = "/dashboard";
     } else {
       redirectUrl = "/users/new";
