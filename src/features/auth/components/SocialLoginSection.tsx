@@ -1,30 +1,16 @@
 "use client";
 
-import useErrorToast from "@/src/hooks/useErrorToast";
-import { apiClient } from "@/src/lib/api/client";
-import { Button, Circle, HStack, ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
-import Image from "next/image";
+import SocialLoginButton from "@/src/features/auth/components/SocialLoginButton";
+import { ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function SocialLoginSection() {
-  const errorToast = useErrorToast();
   const router = useRouter();
 
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await apiClient.getGoogleLogin();
-
-      if (!response.redirect_url) throw new Error("Googleの認証ページに遷移できません");
-
-      router.push(response.redirect_url);
-    } catch (error) {
-      errorToast({
-        error,
-        title: "Googleでのログインに失敗しました",
-      });
-    }
-  };
+  /* eslint-disable no-process-env */
+  const handleGoogleLogin = () => router.push(process.env.NEXT_PUBLIC_GOOGLE_LOGIN_URL);
+  /* eslint-enable no-process-env */
 
   return (
     <VStack w="full" align="stretch" spacing="2">
@@ -46,23 +32,11 @@ export default function SocialLoginSection() {
       <UnorderedList>
         <VStack gap="2">
           <ListItem listStyleType="none">
-            <VStack maxW="xs" mt="2" align="center">
-              <Button
-                onClick={handleGoogleLogin}
-                rounded="full"
-                bgColor="white"
-                fontWeight="normal"
-                py="1">
-                <HStack>
-                  <Circle size="8">
-                    <Image src="/social-login/google.png" alt="" width="160" height="160" />
-                  </Circle>
-                  <Text w="full" textAlign="center" className="text-primary">
-                    Googleでログイン/登録
-                  </Text>
-                </HStack>
-              </Button>
-            </VStack>
+            <SocialLoginButton
+              handler={handleGoogleLogin}
+              label="Googleでログイン/登録"
+              iconURL="/social-login/google.png"
+            />
           </ListItem>
         </VStack>
       </UnorderedList>
