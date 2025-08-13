@@ -57,7 +57,8 @@ chmod +x .githooks/*
 - `src/features/` - Feature-specific components, contexts, and types
 - `src/components/` - Shared UI components
 - `src/zodios/` - Auto-generated API client
-- `src/lib/apiClients/` - API client wrappers for SSR/CSR
+- `src/lib/api/` - API client wrappers for SSR/CSR
+- `src/context-providers/` - Global context providers
 
 ### State Management Pattern
 
@@ -70,8 +71,8 @@ The app uses a hierarchical Context provider pattern:
 ### API Integration
 
 - **Generated Client**: `src/zodios/api.ts` - Auto-generated from `../api/swagger/v1/swagger.yaml`
-- **Server-Side API**: `ApiPageClient.ts` - For SSR with cookie handling
-- **Client-Side API**: `ApiClient.ts` - For CSR with credentials
+- **Server-Side API**: `src/lib/api/server.ts` - For SSR with cookie handling
+- **Client-Side API**: `src/lib/api/client.ts` - For CSR with credentials
 - **Type Safety**: Full TypeScript coverage with Zod schema validation
 
 ### Component Architecture
@@ -82,8 +83,8 @@ The app uses a hierarchical Context provider pattern:
 
 ### Main Features
 
-1. **what-to-discard-problems** - Core feature with voting, commenting, and problem-solving (currently undergoing refactoring to schema-based validation)
-2. **Auth System** - Login/logout with session management
+1. **what-to-discard-problems** - Core feature with voting, commenting, and problem-solving (currently using schema-based validation)
+2. **Auth System** - Login/logout with session management via Google OAuth
 3. **User Profiles** - User management and profile editing
 4. **Learning Module** - Educational content
 
@@ -93,10 +94,11 @@ The app uses a hierarchical Context provider pattern:
 
 ```typescript
 // Server-side (in server components)
-import { apiPageClient } from "@/src/lib/apiClients/ApiPageClient";
+import createApiPageClient from "@/src/lib/api/server";
+const apiPageClient = await createApiPageClient();
 
 // Client-side (in client components)
-import { apiClient } from "@/src/lib/apiClients/ApiClient";
+import { apiClient } from "@/src/lib/api/client";
 ```
 
 ### Context Provider Pattern
@@ -125,7 +127,7 @@ Each feature follows this pattern:
 ### TypeScript Configuration
 
 - Strict mode disabled but comprehensive type checking
-- Path aliases: `@/*` maps to `src/*`
+- Path aliases: `@/*` maps to repository root
 - Modern ESNext target with lib configuration
 
 ### Styling System
@@ -157,6 +159,6 @@ Currently, no test framework is configured. Consider implementing tests with Jes
 
 ### Current Architecture Notes
 
-- The `what-to-discard-problems` feature is transitioning from context-based to schema-based validation
+- The `what-to-discard-problems` feature uses custom Zod schema validation for complex form validation
 - Multiple context providers are being consolidated into a cleaner architecture
-- New client-side components are being introduced for better separation of concerns
+- Auth flow uses Google OAuth with server-side callback handling
