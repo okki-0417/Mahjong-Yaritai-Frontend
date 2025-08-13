@@ -3,7 +3,7 @@
 import SocialLoginButton from "@/src/features/auth/components/SocialLoginButton";
 import { ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function SocialLoginSection() {
   const router = useRouter();
