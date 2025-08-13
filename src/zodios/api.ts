@@ -233,7 +233,7 @@ const endpoints = makeApi([
       },
       {
         status: 422,
-        description: `unprocessable entity - token exchange failed`,
+        description: `unprocessable entity - auth request validation fails`,
         schema: z.void(),
       },
     ],
