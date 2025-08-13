@@ -1,4 +1,7 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { useContext, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Container,
   Text,
@@ -8,69 +11,64 @@ import {
   AlertTitle,
   AlertDescription,
   Divider,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { apiClient } from "@/src/lib/api/client";
+import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
 
-export default async function GoogleCallbackPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ code?: string; state?: string; error?: string }>;
-}) {
-  const resolvedSearchParams = await searchParams;
+export default function GoogleCallbackPage() {
+  const router = useRouter();
+  const { setMyUserId, setAuth } = useContext(AuthStateContext);
+  const searchParams = useSearchParams();
+  const [isProcessing, setIsProcessing] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!resolvedSearchParams.code) {
+  useEffect(() => {
+    const code = searchParams.get("code");
+
+    if (!code) {
+      setError("認証コードが見つかりません");
+      setIsProcessing(false);
+      return;
+    }
+
+    const handleCallback = async () => {
+      try {
+        const response = await apiClient.createGoogleCallback({ code });
+        if (response.session?.is_logged_in) {
+          setMyUserId(response.session.user_id);
+          setAuth(true);
+
+          router.push("/dashboard");
+        } else {
+          router.push("/users/new");
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "認証に失敗しました");
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+
+    handleCallback();
+  }, [searchParams, router, setAuth, setMyUserId]);
+
+  if (isProcessing) {
     return (
       <Container mt="20" maxW="2xl">
-        <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
-          認証エラー
-        </Text>
-        <Divider />
-
-        <Alert status="error" mt="8" borderRadius="md">
-          <AlertIcon />
-          <AlertTitle>
-            <Text color="red.500">認証コードが見つかりません</Text>
-          </AlertTitle>
-        </Alert>
-
-        <Text mt="4">もう一度ログイン/登録画面からお試しください。</Text>
-
-        <Button as={Link} href="/auth/request" colorScheme="blue" mt="4">
-          ログイン/登録画面へ戻る
-        </Button>
+        <Center flexDirection="column">
+          <Spinner size="xl" color="blue.500" thickness="4px" />
+          <Text mt="4" fontSize="lg">
+            認証処理中...
+          </Text>
+        </Center>
       </Container>
     );
   }
 
-  let redirectUrl = "";
-
-  try {
-    /* eslint-disable no-process-env */
-    const baseUrl = process.env.NEXT_PUBLIC_URL;
-    /* eslint-enable no-process-env */
-    const response = await fetch(`${baseUrl}/api/auth/google-callback`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code: resolvedSearchParams.code,
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "認証に失敗しました");
-    }
-
-    const data = await response.json();
-
-    if (data.session?.is_logged_in) {
-      redirectUrl = "/dashboard";
-    } else {
-      redirectUrl = "/users/new";
-    }
-  } catch (error) {
+  if (error) {
     return (
       <Container mt="20" maxW="2xl">
         <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
@@ -83,19 +81,17 @@ export default async function GoogleCallbackPage({
           <AlertTitle>
             <Text color="red.500">エラーが発生しました</Text>
           </AlertTitle>
-          <AlertDescription>
-            {error instanceof Error ? error.message : "不明なエラーが発生しました"}
-          </AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
 
         <Text mt="4">しばらく時間をおいてから再度お試しください。</Text>
 
-        <Button as={Link} href="/auth/request" colorScheme="blue" mt="4">
+        <Button as={Link} href="/auth/request" colorScheme="red" mt="4">
           ログイン/登録画面へ戻る
         </Button>
       </Container>
     );
   }
 
-  if (redirectUrl.length) redirect(redirectUrl);
+  return null;
 }
