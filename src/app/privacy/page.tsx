@@ -2,8 +2,6 @@ import { Box, Container, Divider, Text, List, ListItem, VStack } from "@chakra-u
 import { Metadata } from "next";
 import privacyData from "./privacy-data.json";
 
-export const dynamic = "force-static";
-
 export const metadata: Metadata = {
   title: "プライバシーポリシー",
   description:

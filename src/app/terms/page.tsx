@@ -3,8 +3,6 @@ import { Metadata } from "next";
 import termsData from "@/src/app/terms/terms-data.json";
 import Section from "@/src/features/terms/components/Section";
 
-export const dynamic = "force-static";
-
 export const metadata: Metadata = {
   title: "利用規約",
   description:
