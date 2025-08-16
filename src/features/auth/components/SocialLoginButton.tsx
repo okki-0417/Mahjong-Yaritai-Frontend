@@ -1,27 +1,25 @@
-import { Button, Circle, HStack, Text, VStack } from "@chakra-ui/react";
+import { Button, Circle, HStack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 
 export default function SocialLoginButton({
   handler,
   label,
-  iconURL,
+  iconSrc,
 }: {
   handler: () => any;
   label: string;
-  iconURL: string;
+  iconSrc: string;
 }) {
   return (
-    <VStack maxW="xs" mt="2" align="center">
-      <Button onClick={handler} rounded="full" bgColor="white" fontWeight="normal" py="1">
-        <HStack>
-          <Circle size="8">
-            <Image src={iconURL} alt="" width="160" height="160" />
-          </Circle>
-          <Text w="full" textAlign="center" className="text-primary">
-            {label}
-          </Text>
-        </HStack>
-      </Button>
-    </VStack>
+    <Button onClick={handler} rounded="full" w="72" bgColor="white" fontWeight="normal" py="2">
+      <HStack w="full">
+        <Circle size="8">
+          <Image src={iconSrc} alt="" width="160" height="160" />
+        </Circle>
+        <Text w="full" className="text-primary">
+          {label}
+        </Text>
+      </HStack>
+    </Button>
   );
 }
