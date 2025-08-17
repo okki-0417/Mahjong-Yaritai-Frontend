@@ -1,5 +1,7 @@
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
-import AuthVerificationForm from "@/src/features/auth/verification/AuthVerificationForm";
+import AuthVerificationSection from "@/src/features/auth/verification/AuthVerificationSecion";
+import { Suspense } from "react";
+import Fallback from "@/src/components/Fallback";
 
 export default function AuthVerification() {
   return (
@@ -12,7 +14,9 @@ export default function AuthVerification() {
       <Text mt="8">メール内の認証コードを入力してください</Text>
 
       <Box mt="4">
-        <AuthVerificationForm />
+        <Suspense fallback={<Fallback />}>
+          <AuthVerificationSection />
+        </Suspense>
       </Box>
     </Container>
   );

@@ -1,12 +1,9 @@
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
-import getSession from "@/src/lib/getSession";
-import { redirect } from "next/navigation";
-import UserForm from "@/src/features/users/new/UserForm";
+import UserCreateSection from "@/src/features/users/new/UserCreateSection";
+import { Suspense } from "react";
+import Fallback from "@/src/components/Fallback";
 
-export default async function UserCreate() {
-  const session = await getSession();
-  if (session?.is_logged_in) redirect("/dashboard");
-
+export default function UserCreate() {
   return (
     <Container mt="20" size="xl">
       <Text as="h1" fontSize={["2xl", "4xl"]} fontWeight="bold">
@@ -15,7 +12,9 @@ export default async function UserCreate() {
       <Divider />
 
       <Box mt="8">
-        <UserForm />
+        <Suspense fallback={<Fallback />}>
+          <UserCreateSection />
+        </Suspense>
       </Box>
     </Container>
   );

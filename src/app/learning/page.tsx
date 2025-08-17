@@ -1,7 +1,8 @@
 import { Container, Divider, Text, Box } from "@chakra-ui/react";
 import { Metadata } from "next";
-import createApiPageClient from "@/src/lib/api/server";
-import { LearningCategoriesList } from "@/src/features/learning/components/LearningCategoriesList";
+import LearningCategoriesSection from "@/src/features/learning/components/LearningCategoriesSection";
+import { Suspense } from "react";
+import Fallback from "@/src/components/Fallback";
 
 export const metadata: Metadata = {
   title: "麻雀ハジメタイ",
@@ -14,12 +15,7 @@ export const metadata: Metadata = {
   keywords: ["麻雀", "学習", "初心者", "ルール", "戦術"],
 };
 
-export default async function LearningPage() {
-  const apiPageClient = await createApiPageClient();
-  const response = await apiPageClient.getLearningCategories();
-
-  const categories = response.learning_categories;
-
+export default function LearningPage() {
   return (
     <Container mt="20" maxW="4xl">
       <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
@@ -33,7 +29,9 @@ export default async function LearningPage() {
         </Text>
 
         <Box mt="10">
-          <LearningCategoriesList categories={categories} />
+          <Suspense fallback={<Fallback />}>
+            <LearningCategoriesSection />
+          </Suspense>
         </Box>
       </Box>
     </Container>

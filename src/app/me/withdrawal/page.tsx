@@ -1,8 +1,9 @@
-import { Box, Container, Divider, Spinner, Text } from "@chakra-ui/react";
+import { Box, Container, Divider, Text } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import getSession from "@/src/lib/getSession";
 import WithdrawalSummary from "@/src/features/me/withdrawal/WithdrawalSummary";
+import Fallback from "@/src/components/Fallback";
 
 export default async function WithdrawalSummaryPage() {
   const session = await getSession();
@@ -16,13 +17,7 @@ export default async function WithdrawalSummaryPage() {
       <Divider />
 
       <Box mt="8">
-        <Suspense
-          fallback={
-            <Box textAlign="center" py={8}>
-              <Spinner size="lg" />
-              <Text mt={4}>読み込み中...</Text>
-            </Box>
-          }>
+        <Suspense fallback={<Fallback />}>
           <WithdrawalSummary />
         </Suspense>
       </Box>

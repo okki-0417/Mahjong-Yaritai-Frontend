@@ -3,8 +3,8 @@ import { Suspense } from "react";
 import ProblemsSection from "@/src/features/what-to-discard-problems/components/ProblemsSection";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import ProblemsSectionFallback from "@/src/features/what-to-discard-problems/components/ProblemSectionFallback";
 import { Metadata } from "next";
+import Fallback from "@/src/components/Fallback";
 
 export type WhatToDiscardProblems = z.infer<typeof schemas.WhatToDiscardProblem>[] | [];
 
@@ -38,7 +38,7 @@ export default function WhatToDiscardProblems() {
         </Text>
 
         <Box mt="8">
-          <Suspense fallback={<ProblemsSectionFallback />}>
+          <Suspense fallback={<Fallback />}>
             <ProblemsSection />
           </Suspense>
         </Box>

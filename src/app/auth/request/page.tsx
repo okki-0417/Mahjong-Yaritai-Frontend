@@ -1,13 +1,9 @@
 import { Container, Divider, Text, VStack } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
-import getSession from "@/src/lib/getSession";
-import AuthRequestForm from "@/src/features/auth/request/AuthRequestForm";
-import SocialLoginSection from "@/src/features/auth/components/SocialLoginSection";
+import AuthRequestSection from "@/src/features/auth/components/AuthRequestSection";
+import { Suspense } from "react";
+import Fallback from "@/src/components/Fallback";
 
-export default async function AuthRequest() {
-  const session = await getSession();
-  if (session?.is_logged_in) redirect("/dashboard");
-
+export default function AuthRequest() {
   return (
     <Container mt="20" maxW="2xl">
       <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
@@ -16,9 +12,9 @@ export default async function AuthRequest() {
       <Divider />
 
       <VStack mt="8" gap="12" w="full" align="stretch">
-        <SocialLoginSection />
-
-        <AuthRequestForm />
+        <Suspense fallback={<Fallback />}>
+          <AuthRequestSection />
+        </Suspense>
       </VStack>
     </Container>
   );

@@ -1,5 +1,6 @@
+import Fallback from "@/src/components/Fallback";
 import ProfileSection from "@/src/features/users/:id/ProfileSection";
-import { Container } from "@chakra-ui/react";
+import { Box, Container, Divider, Text } from "@chakra-ui/react";
 import { Suspense } from "react";
 
 export type UserType = {
@@ -12,9 +13,16 @@ export default async function UserShow({ params }: { params: Promise<{ id: strin
 
   return (
     <Container mt="20" size="2xl">
-      <Suspense>
-        <ProfileSection id={id} />
-      </Suspense>
+      <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
+        プロフィール
+      </Text>
+      <Divider />
+
+      <Box mt="8">
+        <Suspense fallback={<Fallback />}>
+          <ProfileSection id={id} />
+        </Suspense>
+      </Box>
     </Container>
   );
 }
