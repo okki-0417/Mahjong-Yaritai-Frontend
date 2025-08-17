@@ -3,8 +3,9 @@ import { FaAngleRight } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
 import { RiArticleFill } from "react-icons/ri";
 import Link from "next/link";
-import useTileImagePathProvider from "@/src/lib/utils/useTileImagePathProvider";
-import TileImage from "@/src/components/TileImage";
+import TileImage, { tileImagePathByTileId } from "@/src/components/TileImage";
+import MainVisual from "@/public/main-visual.webp";
+import BeginnerIcon from "@/public/beginner-icon.webp";
 import { Metadata } from "next";
 import Image from "next/image";
 import { Box, Text, Flex } from "@chakra-ui/react";
@@ -20,8 +21,6 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const { tileImagePathByTileId } = useTileImagePathProvider();
-
   return (
     <div>
       <div className="w-full h-[650px] relative">
@@ -37,9 +36,7 @@ export default function Home() {
         </div>
         <div className="absolute top-0 left-0 w-full h-full bg-blue-900 opacity-[0.5] z-10"></div>
         <Image
-          width={1800}
-          height={1200}
-          src="/main-visual.webp"
+          src={MainVisual}
           alt="新しく麻雀を始めたい人が集まる場所"
           className="w-full h-full object-cover contrast-125"
         />
@@ -102,7 +99,7 @@ export default function Home() {
                     px="6"
                     h="full">
                     <Flex alignItems="center" gap="5">
-                      <Image src="/beginner-icon.webp" alt="" width={40} height={40} />
+                      <Image src={BeginnerIcon} alt="" width={40} height={40} />
                       <Text fontSize={{ base: "lg", lg: "2xl" }} fontWeight="bold">
                         麻雀ハジメタイ
                       </Text>
