@@ -5,7 +5,6 @@ export default async function LearningCategoriesSection() {
   const apiPageClient = await createApiPageClient();
 
   try {
-    await setTimeout(() => null, 3000);
     const response = await apiPageClient.getLearningCategories();
     const categories = response.learning_categories;
 
