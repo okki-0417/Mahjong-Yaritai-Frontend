@@ -10,10 +10,6 @@ export default function TitleDescSkeleton() {
         </Box>
 
         <SkeletonText noOfLines={3} spacing="4" skeletonHeight="20px" />
-
-        <Box mt="8">
-          <Skeleton height="400px" borderRadius="md" />
-        </Box>
       </VStack>
     </Container>
   );

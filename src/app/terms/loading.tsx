@@ -1,5 +1,5 @@
-import PageLoading from "@/src/components/fallbacks/PageLoading";
+import TitleSkeleton from "@/src/components/fallbacks/TitleSkelton";
 
 export default function Loading() {
-  return <PageLoading />;
+  return <TitleSkeleton />;
 }
