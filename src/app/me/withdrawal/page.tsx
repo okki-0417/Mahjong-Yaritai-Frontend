@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import getSession from "@/src/lib/getSession";
 import WithdrawalSummary from "@/src/features/me/withdrawal/WithdrawalSummary";
-import Fallback from "@/src/components/Fallback";
+import Fallback from "@/src/components/fallbacks/Fallback";
 
 export default async function WithdrawalSummaryPage() {
   const session = await getSession();

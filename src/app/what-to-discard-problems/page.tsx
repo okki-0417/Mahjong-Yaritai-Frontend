@@ -4,7 +4,7 @@ import ProblemsSection from "@/src/features/what-to-discard-problems/components/
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { Metadata } from "next";
-import Fallback from "@/src/components/Fallback";
+import ProblemsSectionSkeleton from "@/src/features/what-to-discard-problems/components/ProblemsSectionSkeleton";
 
 export type WhatToDiscardProblems = z.infer<typeof schemas.WhatToDiscardProblem>[] | [];
 
@@ -38,7 +38,7 @@ export default function WhatToDiscardProblems() {
         </Text>
 
         <Box mt="8">
-          <Suspense fallback={<Fallback />}>
+          <Suspense fallback={<ProblemsSectionSkeleton />}>
             <ProblemsSection />
           </Suspense>
         </Box>

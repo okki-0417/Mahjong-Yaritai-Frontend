@@ -1,4 +1,4 @@
-import Fallback from "@/src/components/Fallback";
+import Fallback from "@/src/components/fallbacks/Fallback";
 import { Box } from "@chakra-ui/react";
 
 export default function PageLoading() {

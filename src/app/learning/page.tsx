@@ -2,7 +2,7 @@ import { Container, Divider, Text, Box } from "@chakra-ui/react";
 import { Metadata } from "next";
 import LearningCategoriesSection from "@/src/features/learning/components/LearningCategoriesSection";
 import { Suspense } from "react";
-import Fallback from "@/src/components/Fallback";
+import Fallback from "@/src/components/fallbacks/Fallback";
 
 export const metadata: Metadata = {
   title: "麻雀ハジメタイ",

@@ -1,4 +1,4 @@
-import Fallback from "@/src/components/Fallback";
+import Fallback from "@/src/components/fallbacks/Fallback";
 import ProfileSection from "@/src/features/users/:id/ProfileSection";
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
 import { Suspense } from "react";

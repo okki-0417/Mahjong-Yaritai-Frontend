@@ -22,9 +22,10 @@ interface ListSectionProps {
 function ListSection({ title, description, items }: ListSectionProps) {
   return (
     <Box mb="8">
-      <Text fontSize={["lg", "xl"]} fontWeight="bold" mb="4">
+      <Text fontSize={["lg", "xl"]} as="h1" fontWeight="bold" mb="4">
         {title}
       </Text>
+      <Divider />
 
       {description && (
         <VStack align="stretch" mb="4">

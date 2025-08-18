@@ -1,5 +1,5 @@
-import PageLoading from "@/src/components/layout/PageLoading";
+import TitleDescSkeleton from "@/src/components/fallbacks/TitleDescSkelton";
 
 export default function Loading() {
-  return <PageLoading />;
+  return <TitleDescSkeleton />;
 }
