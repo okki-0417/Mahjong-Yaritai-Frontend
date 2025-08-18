@@ -1,5 +1,10 @@
-import PageLoading from "@/src/components/layout/PageLoading";
+import Fallback from "@/src/components/Fallback";
+import { Box } from "@chakra-ui/react";
 
 export default function Loading() {
-  return <PageLoading />;
+  return (
+    <Box mt="20" h="full">
+      <Fallback />
+    </Box>
+  );
 }
