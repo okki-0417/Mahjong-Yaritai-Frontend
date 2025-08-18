@@ -1,6 +1,6 @@
 import { Container, Divider, Text, VStack } from "@chakra-ui/react";
 import { Metadata } from "next";
-import termsData from "@/src/app/terms/terms-data.json";
+import termsData from "@/src/features/terms/data/terms-data.json";
 import Section from "@/src/features/terms/components/Section";
 
 export const metadata: Metadata = {

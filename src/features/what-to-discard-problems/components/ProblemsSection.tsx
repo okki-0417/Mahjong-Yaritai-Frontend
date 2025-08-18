@@ -28,6 +28,7 @@ export default async function ProblemsSection() {
           <Text fontSize="md">
             何切る問題の読み込み中にエラーが発生しました。しばらく時間をおいてから再度お試しください。
           </Text>
+          <Text>{error.message}</Text>
         </VStack>
       </Box>
     );
