@@ -1,5 +1,5 @@
-import Fallback from "@/src/components/Fallback";
+import PageLoading from "@/src/components/layout/PageLoading";
 
 export default function Loading() {
-  return <Fallback />;
+  return <PageLoading />;
 }
