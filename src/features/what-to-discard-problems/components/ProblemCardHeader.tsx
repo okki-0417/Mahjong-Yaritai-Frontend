@@ -5,15 +5,17 @@ import UserModal from "@/src/components/Modals/UserModal";
 import { Button, Circle, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import useMyUserId from "@/src/hooks/useMyUserId";
 
 export default function ProblemCardHeader({
   problem,
+  myUserId,
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+  myUserId: number | null;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const myUserId = useMyUserId();
+
+  const isMyProblem = problem.user.id === myUserId;
 
   return (
     <HStack justifyContent="space-between">
@@ -31,7 +33,7 @@ export default function ProblemCardHeader({
         </HStack>
       </Button>
 
-      {problem.user.id == myUserId && (
+      {isMyProblem && (
         <HStack>
           <ProblemDeleteButton problemId={problem.id} />
         </HStack>

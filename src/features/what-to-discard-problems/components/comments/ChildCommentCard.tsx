@@ -1,12 +1,17 @@
+"use client";
+
 import UserModal from "@/src/components/Modals/UserModal";
 import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/comments/DeleteCommentButton";
-import useMyUserId from "@/src/hooks/useMyUserId";
+import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 import { schemas } from "@/src/zodios/api";
 import { Box, Button, Circle, Flex, HStack, Img, Text, useDisclosure } from "@chakra-ui/react";
+import { useContext } from "react";
 import { z } from "zod";
 
 export default function ChildCommentCard({ reply }: { reply: z.infer<typeof schemas.Comment> }) {
-  const isMyComment = reply.user.id == useMyUserId();
+  const { session } = useContext(SessionContext);
+  const isMyComment = reply.user.id == session?.user_id;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

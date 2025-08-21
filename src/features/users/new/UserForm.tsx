@@ -14,8 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Controller, SubmitHandler } from "react-hook-form";
 import { useCustomForm } from "@/src/hooks/useCustomForm";
 import useErrorToast from "@/src/hooks/useErrorToast";
@@ -33,8 +32,6 @@ export default function UserForm() {
   const router = useRouter();
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
-
-  const { setAuth } = useContext(AuthStateContext);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -66,7 +63,6 @@ export default function UserForm() {
     try {
       await apiClient.createUser(formData);
 
-      setAuth(true);
       successToast({ title: "ユーザーを作成しました" });
       router.push("/dashboard");
     } catch (error) {

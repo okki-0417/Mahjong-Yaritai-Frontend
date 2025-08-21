@@ -3,16 +3,19 @@
 import { Button, Circle, Image, Text, VStack, Box } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import ProfileEditForm from "@/src/features/users/:id/ProfileEditForm";
+import ProfileEditForm from "@/src/features/users/[id]/ProfileEditForm";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import useMyUserId from "@/src/hooks/useMyUserId";
 
-export default function Profile({ initialUser }: { initialUser: z.infer<typeof schemas.User> }) {
-  const [user, setUser] = useState<z.infer<typeof schemas.User>>(initialUser);
-
+export default function Profile({
+  user,
+  isMyProfile,
+}: {
+  user: z.infer<typeof schemas.User>;
+  isMyProfile: boolean;
+}) {
+  const [userInfo, setUserInfo] = useState<z.infer<typeof schemas.User>>(user);
   const [isEditMode, setIsEditMode] = useState(false);
-  const isMyProfile = useMyUserId() == user.id;
 
   return (
     <VStack gap="4" align="stretch">
@@ -26,11 +29,9 @@ export default function Profile({ initialUser }: { initialUser: z.infer<typeof s
         </Box>
       )}
 
-      {isEditMode && (
-        <ProfileEditForm user={user} setUser={setUser} setIsEditMode={setIsEditMode} />
-      )}
-
-      {!isEditMode && (
+      {isEditMode ? (
+        <ProfileEditForm user={userInfo} setUser={setUserInfo} setIsEditMode={setIsEditMode} />
+      ) : (
         <VStack spacing={4}>
           <Circle size="200" overflow="hidden">
             <Image

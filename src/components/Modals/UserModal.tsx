@@ -2,7 +2,6 @@
 
 import {
   Box,
-  Button,
   Circle,
   Image,
   Modal,
@@ -17,8 +16,6 @@ import {
 } from "@chakra-ui/react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import useMyUserId from "@/src/hooks/useMyUserId";
-import Link from "next/link";
 
 export default function UserModal({
   user,
@@ -29,8 +26,6 @@ export default function UserModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const myUserId = useMyUserId();
-
   return (
     <Modal
       isOpen={isOpen}
@@ -71,13 +66,7 @@ export default function UserModal({
           </VStack>
         </ModalBody>
 
-        <ModalFooter>
-          {user?.id == myUserId && (
-            <Link href={`/users/${user.id}`}>
-              <Button>プロフィール</Button>
-            </Link>
-          )}
-        </ModalFooter>
+        <ModalFooter />
       </ModalContent>
     </Modal>
   );

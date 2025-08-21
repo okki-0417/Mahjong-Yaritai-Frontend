@@ -7,7 +7,7 @@ import CommentsModal from "@/src/features/what-to-discard-problems/components/co
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { apiClient } from "@/src/lib/api/client";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 export default function ProblemCommentSection({
   problem,
@@ -31,7 +31,7 @@ export default function ProblemCommentSection({
   };
 
   return (
-    <>
+    <Fragment>
       <PopButton onClick={handleOpenModal}>
         <HStack>
           <FaRegComment color="#333" size={24} />
@@ -48,6 +48,6 @@ export default function ProblemCommentSection({
         parentComments={parentComments}
         setParentComments={setParentComments}
       />
-    </>
+    </Fragment>
   );
 }

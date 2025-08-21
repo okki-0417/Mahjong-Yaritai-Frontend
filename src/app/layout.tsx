@@ -1,8 +1,9 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import AuthStateContextProvider from "@/src/context-providers/providers/AuthStateContextProvider";
-import DefaultLayout from "@/src/components/layout/DefaultLayout";
+import { Box, ChakraProvider } from "@chakra-ui/react";
 import "@/src/styles/globals.css";
 import { Metadata } from "next";
+import Header from "@/src/components/Header";
+import Footer from "@/src/components/Footer";
+import BottomNavigation from "@/src/components/BottomNavigation";
 
 export const metadata: Metadata = {
   title: {
@@ -56,11 +57,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja" suppressHydrationWarning>
       <body>
-        <AuthStateContextProvider>
-          <ChakraProvider resetCSS={false}>
-            <DefaultLayout>{children}</DefaultLayout>
-          </ChakraProvider>
-        </AuthStateContextProvider>
+        <ChakraProvider resetCSS={false}>
+          <div className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
+            <Box as="main" mb="20">
+              <Header />
+            </Box>
+            {children}
+            <Footer />
+            <BottomNavigation />
+          </div>
+        </ChakraProvider>
       </body>
     </html>
   );

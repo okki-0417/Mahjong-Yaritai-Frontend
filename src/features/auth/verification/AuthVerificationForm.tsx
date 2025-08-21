@@ -7,8 +7,6 @@ import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext } from "react";
-import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { useRouter } from "next/navigation";
 
@@ -17,8 +15,6 @@ export default function AuthVerificationForm() {
   const successToast = useSuccessToast();
 
   const router = useRouter();
-
-  const { setAuth, setMyUserId } = useContext(AuthStateContext);
 
   const {
     register,
@@ -35,9 +31,6 @@ export default function AuthVerificationForm() {
       const response = await apiClient.createAuthVerification(formData);
 
       if (response.auth_verification) {
-        setAuth(true);
-        setMyUserId(response.auth_verification.id);
-
         successToast({
           title: "認証が完了しました",
           description: "ダッシュボードにリダイレクトします。",

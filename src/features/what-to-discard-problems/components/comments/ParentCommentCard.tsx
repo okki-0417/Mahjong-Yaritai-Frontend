@@ -5,11 +5,10 @@ import ChildCommentCard from "@/src/features/what-to-discard-problems/components
 import { InsertCommentToThread } from "@/src/features/what-to-discard-problems/components/comments/CommentsModal";
 import DeleteCommentButton from "@/src/features/what-to-discard-problems/components/comments/DeleteCommentButton";
 import FetchRepliesButton from "@/src/features/what-to-discard-problems/components/comments/FetchRepliesButton";
-import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
-import useMyUserId from "@/src/hooks/useMyUserId";
+import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 import { schemas } from "@/src/zodios/api";
 import { Box, Button, Circle, HStack, Img, Text, useDisclosure, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { UseFormSetFocus, UseFormSetValue } from "react-hook-form";
 import { MdOutlineReply } from "react-icons/md";
 import { z } from "zod";
@@ -28,8 +27,10 @@ export default function ParentCommentCard({
   setReplyingToComment: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>>>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const isLoggedIn = useIsLoggedIn();
-  const myUserId = useMyUserId();
+
+  const { session } = useContext(SessionContext);
+  const isLoggedIn = Boolean(session?.is_logged_in);
+  const myUserId = session?.user_id;
 
   const [replies, setReplies] = useState<z.infer<typeof schemas.Comment>[] | []>([]);
 

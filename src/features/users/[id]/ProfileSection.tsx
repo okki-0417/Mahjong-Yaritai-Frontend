@@ -1,18 +1,20 @@
 import { Box, VStack, Alert, AlertIcon, AlertTitle, AlertDescription } from "@chakra-ui/react";
-import Profile from "@/src/features/users/:id/Profile";
+import Profile from "@/src/features/users/[id]/Profile";
 import createApiPageClient from "@/src/lib/api/server";
 
 export default async function ProfileSection({ id }: { id: string }) {
   const apiPageClient = await createApiPageClient();
 
   try {
-    const response = await apiPageClient.getUser({
-      params: {
-        id,
-      },
-    });
+    const user_response = await apiPageClient.getUser({ params: { id } });
+    const session_response = await apiPageClient.getSession();
 
-    return <Profile initialUser={response.user} />;
+    return (
+      <Profile
+        user={user_response.user}
+        isMyProfile={session_response.user_id == user_response.user.id}
+      />
+    );
   } catch (error) {
     return (
       <Box textAlign="center" py={16}>
@@ -23,8 +25,7 @@ export default async function ProfileSection({ id }: { id: string }) {
               <AlertTitle>エラーが発生しました</AlertTitle>
               <AlertDescription>
                 ユーザー情報の取得に失敗しました。
-                <br />
-                しばらく時間をおいてから再度お試しください。
+                {error.message}
               </AlertDescription>
             </Box>
           </Alert>

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Box, useDisclosure } from "@chakra-ui/react";
-import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
@@ -12,6 +11,7 @@ import { schemas } from "@/src/zodios/api";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { getUniqueObjectArrayByKey } from "@/src/lib/utils/getUniqueObjectByKey";
+import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 
 export default function VoteButton({
   problem,
@@ -32,12 +32,14 @@ export default function VoteButton({
   >;
   handleDisplayVoteResult?: () => void;
 }) {
-  const isLoggedIn = useIsLoggedIn();
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { session } = useContext(SessionContext);
+  const isLoggedIn = Boolean(session?.is_logged_in);
 
   const handleClick = async () => {
     if (!isLoggedIn) return onOpen();

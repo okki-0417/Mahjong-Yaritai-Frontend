@@ -14,13 +14,13 @@ import {
   ModalCloseButton,
   ModalBody,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import PopButton from "@/src/components/PopButton";
-import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 import ProblemForm from "@/src/features/what-to-discard-problems/components/ProblemForm";
+import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 
 export default function ClientProblemSection({
   initialProblems,
@@ -40,7 +40,9 @@ export default function ClientProblemSection({
     onClose: onCloseNotLoggedIn,
   } = useDisclosure();
   const { onOpen: onOpenForm, isOpen: isFormOpen, onClose: onCloseForm } = useDisclosure();
-  const isLoggedIn = useIsLoggedIn();
+
+  const { session } = useContext(SessionContext);
+  const isLoggedIn = Boolean(session?.is_logged_in);
 
   const handleFormOpen = () => {
     if (!isLoggedIn) return onOpenNotLoggedIn();

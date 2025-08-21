@@ -2,14 +2,14 @@
 
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import { useDisclosure } from "@chakra-ui/react";
 import { apiClient } from "@/src/lib/api/client";
 import LikeButton from "@/src/components/LikeButton";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
+import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 
 export default function ProblemLikeSection({
   problem,
@@ -23,7 +23,8 @@ export default function ProblemLikeSection({
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
 
-  const isLoggedIn = useIsLoggedIn();
+  const { session } = useContext(SessionContext);
+  const isLoggedIn = Boolean(session?.is_logged_in);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 

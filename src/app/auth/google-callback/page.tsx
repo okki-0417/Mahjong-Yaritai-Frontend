@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Container,
@@ -16,11 +16,9 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { apiClient } from "@/src/lib/api/client";
-import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
 
 export default function GoogleCallbackPage() {
   const router = useRouter();
-  const { setMyUserId, setAuth } = useContext(AuthStateContext);
   const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,9 +36,6 @@ export default function GoogleCallbackPage() {
       try {
         const response = await apiClient.createGoogleCallback({ code });
         if (response.session?.is_logged_in) {
-          setMyUserId(response.session.user_id);
-          setAuth(true);
-
           router.push("/dashboard");
         } else {
           router.push("/users/new");
@@ -53,7 +48,7 @@ export default function GoogleCallbackPage() {
     };
 
     handleCallback();
-  }, [searchParams, router, setAuth, setMyUserId]);
+  }, [searchParams, router]);
 
   if (isProcessing) {
     return (

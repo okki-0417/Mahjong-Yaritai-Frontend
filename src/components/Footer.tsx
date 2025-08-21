@@ -1,7 +1,8 @@
 import ButtonNeutral from "@/src/components/Buttons/ButtonNeutral";
-import LogoutButton from "@/src/components/LogoutButton";
+import LogoutSection from "@/src/components/LogoutSection";
 import { Box, Center, Container, Divider, ListItem, UnorderedList, Wrap } from "@chakra-ui/react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function Footer() {
   return (
@@ -59,7 +60,9 @@ export default function Footer() {
               <Divider orientation="vertical" borderColor="white" />
             </Center>
 
-            <LogoutButton />
+            <Suspense>
+              <LogoutSection />
+            </Suspense>
           </Wrap>
         </UnorderedList>
       </Container>

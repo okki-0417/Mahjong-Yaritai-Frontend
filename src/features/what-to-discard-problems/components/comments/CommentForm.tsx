@@ -21,12 +21,13 @@ import {
   UseFormResetField,
 } from "react-hook-form";
 import Link from "next/link";
-import useIsLoggedIn from "@/src/hooks/useIsLoggedIn";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { apiClient } from "@/src/lib/api/client";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
+import { useContext } from "react";
+import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 
 export default function CommentForm({
   problemId,
@@ -50,9 +51,11 @@ export default function CommentForm({
   replyingToComment: z.infer<typeof schemas.Comment>;
   setReplyingToComment: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>>>;
 }) {
-  const isLoggedIn = useIsLoggedIn();
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
+
+  const { session } = useContext(SessionContext);
+  const isLoggedIn = Boolean(session?.is_logged_in);
 
   const onSubmit: SubmitHandler<z.infer<typeof schemas.createComment_Body>> = async formData => {
     try {
@@ -79,7 +82,7 @@ export default function CommentForm({
         <Container>
           <Text textAlign="center">コメントを投稿するにはログインしてください</Text>
           <Container textAlign="center" mt={2}>
-            <Link href="/isLoggedIn/login">
+            <Link href="/auth/request">
               <Button colorScheme="pink">ログイン / 新規登録する</Button>
             </Link>
           </Container>

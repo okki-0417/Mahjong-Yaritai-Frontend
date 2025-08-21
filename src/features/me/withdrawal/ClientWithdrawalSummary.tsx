@@ -2,8 +2,7 @@
 
 import { Box, Button, Card, CardBody, Text, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
-import { AuthStateContext } from "@/src/context-providers/contexts/AuthContext";
+import { useState } from "react";
 import { apiClient } from "@/src/lib/api/client";
 import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
@@ -18,7 +17,6 @@ export default function ClientWithdrawalSummary({
 }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setAuth, setMyUserId } = useContext(AuthStateContext);
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
 
@@ -34,8 +32,6 @@ export default function ClientWithdrawalSummary({
     try {
       await apiClient.withdrawUser([]);
 
-      setAuth(false);
-      setMyUserId(null);
       successToast({
         title: "退会が完了しました",
         description: "ご利用ありがとうございました。",

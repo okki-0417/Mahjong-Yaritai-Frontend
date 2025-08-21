@@ -8,9 +8,10 @@ import { Box, Flex, HStack, Text, useDisclosure, VStack, Wrap } from "@chakra-ui
 import { z } from "zod";
 import ProblemVoteSection from "@/src/features/what-to-discard-problems/components/votes/ProblemVoteSection";
 import ProblemCommentSection from "@/src/features/what-to-discard-problems/components/comments/ProblemCommentSection";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
+import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 
 export default function ProblemCard({
   problem,
@@ -22,6 +23,9 @@ export default function ProblemCard({
   const [voteResult, setVoteResult] = useState<
     z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]
   >([]);
+
+  const { session } = useContext(SessionContext);
+  const myUserId = session?.user_id;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -38,7 +42,7 @@ export default function ProblemCard({
         px={["2", "4"]}
         pb="6">
         <VStack alignItems="stretch">
-          <ProblemCardHeader problem={problem} />
+          <ProblemCardHeader problem={problem} myUserId={myUserId} />
 
           <HStack fontSize={[18, 20]}>
             <Text>{problem.round}局</Text>
