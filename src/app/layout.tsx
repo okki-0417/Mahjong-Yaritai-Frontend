@@ -1,7 +1,7 @@
 import { Box, ChakraProvider } from "@chakra-ui/react";
 import "@/src/styles/globals.css";
 import { Metadata } from "next";
-import Header from "@/src/components/Header";
+import Header from "@/src/components/header/Header";
 import Footer from "@/src/components/Footer";
 import BottomNavigation from "@/src/components/BottomNavigation";
 
@@ -58,14 +58,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" suppressHydrationWarning>
       <body>
         <ChakraProvider resetCSS={false}>
-          <div className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
-            <Box as="main" mb="20">
+          <main className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
+            <Box mb="20">
               <Header />
             </Box>
             {children}
             <Footer />
             <BottomNavigation />
-          </div>
+          </main>
         </ChakraProvider>
       </body>
     </html>
