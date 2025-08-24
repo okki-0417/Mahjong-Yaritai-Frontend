@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function LearningPage() {
   return (
-    <Container mt="20" maxW="4xl">
+    <Container mt="20" maxW="4xl" mb="20">
       <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
         麻雀ハジメタイ
       </Text>

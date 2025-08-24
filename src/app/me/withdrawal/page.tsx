@@ -10,7 +10,7 @@ export default async function WithdrawalSummaryPage() {
   if (!session?.is_logged_in) redirect("/auth/request");
 
   return (
-    <Container mt="20" maxW="2xl">
+    <Container mt="20" maxW="2xl" mb="20">
       <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
         退会前の確認
       </Text>

@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" suppressHydrationWarning>
       <body>
         <ChakraProvider resetCSS={false}>
-          <main className="flex flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
+          <main className="flex mb-16 flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
             <Box mb="20">
               <Header />
             </Box>

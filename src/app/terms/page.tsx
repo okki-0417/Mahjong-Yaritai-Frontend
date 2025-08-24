@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <Container mt="20" maxW="4xl">
+    <Container mt="20" maxW="4xl" mb="20">
       <Text as="h1" fontSize={["2xl", "4xl"]} fontWeight="bold">
         利用規約
       </Text>

@@ -12,7 +12,7 @@ export default async function UserShow({ params }: { params: Promise<{ id: strin
   const { id } = await params;
 
   return (
-    <Container mt="20" size="2xl">
+    <Container mt="20" size="2xl" mb="20">
       <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
         プロフィール
       </Text>

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function WhatToDiscardProblems() {
   return (
-    <Container mt="20" maxW="4xl" px={["3", "0"]}>
+    <Container mt="20" maxW="4xl" px={["3", "0"]} mb="20">
       <VStack gap="4" alignItems="stretch">
         <Box>
           <Text as="h1" fontSize={["2xl", "4xl"]} fontWeight="bold">
