@@ -11,13 +11,12 @@ import Image from "next/image";
 import { Box, Text, Flex } from "@chakra-ui/react";
 
 export const metadata: Metadata = {
-  title: "ホーム",
+  title: "ホーム | 麻雀ヤリタイ",
   description: "麻雀ヤリタイは、麻雀を愛する人が集まり、語らう場所です。",
   openGraph: {
     title: "麻雀ヤリタイ - ホーム",
     description: "麻雀を愛する人が集まり、語らう場所。",
   },
-  keywords: ["麻雀", "麻雀やりたい", "麻雀好き", "麻雀初心者"],
 };
 
 export default function Home() {

@@ -10,7 +10,6 @@ export const metadata: Metadata = {
     title: "麻雀ヤリタイ - プライバシーポリシー",
     description: "麻雀ヤリタイのプライバシーポリシー・個人情報の取扱いに関する基本方針",
   },
-  keywords: ["プライバシーポリシー", "個人情報", "麻雀ヤリタイ"],
 };
 
 interface ListSectionProps {

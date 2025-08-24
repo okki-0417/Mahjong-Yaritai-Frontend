@@ -11,7 +11,6 @@ export const metadata: Metadata = {
     title: "麻雀ヤリタイ - 利用規約",
     description: "麻雀ヤリタイの利用規約",
   },
-  keywords: ["利用規約", "麻雀ヤリタイ", "サービス利用条件"],
 };
 
 export default function TermsPage() {

@@ -17,7 +17,6 @@ export const metadata: Metadata = {
     description:
       "様々な状況での最適な選択を考え、他のプレイヤーと意見交換。麻雀の判断力を磨きましょう。",
   },
-  keywords: ["何切る", "麻雀問題", "麻雀練習", "打牌選択", "麻雀上達"],
 };
 
 export default function WhatToDiscardProblems() {

@@ -12,7 +12,6 @@ export const metadata: Metadata = {
     title: "麻雀ヤリタイ - 麻雀ハジメタイ",
     description: "麻雀を始めたい人のための学習コンテンツ",
   },
-  keywords: ["麻雀", "学習", "初心者", "ルール", "戦術"],
 };
 
 export default function LearningPage() {
