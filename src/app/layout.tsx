@@ -1,9 +1,8 @@
-import { Box, ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import "@/src/styles/globals.css";
 import { Metadata } from "next";
 import Header from "@/src/components/header/Header";
 import Footer from "@/src/components/Footer";
-import BottomNavigation from "@/src/components/BottomNavigation";
 
 export const metadata: Metadata = {
   title: {
@@ -49,13 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" suppressHydrationWarning>
       <body>
         <ChakraProvider resetCSS={false}>
-          <main className="flex mb-16 flex-col min-h-screen bg-secondary overflow-x-hidden font-serif text-neutral">
-            <Box mb="20">
-              <Header />
-            </Box>
+          <main
+            className="flex lg:pb-0 pb-24 flex-col min-h-screen bg-secondary overflow-x-hidden text-neutral"
+            style={{ fontFamily: "PT Serif, serif" }}>
+            <Header />
             {children}
             <Footer />
-            <BottomNavigation />
           </main>
         </ChakraProvider>
       </body>
