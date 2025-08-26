@@ -19,8 +19,8 @@ import LogoImg from "@/public/logo.webp";
 export default function Header() {
   return (
     <Fragment>
-      <Box as="header" position="fixed" w="full" zIndex="50">
-        <Center as="nav" h="20" position="relative" className="bg-primary">
+      <Box as="header" w="full" zIndex="50">
+        <Center as="nav" h="16" position="relative" className="bg-primary">
           <Container maxW="5xl">
             <HStack justifyContent={["center", "space-between"]}>
               <Link href="/">

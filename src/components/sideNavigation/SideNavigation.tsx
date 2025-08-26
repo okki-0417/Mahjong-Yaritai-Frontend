@@ -14,15 +14,15 @@ export default function SideNavigation() {
       <label htmlFor="hamburger" className="absolute block top-6 right-6 size-8 z-20" />
       <label
         htmlFor="hamburger"
-        className="absolute top-6 right-6 block w-8 h-1 bg-white transition-all peer-checked:rotate-45 peer-checked:translate-y-3 z-20"
+        className="absolute top-4 right-6 block w-8 h-1 bg-white transition-all peer-checked:rotate-45 peer-checked:translate-y-3 z-20"
       />
       <label
         htmlFor="hamburger"
-        className="absolute top-9 right-6 block w-8 h-1 bg-white peer-checked:hidden"
+        className="absolute top-7 right-6 block w-8 h-1 bg-white peer-checked:hidden"
       />
       <label
         htmlFor="hamburger"
-        className="absolute top-12 right-6 block w-8 h-1 bg-white transition-all peer-checked:-rotate-45 peer-checked:-translate-y-3 z-20"
+        className="absolute top-10 right-6 block w-8 h-1 bg-white transition-all peer-checked:-rotate-45 peer-checked:-translate-y-3 z-20"
       />
       <label
         htmlFor="hamburger"
