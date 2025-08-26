@@ -2,6 +2,8 @@ import { LearningCategoriesList } from "@/src/features/learning/components/Learn
 import createApiPageClient from "@/src/lib/api/server";
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
 
+export const dynamic = "force-static";
+
 export default async function LegacyLearningPage() {
   const apiPageClient = await createApiPageClient();
 

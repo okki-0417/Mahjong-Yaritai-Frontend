@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 export default function LearningPage() {
   return (
-    <Container mt={["12", "20"]} maxW="4xl" px="2">
+    <Container mt="20" maxW="4xl" px="2">
       <Box as="article">
         <Text as="h1" fontSize={["4xl", "5xl"]} fontWeight="bold">
           麻雀ハジメタイ
@@ -41,7 +41,7 @@ export default function LearningPage() {
           レガシー版へ
         </Link>
 
-        <Box mt={["12", "20"]} as="section">
+        <Box mt="20" as="section">
           <Text as="h2" fontSize={["2xl", "3xl"]} fontWeight="bold">
             実践的に学ぶ。
           </Text>
@@ -50,7 +50,7 @@ export default function LearningPage() {
           </Text>
         </Box>
 
-        <Box as="section" mt={["12", "20"]} rounded="md" p="6" className="bg-secondary-light">
+        <Box as="section" mt="20" rounded="md" p="6" className="bg-secondary-light">
           <Text as="h2" fontSize={["xl", "2xl"]} fontWeight="bold">
             ここでやること
           </Text>
@@ -75,7 +75,7 @@ export default function LearningPage() {
           </Box>
         </Box>
 
-        <Box as="section" mt={["12", "20"]} id="section-1">
+        <Box as="section" mt="20" id="section-1">
           <Text as="h2" fontSize={["2xl", "3xl"]} fontWeight="bold">
             牌をそろえてみよう
           </Text>
@@ -110,7 +110,7 @@ export default function LearningPage() {
           </Text>
         </Box>
 
-        <Box as="section" mt={["12", "20"]} id="section-2">
+        <Box as="section" mt="20" id="section-2">
           <Text as="h2" fontSize={["2xl", "3xl"]} fontWeight="bold">
             麻雀牌を知ろう
           </Text>
@@ -124,7 +124,7 @@ export default function LearningPage() {
           </Box>
         </Box>
 
-        <Box mt={["12", "20"]} fontSize={["2xl", "3xl"]}>
+        <Box mt="20" fontSize={["2xl", "3xl"]}>
           Coming Soon...
         </Box>
       </Box>
