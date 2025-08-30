@@ -43,16 +43,6 @@ export default function Header() {
               <UnorderedList listStyleType="none">
                 <HStack display={["none", "none", "flex"]}>
                   <ListItem>
-                    <Link href="/learning">
-                      <HStack gap="1">
-                        <ButtonNeutral>
-                          <Text>ハジメタイ</Text>
-                        </ButtonNeutral>
-                      </HStack>
-                    </Link>
-                  </ListItem>
-
-                  <ListItem>
                     <Link href="/what-to-discard-problems">
                       <HStack gap="1">
                         <ButtonNeutral>

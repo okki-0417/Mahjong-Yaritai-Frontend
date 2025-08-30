@@ -1,7 +1,6 @@
 import HamburgerCheckBox from "@/src/components/sideNavigation/HamburgerCheckBox";
 import LogoutAndWithdraw from "@/src/components/sideNavigation/LogoutAndWithdraw";
 import { Box, Container, HStack, ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
-import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 import { GiThink } from "react-icons/gi";
@@ -46,15 +45,6 @@ export default function SideNavigation() {
                   <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                     <GiThink size={20} />
                     <Text fontSize="lg">何切る問題</Text>
-                  </HStack>
-                </Link>
-              </ListItem>
-
-              <ListItem>
-                <Link href="/learning" className="w-full">
-                  <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
-                    <Image src="/beginner-icon.webp" alt="ハジメタイ" width={20} height={20} />
-                    <Text fontSize="lg">ハジメタイ</Text>
                   </HStack>
                 </Link>
               </ListItem>
