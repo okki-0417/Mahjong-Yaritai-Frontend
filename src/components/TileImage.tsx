@@ -89,7 +89,7 @@ export default function TileImage({
   const src = tileImagePathByTileId[tileId || tile];
 
   return (
-    <Box className="h-full aspect-7/9 relative overflow-hidden">
+    <Box className="h-full aspect-7/9 relative">
       {src ? (
         <Image
           width={49}

@@ -21,7 +21,7 @@ export default function ProblemCardHeader({
     <HStack justifyContent="space-between">
       <Button onClick={onOpen} colorScheme="" p="0">
         <HStack>
-          <Circle overflow="hidden" size={["8", "9"]}>
+          <Circle overflow="hidden" size={["7", "9"]}>
             <Image
               src={problem.user.avatar_url || "/no-image.webp"}
               alt={problem.user.name}
@@ -30,7 +30,7 @@ export default function ProblemCardHeader({
               objectFit="cover"
             />
           </Circle>
-          <Text fontSize="md">{problem.user.name}</Text>
+          <Text fontSize="sm">{problem.user.name}</Text>
         </HStack>
       </Button>
 
