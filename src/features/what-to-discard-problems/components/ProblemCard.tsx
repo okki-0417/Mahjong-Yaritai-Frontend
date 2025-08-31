@@ -30,7 +30,7 @@ export default function ProblemCard({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box>
+    <Box className="md:w-auto w-screen px-1">
       <Text fontSize="sm">{new Date(problem.created_at).toLocaleString()}</Text>
 
       <VStack borderRadius="md" className="bg-mj-mat" shadow="md" alignItems="stretch" gap="0">
