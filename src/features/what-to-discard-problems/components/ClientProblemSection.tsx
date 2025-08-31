@@ -13,6 +13,8 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  Text,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { z } from "zod";
@@ -51,8 +53,12 @@ export default function ClientProblemSection({
 
   return (
     <Box>
-      <PopButton className="btn-circle btn-main mb-8" onClick={handleFormOpen}>
-        ＋
+      <PopButton
+        className="fixed bottom-5 right-5 size-18 btn-circle btn-main z-40 shadow-lg shadow-gray-700"
+        onClick={handleFormOpen}>
+        <Text as="span" fontSize="3xl" fontWeight="bold">
+          ＋
+        </Text>
       </PopButton>
 
       <NotLoggedInModal isOpen={isNotLoggedInOpen} onClose={onCloseNotLoggedIn} />
@@ -65,10 +71,11 @@ export default function ClientProblemSection({
           <ModalBody>
             <ProblemForm setIsCreateFormOpen={onCloseForm} setProblems={setProblems} />
           </ModalBody>
+          <ModalFooter />
         </ModalContent>
       </Modal>
 
-      <VStack gap="16">
+      <VStack gap={["8", "16"]}>
         {problems.map(problem => (
           <ProblemCard key={problem.id} problem={problem} />
         ))}

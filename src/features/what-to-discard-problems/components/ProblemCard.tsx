@@ -1,6 +1,5 @@
 "use client";
 
-import TileImage from "@/src/components/TileImage";
 import ProblemCardHeader from "@/src/features/what-to-discard-problems/components/ProblemCardHeader";
 import ProblemLikeSection from "@/src/features/what-to-discard-problems/components/likes/ProblemLikeSection";
 import { schemas } from "@/src/zodios/api";
@@ -12,6 +11,7 @@ import { useContext, useState } from "react";
 import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
+import TileImage from "@/src/components/TileImage";
 
 export default function ProblemCard({
   problem,
@@ -31,45 +31,29 @@ export default function ProblemCard({
 
   return (
     <Box>
-      <Text fontSize="xl">{new Date(problem.created_at).toLocaleString()}</Text>
+      <Text fontSize="sm">{new Date(problem.created_at).toLocaleString()}</Text>
 
-      <Box
-        boxShadow="base"
-        borderTopRadius="md"
-        className="bg-mj-mat"
-        shadow="md"
-        pt={["2", "3"]}
-        px={["2", "4"]}
-        pb="6">
-        <VStack alignItems="stretch">
+      <VStack borderRadius="md" className="bg-mj-mat" shadow="md" alignItems="stretch" gap="0">
+        <Box pt="2" px={["2", "4"]} pb="6">
           <ProblemCardHeader problem={problem} myUserId={myUserId} />
 
-          <HStack fontSize={[18, 20]}>
-            <Text>{problem.round}局</Text>
-            <Text>{problem.wind}家</Text>
-            <Text>{problem.turn}巡目</Text>
+          <Wrap mt="2" spacingY="0" align="center">
+            {problem.round && <Text fontSize={["lg", "xl"]}>{problem.round}局</Text>}
+            {problem.turn && <Text fontSize={["lg", "xl"]}>{problem.turn}巡目</Text>}
+            {problem.wind && <Text fontSize={["lg", "xl"]}>{problem.wind}家</Text>}
+            {problem.points && <Text fontSize={["lg", "xl"]}>{problem.points}点持ち</Text>}
             <HStack gap="1">
-              <Text>ドラ</Text>
-              <Box h="10">
-                <TileImage tile={problem.dora_id} hover={false} />
+              <Text fontSize={["md", "lg"]}>ドラ</Text>
+              <Box h="8" aspectRatio="7/9">
+                <TileImage tileId={problem.dora_id} hover={false} />
               </Box>
             </HStack>
-          </HStack>
-
-          <Wrap fontSize={[18, 20]} gap="4">
-            {[
-              { label: "東家", point: problem.point_east },
-              { label: "南家", point: problem.point_south },
-              { label: "西家", point: problem.point_west },
-              { label: "北家", point: problem.point_north },
-            ].map(obj => {
-              return (
-                <HStack key={obj.label} w="fit-content">
-                  <Text>{obj.label}</Text>
-                  <Text className="font-sans font-normal">{obj.point}点</Text>
-                </HStack>
-              );
-            })}
+            <HStack gap="1">
+              <Text fontSize={["md", "lg"]}>ツモ</Text>
+              <Box h="8" aspectRatio="7/9">
+                <TileImage tileId={problem.tsumo_id} hover={false} />
+              </Box>
+            </HStack>
           </Wrap>
 
           <Flex
@@ -77,22 +61,7 @@ export default function ProblemCard({
             justifyContent="center"
             alignItems={["stretch", "flex-end"]}
             gap="3"
-            px={[0, 4]}>
-            <Flex flexDir={["row", "column"]} alignItems="center" gap={[2, 0]}>
-              <Text>ツモ</Text>
-              <VStack w={["6", "auto"]} justify="end">
-                <VoteButton
-                  problem={problem}
-                  tileId={problem.tsumo_id}
-                  myVoteTileId={myVoteTileId}
-                  setMyVoteTileId={setMyVoteTileId}
-                  setVotesCount={setVotesCount}
-                  setVoteResult={setVoteResult}
-                  handleDisplayVoteResult={onOpen}
-                />
-              </VStack>
-            </Flex>
-
+            mt="2">
             <HStack gap="0" justify="center" alignItems="flex-end">
               {[
                 problem.hand1_id,
@@ -124,33 +93,37 @@ export default function ProblemCard({
               })}
             </HStack>
           </Flex>
-        </VStack>
-      </Box>
+        </Box>
 
-      <HStack px={["3", "4"]} py="2" bgColor="white" color="gray.700" className="rounded-b-md">
-        <ProblemLikeSection problem={problem} />
+        <HStack
+          px={["2", "4"]}
+          py={["1", "2"]}
+          color="gray.700"
+          className="rounded-b-md bg-neutral">
+          <ProblemLikeSection problem={problem} />
 
-        <ProblemCommentSection problem={problem} />
+          <ProblemCommentSection problem={problem} />
 
-        <ProblemVoteSection
-          problem={problem}
-          isVoted={Boolean(myVoteTileId)}
-          votesCount={votesCount}
-          setVoteResult={setVoteResult}
-          handleDisplayVoteResult={onOpen}
-        />
+          <ProblemVoteSection
+            problem={problem}
+            isVoted={Boolean(myVoteTileId)}
+            votesCount={votesCount}
+            setVoteResult={setVoteResult}
+            handleDisplayVoteResult={onOpen}
+          />
 
-        <VoteResultModal
-          isOpen={isOpen}
-          onClose={onClose}
-          problem={problem}
-          myVoteTileId={myVoteTileId}
-          setMyVoteTileId={setMyVoteTileId}
-          setVotesCount={setVotesCount}
-          voteResult={voteResult}
-          setVoteResult={setVoteResult}
-        />
-      </HStack>
+          <VoteResultModal
+            isOpen={isOpen}
+            onClose={onClose}
+            problem={problem}
+            myVoteTileId={myVoteTileId}
+            setMyVoteTileId={setMyVoteTileId}
+            setVotesCount={setVotesCount}
+            voteResult={voteResult}
+            setVoteResult={setVoteResult}
+          />
+        </HStack>
+      </VStack>
     </Box>
   );
 }

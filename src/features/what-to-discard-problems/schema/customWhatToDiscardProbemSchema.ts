@@ -27,17 +27,16 @@ export const pointFieldNames = ["point_east", "point_south", "point_west", "poin
 
 /**
  * 牌の重複をチェックする
- * 麻雀では同じ牌は最大4枚までしか存在しない
+ * 最大4枚までしか使えない
  */
 function validateTileDuplication(inputtedTileIds: number[], ctx: z.RefinementCtx) {
   // 各牌の使用枚数をカウント
-  const inputtedTileIdsCount: Record<number, number> = {};
-  inputtedTileIds.forEach(
-    tileId => (inputtedTileIdsCount[tileId] = (inputtedTileIdsCount[tileId] || 0) + 1),
-  );
+  const tileUsage: Record<number, number> = {};
+
+  inputtedTileIds.forEach(tileId => (tileUsage[tileId] = (tileUsage[tileId] || 0) + 1));
 
   // 5枚以上使用されている牌を検出
-  const overusedTileIds = Object.entries(inputtedTileIdsCount)
+  const overusedTileIds = Object.entries(tileUsage)
     .filter(([_, count]) => count > MAX_DUPLICATE_TILES_NUM)
     .map(([tileId]) => Number(tileId));
 
@@ -57,8 +56,6 @@ function validateTileDuplication(inputtedTileIds: number[], ctx: z.RefinementCtx
 function validateHandTileOrder(inputtedTileIds: number[], ctx: z.RefinementCtx) {
   for (let i = 1; i < inputtedTileIds.length; i++) {
     if (inputtedTileIds[i] < inputtedTileIds[i - 1]) {
-      console.log(inputtedTileIds[i], inputtedTileIds[i - 1]);
-      console.log(inputtedTileIds[i - 1] - inputtedTileIds[i]);
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["what_to_discard_problem", "hand1_id"],
@@ -77,23 +74,15 @@ function validatePointUpperLimit(
   data: z.infer<typeof schemas.createWhatToDiscardProblem_Body>,
   ctx: z.RefinementCtx,
 ) {
-  const pointFields = [
-    { fieldName: "point_east", label: "東家" },
-    { fieldName: "point_south", label: "南家" },
-    { fieldName: "point_west", label: "西家" },
-    { fieldName: "point_north", label: "北家" },
-  ] as const;
+  const point = Number(data.what_to_discard_problem.points);
 
-  pointFields.forEach(({ fieldName, label }) => {
-    const point = Number(data.what_to_discard_problem[fieldName]);
-    if (point !== null && point !== undefined && point > POINT_UPPER_LIMIT) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["what_to_discard_problem", fieldName],
-        message: `${label}の点数を${new Intl.NumberFormat("en-US").format(POINT_UPPER_LIMIT)}点以下にしてください`,
-      });
-    }
-  });
+  if (point !== null && point !== undefined && point > POINT_UPPER_LIMIT) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["what_to_discard_problem", "points"],
+      message: `持ち点は${new Intl.NumberFormat("en-US").format(POINT_UPPER_LIMIT)}点以下にしてください`,
+    });
+  }
 }
 
 /**
@@ -124,11 +113,11 @@ export const customCreateWhatToDiscardProblem_BodySchema =
     // 入力された牌IDを抽出（null/undefinedを除外）
     const inputtedTileIds = tileFieldNames
       .map(fieldName => Number(data.what_to_discard_problem[fieldName]))
-      .filter(v => v !== null && v !== undefined);
+      .filter(Boolean);
 
     const inputtedHandTileIds = handFieldNames
       .map(fieldName => Number(data.what_to_discard_problem[fieldName]))
-      .filter(v => v !== null && v !== undefined);
+      .filter(Boolean);
 
     // 牌に関するバリデーション
     validateTileDuplication(inputtedTileIds, ctx);
@@ -136,5 +125,4 @@ export const customCreateWhatToDiscardProblem_BodySchema =
 
     // 点数に関するバリデーション
     validatePointUpperLimit(data, ctx);
-    validatePointSum(data, ctx);
   });

@@ -2,9 +2,10 @@
 
 import ProblemDeleteButton from "@/src/features/what-to-discard-problems/components/ProblemDeleteButton";
 import UserModal from "@/src/components/Modals/UserModal";
-import { Button, Circle, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Circle, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import Image from "next/image";
 
 export default function ProblemCardHeader({
   problem,
@@ -21,12 +22,13 @@ export default function ProblemCardHeader({
     <HStack justifyContent="space-between">
       <Button onClick={onOpen} colorScheme="" p="0">
         <HStack>
-          <Circle overflow="hidden" size={["8", "10"]}>
+          <Circle overflow="hidden" size={["8", "9"]}>
             <Image
-              borderRadius="full"
-              objectFit="cover"
-              h="full"
               src={problem.user.avatar_url || "/no-image.webp"}
+              alt={problem.user.name}
+              width={30}
+              height={30}
+              className="h-full w-full object-cover"
             />
           </Circle>
           <Text fontSize="md">{problem.user.name}</Text>

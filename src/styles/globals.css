@@ -47,6 +47,21 @@
   }
 }
 
+@keyframes shiningTile {
+  0% {
+    left: -100%;
+  }
+	100% {
+		left: 100%;
+	}
+}
+
+.shining-tile {
+  @apply h-[110%] w-10 rotate-15 absolute z-30 top-0;
+  animation: 1.5s 0s shiningTile ease-in-out infinite;
+  background: linear-gradient(to right, rgba(255,255,255,0) 25%, rgba(255,255,255,1) 50%, rgba(255, 255, 255, 0) 75%);
+}
+
 a,
 button,
 input {
@@ -81,6 +96,11 @@ input {
 .marquee {
   animation: marquee 30s linear infinite;
 }
+
+.form-button {
+  @apply border rounded border-primary-light px-2 py-1
+}
+
 
 @layer components {
   .marquee-container {

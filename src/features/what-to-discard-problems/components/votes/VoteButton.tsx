@@ -158,7 +158,7 @@ export default function VoteButton({
         onClick={handleClick}
         disabled={isSubmitting}
         className="h-full aspect-7/9 relative overflow-hidden">
-        <TileImage tile={tileId} />
+        <TileImage tileId={tileId} isShiny={tileId == problem.dora_id} />
         <Box
           position="absolute"
           inset="0"

@@ -34,6 +34,7 @@ import Tile32 from "@/public/tiles/32.webp";
 import Tile33 from "@/public/tiles/33.webp";
 import Tile34 from "@/public/tiles/34.webp";
 import tileNameById from "@/src/lib/utils/tileNameById";
+import { Box } from "@chakra-ui/react";
 
 export const tileImagePathByTileId: Record<number, StaticImageData> = {
   1: Tile1,
@@ -77,21 +78,27 @@ export default function TileImage({
   tileId,
   hover = true,
   className,
+  isShiny = false,
 }: {
   tile?: number | string;
   tileId?: number | string;
   hover?: boolean;
   className?: string;
+  isShiny?: boolean;
 }) {
   return (
-    <Image
-      width={49}
-      height={63}
-      src={tileImagePathByTileId[tileId || tile]}
-      alt={tileNameById[tileId || tile] || ""}
-      draggable="false"
-      className={`h-full aspect-7/9 object-contain transition-all rounded ${className} ${hover && "hover:scale-110"}`}
-      loading="lazy"
-    />
+    <Box className="h-full aspect-7/9 relative overflow-hidden">
+      <Image
+        width={49}
+        height={63}
+        src={tileImagePathByTileId[tileId || tile]}
+        alt={tileNameById[tileId || tile] || ""}
+        draggable="false"
+        className={`h-full aspect-7/9 object-contain transition-all rounded ${className} ${hover && "hover:scale-110"}`}
+        loading="lazy"
+      />
+
+      <div className={isShiny ? "shining-tile" : "hidden"} />
+    </Box>
   );
 }

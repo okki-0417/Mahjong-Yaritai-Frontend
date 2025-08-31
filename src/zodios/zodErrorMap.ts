@@ -6,7 +6,15 @@ const isEmptyValue = (data: any): boolean => {
 
 export const customDefaultErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (isEmptyValue(ctx.data)) {
-    return { message: "必須項目です" };
+    // Check if the field is nullable by looking at the issue
+    if (issue.code === z.ZodIssueCode.invalid_type && issue.received === "null") {
+      // If null is received and it's an invalid_type error, it means null is not allowed
+      return { message: "必須項目です" };
+    } else if (issue.code !== z.ZodIssueCode.invalid_type) {
+      // For other error codes with empty values, show required message
+      return { message: "必須項目です" };
+    }
+    // For invalid_type with empty values that aren't null, continue to switch statement
   }
 
   switch (issue.code) {
