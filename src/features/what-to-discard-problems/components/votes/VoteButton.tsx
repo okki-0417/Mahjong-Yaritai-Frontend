@@ -157,7 +157,7 @@ export default function VoteButton({
       <PopButton
         onClick={handleClick}
         disabled={isSubmitting}
-        className="h-full aspect-7/9 relative overflow-hidden">
+        className="h-full aspect-7/9 relative">
         <TileImage tileId={tileId} isShiny={tileId == problem.dora_id} />
         <Box
           position="absolute"

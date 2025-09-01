@@ -79,17 +79,16 @@ export default function ProblemCard({
                 problem.hand13_id,
               ].map((hand_id, index) => {
                 return (
-                  <Box minH="12" key={index}>
-                    <VoteButton
-                      problem={problem}
-                      tileId={hand_id}
-                      myVoteTileId={myVoteTileId}
-                      setMyVoteTileId={setMyVoteTileId}
-                      setVotesCount={setVotesCount}
-                      setVoteResult={setVoteResult}
-                      handleDisplayVoteResult={onOpen}
-                    />
-                  </Box>
+                  <VoteButton
+                    key={index}
+                    problem={problem}
+                    tileId={hand_id}
+                    myVoteTileId={myVoteTileId}
+                    setMyVoteTileId={setMyVoteTileId}
+                    setVotesCount={setVotesCount}
+                    setVoteResult={setVoteResult}
+                    handleDisplayVoteResult={onOpen}
+                  />
                 );
               })}
             </HStack>
