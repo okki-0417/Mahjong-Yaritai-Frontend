@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { Box, useDisclosure } from "@chakra-ui/react";
+import { Box, Skeleton, useDisclosure } from "@chakra-ui/react";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
@@ -46,6 +46,8 @@ export default function VoteButton({
 
     if (isSubmitting) return null;
     setIsSubmitting(true);
+
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
     try {
       if (!myVoteTileId) {
@@ -152,6 +154,14 @@ export default function VoteButton({
     return null;
   };
 
+  const VotingFallback = () => {
+    return (
+      <Box position="absolute" inset="0" zIndex="5" rounded="sm">
+        <Skeleton w="full" h="full" />
+      </Box>
+    );
+  };
+
   return (
     <>
       <PopButton onClick={handleClick} disabled={isSubmitting} className="aspect-tile relative">
@@ -162,6 +172,7 @@ export default function VoteButton({
           zIndex="10"
           className={`${myVoteTileId == tileId && "bg-blue-500/40"}`}
         />
+        {isSubmitting && <VotingFallback />}
       </PopButton>
 
       <NotLoggedInModal isOpen={isOpen} onClose={onClose} />

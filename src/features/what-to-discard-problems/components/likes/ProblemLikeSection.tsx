@@ -30,7 +30,6 @@ export default function ProblemLikeSection({
 
   const handleClick = async () => {
     if (!isLoggedIn) return onOpen();
-
     if (isSubmitting) return null;
     setIsSubmitting(true);
 
