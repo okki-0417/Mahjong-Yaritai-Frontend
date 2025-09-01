@@ -143,6 +143,7 @@ const WhatToDiscardProblem = z
     hand12_id: z.number().int(),
     hand13_id: z.number().int(),
     tsumo_id: z.number().int(),
+    description: z.string().nullish(),
     comments_count: z.number().int(),
     likes_count: z.number().int(),
     votes_count: z.number().int(),
@@ -178,6 +179,7 @@ const createWhatToDiscardProblem_Body = z
         hand12_id: z.string().min(1),
         hand13_id: z.string().min(1),
         tsumo_id: z.string().min(1),
+        description: z.string().optional(),
       })
       .passthrough(),
   })

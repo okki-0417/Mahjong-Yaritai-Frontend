@@ -14,6 +14,7 @@ import {
   FormLabel,
   HStack,
   Text,
+  Textarea,
   VisuallyHiddenInput,
   VStack,
   Wrap,
@@ -188,7 +189,7 @@ export default function ProblemForm({
             </HStack>
 
             <PopButton className="form-button" onClick={() => handleTileReset()}>
-              <Text as="span" fontSize="lg">
+              <Text as="span" fontSize={["md", "lg"]}>
                 牌をリセット
               </Text>
             </PopButton>
@@ -196,24 +197,36 @@ export default function ProblemForm({
 
           <Divider borderColor="gray.500" variant="dashed" mt="6" />
 
-          <Wrap mt="6">
-            {Array.from({ length: ALL_TILES_NUM }).map((_, index) => {
-              const tileId = String(index + 1);
-
-              return (
-                <Flex flexDir="column" alignItems="center" key={index}>
-                  <PopButton
-                    onClick={() => handleTileClick(tileId)}
-                    className="h-12 aspect-7/9 border  border-primary rounded-sm">
-                    <TileImage tile={tileId} hover={false} />
-                  </PopButton>
-                </Flex>
-              );
-            })}
-          </Wrap>
+          <Box mt="6">
+            <Text fontSize="sm">牌をクリックして選ぶ</Text>
+            <Wrap mt="1">
+              {Array.from({ length: ALL_TILES_NUM }).map((_, index) => {
+                const tileId = String(index + 1);
+                return (
+                  <Flex flexDir="column" alignItems="center" key={index}>
+                    <PopButton
+                      onClick={() => handleTileClick(tileId)}
+                      className="h-12 aspect-7/9 border  border-primary rounded-sm">
+                      <TileImage tile={tileId} hover={false} />
+                    </PopButton>
+                  </Flex>
+                );
+              })}
+            </Wrap>
+          </Box>
         </FormControl>
 
         <Button onClick={() => setDetailSettingVisible(!detailSettingVisible)}>詳細な設定</Button>
+
+        <VStack>
+          <FormControl>
+            <Textarea
+              {...register("what_to_discard_problem.description")}
+              placeholder="問題にコメントを追加する（任意）"
+              rows={5}
+            />
+          </FormControl>
+        </VStack>
 
         <VStack spacing="6" display={detailSettingVisible ? "flex" : "none"}>
           <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.round)}>

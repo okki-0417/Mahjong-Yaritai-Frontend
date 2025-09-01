@@ -51,6 +51,12 @@ export default function ClientProblemSection({
     return onOpenForm();
   };
 
+  const handleFormClose = () => {
+    const isConfirmed = window.confirm("フォームを閉じますか？入力内容は保存されません。");
+
+    if (isConfirmed) onCloseForm();
+  };
+
   return (
     <Box>
       <PopButton
@@ -63,11 +69,17 @@ export default function ClientProblemSection({
 
       <NotLoggedInModal isOpen={isNotLoggedInOpen} onClose={onCloseNotLoggedIn} />
 
-      <Modal isOpen={isFormOpen} onClose={onCloseForm} size="xl" scrollBehavior="inside">
+      <Modal
+        closeOnEsc={false}
+        closeOnOverlayClick={false}
+        isOpen={isFormOpen}
+        onClose={onCloseForm}
+        size="xl"
+        scrollBehavior="inside">
         <ModalOverlay />
         <ModalContent fontFamily="serif">
           <ModalHeader>何切る問題を作成</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton onClick={handleFormClose} />
           <ModalBody>
             <ProblemForm setIsCreateFormOpen={onCloseForm} setProblems={setProblems} />
           </ModalBody>

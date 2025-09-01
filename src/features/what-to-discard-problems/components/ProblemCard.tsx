@@ -3,15 +3,16 @@
 import ProblemCardHeader from "@/src/features/what-to-discard-problems/components/ProblemCardHeader";
 import ProblemLikeSection from "@/src/features/what-to-discard-problems/components/likes/ProblemLikeSection";
 import { schemas } from "@/src/zodios/api";
-import { Box, Flex, HStack, Text, useDisclosure, VStack, Wrap } from "@chakra-ui/react";
+import { Box, HStack, Text, useDisclosure, VStack, Wrap } from "@chakra-ui/react";
 import { z } from "zod";
 import ProblemVoteSection from "@/src/features/what-to-discard-problems/components/votes/ProblemVoteSection";
 import ProblemCommentSection from "@/src/features/what-to-discard-problems/components/comments/ProblemCommentSection";
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 import TileImage from "@/src/components/TileImage";
+import ProblemDescriptionModal from "@/src/features/what-to-discard-problems/components/ProblemDescriptionModal";
 
 export default function ProblemCard({
   problem,
@@ -27,14 +28,24 @@ export default function ProblemCard({
   const { session } = useContext(SessionContext);
   const myUserId = session?.user_id;
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isVoteResultOpen,
+    onOpen: onVoteResultOpen,
+    onClose: onVoteResultClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isDescriptionOpen,
+    onOpen: onDescriptionOpen,
+    onClose: onDescriptionClose,
+  } = useDisclosure();
 
   return (
-    <Box className="md:w-auto w-screen px-1">
+    <Box className="md:max-w-2xl w-screen px-1">
       <Text fontSize="sm">{new Date(problem.created_at).toLocaleString()}</Text>
 
-      <VStack borderRadius="md" className="bg-mj-mat" shadow="md" alignItems="stretch" gap="0">
-        <Box pt="2" px={["2", "4"]} pb="6">
+      <VStack borderRadius="md" shadow="md" alignItems="stretch" gap="0" overflow="hidden">
+        <Box pt="2" px={["2", "4"]} pb="6" className="bg-mj-mat">
           <ProblemCardHeader problem={problem} myUserId={myUserId} />
 
           <Wrap mt="2" spacingY="0" align="center">
@@ -56,43 +67,56 @@ export default function ProblemCard({
             </HStack>
           </Wrap>
 
-          <Flex
-            flexDir={["column", "row-reverse"]}
-            justifyContent="center"
-            alignItems={["stretch", "flex-end"]}
-            gap="3"
-            mt="2">
-            <HStack gap="1px" justify="center" alignItems="flex-end">
-              {[
-                problem.hand1_id,
-                problem.hand2_id,
-                problem.hand3_id,
-                problem.hand4_id,
-                problem.hand5_id,
-                problem.hand6_id,
-                problem.hand7_id,
-                problem.hand8_id,
-                problem.hand9_id,
-                problem.hand10_id,
-                problem.hand11_id,
-                problem.hand12_id,
-                problem.hand13_id,
-              ].map((hand_id, index) => {
-                return (
-                  <VoteButton
-                    key={index}
-                    problem={problem}
-                    tileId={hand_id}
-                    myVoteTileId={myVoteTileId}
-                    setMyVoteTileId={setMyVoteTileId}
-                    setVotesCount={setVotesCount}
-                    setVoteResult={setVoteResult}
-                    handleDisplayVoteResult={onOpen}
-                  />
-                );
-              })}
-            </HStack>
-          </Flex>
+          <HStack gap="1px" justify="center" alignItems="flex-end" mt="2">
+            {[
+              problem.hand1_id,
+              problem.hand2_id,
+              problem.hand3_id,
+              problem.hand4_id,
+              problem.hand5_id,
+              problem.hand6_id,
+              problem.hand7_id,
+              problem.hand8_id,
+              problem.hand9_id,
+              problem.hand10_id,
+              problem.hand11_id,
+              problem.hand12_id,
+              problem.hand13_id,
+            ].map((hand_id, index) => {
+              return (
+                <VoteButton
+                  key={index}
+                  problem={problem}
+                  tileId={hand_id}
+                  myVoteTileId={myVoteTileId}
+                  setMyVoteTileId={setMyVoteTileId}
+                  setVotesCount={setVotesCount}
+                  setVoteResult={setVoteResult}
+                  handleDisplayVoteResult={onVoteResultOpen}
+                />
+              );
+            })}
+          </HStack>
+
+          {problem.description && (
+            <Fragment>
+              <Box
+                mt="4"
+                className="line-clamp-2"
+                cursor="pointer"
+                position="relative"
+                onClick={onDescriptionOpen}>
+                <Text>{problem.description}</Text>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-mj-mat z-10" />
+              </Box>
+
+              <ProblemDescriptionModal
+                description={problem.description}
+                isOpen={isDescriptionOpen}
+                onClose={onDescriptionClose}
+              />
+            </Fragment>
+          )}
         </Box>
 
         <HStack
@@ -109,12 +133,12 @@ export default function ProblemCard({
             isVoted={Boolean(myVoteTileId)}
             votesCount={votesCount}
             setVoteResult={setVoteResult}
-            handleDisplayVoteResult={onOpen}
+            handleDisplayVoteResult={onVoteResultOpen}
           />
 
           <VoteResultModal
-            isOpen={isOpen}
-            onClose={onClose}
+            isOpen={isVoteResultOpen}
+            onClose={onVoteResultClose}
             problem={problem}
             myVoteTileId={myVoteTileId}
             setMyVoteTileId={setMyVoteTileId}
