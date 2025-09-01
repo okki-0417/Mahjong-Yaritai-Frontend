@@ -56,8 +56,16 @@
 	}
 }
 
+.aspect-tile {
+  @apply aspect-[47/63];
+}
+
 .shining-tile {
-  @apply h-[110%] w-10 rotate-15 absolute z-30 top-0;
+  @apply absolute z-30 inset-0;
+}
+
+.shining-tile::after {
+  @apply content-[''] h-[110%] w-10 rotate-15 absolute z-30 top-0;
   animation: 1.5s 0s shiningTile ease-in-out infinite;
   background: linear-gradient(to right, rgba(255,255,255,0) 25%, rgba(255,255,255,1) 50%, rgba(255, 255, 255, 0) 75%);
 }

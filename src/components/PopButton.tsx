@@ -36,7 +36,7 @@ export default function PopButton({
     <button
       type={type}
       onClick={handleClick}
-      className={`cursor-pointer drop-shadow-accent ${defaultClassName} ${className} ${animate ? "pop" : ""} hover:scale-105 transition-all`}
+      className={`cursor-pointer ${defaultClassName} ${className} ${animate ? "pop" : ""} hover:scale-105 transition-all p-0`}
       disabled={disabled}>
       {value}
       {children}

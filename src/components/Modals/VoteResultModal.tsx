@@ -1,3 +1,4 @@
+import TileImage from "@/src/components/TileImage";
 import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
 import { schemas } from "@/src/zodios/api";
 import {
@@ -38,7 +39,7 @@ export default function VoteResultModal({
   >;
 }) {
   return (
-    <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose} isCentered size="2xl">
+    <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose} isCentered size="3xl">
       <ModalOverlay />
 
       <ModalContent overflow="hidden">
@@ -48,8 +49,17 @@ export default function VoteResultModal({
 
         <ModalCloseButton className="text-primary" />
 
-        <ModalBody py="8" className=" bg-mj-mat" fontFamily="serif">
-          <HStack className="bg-mj-mat" justifyContent="center" gap={["1", "2"]}>
+        <ModalBody py="8" px={["1", "4"]} className=" bg-mj-mat" fontFamily="serif">
+          <HStack w={["18", "24"]}>
+            <Text as="span" className="text-neutral" fontSize={["md", "lg"]}>
+              ドラ
+            </Text>
+            <Box w={["6", "8"]}>
+              <TileImage tileId={problem.dora_id} hover={false} />
+            </Box>
+          </HStack>
+
+          <HStack className="bg-mj-mat" justify="center" gap={["1px", "2"]}>
             {voteResult?.map((result, index) => {
               return (
                 <Grid key={index} gridTemplateRows="repeat(5,minmax(0,1fr))" gap="1">
@@ -71,7 +81,7 @@ export default function VoteResultModal({
                     />
                   </VStack>
 
-                  <Box gridRow="span 1/span 1" w={["5", "auto"]}>
+                  <Box gridRow="span 1/span 1">
                     <VoteButton
                       problem={problem}
                       tileId={result.tile_id}

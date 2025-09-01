@@ -62,7 +62,7 @@ export default function ProblemCard({
             alignItems={["stretch", "flex-end"]}
             gap="3"
             mt="2">
-            <HStack gap="0" justify="center" alignItems="flex-end">
+            <HStack gap="1px" justify="center" alignItems="flex-end">
               {[
                 problem.hand1_id,
                 problem.hand2_id,
