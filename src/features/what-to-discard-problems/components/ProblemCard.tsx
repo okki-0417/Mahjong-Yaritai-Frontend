@@ -61,8 +61,16 @@ export default function ProblemCard({
             </HStack>
             <HStack gap="1">
               <Text fontSize={["md", "lg"]}>ツモ</Text>
-              <Box h="8" aspectRatio="7/9">
-                <TileImage tileId={problem.tsumo_id} hover={false} />
+              <Box h="8" className="aspect-tile">
+                <VoteButton
+                  problem={problem}
+                  tileId={problem.tsumo_id}
+                  myVoteTileId={myVoteTileId}
+                  setMyVoteTileId={setMyVoteTileId}
+                  setVotesCount={setVotesCount}
+                  setVoteResult={setVoteResult}
+                  handleDisplayVoteResult={onVoteResultOpen}
+                />
               </Box>
             </HStack>
           </Wrap>
