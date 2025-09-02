@@ -30,7 +30,7 @@ export default function Header() {
               className="w-[70vw] mx-auto">
               <Link href="/">
                 <HStack>
-                  <Circle overflow="hidden">
+                  <Circle overflow="hidden" size={["8", "auto"]}>
                     <Image
                       src={LogoImg}
                       alt="麻雀好きが集まる場所"
