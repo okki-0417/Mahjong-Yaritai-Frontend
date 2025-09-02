@@ -1,5 +1,4 @@
 import HamburgerCheckBox from "@/src/components/sideNavigation/HamburgerCheckBox";
-import LogoutAndWithdraw from "@/src/components/sideNavigation/LogoutAndWithdraw";
 import { Box, Container, HStack, ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -17,15 +16,11 @@ export default function SideNavigation() {
       />
       <label
         htmlFor="hamburger"
-        className="absolute top-7 right-6 block w-8 h-1 bg-white peer-checked:hidden"
+        className="absolute top-7 right-6 block w-8 h-1 bg-white peer-checked:hidden z-20"
       />
       <label
         htmlFor="hamburger"
         className="absolute top-10 right-6 block w-8 h-1 bg-white transition-all peer-checked:-rotate-45 peer-checked:-translate-y-3 z-20"
-      />
-      <label
-        htmlFor="hamburger"
-        className="top-0 left-0 w-screen h-screen peer-checked:fixed z-10 peer-checked:block hidden bg-black/50"
       />
 
       <Box
@@ -39,7 +34,7 @@ export default function SideNavigation() {
         className="h-screen bg-primary-light transition-all translate-x-full peer-checked:translate-x-0">
         <Container maxW="xs" mt="24" px="8">
           <UnorderedList listStyleType="none">
-            <VStack alignItems="stretch" spacing={3}>
+            <VStack alignItems="stretch" gap="0">
               <ListItem>
                 <Link href="/what-to-discard-problems" className="w-full">
                   <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
@@ -64,8 +59,6 @@ export default function SideNavigation() {
                   </HStack>
                 </Link>
               </ListItem>
-
-              <LogoutAndWithdraw />
             </VStack>
           </UnorderedList>
         </Container>

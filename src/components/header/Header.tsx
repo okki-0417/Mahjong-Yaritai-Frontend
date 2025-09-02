@@ -15,14 +15,19 @@ import LoginSection from "@/src/components/header/LoginSection";
 import { Fragment } from "react";
 import SideNavigation from "@/src/components/sideNavigation/SideNavigation";
 import LogoImg from "@/public/logo.webp";
+import LoginUserMenu from "@/src/components/LoginUserMenu/LoginUserMenu";
 
 export default function Header() {
   return (
     <Fragment>
-      <Box as="header" w="full" zIndex="50">
+      <Box as="header" w="full" zIndex="50" position="fixed" top="0" left="0" shadow="md">
         <Center as="nav" h="16" position="relative" className="bg-primary">
+          <LoginUserMenu />
+
           <Container maxW="5xl">
-            <HStack justifyContent={["center", "space-between"]}>
+            <HStack
+              justifyContent={["center", "center", "space-between"]}
+              className="w-[70vw] mx-auto">
               <Link href="/">
                 <HStack>
                   <Circle overflow="hidden">
@@ -34,7 +39,7 @@ export default function Header() {
                       className="aspect-square"
                     />
                   </Circle>
-                  <Text fontWeight="bold" fontSize={["2xl", "3xl"]}>
+                  <Text fontWeight="bold" fontSize={["xl", "2xl", "3xl"]}>
                     麻雀ヤリタイ
                   </Text>
                 </HStack>

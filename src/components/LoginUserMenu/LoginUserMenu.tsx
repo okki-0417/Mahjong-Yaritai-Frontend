@@ -1,0 +1,111 @@
+"use client";
+
+import LoginUserMenuCheckBox from "@/src/components/LoginUserMenu/LoginUserMenuCheckBox";
+import { CgProfile } from "react-icons/cg";
+import UserIcon from "@/src/components/LoginUserMenu/UserIcon";
+import {
+  Box,
+  Container,
+  Divider,
+  HStack,
+  ListItem,
+  Text,
+  UnorderedList,
+  VStack,
+} from "@chakra-ui/react";
+import Link from "next/link";
+import { Fragment, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { apiClient } from "@/src/lib/api/client";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
+import LogoutSection from "@/src/components/sideNavigation/LogoutButton";
+import { FaUserTimes } from "react-icons/fa";
+
+export default function LoginUserMenu() {
+  const [session, setSession] = useState<z.infer<typeof schemas.Session> | null>(null);
+  const pathName = usePathname();
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await apiClient.getSession();
+        return setSession(response.session);
+      } catch {
+        return null;
+      }
+    };
+
+    fetchSession();
+  }, [pathName]);
+
+  return (
+    <Box>
+      {session?.is_logged_in && (
+        <Fragment>
+          <LoginUserMenuCheckBox />
+
+          <label
+            htmlFor="login-user-menu"
+            className="absolute left-4 top-2 z-20 inline-block cursor-pointer rounded-full">
+            <UserIcon user={session?.user} />
+          </label>
+
+          <label
+            htmlFor="login-user-menu"
+            className="top-0 left-0 w-screen h-screen peer-checked:fixed z-10 peer-checked:block hidden bg-black/50"
+          />
+
+          <Box
+            as="nav"
+            position="fixed"
+            top="0"
+            left="0"
+            w={["72", "xs"]}
+            shadow="dark-lg"
+            zIndex="10"
+            className="h-screen bg-primary-light transition-all -translate-x-full peer-checked:translate-x-0">
+            <Container maxW="xs" mt="24" px="8">
+              <UnorderedList listStyleType="none">
+                <VStack alignItems="stretch" gap="0">
+                  <ListItem>
+                    <Link href={`/users/${session.user_id}`} className="w-full">
+                      <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
+                        <CgProfile size={20} />
+                        <Text fontSize="lg">プロフィール</Text>
+                      </HStack>
+                    </Link>
+                  </ListItem>
+
+                  <Divider my="4" />
+
+                  <ListItem>
+                    <LogoutSection />
+                  </ListItem>
+
+                  <ListItem>
+                    <Link href="/me/withdrawal">
+                      <Box
+                        w="full"
+                        py={3}
+                        px={4}
+                        borderRadius="md"
+                        color="red.500"
+                        _hover={{ bg: "red.50" }}
+                        transition="background-color 0.2s">
+                        <HStack>
+                          <FaUserTimes size={18} />
+                          <Text fontSize="lg">退会</Text>
+                        </HStack>
+                      </Box>
+                    </Link>
+                  </ListItem>
+                </VStack>
+              </UnorderedList>
+            </Container>
+          </Box>
+        </Fragment>
+      )}
+    </Box>
+  );
+}

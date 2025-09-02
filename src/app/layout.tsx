@@ -51,7 +51,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main
             className="flex lg:pb-0 pb-24 flex-col min-h-screen bg-secondary overflow-x-hidden text-neutral"
             style={{ fontFamily: "PT Serif, serif" }}>
-            <Header />
+            <div className="mb-16">
+              <Header />
+            </div>
             {children}
             <Footer />
           </main>

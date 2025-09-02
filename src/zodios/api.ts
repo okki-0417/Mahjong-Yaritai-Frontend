@@ -2,7 +2,11 @@ import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
 const Session = z
-  .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
+  .object({
+    is_logged_in: z.boolean(),
+    user_id: z.number().int().nullable(),
+    user: z.object({ avatar_url: z.string().nullable() }).partial().passthrough().nullable(),
+  })
   .passthrough();
 const createLineCallback_Body = z.object({ code: z.string(), state: z.string() }).passthrough();
 const createAuthRequest_Body = z
@@ -16,7 +20,7 @@ const User = z
     id: z.number().int(),
     name: z.string(),
     profile_text: z.string().nullish(),
-    avatar_url: z.string().nullable(),
+    avatar_url: z.string().nullish(),
     created_at: z.string(),
     updated_at: z.string(),
   })
