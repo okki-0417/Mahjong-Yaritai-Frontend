@@ -33,7 +33,7 @@ export default function Profile({
         <ProfileEditForm user={userInfo} setUser={setUserInfo} setIsEditMode={setIsEditMode} />
       ) : (
         <VStack spacing={4}>
-          <Circle size="200" overflow="hidden">
+          <Circle size={["150", "200"]} overflow="hidden">
             <Image
               src={user?.avatar_url || "/no-image.webp"}
               w="full"
@@ -45,18 +45,18 @@ export default function Profile({
           </Circle>
 
           <Box textAlign="center" maxW="md" mx="auto">
-            <Text fontSize="4xl" wordBreak="break-word">
+            <Text fontSize={["2xl", "4xl"]} wordBreak="break-word">
               {user?.name}
             </Text>
           </Box>
 
-          <Box maxW="md" mx="auto">
+          <Box>
             {user?.profile_text ? (
-              <Text fontSize="lg" whiteSpace="pre-wrap" wordBreak="break-word">
+              <Text fontSize={["md", "lg"]} whiteSpace="pre-wrap" wordBreak="break-word">
                 {user.profile_text}
               </Text>
             ) : (
-              <Text fontSize="lg" color="gray.500" fontStyle="italic">
+              <Text fontSize={["md", "lg"]} color="gray.500" fontStyle="italic">
                 自己紹介文が設定されていません
               </Text>
             )}

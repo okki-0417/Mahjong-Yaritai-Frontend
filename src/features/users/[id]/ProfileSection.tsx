@@ -6,14 +6,10 @@ export default async function ProfileSection({ id }: { id: string }) {
   const apiPageClient = await createApiPageClient();
 
   try {
-    const user_response = await apiPageClient.getUser({ params: { id } });
-    const session_response = await apiPageClient.getSession();
+    const response = await apiPageClient.getSession();
 
     return (
-      <Profile
-        user={user_response.user}
-        isMyProfile={session_response.user_id == user_response.user.id}
-      />
+      <Profile user={response.session.user} isMyProfile={String(response.session.user_id) == id} />
     );
   } catch (error) {
     return (

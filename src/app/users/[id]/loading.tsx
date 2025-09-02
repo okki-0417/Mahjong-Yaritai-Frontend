@@ -1,5 +1,5 @@
-import PageLoading from "@/src/components/fallbacks/PageLoading";
+import UserProfileSkeleton from "@/src/components/fallbacks/UserProfileSkeleton";
 
 export default function Loading() {
-  return <PageLoading />;
+  return <UserProfileSkeleton />;
 }
