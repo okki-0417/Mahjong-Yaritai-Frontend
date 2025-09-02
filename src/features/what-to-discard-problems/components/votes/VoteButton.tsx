@@ -47,8 +47,6 @@ export default function VoteButton({
     if (isSubmitting) return null;
     setIsSubmitting(true);
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
     try {
       if (!myVoteTileId) {
         const response = await apiClient.createWhatToDiscardProblemMyVote(

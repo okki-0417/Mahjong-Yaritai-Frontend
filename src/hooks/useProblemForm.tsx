@@ -1,8 +1,8 @@
-"use client";
-
-import { SubmitHandler } from "react-hook-form";
+import PopButton from "@/src/components/PopButton";
+import TileImage from "@/src/components/TileImage";
+import { customCreateWhatToDiscardProblem_BodySchema } from "@/src/features/what-to-discard-problems/schema/customWhatToDiscardProblemSchema";
 import { useCustomForm } from "@/src/hooks/useCustomForm";
-import { Dispatch, SetStateAction, useState } from "react";
+import { schemas } from "@/src/zodios/api";
 import {
   Box,
   Button,
@@ -19,19 +19,14 @@ import {
   VStack,
   Wrap,
 } from "@chakra-ui/react";
-import useErrorToast from "@/src/hooks/useErrorToast";
-import PopButton from "@/src/components/PopButton";
-import TileImage from "@/src/components/TileImage";
-import { apiClient } from "@/src/lib/api/client";
-import { schemas } from "@/src/zodios/api";
-import { z } from "zod";
-import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { customCreateWhatToDiscardProblem_BodySchema } from "@/src/features/what-to-discard-problems/schema/customWhatToDiscardProbemSchema";
+import { useState } from "react";
+import { SubmitHandler } from "react-hook-form";
+import { z } from "zod";
 
 const MAX_TURN = 18;
 const ALL_TILES_NUM = 34;
-export const handFieldNames = [
+const handFieldNames = [
   "what_to_discard_problem.hand1_id",
   "what_to_discard_problem.hand2_id",
   "what_to_discard_problem.hand3_id",
@@ -49,21 +44,14 @@ export const handFieldNames = [
 
 const tileFieldNames = [
   ...handFieldNames,
-  "what_to_discard_problem.dora_id",
   "what_to_discard_problem.tsumo_id",
+  "what_to_discard_problem.dora_id",
 ] as const;
 
-export default function ProblemForm({
-  setIsCreateFormOpen,
-  setProblems,
-}: {
-  setIsCreateFormOpen: Dispatch<SetStateAction<boolean>>;
-  setProblems: Dispatch<SetStateAction<z.infer<typeof schemas.WhatToDiscardProblem>[]>>;
-}) {
+export default function useProblemForm(problem: z.infer<typeof schemas.WhatToDiscardProblem> = {}) {
   const [focussedTileFieldName, setFocussedTileFieldName] = useState<
     (typeof tileFieldNames)[number]
   >("what_to_discard_problem.hand1_id");
-
   const [detailSettingVisible, setDetailSettingVisible] = useState(false);
 
   const {
@@ -76,9 +64,33 @@ export default function ProblemForm({
   } = useCustomForm<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>({
     resolver: zodResolver(customCreateWhatToDiscardProblem_BodySchema),
     mode: "onChange",
+    defaultValues: {
+      what_to_discard_problem: {
+        hand1_id: String(problem.hand1_id || ""),
+        hand2_id: String(problem.hand2_id || ""),
+        hand3_id: String(problem.hand3_id || ""),
+        hand4_id: String(problem.hand4_id || ""),
+        hand5_id: String(problem.hand5_id || ""),
+        hand6_id: String(problem.hand6_id || ""),
+        hand7_id: String(problem.hand7_id || ""),
+        hand8_id: String(problem.hand8_id || ""),
+        hand9_id: String(problem.hand9_id || ""),
+        hand10_id: String(problem.hand10_id || ""),
+        hand11_id: String(problem.hand11_id || ""),
+        hand12_id: String(problem.hand12_id || ""),
+        hand13_id: String(problem.hand13_id || ""),
+        dora_id: String(problem.dora_id || ""),
+        tsumo_id: String(problem.tsumo_id || ""),
+        round: problem.round,
+        turn: String(problem.turn || ""),
+        wind: problem.wind,
+        points: String(problem.points || ""),
+        description: problem.description || "",
+      },
+    },
   });
 
-  const tileFiledErrors = [
+  const tileFieldErrors = [
     errors.what_to_discard_problem?.hand1_id,
     errors.what_to_discard_problem?.hand2_id,
     errors.what_to_discard_problem?.hand3_id,
@@ -95,26 +107,6 @@ export default function ProblemForm({
     errors.what_to_discard_problem?.tsumo_id,
     errors.what_to_discard_problem?.dora_id,
   ];
-
-  const successToast = useSuccessToast();
-  const errorToast = useErrorToast();
-
-  const onSubmit: SubmitHandler<
-    z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>
-  > = async formData => {
-    const isConfirmed = confirm("これで作成しますか？");
-    if (!isConfirmed) return;
-
-    try {
-      const response = await apiClient.createWhatToDiscardProblem(formData);
-
-      setProblems(prev => [response.what_to_discard_problem, ...prev]);
-      setIsCreateFormOpen(false);
-      successToast({ title: "何切る問題を作成しました" });
-    } catch (error) {
-      errorToast({ error, title: "何切る問題の作成に失敗しました" });
-    }
-  };
 
   const handleTileClick = (tileId: string) => {
     setValue(focussedTileFieldName, tileId);
@@ -135,32 +127,38 @@ export default function ProblemForm({
     setFocussedTileFieldName("what_to_discard_problem.hand1_id");
   };
 
-  const TileDisplay = ({ fieldName }: { fieldName: typeof focussedTileFieldName }) => (
-    <Box>
-      <VisuallyHiddenInput {...register(fieldName)} readOnly />
-      <button
-        type="button"
-        onClick={() => setFocussedTileFieldName(fieldName)}
-        className={`h-12 aspect-7/9 border rounded-sm ${
-          focussedTileFieldName == fieldName
-            ? "border-blue-500 shadow shadow-blue-500"
-            : "border-secondary"
-        }`}>
-        {watch(fieldName) && <TileImage tileId={getValues(fieldName)} hover={false} />}
-      </button>
-    </Box>
-  );
+  const TileDisplay = ({ fieldName }: { fieldName: typeof focussedTileFieldName }) => {
+    return (
+      <Box>
+        <VisuallyHiddenInput {...register(fieldName)} readOnly />
+        <button
+          type="button"
+          onClick={() => setFocussedTileFieldName(fieldName)}
+          className={`h-12 aspect-tile border rounded-sm ${
+            focussedTileFieldName == fieldName
+              ? "border-blue-500 shadow shadow-blue-500"
+              : "border-secondary"
+          }`}>
+          {watch(fieldName) && <TileImage tileId={getValues(fieldName)} hover={false} />}
+        </button>
+      </Box>
+    );
+  };
 
-  return (
+  const BaseForm = ({
+    onSubmit,
+  }: {
+    onSubmit: SubmitHandler<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>;
+  }) => (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-neutral text-primary">
       <VStack gap={6} align="stretch">
-        <FormControl isRequired isInvalid={tileFiledErrors.some(Boolean)}>
+        <FormControl isRequired isInvalid={tileFieldErrors.some(Boolean)}>
           <VStack alignItems="start">
-            <FormErrorMessage>{tileFiledErrors.find(Boolean)?.message}</FormErrorMessage>
+            <FormErrorMessage>{tileFieldErrors.find(Boolean)?.message}</FormErrorMessage>
 
             <Box>
               <FormLabel fontSize="lg" m="0">
-                手牌
+                <span>手牌</span>
               </FormLabel>
 
               <Wrap gap="0" mt="2">
@@ -173,7 +171,7 @@ export default function ProblemForm({
             <HStack>
               <Box>
                 <FormLabel fontSize="md" m="0">
-                  ツモ
+                  <span>ツモ</span>
                 </FormLabel>
 
                 <TileDisplay fieldName="what_to_discard_problem.tsumo_id" />
@@ -181,7 +179,7 @@ export default function ProblemForm({
 
               <Box>
                 <FormLabel fontSize="md" m="0">
-                  ドラ
+                  <span>ドラ</span>
                 </FormLabel>
 
                 <TileDisplay fieldName="what_to_discard_problem.dora_id" />
@@ -216,7 +214,7 @@ export default function ProblemForm({
           </Box>
         </FormControl>
 
-        <Button onClick={() => setDetailSettingVisible(!detailSettingVisible)}>詳細な設定</Button>
+        <Button onClick={() => setDetailSettingVisible(prev => !prev)}>詳細な設定</Button>
 
         <VStack>
           <FormControl>
@@ -397,6 +395,8 @@ export default function ProblemForm({
       </VStack>
     </form>
   );
+
+  return { BaseForm };
 }
 
 const DisplayInput = ({

@@ -143,7 +143,7 @@ const WhatToDiscardProblem = z
     hand12_id: z.number().int(),
     hand13_id: z.number().int(),
     tsumo_id: z.number().int(),
-    description: z.string().nullish(),
+    description: z.string().nullable(),
     comments_count: z.number().int(),
     likes_count: z.number().int(),
     votes_count: z.number().int(),
@@ -579,6 +579,32 @@ const endpoints = makeApi([
       },
     ],
     response: z.void(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "put",
+    path: "/what_to_discard_problems/:id",
+    alias: "updateWhatToDiscardProblem",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: createWhatToDiscardProblem_Body,
+      },
+      {
+        name: "id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ what_to_discard_problem: WhatToDiscardProblem }).passthrough(),
     errors: [
       {
         status: 401,

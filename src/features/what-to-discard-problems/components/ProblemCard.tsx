@@ -45,7 +45,7 @@ export default function ProblemCard({
       <Text fontSize="sm">{new Date(problem.created_at).toLocaleString()}</Text>
 
       <VStack borderRadius="md" shadow="md" alignItems="stretch" gap="0" overflow="hidden">
-        <Box pt="2" px={["2", "4"]} pb="6" className="bg-mj-mat">
+        <Box pt="2" px={["2", "4"]} pb="3" className="bg-mj-mat">
           <ProblemCardHeader problem={problem} myUserId={myUserId} />
 
           <Wrap mt="2" spacingY="0" align="center">
@@ -106,7 +106,7 @@ export default function ProblemCard({
                 cursor="pointer"
                 position="relative"
                 onClick={onDescriptionOpen}>
-                <Text>{problem.description}</Text>
+                <Text fontSize={["sm", "md"]}>{problem.description}</Text>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-mj-mat z-10" />
               </Box>
 

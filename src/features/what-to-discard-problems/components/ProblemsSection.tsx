@@ -1,4 +1,5 @@
 import ClientProblemSection from "@/src/features/what-to-discard-problems/components/ClientProblemSection";
+import ProblemsContextProvider from "@/src/features/what-to-discard-problems/context-providers/ProblemsContextProvider";
 import SessionContextProvider from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 import createApiPageClient from "@/src/lib/api/server";
 import { Box, Text, VStack } from "@chakra-ui/react";
@@ -14,12 +15,11 @@ export default async function ProblemsSection() {
     const session_response = await apiPageClient.getSession();
 
     return (
-      <SessionContextProvider session={session_response.session}>
-        <ClientProblemSection
-          initialProblems={problems_response.what_to_discard_problems}
-          initialCursor={problems_response.meta.cursor}
-        />
-      </SessionContextProvider>
+      <ProblemsContextProvider initialProblems={problems_response.what_to_discard_problems}>
+        <SessionContextProvider session={session_response.session}>
+          <ClientProblemSection initialCursor={problems_response.meta.cursor} />
+        </SessionContextProvider>
+      </ProblemsContextProvider>
     );
   } catch (error) {
     return (

@@ -2,37 +2,22 @@
 
 import LoadNextPageProblemButton from "@/src/features/what-to-discard-problems/components/LoadNextPageProblemButton";
 import ProblemCard from "@/src/features/what-to-discard-problems/components/ProblemCard";
-import {
-  Box,
-  Flex,
-  useDisclosure,
-  VStack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Text,
-  ModalFooter,
-} from "@chakra-ui/react";
+import { Box, Flex, useDisclosure, VStack, Text } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import PopButton from "@/src/components/PopButton";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
-import ProblemForm from "@/src/features/what-to-discard-problems/components/ProblemForm";
 import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
+import ProblemCreateFormModal from "@/src/features/what-to-discard-problems/components/ProblemCreateFormModal";
+import { ProblemsContext } from "@/src/features/what-to-discard-problems/context-providers/ProblemsContextProvider";
 
 export default function ClientProblemSection({
-  initialProblems,
   initialCursor,
 }: {
-  initialProblems: z.infer<typeof schemas.WhatToDiscardProblem>[];
   initialCursor: z.infer<typeof schemas.CursorPagination>;
 }) {
-  const [problems, setProblems] =
-    useState<z.infer<typeof schemas.WhatToDiscardProblem>[]>(initialProblems);
+  const { problems, setProblems } = useContext(ProblemsContext);
   const [cursor, setCursor] =
     useState<z.infer<typeof schemas.CursorPagination | null>>(initialCursor);
 
@@ -51,12 +36,6 @@ export default function ClientProblemSection({
     return onOpenForm();
   };
 
-  const handleFormClose = () => {
-    const isConfirmed = window.confirm("フォームを閉じますか？入力内容は保存されません。");
-
-    if (isConfirmed) onCloseForm();
-  };
-
   return (
     <Box>
       <PopButton
@@ -69,23 +48,7 @@ export default function ClientProblemSection({
 
       <NotLoggedInModal isOpen={isNotLoggedInOpen} onClose={onCloseNotLoggedIn} />
 
-      <Modal
-        closeOnEsc={false}
-        closeOnOverlayClick={false}
-        isOpen={isFormOpen}
-        onClose={onCloseForm}
-        size="xl"
-        scrollBehavior="inside">
-        <ModalOverlay />
-        <ModalContent fontFamily="serif">
-          <ModalHeader>何切る問題を作成</ModalHeader>
-          <ModalCloseButton onClick={handleFormClose} />
-          <ModalBody>
-            <ProblemForm setIsCreateFormOpen={onCloseForm} setProblems={setProblems} />
-          </ModalBody>
-          <ModalFooter />
-        </ModalContent>
-      </Modal>
+      <ProblemCreateFormModal isOpen={isFormOpen} onClose={onCloseForm} setProblems={setProblems} />
 
       <VStack gap={["8", "16"]}>
         {problems.map(problem => (
