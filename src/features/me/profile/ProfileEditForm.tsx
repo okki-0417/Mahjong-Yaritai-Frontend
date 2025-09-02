@@ -68,11 +68,7 @@ export default function ProfileEditForm({
 
   const onSubmit: SubmitHandler<z.infer<typeof schemas.updateUser_Body>> = async formInputs => {
     try {
-      const response = await apiClient.updateUser(formInputs, {
-        params: {
-          id: String(user?.id),
-        },
-      });
+      const response = await apiClient.updateUser(formInputs);
 
       setUser(response.user);
       setIsEditMode(false);
