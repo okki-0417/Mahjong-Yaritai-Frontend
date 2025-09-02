@@ -1,20 +1,13 @@
 import UserProfileSkeleton from "@/src/components/fallbacks/UserProfileSkeleton";
-import UserProfileSection from "@/src/features/users/[id]/UserProfileSection";
+import ProfileSection from "@/src/features/me/profile/ProfileSection";
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
 
-export type UserType = {
-  name: string;
-  avatar_url: string;
-};
-
-export default async function UserShow({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-
+export default function MeProfilePage() {
   return (
     <Container mt={["10", "12"]} maxW="lg" mb="20">
       <Suspense fallback={<UserProfileSkeleton />}>
-        <UserProfileSection id={id} />
+        <ProfileSection />
       </Suspense>
     </Container>
   );

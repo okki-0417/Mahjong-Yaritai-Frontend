@@ -3,10 +3,6 @@ import { Container, Skeleton, SkeletonText, SkeletonCircle, HStack } from "@chak
 export default function UserProfileSkeleton() {
   return (
     <Container maxW="lg" px="0" mx="0">
-      <HStack justify="end">
-        <Skeleton height="40px" width="48px" borderRadius="md" />
-      </HStack>
-
       <HStack justify="center" mt="4" w="full">
         <SkeletonCircle size={["150", "200"]} />
       </HStack>

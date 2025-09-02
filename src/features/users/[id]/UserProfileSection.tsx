@@ -1,16 +1,18 @@
 import { Box, VStack, Alert, AlertIcon, AlertTitle, AlertDescription } from "@chakra-ui/react";
-import Profile from "@/src/features/users/[id]/Profile";
 import createApiPageClient from "@/src/lib/api/server";
+import UserProfile from "@/src/components/UserProfile";
 
-export default async function ProfileSection({ id }: { id: string }) {
+export default async function UserProfileSection({ id }: { id: string }) {
   const apiPageClient = await createApiPageClient();
 
   try {
-    const response = await apiPageClient.getSession();
+    const response = await apiPageClient.getUser({
+      params: {
+        id,
+      },
+    });
 
-    return (
-      <Profile user={response.session.user} isMyProfile={String(response.session.user_id) == id} />
-    );
+    return <UserProfile user={response.user} />;
   } catch (error) {
     return (
       <Box textAlign="center" py={16}>

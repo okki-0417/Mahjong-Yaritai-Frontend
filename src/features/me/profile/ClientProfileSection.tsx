@@ -1,0 +1,36 @@
+"use client";
+
+import UserProfile from "@/src/components/UserProfile";
+import ProfileEditForm from "@/src/features/me/profile/ProfileEditForm";
+import { schemas } from "@/src/zodios/api";
+import { EditIcon } from "@chakra-ui/icons";
+import { Box, Button } from "@chakra-ui/react";
+import { Fragment, useState } from "react";
+import { z } from "zod";
+
+export default function ClientProfileSection({
+  initialProfile,
+}: {
+  initialProfile: z.infer<typeof schemas.User>;
+}) {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [profile, setProfile] = useState(initialProfile);
+
+  return (
+    <Fragment>
+      <Box textAlign="right">
+        <Button
+          colorScheme={isEditMode ? "pink" : "whiteAlpha"}
+          onClick={() => setIsEditMode(!isEditMode)}>
+          <EditIcon />
+        </Button>
+      </Box>
+
+      {isEditMode ? (
+        <ProfileEditForm setIsEditMode={setIsEditMode} user={profile} setUser={setProfile} />
+      ) : (
+        <UserProfile user={profile} />
+      )}
+    </Fragment>
+  );
+}

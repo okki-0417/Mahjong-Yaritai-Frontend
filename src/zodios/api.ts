@@ -2,11 +2,7 @@ import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
 const Session = z
-  .object({
-    is_logged_in: z.boolean(),
-    user_id: z.number().int().nullable(),
-    user: z.object({ avatar_url: z.string().nullable() }).partial().passthrough().nullable(),
-  })
+  .object({ is_logged_in: z.boolean(), user_id: z.number().int().nullable() })
   .passthrough();
 const createLineCallback_Body = z.object({ code: z.string(), state: z.string() }).passthrough();
 const createAuthRequest_Body = z
@@ -45,6 +41,13 @@ const LearningQuestion = z
     updated_at: z.string(),
   })
   .passthrough();
+const updateUser_Body = z
+  .object({
+    name: z.string().min(1).max(20),
+    profile_text: z.string().max(500).optional(),
+    avatar: z.instanceof(File).optional(),
+  })
+  .passthrough();
 const WithdrawalSummary = z
   .object({ what_to_discard_problems_count: z.number().int() })
   .passthrough();
@@ -53,13 +56,6 @@ const createUser_Body = z
     name: z.string().min(1).max(20),
     profile_text: z.string().max(500).optional(),
     avatar: z.instanceof(File),
-  })
-  .passthrough();
-const updateUser_Body = z
-  .object({
-    name: z.string().min(1).max(20),
-    profile_text: z.string().max(500).optional(),
-    avatar: z.instanceof(File).optional(),
   })
   .passthrough();
 const Comment = z
@@ -198,9 +194,9 @@ export const schemas = {
   Errors,
   LearningCategory,
   LearningQuestion,
+  updateUser_Body,
   WithdrawalSummary,
   createUser_Body,
-  updateUser_Body,
   Comment,
   createComment_Body,
   Like,
@@ -380,6 +376,46 @@ const endpoints = makeApi([
     response: z.object({ learning_category: LearningCategory }).passthrough(),
   },
   {
+    method: "get",
+    path: "/me/profile",
+    alias: "getProfile",
+    requestFormat: "json",
+    response: z.object({ profile: User }).passthrough(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "put",
+    path: "/me/profile",
+    alias: "updateUser",
+    requestFormat: "form-data",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: updateUser_Body,
+      },
+    ],
+    response: z.object({ user: User }).passthrough(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z.void(),
+      },
+      {
+        status: 422,
+        description: `unprocessable_entity`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
     method: "post",
     path: "/me/withdrawal",
     alias: "withdrawUser",
@@ -472,37 +508,6 @@ const endpoints = makeApi([
       },
     ],
     response: z.object({ user: User }).passthrough(),
-  },
-  {
-    method: "put",
-    path: "/users/:id",
-    alias: "updateUser",
-    requestFormat: "form-data",
-    parameters: [
-      {
-        name: "body",
-        type: "Body",
-        schema: updateUser_Body,
-      },
-      {
-        name: "id",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: z.object({ user: User }).passthrough(),
-    errors: [
-      {
-        status: 401,
-        description: `unauthorized`,
-        schema: z.void(),
-      },
-      {
-        status: 422,
-        description: `unprocessable_entity`,
-        schema: z.void(),
-      },
-    ],
   },
   {
     method: "delete",

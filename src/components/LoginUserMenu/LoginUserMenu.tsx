@@ -23,32 +23,32 @@ import LogoutSection from "@/src/components/sideNavigation/LogoutButton";
 import { FaUserTimes } from "react-icons/fa";
 
 export default function LoginUserMenu() {
-  const [session, setSession] = useState<z.infer<typeof schemas.Session> | null>(null);
+  const [profile, setProfile] = useState<z.infer<typeof schemas.User> | null>(null);
   const pathName = usePathname();
 
   useEffect(() => {
-    const fetchSession = async () => {
+    const fetchProfile = async () => {
       try {
-        const response = await apiClient.getSession();
-        return setSession(response.session);
+        const response = await apiClient.getProfile();
+        return setProfile(response.profile);
       } catch {
         return null;
       }
     };
 
-    fetchSession();
+    fetchProfile();
   }, [pathName]);
 
   return (
     <Box>
-      {session?.is_logged_in && (
+      {profile && (
         <Fragment>
           <LoginUserMenuCheckBox />
 
           <label
             htmlFor="login-user-menu"
             className="absolute left-4 top-2 z-20 inline-block cursor-pointer rounded-full">
-            <UserIcon user={session?.user} />
+            <UserIcon user={profile} />
           </label>
 
           <label
@@ -69,7 +69,7 @@ export default function LoginUserMenu() {
               <UnorderedList listStyleType="none">
                 <VStack alignItems="stretch" gap="0">
                   <ListItem>
-                    <Link href={`/users/${session.user_id}`} className="w-full">
+                    <Link href={`/me/profile`} className="w-full">
                       <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                         <CgProfile size={20} />
                         <Text fontSize="lg">プロフィール</Text>
