@@ -1,19 +1,13 @@
-import { Box, Flex, HStack, Skeleton, SkeletonCircle, VStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Skeleton, SkeletonCircle, VStack, Wrap } from "@chakra-ui/react";
 
 function ProblemCardSkeleton() {
   return (
-    <Box w="full">
-      <Skeleton height="24px" width="150px" mb="2" />
+    <Box className="md:max-w-2xl w-screen px-1">
+      {/* Timestamp skeleton */}
+      <Skeleton height="16px" width="150px" mb="2" />
 
-      <Box
-        boxShadow="base"
-        borderTopRadius="md"
-        className="bg-mj-mat"
-        shadow="md"
-        pt={["2", "3"]}
-        px={["2", "4"]}
-        pb="6">
-        <VStack alignItems="stretch">
+      <VStack borderRadius="md" shadow="md" alignItems="stretch" gap="0" overflow="hidden">
+        <Box pt="2" px={["2", "4"]} pb="3" className="bg-mj-mat">
           {/* Header skeleton */}
           <HStack justify="space-between" mb="2">
             <HStack>
@@ -23,52 +17,34 @@ function ProblemCardSkeleton() {
             <Skeleton height="20px" width="50px" />
           </HStack>
 
-          {/* Round info skeleton */}
-          <HStack fontSize={[18, 20]} mb="2">
-            <Skeleton height="20px" width="40px" />
-            <Skeleton height="20px" width="40px" />
-            <Skeleton height="20px" width="60px" />
-            <HStack gap="1">
-              <Skeleton height="20px" width="30px" />
-              <Skeleton height="40px" width="30px" />
-            </HStack>
+          {/* Round info skeleton with Wrap */}
+          <Wrap mt="2" spacingY="0" align="center">
+            <Skeleton height="24px" width="50px" />
+            <Skeleton height="24px" width="60px" />
+            <Skeleton height="24px" width="40px" />
+            <Skeleton height="24px" width="80px" />
+          </Wrap>
+
+          {/* Hand tiles skeleton */}
+          <HStack gap="1px" justify="center" alignItems="flex-end" mt="2">
+            {Array.from({ length: 13 }).map((_, index) => (
+              <Skeleton key={index} height="45px" width="35px" />
+            ))}
           </HStack>
 
-          {/* Points skeleton */}
-          <HStack gap="4" mb="4">
-            <Skeleton height="20px" width="80px" />
-            <Skeleton height="20px" width="80px" />
-            <Skeleton height="20px" width="80px" />
-            <Skeleton height="20px" width="80px" />
-          </HStack>
+          {/* Description skeleton */}
+          <Box mt="4">
+            <Skeleton height="16px" width="100%" mb="1" />
+          </Box>
+        </Box>
 
-          {/* Tiles skeleton */}
-          <Flex
-            flexDir={["column", "row-reverse"]}
-            justifyContent="center"
-            alignItems={["stretch", "flex-end"]}
-            gap="3"
-            px={[0, 4]}>
-            <Flex flexDir={["row", "column"]} alignItems="center" gap={[2, 0]}>
-              <Skeleton height="20px" width="30px" />
-              <Skeleton height="50px" width="35px" />
-            </Flex>
-
-            <HStack gap="0" justify="center" alignItems="flex-end">
-              {Array.from({ length: 13 }).map((_, index) => (
-                <Skeleton key={index} height="50px" width="35px" />
-              ))}
-            </HStack>
-          </Flex>
-        </VStack>
-      </Box>
-
-      {/* Bottom action bar skeleton */}
-      <HStack px={["3", "4"]} py="2" bgColor="white" className="rounded-b-md">
-        <Skeleton height="24px" width="60px" />
-        <Skeleton height="24px" width="80px" />
-        <Skeleton height="24px" width="100px" />
-      </HStack>
+        {/* Bottom action bar skeleton */}
+        <HStack px={["2", "4"]} py={["1", "2"]} className="rounded-b-md bg-neutral">
+          <Skeleton height="20px" width="60px" />
+          <Skeleton height="20px" width="80px" />
+          <Skeleton height="20px" width="100px" />
+        </HStack>
+      </VStack>
     </Box>
   );
 }
@@ -76,9 +52,10 @@ function ProblemCardSkeleton() {
 export default function ProblemsSectionSkeleton() {
   return (
     <Box>
-      <SkeletonCircle size="12" mb="8" />
+      {/* Floating add button skeleton */}
+      <SkeletonCircle size="20" className="fixed bottom-4 right-4 z-40 shadow-lg shadow-gray-700" />
 
-      <VStack gap="16">
+      <VStack gap={["8", "16"]}>
         {Array.from({ length: 3 }).map((_, index) => (
           <ProblemCardSkeleton key={index} />
         ))}
