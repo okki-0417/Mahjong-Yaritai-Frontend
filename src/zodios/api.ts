@@ -6,7 +6,7 @@ const Session = z
   .passthrough();
 const createLineCallback_Body = z.object({ code: z.string(), state: z.string() }).passthrough();
 const createAuthRequest_Body = z
-  .object({ auth_request: z.object({ email: z.string().max(64) }).passthrough() })
+  .object({ auth_request: z.object({ email: z.string() }).passthrough() })
   .passthrough();
 const createAuthVerification_Body = z
   .object({ auth_verification: z.object({ token: z.string() }).passthrough() })
@@ -307,7 +307,7 @@ const endpoints = makeApi([
         schema: createAuthVerification_Body,
       },
     ],
-    response: z.object({ auth_verification: User }).passthrough(),
+    response: z.object({ user: User }).passthrough(),
     errors: [
       {
         status: 403,

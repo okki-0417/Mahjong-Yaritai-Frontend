@@ -30,7 +30,7 @@ export default function AuthVerificationForm() {
     try {
       const response = await apiClient.createAuthVerification(formData);
 
-      if (response.auth_verification) {
+      if (response.user) {
         successToast({
           title: "認証が完了しました",
           description: "ダッシュボードにリダイレクトします。",
