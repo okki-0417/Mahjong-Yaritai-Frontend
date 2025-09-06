@@ -40,7 +40,21 @@ export default function ProblemCard({
       }
     };
 
+    const fetchVoteResult = async () => {
+      if (!problem.id) return;
+
+      try {
+        const response = await apiClient.getWhatToDiscardProblemVoteResult({
+          params: { what_to_discard_problem_id: String(problem.id) },
+        });
+        setVoteResult(response.what_to_discard_problem_vote_result);
+      } catch {
+        setVoteResult([]);
+      }
+    };
+
     fetchMyVote();
+    fetchVoteResult();
   }, [problem.id]);
 
   const { session } = useContext(SessionContext);
@@ -77,51 +91,63 @@ export default function ProblemCard({
                 <TileImage tileId={problem.dora_id} hover={false} />
               </Box>
             </HStack>
-            <HStack gap="1">
-              <Text fontSize={["md", "lg"]}>ツモ</Text>
-              <Box h="8" className="aspect-tile">
+
+            <Box display={["block", "none"]}>
+              <HStack gap="1">
+                <Text fontSize={["md", "lg"]}>ツモ</Text>
+                <Box h="8" aspectRatio="7/9">
+                  <TileImage tileId={problem.tsumo_id} hover={false} />
+                </Box>
+              </HStack>
+            </Box>
+          </Wrap>
+
+          <HStack gap="2" mt={["2", "0"]} align="flex-end">
+            <HStack gap="1px">
+              {[
+                problem.hand1_id,
+                problem.hand2_id,
+                problem.hand3_id,
+                problem.hand4_id,
+                problem.hand5_id,
+                problem.hand6_id,
+                problem.hand7_id,
+                problem.hand8_id,
+                problem.hand9_id,
+                problem.hand10_id,
+                problem.hand11_id,
+                problem.hand12_id,
+                problem.hand13_id,
+              ].map((hand_id, index) => {
+                return (
+                  <VoteButton
+                    key={index}
+                    problem={problem}
+                    tileId={hand_id}
+                    myVoteTileId={myVoteTileId}
+                    setMyVoteTileId={setMyVoteTileId}
+                    setVotesCount={setVotesCount}
+                    voteResult={voteResult}
+                    setVoteResult={setVoteResult}
+                  />
+                );
+              })}
+            </HStack>
+
+            <Box display={["none", "block"]}>
+              <VStack gap="0" align="center">
+                <Text fontSize={["sm", "md"]}>ツモ</Text>
                 <VoteButton
                   problem={problem}
                   tileId={problem.tsumo_id}
                   myVoteTileId={myVoteTileId}
                   setMyVoteTileId={setMyVoteTileId}
                   setVotesCount={setVotesCount}
+                  voteResult={voteResult}
                   setVoteResult={setVoteResult}
-                  handleDisplayVoteResult={onVoteResultOpen}
                 />
-              </Box>
-            </HStack>
-          </Wrap>
-
-          <HStack gap="1px" justify="center" alignItems="flex-end" mt="2">
-            {[
-              problem.hand1_id,
-              problem.hand2_id,
-              problem.hand3_id,
-              problem.hand4_id,
-              problem.hand5_id,
-              problem.hand6_id,
-              problem.hand7_id,
-              problem.hand8_id,
-              problem.hand9_id,
-              problem.hand10_id,
-              problem.hand11_id,
-              problem.hand12_id,
-              problem.hand13_id,
-            ].map((hand_id, index) => {
-              return (
-                <VoteButton
-                  key={index}
-                  problem={problem}
-                  tileId={hand_id}
-                  myVoteTileId={myVoteTileId}
-                  setMyVoteTileId={setMyVoteTileId}
-                  setVotesCount={setVotesCount}
-                  setVoteResult={setVoteResult}
-                  handleDisplayVoteResult={onVoteResultOpen}
-                />
-              );
-            })}
+              </VStack>
+            </Box>
           </HStack>
 
           {problem.description && (

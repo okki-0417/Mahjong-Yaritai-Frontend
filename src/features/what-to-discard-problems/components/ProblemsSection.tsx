@@ -9,7 +9,7 @@ export default async function ProblemsSection() {
 
   try {
     const problems_response = await apiPageClient.getWhatToDiscardProblems({
-      queries: { limit: String(20) },
+      queries: { limit: String(3) },
     });
     const problems = problems_response.what_to_discard_problems;
     const cursor = problems_response.meta.cursor;

@@ -10,8 +10,10 @@ import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
-import { getUniqueObjectArrayByKey } from "@/src/lib/utils/getUniqueObjectByKey";
 import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
+import Image from "next/image";
+import FireImage from "@/public/fire.gif";
+import ColdImage from "@/public/snow.gif";
 
 export default function VoteButton({
   problem,
@@ -19,18 +21,18 @@ export default function VoteButton({
   myVoteTileId,
   setMyVoteTileId,
   setVotesCount,
+  voteResult,
   setVoteResult,
-  handleDisplayVoteResult = () => null,
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
   tileId: number;
   myVoteTileId: number | null;
   setMyVoteTileId: React.Dispatch<React.SetStateAction<number | null>>;
   setVotesCount: React.Dispatch<React.SetStateAction<number>>;
+  voteResult: z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[];
   setVoteResult: React.Dispatch<
     React.SetStateAction<z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]>
   >;
-  handleDisplayVoteResult?: () => void;
 }) {
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
@@ -71,13 +73,7 @@ export default function VoteButton({
           },
         });
 
-        const tileUniqueResult = getUniqueObjectArrayByKey(
-          voteResultResponse.what_to_discard_problem_vote_result,
-          "tile_id",
-        );
-
-        setVoteResult(tileUniqueResult);
-        handleDisplayVoteResult();
+        setVoteResult(voteResultResponse.what_to_discard_problem_vote_result);
 
         successToast({ title: "投票しました" });
       } else if (myVoteTileId == tileId) {
@@ -96,13 +92,7 @@ export default function VoteButton({
           },
         });
 
-        const tileUniqueResult = getUniqueObjectArrayByKey(
-          response.what_to_discard_problem_vote_result,
-          "tile_id",
-        );
-
-        setVoteResult(tileUniqueResult);
-        handleDisplayVoteResult();
+        setVoteResult(response.what_to_discard_problem_vote_result);
 
         successToast({ title: "投票を取り消しました" });
       } else {
@@ -133,13 +123,7 @@ export default function VoteButton({
           },
         });
 
-        const tileUniqueResult = getUniqueObjectArrayByKey(
-          voteResultResponse.what_to_discard_problem_vote_result,
-          "tile_id",
-        );
-
-        setVoteResult(tileUniqueResult);
-        handleDisplayVoteResult();
+        setVoteResult(voteResultResponse.what_to_discard_problem_vote_result);
 
         successToast({ title: "投票しました" });
       }
@@ -150,6 +134,51 @@ export default function VoteButton({
     }
 
     return null;
+  };
+
+  const HotColdEffect = () => {
+    if (!voteResult?.length) return null;
+
+    const mostVotedCount = Math.max(...voteResult.map(vote => vote.count));
+    const leastVotedCount = Math.min(...voteResult.map(vote => vote.count));
+
+    // エフェクトが入る牌が多くなりすぎないようにするため
+    if (mostVotedCount == leastVotedCount) return null;
+
+    const mostVotedTileIds = voteResult
+      .filter(vote => vote.count == mostVotedCount)
+      .map(vote => vote.tile_id);
+    const leastVotedTileIds = voteResult
+      .filter(vote => vote.count == leastVotedCount)
+      .map(vote => vote.tile_id);
+
+    if (mostVotedTileIds.length <= 2 && mostVotedTileIds.includes(tileId)) {
+      return (
+        <Box className="absolute inset-y-0 object-cover z-10 min-h-0">
+          <Image
+            src={FireImage}
+            width={100}
+            height={100}
+            alt="hot-vote"
+            className="h-full object-cover opacity-70 z-20"
+          />
+          <div className="firing-tile absolute inset-0 z-10" />
+        </Box>
+      );
+    } else if (leastVotedTileIds.length <= 2 && leastVotedTileIds.includes(tileId)) {
+      return (
+        <Box className="absolute inset-y-0 object-cover z-10 min-h-0">
+          <Image
+            src={ColdImage}
+            width={100}
+            height={100}
+            alt="cold-vote"
+            className="h-full object-cover z-20"
+          />
+          <div className="frozen-tile absolute inset-0 z-10" />
+        </Box>
+      );
+    } else return null;
   };
 
   const VotingFallback = () => {
@@ -163,12 +192,14 @@ export default function VoteButton({
   return (
     <>
       <PopButton onClick={handleClick} disabled={isSubmitting} className="aspect-tile relative">
+        <HotColdEffect />
+
         <TileImage tileId={tileId} isShiny={tileId == problem.dora_id} />
         <Box
           position="absolute"
           inset="0"
           zIndex="10"
-          className={`${myVoteTileId == tileId && "bg-blue-500/40"}`}
+          className={`${myVoteTileId == tileId && "selected-tile"}`}
         />
         {isSubmitting && <VotingFallback />}
       </PopButton>

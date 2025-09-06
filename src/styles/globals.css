@@ -70,6 +70,47 @@
   background: linear-gradient(to right, rgba(255,255,255,0) 25%, rgba(255,255,255,1) 50%, rgba(255, 255, 255, 0) 75%);
 }
 
+@keyframes blinking {
+  0% {
+    opacity: 30%;
+  }
+  50% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 30%;
+  }
+}
+
+@keyframes tileSelected {
+  0% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.frozen-tile {
+  animation: blinking 2s linear infinite;
+  box-shadow: 0px 0px 5px 5px rgba(30, 184, 255, 0.5);
+  @apply transition-all bg-linear-to-r from-sky-500/40 via-white/40 to-sky-500/40;
+}
+
+.firing-tile {
+  animation: blinking 1.5s linear infinite;
+  box-shadow: 0px 0px 5px 3px rgba(255, 0, 0, 0.5);
+  @apply transition-all bg-red-500/40;
+}
+
+.selected-tile {
+  animation: tileSelected 1.3s ease-in-out infinite;
+  @apply lg:border-4 border-3 border-blue-500/80 rounded;
+}
+
 a,
 button,
 input {

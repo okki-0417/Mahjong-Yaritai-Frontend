@@ -87,6 +87,7 @@ export default function VoteResultModal({
                       tileId={result.tile_id}
                       myVoteTileId={myVoteTileId}
                       setMyVoteTileId={setMyVoteTileId}
+                      voteResult={voteResult}
                       setVotesCount={setVotesCount}
                       setVoteResult={setVoteResult}
                     />
