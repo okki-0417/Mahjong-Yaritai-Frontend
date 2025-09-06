@@ -44,7 +44,7 @@ export default function ProblemVoteSection({
       setVoteResult(tileUniqueResult);
       handleDisplayVoteResult();
     } catch (error) {
-      errorToast({ title: "投票に失敗しました", error });
+      errorToast({ title: "投票の取得に失敗しました", error });
     }
   };
 

@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { useDisclosure } from "@chakra-ui/react";
@@ -16,6 +16,23 @@ export default function ProblemLikeSection({
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
 }) {
+  useEffect(() => {
+    const fetchMyLike = async () => {
+      if (!problem.id) return;
+
+      try {
+        const response = await apiClient.getWhatToDiscardProblemMyLike({
+          params: { what_to_discard_problem_id: String(problem.id) },
+        });
+        setIsLiked(Boolean(response.my_like));
+      } catch {
+        setIsLiked(false);
+      }
+    };
+
+    fetchMyLike();
+  }, [problem.id]);
+
   const [isLiked, setIsLiked] = useState(Boolean(problem.is_liked_by_me));
   const [likesCount, setLikesCount] = useState(problem.likes_count);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -7,23 +7,41 @@ import { Box, HStack, Text, useDisclosure, VStack, Wrap } from "@chakra-ui/react
 import { z } from "zod";
 import ProblemVoteSection from "@/src/features/what-to-discard-problems/components/votes/ProblemVoteSection";
 import ProblemCommentSection from "@/src/features/what-to-discard-problems/components/comments/ProblemCommentSection";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { SessionContext } from "@/src/features/what-to-discard-problems/context-providers/SessionContextProvider";
 import TileImage from "@/src/components/TileImage";
 import ProblemDescriptionModal from "@/src/features/what-to-discard-problems/components/ProblemDescriptionModal";
+import { apiClient } from "@/src/lib/api/client";
 
 export default function ProblemCard({
   problem,
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
 }) {
-  const [myVoteTileId, setMyVoteTileId] = useState(problem.my_vote_tile_id);
-  const [votesCount, setVotesCount] = useState(problem.votes_count);
+  const [myVoteTileId, setMyVoteTileId] = useState<number>(null);
+  const [votesCount, setVotesCount] = useState<number>(problem.votes_count || 0);
   const [voteResult, setVoteResult] = useState<
     z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]
   >([]);
+
+  useEffect(() => {
+    const fetchMyVote = async () => {
+      if (!problem.id) return;
+
+      try {
+        const response = await apiClient.getWhatToDiscardProblemMyVote({
+          params: { what_to_discard_problem_id: String(problem.id) },
+        });
+        setMyVoteTileId(Number(response.what_to_discard_problem_my_vote.tile.id) || null);
+      } catch {
+        setMyVoteTileId(null);
+      }
+    };
+
+    fetchMyVote();
+  }, [problem.id]);
 
   const { session } = useContext(SessionContext);
   const myUserId = session?.user_id;

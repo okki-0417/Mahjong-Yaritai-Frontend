@@ -11,13 +11,16 @@ export default async function ProblemsSection() {
     const problems_response = await apiPageClient.getWhatToDiscardProblems({
       queries: { limit: String(20) },
     });
+    const problems = problems_response.what_to_discard_problems;
+    const cursor = problems_response.meta.cursor;
 
     const session_response = await apiPageClient.getSession();
+    const session = session_response.session;
 
     return (
-      <ProblemsContextProvider initialProblems={problems_response.what_to_discard_problems}>
-        <SessionContextProvider session={session_response.session}>
-          <ClientProblemSection initialCursor={problems_response.meta.cursor} />
+      <ProblemsContextProvider initialProblems={problems}>
+        <SessionContextProvider session={session}>
+          <ClientProblemSection initialCursor={cursor} />
         </SessionContextProvider>
       </ProblemsContextProvider>
     );

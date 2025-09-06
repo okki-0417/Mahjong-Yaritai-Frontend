@@ -9,13 +9,13 @@ import { z } from "zod";
 
 export default function LoadNextPageProblemButton({
   setProblem,
-  cursor,
-  setCursor,
+  initialCursor,
 }: {
   setProblem: Dispatch<SetStateAction<z.infer<typeof schemas.WhatToDiscardProblem>[]>>;
-  cursor: z.infer<typeof schemas.CursorPagination> | null;
-  setCursor: Dispatch<SetStateAction<z.infer<typeof schemas.CursorPagination> | null>>;
+  initialCursor: z.infer<typeof schemas.CursorPagination | null>;
 }) {
+  const [cursor, setCursor] =
+    useState<z.infer<typeof schemas.CursorPagination | null>>(initialCursor);
   const [isLoading, setIsLoading] = useState(false);
   const errorToast = useErrorToast();
 

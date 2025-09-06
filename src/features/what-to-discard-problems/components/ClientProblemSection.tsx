@@ -3,7 +3,7 @@
 import LoadNextPageProblemButton from "@/src/features/what-to-discard-problems/components/LoadNextPageProblemButton";
 import ProblemCard from "@/src/features/what-to-discard-problems/components/ProblemCard";
 import { Box, Flex, useDisclosure, VStack, Text } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import PopButton from "@/src/components/PopButton";
@@ -18,8 +18,8 @@ export default function ClientProblemSection({
   initialCursor: z.infer<typeof schemas.CursorPagination>;
 }) {
   const { problems, setProblems } = useContext(ProblemsContext);
-  const [cursor, setCursor] =
-    useState<z.infer<typeof schemas.CursorPagination | null>>(initialCursor);
+  const { session } = useContext(SessionContext);
+  const isLoggedIn = Boolean(session?.is_logged_in);
 
   const {
     onOpen: onOpenNotLoggedIn,
@@ -27,9 +27,6 @@ export default function ClientProblemSection({
     onClose: onCloseNotLoggedIn,
   } = useDisclosure();
   const { onOpen: onOpenForm, isOpen: isFormOpen, onClose: onCloseForm } = useDisclosure();
-
-  const { session } = useContext(SessionContext);
-  const isLoggedIn = Boolean(session?.is_logged_in);
 
   const handleFormOpen = () => {
     if (!isLoggedIn) return onOpenNotLoggedIn();
@@ -57,7 +54,7 @@ export default function ClientProblemSection({
       </VStack>
 
       <Flex justify="center" mt={5}>
-        <LoadNextPageProblemButton setProblem={setProblems} cursor={cursor} setCursor={setCursor} />
+        <LoadNextPageProblemButton setProblem={setProblems} initialCursor={initialCursor} />
       </Flex>
     </Box>
   );

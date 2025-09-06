@@ -147,8 +147,6 @@ const WhatToDiscardProblem = z
     comments_count: z.number().int(),
     likes_count: z.number().int(),
     votes_count: z.number().int(),
-    is_liked_by_me: z.boolean(),
-    my_vote_tile_id: z.number().int().nullable(),
     created_at: z.string(),
     updated_at: z.string(),
   })
@@ -156,6 +154,7 @@ const WhatToDiscardProblem = z
 const CursorPagination = z
   .object({ next: z.number().int().nullish(), has_next: z.boolean(), limit: z.number().int() })
   .passthrough();
+const Meta = z.object({ cursor: CursorPagination }).passthrough();
 const createWhatToDiscardProblem_Body = z
   .object({
     what_to_discard_problem: z
@@ -206,6 +205,7 @@ export const schemas = {
   WhatToDiscardProblemVoteResult,
   WhatToDiscardProblem,
   CursorPagination,
+  Meta,
   createWhatToDiscardProblem_Body,
 };
 
@@ -548,10 +548,7 @@ const endpoints = makeApi([
       },
     ],
     response: z
-      .object({
-        what_to_discard_problems: z.array(WhatToDiscardProblem),
-        meta: z.object({ cursor: CursorPagination }).partial().passthrough(),
-      })
+      .object({ what_to_discard_problems: z.array(WhatToDiscardProblem), meta: Meta })
       .passthrough(),
   },
   {
