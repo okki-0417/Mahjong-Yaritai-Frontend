@@ -95,15 +95,17 @@ export default function ProblemCard({
             <Box display={["block", "none"]}>
               <HStack gap="1">
                 <Text fontSize={["md", "lg"]}>ツモ</Text>
-                <VoteButton
-                  problem={problem}
-                  tileId={problem.tsumo_id}
-                  myVoteTileId={myVoteTileId}
-                  setMyVoteTileId={setMyVoteTileId}
-                  setVotesCount={setVotesCount}
-                  voteResult={voteResult}
-                  setVoteResult={setVoteResult}
-                />
+                <HStack w="6">
+                  <VoteButton
+                    problem={problem}
+                    tileId={problem.tsumo_id}
+                    myVoteTileId={myVoteTileId}
+                    setMyVoteTileId={setMyVoteTileId}
+                    setVotesCount={setVotesCount}
+                    voteResult={voteResult}
+                    setVoteResult={setVoteResult}
+                  />
+                </HStack>
               </HStack>
             </Box>
           </Wrap>
