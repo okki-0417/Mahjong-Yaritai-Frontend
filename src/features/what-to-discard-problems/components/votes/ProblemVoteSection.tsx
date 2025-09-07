@@ -4,9 +4,11 @@ import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import PopButton from "@/src/components/PopButton";
 import { HStack, Text } from "@chakra-ui/react";
-import { MdHowToVote } from "react-icons/md";
 import { apiClient } from "@/src/lib/api/client";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import Image from "next/image";
+import VoteIconDefault from "@/public/vote-icon-default.webp";
+import VoteIconBlue from "@/public/vote-icon-blue.webp";
 
 export type MyVoteType = z.infer<typeof schemas.Tile> | null;
 
@@ -50,11 +52,11 @@ export default function ProblemVoteSection({
 
   return (
     <PopButton onClick={handleClick}>
-      <HStack>
+      <HStack gap="2px">
         {isVoted ? (
-          <MdHowToVote color="#0080ff" size={26} />
+          <Image src={VoteIconBlue} alt="投票結果を見る" width={30} height={30} />
         ) : (
-          <MdHowToVote color="#333" size={26} />
+          <Image src={VoteIconDefault} alt="投票結果を見る" width={30} height={30} />
         )}
         <Text fontFamily="sans-serif" fontWeight="bold">
           {votesCount}
