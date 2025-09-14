@@ -108,7 +108,7 @@
 
 .selected-tile {
   animation: tileSelected 1.3s ease-in-out infinite;
-  @apply lg:border-4 border-3 border-blue-500/80 rounded;
+  @apply lg:border-4 border-3 border-blue-400/80 rounded;
 }
 
 a,
