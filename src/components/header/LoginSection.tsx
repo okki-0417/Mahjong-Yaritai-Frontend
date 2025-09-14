@@ -22,11 +22,11 @@ export default function LoginSection() {
     updateSession();
   }, [pathName]);
 
-  const isLoggedIn = Boolean(session?.is_logged_in);
+  const isLoggedIn = session?.is_logged_in;
 
   return (
     <Fragment>
-      {!isLoggedIn && (
+      {isLoggedIn === false && (
         <ListItem>
           <Link href="/auth/request">
             <HStack gap="1">
