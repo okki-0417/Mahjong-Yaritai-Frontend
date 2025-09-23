@@ -1,0 +1,11 @@
+query CurrentSession {
+  currentSession {
+    isLoggedIn
+    userId
+    user {
+      id
+      name
+      avatarUrl
+    }
+  }
+}

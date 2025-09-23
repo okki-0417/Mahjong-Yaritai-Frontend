@@ -11,9 +11,11 @@
     "lint:fix": "eslint . --fix",
     "format": "npx prettier . --write",
     "typecheck": "tsc --noEmit",
-    "gen-client": "npx openapi-zod-client ../api/swagger/v1/swagger.yaml -o src/zodios/api.ts"
+    "gen-client": "npx openapi-zod-client ../api/swagger/v1/swagger.yaml -o src/zodios/api.ts",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.5",
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^2.10.9",
     "@emotion/react": "^11.14.0",
@@ -27,6 +29,7 @@
     "@zodios/core": "^10.9.6",
     "axios": "^1.8.4",
     "framer-motion": "^12.7.3",
+    "graphql": "^16.11.0",
     "next": "^15.3.2",
     "next-themes": "^0.4.6",
     "postcss": "^8.5.4",
@@ -40,6 +43,12 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^6.0.0",
+    "@graphql-codegen/client-preset": "^5.0.1",
+    "@graphql-codegen/typescript": "^5.0.0",
+    "@graphql-codegen/typescript-operations": "^5.0.0",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.3",
+    "@graphql-codegen/typescript-react-query": "^6.1.1",
     "@next/eslint-plugin-next": "^15.3.3",
     "@shopify/eslint-plugin": "^50.0.0",
     "@types/node": "^22.15.17",
