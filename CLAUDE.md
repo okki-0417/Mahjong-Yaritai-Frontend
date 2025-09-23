@@ -47,15 +47,16 @@ chmod +x .githooks/*
 ### アプリケーション構造
 
 - **Next.js App Router**: Next.js 15 の App Router パターンを使用
-- **機能ベースアーキテクチャ**: 各機能は `src/features/` 内で独立
+- **機能ベースアーキテクチャ**: 各機能はページディレクトリ内にコロケーション
 - **Context ベース状態管理**: 機能固有のプロバイダーと React Context API を使用
 - **型安全な API 統合**: OpenAPI 仕様から自動生成される Zodios クライアント
 
 ### 主要ディレクトリ
 
-- `src/app/` - Next.js App Router のページとグローバルプロバイダー
-- `src/features/` - 機能固有のコンポーネント、コンテキスト、型定義
-- `src/components/` - 共有UIコンポーネント
+- `src/app/` - Next.js App Router のページと機能固有コンポーネント
+  - 各ページディレクトリ内に関連コンポーネント、コンテキスト、スキーマを配置
+  - 例: `app/what-to-discard-problems/components/`, `app/auth/components/`
+- `src/components/` - アプリ全体で共有されるUIコンポーネント
 - `src/zodios/` - 自動生成されたAPIクライアント
 - `src/lib/api/` - SSR/CSR用のAPIクライアントラッパー
 - `src/context-providers/` - グローバルコンテキストプロバイダー
@@ -105,15 +106,21 @@ import { apiClient } from "@/src/lib/api/client";
 
 各機能は以下のパターンに従う：
 
-- `contexts/` - コンテキスト定義
-- `providers/` - プロバイダーコンポーネント
+- `app/[feature]/context-providers/` - コンテキストプロバイダー
 - プロバイダーは機能ページまたはグローバルで構成
 
-### ファイル構成
+### ファイル構成（コロケーション）
 
+- **ページレベル**: `app/[feature]/page.tsx`
+- **コンポーネント**: `app/[feature]/components/`
+- **サブ機能**: `app/[feature]/[sub-feature]/components/`
+- **コンテキスト**: `app/[feature]/context-providers/`
+- **スキーマ**: `app/[feature]/schema/`
+- **ドキュメント**: `app/[feature]/CLAUDE.md`
+
+サーバー/クライアントコンポーネント：
 - サーバーコンポーネント: 'use client' ディレクティブなし
 - クライアントコンポーネント: 'use client' で開始
-- 型: `features/[feature]/types/` 内の機能固有型
 - 共有型: `src/zodios/api.ts` 内で自動生成
 
 ## 重要な技術詳細
@@ -162,3 +169,26 @@ npm run gen-client
 - `what-to-discard-problems` 機能は複雑なフォームバリデーションにカスタムZodスキーマバリデーションを使用
 - 複数のコンテキストプロバイダーをよりクリーンなアーキテクチャに統合中
 - 認証フローはサーバーサイドコールバック処理でGoogle OAuthを使用
+
+## 機能別ドキュメント
+
+各機能の詳細な実装ガイドは `docs/features/` ディレクトリに集約されています：
+
+### 実装済み機能
+
+- **[何切る問題](docs/features/what-to-discard-problems/CLAUDE.md)** - 問題作成・投票・コメント・いいね機能
+  - [投票機能](docs/features/what-to-discard-problems/votes/CLAUDE.md)
+  - [コメント機能](docs/features/what-to-discard-problems/comments/CLAUDE.md)
+  - [いいね機能](docs/features/what-to-discard-problems/likes/CLAUDE.md)
+- **[認証](docs/features/auth/CLAUDE.md)** - メールトークン認証・Google OAuth・LINE認証
+
+### ドキュメント作成ガイド
+
+新しい機能のドキュメントを作成する際は、**[ドキュメント作成ガイド](docs/DOCUMENTATION_GUIDE.md)** を参照してください。
+
+### 今後追加予定
+
+- `docs/features/learning/CLAUDE.md` - 学習・クイズ機能
+- `docs/features/me/CLAUDE.md` - プロフィール管理・退会処理
+- `docs/features/users/CLAUDE.md` - ユーザー表示・フォロー機能
+- `docs/features/terms/CLAUDE.md` - 利用規約・プライバシーポリシー
