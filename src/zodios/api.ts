@@ -51,6 +51,10 @@ const updateUser_Body = z
 const WithdrawalSummary = z
   .object({ what_to_discard_problems_count: z.number().int() })
   .passthrough();
+const CursorPagination = z
+  .object({ next: z.number().int().nullish(), has_next: z.boolean(), limit: z.number().int() })
+  .passthrough();
+const Meta = z.object({ cursor: CursorPagination }).passthrough();
 const createUser_Body = z
   .object({
     name: z.string().min(1).max(20),
@@ -114,11 +118,7 @@ const createWhatToDiscardProblemMyVote_Body = z
   })
   .passthrough();
 const WhatToDiscardProblemVoteResult = z
-  .object({
-    tile_id: z.number().int(),
-    count: z.number().int(),
-    is_voted_bys_me: z.boolean().optional(),
-  })
+  .object({ tile_id: z.number().int(), count: z.number().int() })
   .passthrough();
 const WhatToDiscardProblem = z
   .object({
@@ -151,10 +151,6 @@ const WhatToDiscardProblem = z
     updated_at: z.string(),
   })
   .passthrough();
-const CursorPagination = z
-  .object({ next: z.number().int().nullish(), has_next: z.boolean(), limit: z.number().int() })
-  .passthrough();
-const Meta = z.object({ cursor: CursorPagination }).passthrough();
 const createWhatToDiscardProblem_Body = z
   .object({
     what_to_discard_problem: z
@@ -195,6 +191,8 @@ export const schemas = {
   LearningQuestion,
   updateUser_Body,
   WithdrawalSummary,
+  CursorPagination,
+  Meta,
   createUser_Body,
   Comment,
   createComment_Body,
@@ -204,8 +202,6 @@ export const schemas = {
   createWhatToDiscardProblemMyVote_Body,
   WhatToDiscardProblemVoteResult,
   WhatToDiscardProblem,
-  CursorPagination,
-  Meta,
   createWhatToDiscardProblem_Body,
 };
 
@@ -529,6 +525,118 @@ const endpoints = makeApi([
         schema: z.void(),
       },
     ],
+  },
+  {
+    method: "post",
+    path: "/users/:user_id/follow",
+    alias: "createFollow",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "user_id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ message: z.string() }).partial().passthrough(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z
+          .object({ errors: z.array(z.object({ message: z.string() }).partial().passthrough()) })
+          .partial()
+          .passthrough(),
+      },
+      {
+        status: 422,
+        description: `unprocessable entity`,
+        schema: z
+          .object({ errors: z.array(z.string()) })
+          .partial()
+          .passthrough(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/users/:user_id/follow",
+    alias: "deleteFollow",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "user_id",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.object({ message: z.string() }).partial().passthrough(),
+    errors: [
+      {
+        status: 401,
+        description: `unauthorized`,
+        schema: z
+          .object({ errors: z.array(z.object({ message: z.string() }).partial().passthrough()) })
+          .partial()
+          .passthrough(),
+      },
+      {
+        status: 404,
+        description: `not found`,
+        schema: z
+          .object({ errors: z.array(z.string()) })
+          .partial()
+          .passthrough(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/users/:user_id/followers",
+    alias: "getUserFollowers",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "user_id",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "cursor",
+        type: "Query",
+        schema: z.string().optional(),
+      },
+      {
+        name: "limit",
+        type: "Query",
+        schema: z.string().optional(),
+      },
+    ],
+    response: z.object({ users: z.array(User), meta: Meta }).passthrough(),
+  },
+  {
+    method: "get",
+    path: "/users/:user_id/following",
+    alias: "getUserFollowing",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "user_id",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "cursor",
+        type: "Query",
+        schema: z.string().optional(),
+      },
+      {
+        name: "limit",
+        type: "Query",
+        schema: z.string().optional(),
+      },
+    ],
+    response: z.object({ users: z.array(User), meta: Meta }).passthrough(),
   },
   {
     method: "get",
