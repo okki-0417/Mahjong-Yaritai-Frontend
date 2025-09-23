@@ -1,164 +1,164 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、Claude Code (claude.ai/code) がこのリポジトリで作業する際のガイダンスを提供します。
 
-## Project Overview
+## プロジェクト概要
 
-This is "麻雀ヤリタイ" (Mahjong Yaritai) - a Japanese mahjong community platform built with Next.js 15 + React 18 + TypeScript. The app focuses on mahjong problem-solving, voting, commenting, and learning features.
+「麻雀ヤリタイ」(Mahjong Yaritai) - Next.js 15 + React 18 + TypeScript で構築された日本の麻雀コミュニティプラットフォームです。麻雀問題の解決、投票、コメント、学習機能に焦点を当てたアプリケーションです。
 
-## Development Commands
+## 開発コマンド
 
-### Core Development
+### 基本開発
 
 ```bash
-# Start development server
+# 開発サーバー起動
 npm run dev
 
-# Build for production
+# プロダクションビルド
 npm run build
 
-# Type checking
+# 型チェック
 npm run typecheck
 
-# Linting
+# リンティング
 npm run lint
 npm run lint:fix
 
-# Code formatting
+# コードフォーマット
 npm run format
 
-# Generate API client from OpenAPI spec
+# OpenAPI仕様からAPIクライアント生成
 npm run gen-client
 ```
 
-### Environment Setup
+### 環境セットアップ
 
 ```bash
-# Set up environment variables
+# 環境変数の設定
 cp .env.local .env
 
-# Set up Git hooks (auto-runs ESLint & Prettier on commit)
+# Gitフック設定（コミット時に自動でESLint & Prettierを実行）
 git config core.hooksPath .githooks
 chmod +x .githooks/*
 ```
 
-## Architecture Overview
+## アーキテクチャ概要
 
-### Application Structure
+### アプリケーション構造
 
-- **Next.js App Router**: Uses Next.js 15 with App Router pattern
-- **Feature-Based Architecture**: Each feature is self-contained in `src/features/`
-- **Context-Based State Management**: Uses React Context API with feature-specific providers
-- **Type-Safe API Integration**: Auto-generated Zodios client from OpenAPI spec
+- **Next.js App Router**: Next.js 15 の App Router パターンを使用
+- **機能ベースアーキテクチャ**: 各機能は `src/features/` 内で独立
+- **Context ベース状態管理**: 機能固有のプロバイダーと React Context API を使用
+- **型安全な API 統合**: OpenAPI 仕様から自動生成される Zodios クライアント
 
-### Key Directories
+### 主要ディレクトリ
 
-- `src/app/` - Next.js App Router pages and global providers
-- `src/features/` - Feature-specific components, contexts, and types
-- `src/components/` - Shared UI components
-- `src/zodios/` - Auto-generated API client
-- `src/lib/api/` - API client wrappers for SSR/CSR
-- `src/context-providers/` - Global context providers
+- `src/app/` - Next.js App Router のページとグローバルプロバイダー
+- `src/features/` - 機能固有のコンポーネント、コンテキスト、型定義
+- `src/components/` - 共有UIコンポーネント
+- `src/zodios/` - 自動生成されたAPIクライアント
+- `src/lib/api/` - SSR/CSR用のAPIクライアントラッパー
+- `src/context-providers/` - グローバルコンテキストプロバイダー
 
-### State Management Pattern
+### 状態管理パターン
 
-The app uses a hierarchical Context provider pattern:
+階層型 Context プロバイダーパターンを使用：
 
-1. **Global Auth Context** (`AuthStateContextProvider`) - Wraps entire app
-2. **Feature-Specific Contexts** - Each feature has its own context providers
-3. **Server-Side Data Fetching** - Uses async server components for initial data
+1. **グローバル認証コンテキスト** (`AuthStateContextProvider`) - アプリ全体をラップ
+2. **機能固有のコンテキスト** - 各機能が独自のコンテキストプロバイダーを持つ
+3. **サーバーサイドデータ取得** - 初期データに非同期サーバーコンポーネントを使用
 
-### API Integration
+### API統合
 
-- **Generated Client**: `src/zodios/api.ts` - Auto-generated from `../api/swagger/v1/swagger.yaml`
-- **Server-Side API**: `src/lib/api/server.ts` - For SSR with cookie handling
-- **Client-Side API**: `src/lib/api/client.ts` - For CSR with credentials
-- **Type Safety**: Full TypeScript coverage with Zod schema validation
+- **生成されたクライアント**: `src/zodios/api.ts` - `../api/swagger/v1/swagger.yaml` から自動生成
+- **サーバーサイドAPI**: `src/lib/api/server.ts` - Cookie処理付きSSR用
+- **クライアントサイドAPI**: `src/lib/api/client.ts` - 認証情報付きCSR用
+- **型安全性**: Zodスキーマバリデーションによる完全なTypeScriptカバレッジ
 
-### Component Architecture
+### コンポーネントアーキテクチャ
 
-- **Hybrid Rendering**: Server components for data fetching, client components for interactivity
-- **UI Framework**: Chakra UI 2.x + Tailwind CSS 4.x
-- **Japanese Language**: All UI text and metadata in Japanese
+- **ハイブリッドレンダリング**: データ取得にサーバーコンポーネント、インタラクティビティにクライアントコンポーネント
+- **UIフレームワーク**: Chakra UI 2.x + Tailwind CSS 4.x
+- **日本語**: すべてのUIテキストとメタデータが日本語
 
-### Main Features
+### 主要機能
 
-1. **what-to-discard-problems** - Core feature with voting, commenting, and problem-solving (currently using schema-based validation)
-2. **Auth System** - Login/logout with session management via Google OAuth
-3. **User Profiles** - User management and profile editing
-4. **Learning Module** - Educational content
+1. **what-to-discard-problems** - 投票、コメント、問題解決を含むコア機能（現在スキーマベースバリデーション使用）
+2. **認証システム** - Google OAuth によるセッション管理でのログイン/ログアウト
+3. **ユーザープロフィール** - ユーザー管理とプロフィール編集
+4. **学習モジュール** - 教育コンテンツ
 
-## Development Patterns
+## 開発パターン
 
-### API Client Usage
+### APIクライアントの使用
 
 ```typescript
-// Server-side (in server components)
+// サーバーサイド（サーバーコンポーネント内）
 import createApiPageClient from "@/src/lib/api/server";
 const apiPageClient = await createApiPageClient();
 
-// Client-side (in client components)
+// クライアントサイド（クライアントコンポーネント内）
 import { apiClient } from "@/src/lib/api/client";
 ```
 
-### Context Provider Pattern
+### コンテキストプロバイダーパターン
 
-Each feature follows this pattern:
+各機能は以下のパターンに従う：
 
-- `contexts/` - Context definitions
-- `providers/` - Provider components
-- Providers are composed in feature pages or globally
+- `contexts/` - コンテキスト定義
+- `providers/` - プロバイダーコンポーネント
+- プロバイダーは機能ページまたはグローバルで構成
 
-### File Organization
+### ファイル構成
 
-- Server components: No 'use client' directive
-- Client components: Start with 'use client'
-- Types: Feature-specific types in `features/[feature]/types/`
-- Shared types: Auto-generated in `src/zodios/api.ts`
+- サーバーコンポーネント: 'use client' ディレクティブなし
+- クライアントコンポーネント: 'use client' で開始
+- 型: `features/[feature]/types/` 内の機能固有型
+- 共有型: `src/zodios/api.ts` 内で自動生成
 
-## Important Technical Details
+## 重要な技術詳細
 
-### Sentry Integration
+### Sentry統合
 
-- Error monitoring configured in `next.config.mjs`
-- Automatic error tracking for both client and server
-- Source maps uploaded in CI environment
+- `next.config.mjs` でエラー監視を設定
+- クライアントとサーバー両方の自動エラートラッキング
+- CI環境でソースマップをアップロード
 
-### TypeScript Configuration
+### TypeScript設定
 
-- Strict mode disabled but comprehensive type checking
-- Path aliases: `@/*` maps to repository root
-- Modern ESNext target with lib configuration
+- Strictモード無効だが包括的な型チェック
+- パスエイリアス: `@/*` がリポジトリルートにマップ
+- モダンなESNextターゲットとlib設定
 
-### Styling System
+### スタイリングシステム
 
-- Chakra UI with custom theme
-- Tailwind CSS 4.x with modern features
-- Global styles in `src/styles/globals.css`
-- Package imports optimized in Next.js config
+- カスタムテーマ付き Chakra UI
+- モダン機能付き Tailwind CSS 4.x
+- `src/styles/globals.css` のグローバルスタイル
+- Next.js設定でパッケージインポートを最適化
 
-### API Generation
+### API生成
 
-When backend API changes, regenerate the client:
+バックエンドAPIが変更されたら、クライアントを再生成：
 
 ```bash
 npm run gen-client
 ```
 
-This updates `src/zodios/api.ts` from the OpenAPI spec at `../api/swagger/v1/swagger.yaml`.
+これにより `../api/swagger/v1/swagger.yaml` のOpenAPI仕様から `src/zodios/api.ts` が更新されます。
 
-### Testing
+### テスト
 
-Currently, no test framework is configured. Consider implementing tests with Jest or Vitest for critical components.
+現在、テストフレームワークは設定されていません。重要なコンポーネントにはJestまたはVitestでのテスト実装を検討してください。
 
-### Development Workflow
+### 開発ワークフロー
 
-1. The pre-commit hook automatically runs ESLint and Prettier on staged files
-2. Use `npm run typecheck` to verify TypeScript types before committing
-3. The backend API must be running on `http://localhost:3001` (configured in `.env`)
+1. プリコミットフックがステージングファイルで自動的にESLintとPrettierを実行
+2. コミット前に `npm run typecheck` でTypeScript型を検証
+3. バックエンドAPIは `http://localhost:3001` で動作している必要がある（`.env`で設定）
 
-### Current Architecture Notes
+### 現在のアーキテクチャメモ
 
-- The `what-to-discard-problems` feature uses custom Zod schema validation for complex form validation
-- Multiple context providers are being consolidated into a cleaner architecture
-- Auth flow uses Google OAuth with server-side callback handling
+- `what-to-discard-problems` 機能は複雑なフォームバリデーションにカスタムZodスキーマバリデーションを使用
+- 複数のコンテキストプロバイダーをよりクリーンなアーキテクチャに統合中
+- 認証フローはサーバーサイドコールバック処理でGoogle OAuthを使用
