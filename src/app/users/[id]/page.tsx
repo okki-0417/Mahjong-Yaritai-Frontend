@@ -1,5 +1,5 @@
 import UserProfileSkeleton from "@/src/components/fallbacks/UserProfileSkeleton";
-import UserProfileSection from "@/src/features/users/[id]/UserProfileSection";
+import UserProfileSection from "@/src/app/users/[id]/UserProfileSection";
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
 

@@ -1,4 +1,4 @@
-import { LearningCategoriesList } from "@/src/features/learning/components/LearningCategoriesList";
+import { LearningCategoriesList } from "@/src/app/learning/components/LearningCategoriesList";
 import createApiPageClient from "@/src/lib/api/server";
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
 

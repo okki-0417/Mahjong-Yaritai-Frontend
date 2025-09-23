@@ -17,6 +17,7 @@ const User = z
     name: z.string(),
     profile_text: z.string().nullish(),
     avatar_url: z.string().nullish(),
+    is_following: z.boolean(),
     created_at: z.string(),
     updated_at: z.string(),
   })

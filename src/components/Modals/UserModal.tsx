@@ -16,15 +16,20 @@ import {
 } from "@chakra-ui/react";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import FollowButton from "@/src/components/FollowButton";
 
 export default function UserModal({
   user,
   isOpen,
   onClose,
+  isFollowing = false,
+  currentUserId = null,
 }: {
   user: z.infer<typeof schemas.User>;
   isOpen: boolean;
   onClose: () => void;
+  isFollowing?: boolean;
+  currentUserId?: number | null;
 }) {
   return (
     <Modal
@@ -55,6 +60,13 @@ export default function UserModal({
                 bgColor="white"
               />
             </Circle>
+
+            <FollowButton
+              userId={user.id}
+              initialIsFollowing={isFollowing}
+              currentUserId={currentUserId}
+              size="md"
+            />
 
             {user.profile_text && (
               <Box w="full">

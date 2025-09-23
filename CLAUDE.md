@@ -119,6 +119,7 @@ import { apiClient } from "@/src/lib/api/client";
 - **ドキュメント**: `app/[feature]/CLAUDE.md`
 
 サーバー/クライアントコンポーネント：
+
 - サーバーコンポーネント: 'use client' ディレクティブなし
 - クライアントコンポーネント: 'use client' で開始
 - 共有型: `src/zodios/api.ts` 内で自動生成

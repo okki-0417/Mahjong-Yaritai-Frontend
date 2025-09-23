@@ -1,6 +1,6 @@
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
-import { customCreateWhatToDiscardProblem_BodySchema } from "@/src/features/what-to-discard-problems/schema/customWhatToDiscardProblemSchema";
+import { customCreateWhatToDiscardProblem_BodySchema } from "@/src/app/what-to-discard-problems/schema/customWhatToDiscardProblemSchema";
 import { useCustomForm } from "@/src/hooks/useCustomForm";
 import { schemas } from "@/src/zodios/api";
 import {

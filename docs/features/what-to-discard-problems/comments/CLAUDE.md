@@ -20,6 +20,7 @@ comments/
 ## 主要コンポーネント
 
 ### CommentsModal
+
 - **役割**: コメント機能のメインコンテナ
 - **Props**:
   - `isOpen`: モーダル表示フラグ
@@ -29,22 +30,25 @@ comments/
   - `setParentComments`: 親コメント更新関数
 
 #### 機能詳細
+
 - React Hook Form統合（Zodバリデーション）
 - 親コメント一覧表示
 - コメント投稿フォーム配置
 - 返信コメント挿入ロジック管理
 
 #### 状態管理
+
 ```typescript
 const [insertCommentToThread, setInsertCommentToThread] = useState<InsertCommentToThread>(
-  () => (comment) => {
-    setParentComments(prev => [...prev, comment]);  // デフォルト: 親コメント追加
-  }
+  () => comment => {
+    setParentComments(prev => [...prev, comment]); // デフォルト: 親コメント追加
+  },
 );
 const [replyingToComment, setReplyingToComment] = useState<Comment | null>(null);
 ```
 
 ### CommentForm
+
 - **役割**: コメント投稿フォーム
 - **Props**:
   - `problemId`: 問題ID
@@ -58,6 +62,7 @@ const [replyingToComment, setReplyingToComment] = useState<Comment | null>(null)
   - `setReplyingToComment`: 返信対象更新関数
 
 #### 機能詳細
+
 1. **認証チェック**
    - `SessionContext`でログイン状態確認
    - 未ログイン時はログインリンク表示
@@ -72,6 +77,7 @@ const [replyingToComment, setReplyingToComment] = useState<Comment | null>(null)
    - 必須入力チェック
 
 ### ParentCommentCard
+
 - **役割**: 親コメント表示カード
 - **Props**:
   - `parentComment`: 親コメントオブジェクト
@@ -81,6 +87,7 @@ const [replyingToComment, setReplyingToComment] = useState<Comment | null>(null)
   - `setReplyingToComment`: 返信対象設定
 
 #### 機能詳細
+
 1. **ユーザー情報表示**
    - アバター画像
    - ユーザー名（クリックでUserModal表示）
@@ -95,44 +102,51 @@ const [replyingToComment, setReplyingToComment] = useState<Comment | null>(null)
    - 返信取得済み: 子コメント一覧表示
 
 4. **返信処理**
+
 ```typescript
 const handleReply = () => {
-  setFocus("what_to_discard_problem_comment.content");  // フォームにフォーカス
+  setFocus("what_to_discard_problem_comment.content"); // フォームにフォーカス
   setValue("what_to_discard_problem_comment.parent_comment_id", String(parentComment.id));
   setReplyingToComment(parentComment);
-  setInsertCommentToThread(() => (reply) => {
-    setReplies(prev => [...prev, reply]);  // 返信を子コメント配列に追加
+  setInsertCommentToThread(() => reply => {
+    setReplies(prev => [...prev, reply]); // 返信を子コメント配列に追加
   });
 };
 ```
 
 ### ChildCommentCard
+
 - **役割**: 子コメント（返信）表示カード
 - **Props**:
   - `reply`: 返信コメントオブジェクト
 
 #### 機能詳細
+
 - 親コメントと同様の表示形式
 - 左側に視覚的なインデント表示（縦線）
 - 削除ボタン（自分のコメントのみ）
 
 ### DeleteCommentButton
+
 - **役割**: コメント削除ボタン
 - **Props**:
   - `comment`: コメントオブジェクト
 
 #### 機能詳細
+
 - 削除確認なし（即時削除）
 - API呼び出し後、ページリロード
 - エラーハンドリング
 
 ### FetchRepliesButton
+
 - **役割**: 返信取得ボタン
 - **Props**:
   - `setReplies`: 返信配列更新関数
   - `comment`: 親コメントオブジェクト
 
 #### 機能詳細
+
 - クリックで返信一覧を取得
 - 取得中はローディング表示
 - 取得後、返信一覧を表示
@@ -140,6 +154,7 @@ const handleReply = () => {
 ## API連携
 
 ### コメント関連エンドポイント
+
 - `GET /what_to_discard_problems/:id/comments` - コメント一覧取得
   - Response: `{ what_to_discard_problem_comments: Comment[] }`
 
@@ -156,6 +171,7 @@ const handleReply = () => {
 ## 状態管理
 
 ### グローバル状態（SessionContext）
+
 ```typescript
 const { session } = useContext(SessionContext);
 const isLoggedIn = Boolean(session?.is_logged_in);
@@ -163,6 +179,7 @@ const myUserId = session?.user_id;
 ```
 
 ### ローカル状態（CommentsModal）
+
 ```typescript
 // 親コメント配列
 const [parentComments, setParentComments] = useState<Comment[] | null>(null);
@@ -175,6 +192,7 @@ const [replyingToComment, setReplyingToComment] = useState<Comment | null>(null)
 ```
 
 ### ローカル状態（ParentCommentCard）
+
 ```typescript
 // 返信配列
 const [replies, setReplies] = useState<Comment[]>([]);
@@ -183,6 +201,7 @@ const [replies, setReplies] = useState<Comment[]>([]);
 ## コメント投稿フロー
 
 ### 親コメント投稿
+
 ```
 1. CommentFormでテキスト入力
    ↓
@@ -199,6 +218,7 @@ const [replies, setReplies] = useState<Comment[]>([]);
 ```
 
 ### 返信コメント投稿
+
 ```
 1. ParentCommentCardで返信ボタンクリック
    ↓
@@ -240,6 +260,7 @@ const [replies, setReplies] = useState<Comment[]>([]);
 ## UIスタイル
 
 ### 返信のインデント表示
+
 ```typescript
 <HStack w="full" pl="4" h="24" gap="4">
   <Box w="1" h="full" className="bg-secondary" rounded="full" />
@@ -248,6 +269,7 @@ const [replies, setReplies] = useState<Comment[]>([]);
 ```
 
 ### ユーザーアバター
+
 ```typescript
 <Circle size="8" overflow="hidden" border="1px">
   <Img
@@ -258,6 +280,7 @@ const [replies, setReplies] = useState<Comment[]>([]);
 ```
 
 ### 日時表示
+
 ```typescript
 <Text fontFamily="sans-serif" fontSize="xs">
   {new Date(comment.created_at).toLocaleString()}
@@ -267,18 +290,20 @@ const [replies, setReplies] = useState<Comment[]>([]);
 ## バリデーション
 
 ### Zodスキーマ
+
 ```typescript
 schemas.createComment_Body = {
   what_to_discard_problem_comment: {
     content: z.string().max(500, "コメントは500文字以内で入力してください"),
-    parent_comment_id: z.string().nullable().optional()
-  }
-}
+    parent_comment_id: z.string().nullable().optional(),
+  },
+};
 ```
 
 ## エラーハンドリング
 
 ### コメント投稿失敗
+
 ```typescript
 try {
   const response = await apiClient.createComment(formData, { params: { ... } });
@@ -289,6 +314,7 @@ try {
 ```
 
 ### コメント削除失敗
+
 ```typescript
 try {
   await apiClient.deleteComment([], { params: { ... } });
@@ -299,6 +325,7 @@ try {
 ```
 
 ### 返信取得失敗
+
 ```typescript
 try {
   const response = await apiClient.getReplies({ params: { ... } });
@@ -311,24 +338,29 @@ try {
 ## 開発時の注意点
 
 ### 認証
+
 - 全てのコメント操作は認証必須
 - `SessionContext`でログイン状態を確認
 - 未ログイン時はログインリンクを表示
 
 ### コメント階層
+
 - 親コメント（parent_comment_id = null）
 - 子コメント（parent_comment_id = 親コメントID）
 - 現状、孫コメントは非対応（2階層まで）
 
 ### 動的な挿入ロジック
+
 - `insertCommentToThread`は状態に応じて動的に変更
 - 親コメント投稿時: `parentComments`配列に追加
 - 返信投稿時: 対応する`replies`配列に追加
 
 ### 削除後の処理
+
 - 現状は`window.location.reload()`でページリロード
 - よりスマートな実装: 削除後に配列から該当コメントを除去
 
 ### パフォーマンス
+
 - 親コメントは初回モーダル表示時に取得
 - 返信は個別に遅延取得（replies_count > 0の場合のみ）

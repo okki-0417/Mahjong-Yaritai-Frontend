@@ -1,5 +1,5 @@
 import TileImage from "@/src/components/TileImage";
-import VoteButton from "@/src/features/what-to-discard-problems/components/votes/VoteButton";
+import VoteButton from "@/src/app/what-to-discard-problems/components/votes/VoteButton";
 import { schemas } from "@/src/zodios/api";
 import {
   Box,

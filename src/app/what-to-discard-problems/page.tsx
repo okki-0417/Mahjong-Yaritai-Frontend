@@ -1,10 +1,10 @@
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
-import ProblemsSection from "@/src/features/what-to-discard-problems/components/ProblemsSection";
+import ProblemsSection from "@/src/app/what-to-discard-problems/components/ProblemsSection";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { Metadata } from "next";
-import ProblemsSectionSkeleton from "@/src/features/what-to-discard-problems/components/ProblemsSectionSkeleton";
+import ProblemsSectionSkeleton from "@/src/app/what-to-discard-problems/components/ProblemsSectionSkeleton";
 
 export type WhatToDiscardProblems = z.infer<typeof schemas.WhatToDiscardProblem>[] | [];
 

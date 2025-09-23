@@ -1,5 +1,5 @@
 import { Container, Divider, Text, VStack } from "@chakra-ui/react";
-import AuthRequestSection from "@/src/features/auth/components/AuthRequestSection";
+import AuthRequestSection from "@/src/app/auth/components/AuthRequestSection";
 import { Suspense } from "react";
 import Fallback from "@/src/components/fallbacks/Fallback";
 

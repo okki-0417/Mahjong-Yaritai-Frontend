@@ -1,4 +1,4 @@
-import GoogleVerification from "@/src/features/auth/google-callback/GoogleVerification";
+import GoogleVerification from "@/src/app/auth/google-callback/GoogleVerification";
 import { Suspense } from "react";
 
 export default function GoogleCallbackPage() {

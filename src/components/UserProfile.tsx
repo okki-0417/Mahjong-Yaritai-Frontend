@@ -1,8 +1,17 @@
 import { schemas } from "@/src/zodios/api";
 import { Box, Circle, Image, Text, VStack } from "@chakra-ui/react";
 import { z } from "zod";
+import FollowButton from "@/src/components/FollowButton";
 
-export default function UserProfile({ user }: { user: z.infer<typeof schemas.User> }) {
+export default function UserProfile({
+  user,
+  isFollowing = false,
+  currentUserId = null,
+}: {
+  user: z.infer<typeof schemas.User>;
+  isFollowing?: boolean;
+  currentUserId?: number | null;
+}) {
   return (
     <VStack gap="4" align="stretch">
       <VStack spacing={4}>
@@ -22,6 +31,13 @@ export default function UserProfile({ user }: { user: z.infer<typeof schemas.Use
             {user?.name}
           </Text>
         </Box>
+
+        <FollowButton
+          userId={user.id}
+          initialIsFollowing={isFollowing}
+          currentUserId={currentUserId}
+          size="lg"
+        />
 
         <Box>
           {user?.profile_text ? (

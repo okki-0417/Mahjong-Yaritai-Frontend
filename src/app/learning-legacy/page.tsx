@@ -9,9 +9,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Metadata } from "next";
-import MahjongPlayGround from "@/src/features/learning/MahjongPlayGround";
+import MahjongPlayGround from "@/src/app/learning/MahjongPlayGround";
 import TileImage from "@/src/components/TileImage";
-import MahjongTileNames from "@/src/features/learning/MahjongTileQuiz/MahjongTileNames";
+import MahjongTileNames from "@/src/app/learning/MahjongTileQuiz/MahjongTileNames";
 import Link from "next/link";
 
 export const metadata: Metadata = {

@@ -16,6 +16,7 @@ votes/
 ## 主要コンポーネント
 
 ### VoteButton
+
 - **役割**: 各牌に対する投票ボタン
 - **Props**:
   - `problem`: 問題オブジェクト
@@ -27,6 +28,7 @@ votes/
   - `setVoteResult`: 投票結果更新関数
 
 #### 機能詳細
+
 1. **投票状態の管理**
    - 未投票: 新規投票可能
    - 投票済み（同じ牌）: 投票取り消し可能
@@ -44,6 +46,7 @@ votes/
    - 未ログイン時は`NotLoggedInModal`表示
 
 ### ProblemVoteSection
+
 - **役割**: 投票結果表示セクション
 - **Props**:
   - `isVoted`: 投票済みフラグ
@@ -53,6 +56,7 @@ votes/
   - `handleDisplayVoteResult`: 結果表示ハンドラー
 
 #### 機能詳細
+
 - 投票アイコン表示（投票済み: 青、未投票: グレー）
 - クリックで投票結果取得
 - 重複牌の排除処理（tile_idベース）
@@ -60,6 +64,7 @@ votes/
 ## API連携
 
 ### 投票関連エンドポイント
+
 - `POST /what_to_discard_problems/:id/votes/my_vote` - 投票
   - Body: `{ what_to_discard_problem_my_vote: { tile_id: number } }`
   - Response: `{ what_to_discard_problem_my_vote: { tile: Tile } }`
@@ -73,17 +78,20 @@ votes/
 ## 状態管理
 
 ### ローカル状態（VoteButton）
+
 ```typescript
-const [isSubmitting, setIsSubmitting] = useState(false);  // 送信中フラグ
+const [isSubmitting, setIsSubmitting] = useState(false); // 送信中フラグ
 ```
 
 ### グローバル状態（SessionContext）
+
 ```typescript
 const { session } = useContext(SessionContext);
 const isLoggedIn = Boolean(session?.is_logged_in);
 ```
 
 ### Props経由の状態
+
 - `myVoteTileId`: 親コンポーネントで管理
 - `voteResult`: 投票結果（親で管理）
 - `votesCount`: 総投票数（親で管理）
@@ -91,6 +99,7 @@ const isLoggedIn = Boolean(session?.is_logged_in);
 ## 投票フロー
 
 ### 新規投票
+
 ```
 1. VoteButtonクリック
    ↓
@@ -109,6 +118,7 @@ const isLoggedIn = Boolean(session?.is_logged_in);
 ```
 
 ### 投票取り消し
+
 ```
 1. 投票済み牌をクリック
    ↓
@@ -125,6 +135,7 @@ const isLoggedIn = Boolean(session?.is_logged_in);
 ```
 
 ### 投票変更
+
 ```
 1. 投票済み以外の牌をクリック
    ↓
@@ -144,6 +155,7 @@ const isLoggedIn = Boolean(session?.is_logged_in);
 ## ビジュアルエフェクト
 
 ### HotColdEffect コンポーネント
+
 ```typescript
 // 最多投票牌の判定
 const mostVotedCount = Math.max(...voteResult.map(vote => vote.count));
@@ -163,6 +175,7 @@ if (leastVotedTileIds.length <= 2 && leastVotedTileIds.includes(tileId)) {
 ```
 
 ### エフェクトアセット
+
 - `/public/fire.gif` - 炎アニメーション
 - `/public/snow.gif` - 雪アニメーション
 - `/public/vote-icon-default.webp` - 投票アイコン（グレー）
@@ -171,6 +184,7 @@ if (leastVotedTileIds.length <= 2 && leastVotedTileIds.includes(tileId)) {
 ## UIスタイル
 
 ### 投票済み牌の表示
+
 ```typescript
 <Box
   position="absolute"
@@ -181,6 +195,7 @@ if (leastVotedTileIds.length <= 2 && leastVotedTileIds.includes(tileId)) {
 ```
 
 ### 送信中のフォールバック
+
 ```typescript
 const VotingFallback = () => (
   <Box position="absolute" inset="0" zIndex="5" rounded="sm">
@@ -192,6 +207,7 @@ const VotingFallback = () => (
 ## エラーハンドリング
 
 ### 投票操作失敗時
+
 ```typescript
 try {
   // 投票処理
@@ -203,6 +219,7 @@ try {
 ```
 
 ### 投票結果取得失敗時
+
 ```typescript
 try {
   // 結果取得処理
@@ -214,28 +231,33 @@ try {
 ## 開発時の注意点
 
 ### 認証
+
 - 全ての投票操作は認証必須
 - `SessionContext`でログイン状態を確認
 - 未ログイン時は`NotLoggedInModal`表示
 
 ### 状態の同期
+
 - 投票後は必ず最新の投票結果を取得
 - 親コンポーネントの状態を適切に更新
 
 ### パフォーマンス
+
 - `isSubmitting`フラグで多重送信を防止
 - エフェクト表示は最大2枚までに制限
 
 ### 牌の重複排除
+
 ```typescript
 const tileUniqueResult = Array.from(
   new Map(
-    response.what_to_discard_problem_vote_result.map(result => [result.tile_id, result])
-  ).values()
+    response.what_to_discard_problem_vote_result.map(result => [result.tile_id, result]),
+  ).values(),
 );
 ```
 
 ### ドラ牌のハイライト
+
 ```typescript
 <TileImage tileId={tileId} isShiny={tileId == problem.dora_id} />
 ```

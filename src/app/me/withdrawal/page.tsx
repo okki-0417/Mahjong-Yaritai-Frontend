@@ -2,7 +2,7 @@ import { Box, Container, Divider, Text } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import getSession from "@/src/lib/getSession";
-import WithdrawalSummary from "@/src/features/me/withdrawal/WithdrawalSummary";
+import WithdrawalSummary from "@/src/app/me/withdrawal/WithdrawalSummary";
 import Fallback from "@/src/components/fallbacks/Fallback";
 
 export default async function WithdrawalSummaryPage() {

@@ -1,5 +1,5 @@
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
-import AuthVerificationSection from "@/src/features/auth/verification/AuthVerificationSecion";
+import AuthVerificationSection from "@/src/app/auth/verification/AuthVerificationSecion";
 import { Suspense } from "react";
 import Fallback from "@/src/components/fallbacks/Fallback";
 

@@ -23,6 +23,7 @@ docs/
 ```
 
 対応するコードベースの構造：
+
 ```
 src/app/
 └── [feature-name]/
@@ -40,6 +41,7 @@ src/app/
 **例: 何切る問題の場合**
 
 ドキュメント構造：
+
 ```
 docs/features/what-to-discard-problems/
 ├── CLAUDE.md                        # 問題機能全体のドキュメント
@@ -52,6 +54,7 @@ docs/features/what-to-discard-problems/
 ```
 
 コードベース構造：
+
 ```
 src/app/what-to-discard-problems/
 ├── page.tsx                         # 問題一覧ページ
@@ -75,6 +78,7 @@ src/app/what-to-discard-problems/
 ## 関連ドキュメント
 
 各機能の詳細実装ガイド：
+
 - **[投票機能](votes/CLAUDE.md)** - 投票・投票結果表示・ビジュアルエフェクト
 - **[コメント機能](comments/CLAUDE.md)** - コメント投稿・返信・削除
 - **[いいね機能](likes/CLAUDE.md)** - いいね追加・削除・カウント表示
@@ -87,6 +91,7 @@ src/app/what-to-discard-problems/
 ### 必須セクション
 
 #### 1. 機能概要
+
 ```markdown
 # [機能名] (English Name)
 
@@ -96,20 +101,23 @@ src/app/what-to-discard-problems/
 ```
 
 #### 2. ディレクトリ構造
+
 ```markdown
 ## ディレクトリ構造
 
 ### ドキュメント
+
 \`\`\`
 docs/features/[feature-name]/
 ├── CLAUDE.md
 ├── [sub-feature-1]/
-│   └── CLAUDE.md
+│ └── CLAUDE.md
 └── [sub-feature-2]/
-    └── CLAUDE.md
+└── CLAUDE.md
 \`\`\`
 
 ### コードベース
+
 \`\`\`
 src/app/[feature-name]/
 ├── page.tsx
@@ -121,16 +129,19 @@ src/app/[feature-name]/
 ```
 
 #### 3. 主要コンポーネント
+
 ```markdown
 ## 主要コンポーネント
 
 ### ComponentName
+
 - **役割**: [コンポーネントの役割]
 - **Props**:
   - `prop1`: 説明
   - `prop2`: 説明
 
 #### 機能詳細
+
 1. **機能1**
    - 詳細説明
 
@@ -139,10 +150,12 @@ src/app/[feature-name]/
 ```
 
 #### 4. API連携
+
 ```markdown
 ## API連携
 
 ### [機能名]関連エンドポイント
+
 - `GET /path` - 説明
   - Response: `{ ... }`
 
@@ -152,89 +165,107 @@ src/app/[feature-name]/
 ```
 
 #### 5. 状態管理
+
 ```markdown
 ## 状態管理
 
 ### ローカル状態
+
 \`\`\`typescript
 const [state1, setState1] = useState(initialValue);
 \`\`\`
 
 ### グローバル状態（Context名）
+
 \`\`\`typescript
 const { value } = useContext(SomeContext);
 \`\`\`
 ```
 
 #### 6. 処理フロー
+
 ```markdown
 ## [機能名]フロー
 
 ### ケース1
+
 \`\`\`
+
 1. アクション
    ↓
 2. 処理
    ↓
 3. 結果
-\`\`\`
+   \`\`\`
 ```
 
 #### 7. 開発時の注意点
+
 ```markdown
 ## 開発時の注意点
 
 ### 認証
+
 - 認証に関する注意点
 
 ### パフォーマンス
+
 - パフォーマンスに関する注意点
 
 ### その他
+
 - その他の重要な注意点
 ```
 
 ### オプションセクション
 
 #### UIスタイル
+
 ```markdown
 ## UIスタイル
 
 ### [スタイル名]
+
 \`\`\`typescript
 <Component ... />
 \`\`\`
 ```
 
 #### エラーハンドリング
+
 ```markdown
 ## エラーハンドリング
 
 ### [エラーケース]
+
 \`\`\`typescript
 try {
-  // 処理
+// 処理
 } catch (error) {
-  // エラーハンドリング
+// エラーハンドリング
 }
 \`\`\`
 ```
 
 #### バリデーション
+
 ```markdown
 ## バリデーション
 
 ### Zodスキーマ
+
 \`\`\`typescript
 schemas.example = { ... }
 \`\`\`
 ```
 
 #### 関連ドキュメント
+
 ```markdown
 ## 関連ドキュメント
 
 各機能の詳細実装ガイド：
+
 - **[機能1](path/CLAUDE.md)** - 説明
 - **[機能2](path/CLAUDE.md)** - 説明
 ```
@@ -262,6 +293,7 @@ const [likesCount, setLikesCount] = useState(problem.likes_count);
 
 ```markdown
 \`\`\`
+
 1. ユーザーアクション
    ↓
 2. API呼び出し
@@ -269,7 +301,7 @@ const [likesCount, setLikesCount] = useState(problem.likes_count);
 3. 状態更新
    ↓
 4. UI反映
-\`\`\`
+   \`\`\`
 ```
 
 ### 3. ファイルパスを明記する
@@ -278,6 +310,7 @@ const [likesCount, setLikesCount] = useState(problem.likes_count);
 
 ```markdown
 ### 共有コンポーネント
+
 - `@/src/components/LikeButton.tsx` - いいねボタンUI
 - `@/src/components/Modals/NotLoggedInModal.tsx` - 未ログインモーダル
 ```
@@ -288,9 +321,11 @@ const [likesCount, setLikesCount] = useState(problem.likes_count);
 
 ```markdown
 ❌ 悪い例:
+
 - エラーハンドリングを適切に行う
 
 ✅ 良い例:
+
 - API失敗時も楽観的更新により状態が変更される
 - エラー時は状態をロールバックする実装も検討可能
 - 現状はエラートーストで通知のみ
@@ -321,6 +356,7 @@ TypeScriptの型情報を積極的に記載します。
 3. 各階層にCLAUDE.mdを配置する計画を立てる
 
 例：
+
 ```bash
 mkdir -p docs/features/[feature-name]/{[sub-feature-1],[sub-feature-2]}
 touch docs/features/[feature-name]/CLAUDE.md
@@ -371,30 +407,33 @@ touch docs/features/[feature-name]/[sub-feature-1]/CLAUDE.md
 ## ディレクトリ構造
 
 ### コードベース
+
 \`\`\`
 src/app/what-to-discard-problems/
 ├── page.tsx
 ├── components/
-│   ├── forms/              # 問題作成・編集フォーム
-│   ├── comments/           # コメント機能
-│   ├── votes/              # 投票機能
-│   └── likes/              # いいね機能
+│ ├── forms/ # 問題作成・編集フォーム
+│ ├── comments/ # コメント機能
+│ ├── votes/ # 投票機能
+│ └── likes/ # いいね機能
 ├── context-providers/
 └── schema/
 \`\`\`
 
 ### ドキュメント
+
 \`\`\`
 docs/features/what-to-discard-problems/
-├── CLAUDE.md               # このファイル
-├── comments/CLAUDE.md      # コメント機能の詳細ドキュメント
-├── votes/CLAUDE.md         # 投票機能の詳細ドキュメント
-└── likes/CLAUDE.md         # いいね機能の詳細ドキュメント
+├── CLAUDE.md # このファイル
+├── comments/CLAUDE.md # コメント機能の詳細ドキュメント
+├── votes/CLAUDE.md # 投票機能の詳細ドキュメント
+└── likes/CLAUDE.md # いいね機能の詳細ドキュメント
 \`\`\`
 
 ## 関連ドキュメント
 
 各機能の詳細実装ガイド：
+
 - **[投票機能](votes/CLAUDE.md)** - 投票・投票結果表示・ビジュアルエフェクト
 - **[コメント機能](comments/CLAUDE.md)** - コメント投稿・返信・削除
 - **[いいね機能](likes/CLAUDE.md)** - いいね追加・削除・カウント表示
