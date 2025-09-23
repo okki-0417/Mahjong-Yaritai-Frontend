@@ -102,6 +102,267 @@ const apiPageClient = await createApiPageClient();
 import { apiClient } from "@/src/lib/api/client";
 ```
 
+### Zodios API呼び出しパターン
+
+**重要**: Zodiosのパラメータの渡し方は特殊なので注意が必要です。
+
+#### 基本ルール
+
+1. **第1引数**: リクエストボディ（なければ空配列 `[]`）
+2. **第2引数**: オプション（パスパラメータ、クエリパラメータなど）
+
+#### パターン別の使用例
+
+**1. パスパラメータのみ（GET/DELETE）**
+
+```typescript
+// ❌ 間違い
+await apiClient.deleteFollow({ params: { user_id: String(userId) } });
+
+// ✅ 正しい
+await apiClient.deleteFollow([], { params: { user_id: String(userId) } });
+```
+
+**2. リクエストボディのみ（POST/PUT）**
+
+```typescript
+// JSON形式
+await apiClient.createComment(
+  {
+    what_to_discard_problem_comment: {
+      parent_comment_id: null,
+      content: "コメント内容"
+    }
+  },
+  { params: { what_to_discard_problem_id: String(problemId) } }
+);
+
+// FormData形式
+const formData = new FormData();
+formData.append("name", "ユーザー名");
+formData.append("avatar", file);
+await apiClient.updateUser(formData);
+```
+
+**3. パスパラメータ + リクエストボディ（POST/PUT）**
+
+```typescript
+await apiClient.createWhatToDiscardProblemMyVote(
+  {
+    what_to_discard_problem_my_vote: {
+      tile_id: tileId
+    }
+  },
+  {
+    params: { what_to_discard_problem_id: String(problemId) }
+  }
+);
+```
+
+**4. クエリパラメータ（GET）**
+
+```typescript
+await apiClient.getWhatToDiscardProblems({
+  queries: {
+    cursor: String(cursor),
+    limit: String(limit)
+  }
+});
+```
+
+**5. パスパラメータなし（GET/POST/DELETE）**
+
+```typescript
+// GET
+const session = await apiClient.getSession();
+
+// POST（ボディのみ）
+await apiClient.createAuthRequest({
+  auth_request: { email: "user@example.com" }
+});
+
+// DELETE
+await apiClient.deleteSession([]);
+```
+
+#### よくある間違いと修正例
+
+| 間違い | 正しい書き方 | 説明 |
+|--------|-------------|------|
+| `apiClient.deleteFollow({ params: {...} })` | `apiClient.deleteFollow([], { params: {...} })` | DELETEでもボディ引数（空配列）が必要 |
+| `apiClient.createFollow({ params: {...} })` | `apiClient.createFollow([], { params: {...} })` | POSTでボディがない場合は空配列 |
+| `apiClient.getUser({ id: "1" })` | `apiClient.getUser({ params: { id: "1" } })` | paramsオブジェクトで囲む |
+
+#### 実装例
+
+**フォロー機能**
+```typescript
+// フォロー作成
+await apiClient.createFollow([], {
+  params: { user_id: String(userId) }
+});
+
+// フォロー削除
+await apiClient.deleteFollow([], {
+  params: { user_id: String(userId) }
+});
+```
+
+**投票機能**
+```typescript
+// 投票作成
+await apiClient.createWhatToDiscardProblemMyVote(
+  {
+    what_to_discard_problem_my_vote: { tile_id: tileId }
+  },
+  {
+    params: { what_to_discard_problem_id: String(problemId) }
+  }
+);
+
+// 投票削除
+await apiClient.deleteWhatToDiscardProblemMyVote([], {
+  params: { what_to_discard_problem_id: String(problemId) }
+});
+```
+
+**いいね機能**
+```typescript
+// いいね作成
+await apiClient.createWhatToDiscardProblemMyLike([], {
+  params: { what_to_discard_problem_id: String(problemId) }
+});
+
+// いいね削除
+await apiClient.deleteWhatToDiscardProblemMyLike([], {
+  params: { what_to_discard_problem_id: String(problemId) }
+});
+```
+
+### トースト通知パターン
+
+ユーザーへのフィードバックには、Chakra UIのトーストを使用します。
+
+#### 基本的な使い方
+
+**成功通知**
+```typescript
+import useSuccessToast from "@/src/hooks/useSuccessToast";
+
+const successToast = useSuccessToast();
+
+// 基本的な成功メッセージ
+successToast({ title: "フォローしました" });
+
+// 詳細説明付き
+successToast({
+  title: "投稿が完成しました",
+  description: "問題が正常に作成されました"
+});
+
+// カスタム設定
+successToast({
+  title: "保存完了",
+  duration: 5000,        // 5秒表示
+  isClosable: true       // 閉じるボタン表示
+});
+```
+
+**エラー通知**
+```typescript
+import useErrorToast from "@/src/hooks/useErrorToast";
+
+const errorToast = useErrorToast();
+
+// APIエラーを自動パース
+try {
+  await apiClient.createFollow([], { params: { user_id: String(userId) } });
+} catch (error) {
+  errorToast({ error, title: "フォローの操作に失敗しました" });
+  // APIレスポンスのerrors配列から自動的にメッセージを抽出
+}
+
+// カスタムエラーメッセージ
+errorToast({
+  title: "エラーが発生しました",
+  description: "もう一度お試しください"
+});
+```
+
+#### 実装例
+
+**フォロー機能**
+```typescript
+import useSuccessToast from "@/src/hooks/useSuccessToast";
+import useErrorToast from "@/src/hooks/useErrorToast";
+
+const successToast = useSuccessToast();
+const errorToast = useErrorToast();
+
+const handleFollow = async () => {
+  try {
+    if (isFollowing) {
+      await apiClient.deleteFollow([], { params: { user_id: String(userId) } });
+      successToast({ title: "フォローを解除しました" });
+    } else {
+      await apiClient.createFollow([], { params: { user_id: String(userId) } });
+      successToast({ title: "フォローしました" });
+    }
+  } catch (error) {
+    errorToast({ error, title: "フォローの操作に失敗しました" });
+  }
+};
+```
+
+**いいね機能**
+```typescript
+try {
+  if (isLiked) {
+    await apiClient.deleteWhatToDiscardProblemMyLike([], {
+      params: { what_to_discard_problem_id: String(problemId) }
+    });
+    successToast({ title: "いいねを取り消しました" });
+  } else {
+    await apiClient.createWhatToDiscardProblemMyLike([], {
+      params: { what_to_discard_problem_id: String(problemId) }
+    });
+    successToast({ title: "いいねしました" });
+  }
+} catch (error) {
+  errorToast({ error, title: "いいねの操作に失敗しました" });
+}
+```
+
+**コメント投稿**
+```typescript
+try {
+  const response = await apiClient.createComment(formData, {
+    params: { what_to_discard_problem_id: String(problemId) }
+  });
+  successToast({ title: "コメントを投稿しました" });
+} catch (error) {
+  errorToast({ error, title: "コメントの投稿に失敗しました" });
+}
+```
+
+#### useErrorToastの特徴
+
+- **自動エラーパース**: APIレスポンスの`errors`配列から自動的にメッセージを抽出
+- **フォールバック**: パース失敗時は`error.message`を使用
+- **型安全**: Zodスキーマ（`schemas.Errors`）に基づいたエラー処理
+
+#### カスタムフックの場所
+
+- **useSuccessToast**: `src/hooks/useSuccessToast.ts`
+- **useErrorToast**: `src/hooks/useErrorToast.ts`
+
+#### トーストのベストプラクティス
+
+1. **成功時は必ず通知する**: ユーザーアクションが成功したことを明確に伝える
+2. **エラーは詳細に**: APIエラーをそのまま表示し、デバッグしやすくする
+3. **簡潔なメッセージ**: titleは短く（〜20文字）、詳細はdescriptionに
+4. **一貫性**: 同じ操作には同じメッセージを使用
+
 ### コンテキストプロバイダーパターン
 
 各機能は以下のパターンに従う：

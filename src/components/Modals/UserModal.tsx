@@ -17,6 +17,8 @@ import {
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import FollowButton from "@/src/components/FollowButton";
+import { useState, useEffect } from "react";
+import { apiClient } from "@/src/lib/api/client";
 
 export default function UserModal({
   user,
@@ -31,6 +33,26 @@ export default function UserModal({
   isFollowing?: boolean;
   currentUserId?: number | null;
 }) {
+  const [followState, setFollowState] = useState(isFollowing);
+
+  useEffect(() => {
+    const fetchFollowState = async () => {
+      if (!isOpen) return;
+
+      try {
+        const response = await apiClient.getUser({
+          params: { id: String(user.id) },
+        });
+        setFollowState(response.user.is_following);
+      } catch (error) {
+        console.error("Failed to fetch follow state:", error);
+        setFollowState(isFollowing);
+      }
+    };
+
+    fetchFollowState();
+  }, [isOpen, user.id, isFollowing]);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -63,9 +85,10 @@ export default function UserModal({
 
             <FollowButton
               userId={user.id}
-              initialIsFollowing={isFollowing}
+              initialIsFollowing={followState}
               currentUserId={currentUserId}
               size="md"
+              onFollowChange={setFollowState}
             />
 
             {user.profile_text && (

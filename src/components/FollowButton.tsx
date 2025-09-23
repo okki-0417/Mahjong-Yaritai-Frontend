@@ -1,9 +1,11 @@
 "use client";
 
-import { Button } from "@chakra-ui/react";
+import { Button, useDisclosure } from "@chakra-ui/react";
 import { apiClient } from "@/src/lib/api/client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
+import useSuccessToast from "@/src/hooks/useSuccessToast";
+import useErrorToast from "@/src/hooks/useErrorToast";
 
 interface FollowButtonProps {
   userId: number;
@@ -11,6 +13,7 @@ interface FollowButtonProps {
   currentUserId: number | null;
   variant?: "solid" | "outline";
   size?: "sm" | "md" | "lg";
+  onFollowChange?: (isFollowing: boolean) => void;
 }
 
 export default function FollowButton({
@@ -19,14 +22,21 @@ export default function FollowButton({
   currentUserId,
   variant = "solid",
   size = "md",
+  onFollowChange,
 }: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const successToast = useSuccessToast();
+  const errorToast = useErrorToast();
+
+  useEffect(() => {
+    setIsFollowing(initialIsFollowing);
+  }, [initialIsFollowing]);
 
   const handleFollow = async () => {
     if (!currentUserId) {
-      router.push("/auth/login");
+      onOpen();
       return;
     }
 
@@ -38,14 +48,18 @@ export default function FollowButton({
 
     try {
       if (isFollowing) {
-        await apiClient.deleteFollow({ params: { user_id: String(userId) } });
+        await apiClient.deleteFollow([], { params: { user_id: String(userId) } });
         setIsFollowing(false);
+        onFollowChange?.(false);
+        successToast({ title: "フォローを解除しました" });
       } else {
-        await apiClient.createFollow({ params: { user_id: String(userId) } });
+        await apiClient.createFollow([], { params: { user_id: String(userId) } });
         setIsFollowing(true);
+        onFollowChange?.(true);
+        successToast({ title: "フォローしました" });
       }
     } catch (error) {
-      console.error("Failed to toggle follow:", error);
+      errorToast({ error, title: "フォローの操作に失敗しました" });
     } finally {
       setIsLoading(false);
     }
@@ -56,13 +70,17 @@ export default function FollowButton({
   }
 
   return (
-    <Button
-      onClick={handleFollow}
-      isLoading={isLoading}
-      colorScheme={isFollowing ? "gray" : "teal"}
-      variant={variant}
-      size={size}>
-      {isFollowing ? "フォロー中" : "フォロー"}
-    </Button>
+    <>
+      <Button
+        onClick={handleFollow}
+        isLoading={isLoading}
+        colorScheme={isFollowing ? "gray" : "teal"}
+        variant={variant}
+        size={size}>
+        {isFollowing ? "フォロー中" : "フォロー"}
+      </Button>
+
+      <NotLoggedInModal isOpen={isOpen} onClose={onClose} />
+    </>
   );
 }
