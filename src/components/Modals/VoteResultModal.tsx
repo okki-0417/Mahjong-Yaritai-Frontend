@@ -62,8 +62,8 @@ export default function VoteResultModal({
     const uniqueTileIds = Array.from(new Set(allTiles));
 
     // 各牌の投票結果を取得
-    return uniqueTileIds.map((tileId) => {
-      const voteData = voteResult.find((result) => result.tile_id === tileId);
+    return uniqueTileIds.map(tileId => {
+      const voteData = voteResult.find(result => result.tile_id === tileId);
       return {
         tile_id: tileId,
         count: voteData?.count || 0,
@@ -94,7 +94,7 @@ export default function VoteResultModal({
           </HStack>
 
           <HStack className="bg-mj-mat" justify="center" gap={["1px", "2"]} wrap="wrap">
-            {uniqueTiles.map((tile) => {
+            {uniqueTiles.map(tile => {
               const maxCount = Math.max(...uniqueTiles.map(t => t.count));
               const hasVotes = maxCount > 0;
 
@@ -122,12 +122,7 @@ export default function VoteResultModal({
                     )}
                   </VStack>
 
-                  <Box
-                    gridRow="span 1/span 1"
-                    border={tile.is_voted_by_me ? "3px solid #0ea5e9" : "none"}
-                    borderRadius="md"
-                    p={tile.is_voted_by_me ? "1px" : "4px"}
-                  >
+                  <Box gridRow="span 1/span 1">
                     <VoteButton
                       problem={problem}
                       tileId={tile.tile_id}
