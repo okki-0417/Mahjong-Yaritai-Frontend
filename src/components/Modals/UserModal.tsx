@@ -44,8 +44,8 @@ export default function UserModal({
           params: { id: String(user.id) },
         });
         setFollowState(response.user.is_following);
-      } catch (error) {
-        console.error("Failed to fetch follow state:", error);
+      } catch {
+        // Failed to fetch follow state
         setFollowState(isFollowing);
       }
     };
