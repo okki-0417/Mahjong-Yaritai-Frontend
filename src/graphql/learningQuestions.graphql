@@ -1,0 +1,14 @@
+query LearningQuestions($learningCategoryId: ID!) {
+  learningQuestions(learningCategoryId: $learningCategoryId) {
+    id
+    questionText
+    answerText
+    createdAt
+    updatedAt
+    learningCategory {
+      id
+      name
+      description
+    }
+  }
+}

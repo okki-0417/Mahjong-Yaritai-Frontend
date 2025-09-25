@@ -1,0 +1,6 @@
+mutation WithdrawUser {
+  withdrawUser(input: {}) {
+    success
+    errors
+  }
+}

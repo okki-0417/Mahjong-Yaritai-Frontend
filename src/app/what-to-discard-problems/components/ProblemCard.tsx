@@ -13,7 +13,8 @@ import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
 import TileImage from "@/src/components/TileImage";
 import ProblemDescriptionModal from "@/src/app/what-to-discard-problems/components/ProblemDescriptionModal";
-import { apiClient } from "@/src/lib/api/client";
+import { useQuery } from "@apollo/client/react";
+import { WhatToDiscardProblemDetailDocument } from "@/src/generated/graphql";
 
 export default function ProblemCard({
   problem,
@@ -26,36 +27,37 @@ export default function ProblemCard({
     z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]
   >([]);
 
+  const { data: problemData } = useQuery(WhatToDiscardProblemDetailDocument, {
+    variables: { id: String(problem.id) },
+    skip: !problem.id,
+  });
+
   useEffect(() => {
-    const fetchMyVote = async () => {
-      if (!problem.id) return;
+    if (!problemData?.whatToDiscardProblem) {
+      return;
+    }
 
-      try {
-        const response = await apiClient.getWhatToDiscardProblemMyVote({
-          params: { what_to_discard_problem_id: String(problem.id) },
-        });
-        setMyVoteTileId(Number(response.what_to_discard_problem_my_vote.tile.id) || null);
-      } catch {
-        setMyVoteTileId(null);
-      }
-    };
+    const graphqlProblem = problemData.whatToDiscardProblem;
 
-    const fetchVoteResult = async () => {
-      if (!problem.id) return;
+    // GraphQLデータから投票情報を取得
+    if (graphqlProblem.myVote?.tileId) {
+      setMyVoteTileId(Number(graphqlProblem.myVote.tileId));
+    } else {
+      setMyVoteTileId(null);
+    }
 
-      try {
-        const response = await apiClient.getWhatToDiscardProblemVoteResult({
-          params: { what_to_discard_problem_id: String(problem.id) },
-        });
-        setVoteResult(response.what_to_discard_problem_vote_result);
-      } catch {
-        setVoteResult([]);
-      }
-    };
+    // 投票結果をREST APIフォーマットに変換
+    if (graphqlProblem.voteResults) {
+      const restVoteResults = graphqlProblem.voteResults.map((result: any) => ({
+        tile_id: Number(result.tileId),
+        count: result.count,
+      }));
+      setVoteResult(restVoteResults);
+    }
 
-    fetchMyVote();
-    fetchVoteResult();
-  }, [problem.id]);
+    // 投票数更新
+    setVotesCount(graphqlProblem.votesCount);
+  }, [problemData]);
 
   const { session } = useContext(SessionContext);
   const myUserId = session?.user_id;

@@ -24,7 +24,8 @@ import Link from "next/link";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import { apiClient } from "@/src/lib/api/client";
+import { useMutation } from "@apollo/client/react";
+import { CreateCommentDocument } from "@/src/generated/graphql";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { useContext } from "react";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
@@ -54,23 +55,48 @@ export default function CommentForm({
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
 
+  const [createComment] = useMutation(CreateCommentDocument);
+
   const { session } = useContext(SessionContext);
   const isLoggedIn = Boolean(session?.is_logged_in);
 
   const onSubmit: SubmitHandler<z.infer<typeof schemas.createComment_Body>> = async formData => {
     try {
-      const response = await apiClient.createComment(formData, {
-        params: {
-          what_to_discard_problem_id: String(problemId),
+      const { data } = await createComment({
+        variables: {
+          whatToDiscardProblemId: String(problemId),
+          content: formData.what_to_discard_problem_comment.content,
+          parentCommentId: formData.what_to_discard_problem_comment.parent_comment_id
+            ? String(formData.what_to_discard_problem_comment.parent_comment_id)
+            : null,
         },
       });
 
-      insertCommentToThread(response.what_to_discard_problem_comment);
+      if (data?.createComment?.comment) {
+        const graphqlComment = data.createComment.comment;
+        const restComment: z.infer<typeof schemas.Comment> = {
+          id: Number(graphqlComment.id),
+          content: graphqlComment.content,
+          user_id: Number(graphqlComment.userId),
+          parent_comment_id: graphqlComment.parentCommentId
+            ? Number(graphqlComment.parentCommentId)
+            : null,
+          replies_count: graphqlComment.repliesCount,
+          created_at: graphqlComment.createdAt,
+          user: {
+            id: Number(graphqlComment.user.id),
+            name: graphqlComment.user.name,
+            avatar_url: graphqlComment.user.avatarUrl || null,
+          },
+        };
 
-      resetField("what_to_discard_problem_comment.content");
-      resetField("what_to_discard_problem_comment.parent_comment_id");
+        insertCommentToThread(restComment);
 
-      successToast({ title: "コメントを投稿しました" });
+        resetField("what_to_discard_problem_comment.content");
+        resetField("what_to_discard_problem_comment.parent_comment_id");
+
+        successToast({ title: "コメントを投稿しました" });
+      }
     } catch (error) {
       errorToast({ error, title: "コメントを投稿できませんでした" });
     }

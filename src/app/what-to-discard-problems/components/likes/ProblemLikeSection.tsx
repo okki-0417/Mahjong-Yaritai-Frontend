@@ -6,8 +6,13 @@ import { useContext, useEffect, useState } from "react";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { useDisclosure } from "@chakra-ui/react";
-import { apiClient } from "@/src/lib/api/client";
 import LikeButton from "@/src/components/LikeButton";
+import { useMutation, useQuery } from "@apollo/client/react";
+import {
+  CreateWhatToDiscardProblemLikeDocument,
+  DeleteWhatToDiscardProblemLikeDocument,
+  WhatToDiscardProblemDetailDocument,
+} from "@/src/generated/graphql";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
 
@@ -16,22 +21,16 @@ export default function ProblemLikeSection({
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
 }) {
+  const { data: problemData } = useQuery(WhatToDiscardProblemDetailDocument, {
+    variables: { id: String(problem.id) },
+    skip: !problem.id,
+  });
+
   useEffect(() => {
-    const fetchMyLike = async () => {
-      if (!problem.id) return;
-
-      try {
-        const response = await apiClient.getWhatToDiscardProblemMyLike({
-          params: { what_to_discard_problem_id: String(problem.id) },
-        });
-        setIsLiked(Boolean(response.my_like));
-      } catch {
-        setIsLiked(false);
-      }
-    };
-
-    fetchMyLike();
-  }, [problem.id]);
+    if (problemData?.whatToDiscardProblem?.isLikedByMe !== undefined) {
+      setIsLiked(problemData.whatToDiscardProblem.isLikedByMe);
+    }
+  }, [problemData]);
 
   const [isLiked, setIsLiked] = useState(Boolean(problem.is_liked_by_me));
   const [likesCount, setLikesCount] = useState(problem.likes_count);
@@ -39,6 +38,9 @@ export default function ProblemLikeSection({
 
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
+
+  const [createLike] = useMutation(CreateWhatToDiscardProblemLikeDocument);
+  const [deleteLike] = useMutation(DeleteWhatToDiscardProblemLikeDocument);
 
   const { session } = useContext(SessionContext);
   const isLoggedIn = Boolean(session?.is_logged_in);
@@ -52,9 +54,9 @@ export default function ProblemLikeSection({
 
     try {
       if (isLiked) {
-        await apiClient.deleteWhatToDiscardProblemMyLike([], {
-          params: {
-            what_to_discard_problem_id: String(problem.id),
+        await deleteLike({
+          variables: {
+            whatToDiscardProblemId: String(problem.id),
           },
         });
 
@@ -63,9 +65,9 @@ export default function ProblemLikeSection({
 
         successToast({ title: "いいねを取り消しました" });
       } else {
-        await apiClient.createWhatToDiscardProblemMyLike([], {
-          params: {
-            what_to_discard_problem_id: String(problem.id),
+        await createLike({
+          variables: {
+            whatToDiscardProblemId: String(problem.id),
           },
         });
 

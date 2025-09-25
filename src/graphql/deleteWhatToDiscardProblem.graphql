@@ -1,0 +1,6 @@
+mutation DeleteWhatToDiscardProblem($id: ID!) {
+  deleteWhatToDiscardProblem(input: { id: $id }) {
+    success
+    errors
+  }
+}

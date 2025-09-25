@@ -6,9 +6,10 @@ import { HStack, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import CommentsModal from "@/src/app/what-to-discard-problems/components/comments/CommentsModal";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
-import { apiClient } from "@/src/lib/api/client";
 import { Fragment, useState } from "react";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import { useQuery } from "@apollo/client/react";
+import { WhatToDiscardProblemDetailDocument } from "@/src/generated/graphql";
 
 export default function ProblemCommentSection({
   problem,
@@ -22,19 +23,40 @@ export default function ProblemCommentSection({
   const [isLoading, setIsLoading] = useState(false);
   const errorToast = useErrorToast();
 
+  const { refetch } = useQuery(WhatToDiscardProblemDetailDocument, {
+    variables: { id: String(problem.id) },
+    skip: true,
+  });
+
   const handleOpenModal = async () => {
     if (isLoading) return;
     setIsLoading(true);
 
     try {
-      const response = await apiClient.getComments({
-        params: {
-          what_to_discard_problem_id: String(problem.id),
-        },
-      });
+      const { data } = await refetch();
 
-      setParentComments(response.what_to_discard_problem_comments);
-      onOpen();
+      if (data?.whatToDiscardProblem?.comments) {
+        // GraphQLデータをREST APIフォーマットに変換
+        const restComments: z.infer<typeof schemas.Comment>[] =
+          data.whatToDiscardProblem.comments.map((comment: any) => ({
+            id: Number(comment.id),
+            content: comment.content,
+            user_id: Number(comment.user.id),
+            parent_comment_id: comment.parentCommentId ? Number(comment.parentCommentId) : null,
+            replies_count: comment.repliesCount,
+            created_at: comment.createdAt,
+            commentable_id: Number(problem.id),
+            commentable_type: "WhatToDiscardProblem",
+            user: {
+              id: Number(comment.user.id),
+              name: comment.user.name,
+              avatar_url: comment.user.avatarUrl || null,
+            },
+          }));
+
+        setParentComments(restComments);
+        onOpen();
+      }
     } catch (error) {
       errorToast({ error, title: "コメントを取得できませんでした" });
     } finally {

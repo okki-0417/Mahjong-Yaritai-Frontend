@@ -3,6 +3,7 @@ import "@/src/styles/globals.css";
 import { Metadata } from "next";
 import Header from "@/src/components/header/Header";
 import Footer from "@/src/components/Footer";
+import ApolloWrapper from "@/src/components/ApolloWrapper";
 
 export const metadata: Metadata = {
   title: {
@@ -48,15 +49,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" suppressHydrationWarning>
       <body>
         <ChakraProvider resetCSS={false}>
-          <main
-            className="flex lg:pb-0 pb-24 flex-col min-h-screen bg-secondary overflow-x-hidden text-neutral"
-            style={{ fontFamily: "PT Serif, serif" }}>
-            <div className="mb-16">
-              <Header />
-            </div>
-            {children}
-            <Footer />
-          </main>
+          <ApolloWrapper>
+            <main
+              className="flex lg:pb-0 pb-24 flex-col min-h-screen bg-secondary overflow-x-hidden text-neutral"
+              style={{ fontFamily: "PT Serif, serif" }}>
+              <div className="mb-16">
+                <Header />
+              </div>
+              {children}
+              <Footer />
+            </main>
+          </ApolloWrapper>
         </ChakraProvider>
       </body>
     </html>
