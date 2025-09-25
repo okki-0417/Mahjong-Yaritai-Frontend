@@ -5,9 +5,17 @@ export default async function ProfileSection() {
   const apiPageClient = await createApiPageClient();
 
   try {
-    const response = await apiPageClient.getProfile();
+    const [profileResponse, sessionResponse] = await Promise.all([
+      apiPageClient.getProfile(),
+      apiPageClient.getSession(),
+    ]);
 
-    return <ClientProfileSection initialProfile={response.profile} />;
+    return (
+      <ClientProfileSection
+        initialProfile={profileResponse.profile}
+        currentUserId={sessionResponse.session.user_id}
+      />
+    );
   } catch {
     return (
       <div>

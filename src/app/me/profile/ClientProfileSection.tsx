@@ -10,8 +10,10 @@ import { z } from "zod";
 
 export default function ClientProfileSection({
   initialProfile,
+  currentUserId,
 }: {
   initialProfile: z.infer<typeof schemas.User>;
+  currentUserId?: number | null;
 }) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profile, setProfile] = useState(initialProfile);
@@ -29,7 +31,7 @@ export default function ClientProfileSection({
       {isEditMode ? (
         <ProfileEditForm setIsEditMode={setIsEditMode} user={profile} setUser={setProfile} />
       ) : (
-        <UserProfile user={profile} />
+        <UserProfile user={profile} currentUserId={currentUserId} />
       )}
     </Fragment>
   );
