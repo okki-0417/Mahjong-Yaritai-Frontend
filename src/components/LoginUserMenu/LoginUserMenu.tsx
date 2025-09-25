@@ -14,30 +14,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { apiClient } from "@/src/lib/api/client";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import { Fragment } from "react";
 import LogoutSection from "@/src/components/sideNavigation/LogoutButton";
 import { FaUserTimes } from "react-icons/fa";
+import { useSession } from "@/src/hooks/useSession";
 
 export default function LoginUserMenu() {
-  const [profile, setProfile] = useState<z.infer<typeof schemas.User> | null>(null);
-  const pathName = usePathname();
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await apiClient.getProfile();
-        return setProfile(response.profile);
-      } catch {
-        return null;
-      }
-    };
-
-    fetchProfile();
-  }, [pathName]);
+  const { session } = useSession();
+  const profile = session?.user;
 
   return (
     <Box>

@@ -1,27 +1,13 @@
 "use client";
 
 import ButtonNeutral from "@/src/components/Buttons/ButtonNeutral";
-import { apiClient } from "@/src/lib/api/client";
-import { schemas } from "@/src/zodios/api";
 import { HStack, ListItem, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
-import z from "zod";
+import { Fragment } from "react";
+import { useSession } from "@/src/hooks/useSession";
 
 export default function LoginSection() {
-  const [session, setSession] = useState<z.infer<typeof schemas.Session>>(null);
-  const pathName = usePathname();
-
-  useEffect(() => {
-    const updateSession = async () => {
-      const response = await apiClient.getSession();
-      setSession(response.session);
-    };
-
-    updateSession();
-  }, [pathName]);
-
+  const { session } = useSession();
   const isLoggedIn = session?.is_logged_in;
 
   return (

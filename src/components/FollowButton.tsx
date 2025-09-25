@@ -1,7 +1,8 @@
 "use client";
 
 import { Button, useDisclosure } from "@chakra-ui/react";
-import { apiClient } from "@/src/lib/api/client";
+import { useMutation } from "@apollo/client/react";
+import { CreateFollowDocument, DeleteFollowDocument } from "@/src/generated/graphql";
 import { useState, useEffect } from "react";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
@@ -13,7 +14,7 @@ interface FollowButtonProps {
   currentUserId: number | null;
   variant?: "solid" | "outline";
   size?: "sm" | "md" | "lg";
-  onFollowChange?: (isFollowing: boolean) => void;
+  onFollowChange?: (newIsFollowing: boolean) => void;
 }
 
 export default function FollowButton({
@@ -27,6 +28,9 @@ export default function FollowButton({
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [createFollow] = useMutation(CreateFollowDocument);
+  const [deleteFollow] = useMutation(DeleteFollowDocument);
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
 
@@ -48,12 +52,16 @@ export default function FollowButton({
 
     try {
       if (isFollowing) {
-        await apiClient.deleteFollow([], { params: { user_id: String(userId) } });
+        await deleteFollow({
+          variables: { userId: String(userId) },
+        });
         setIsFollowing(false);
         onFollowChange?.(false);
         successToast({ title: "フォローを解除しました" });
       } else {
-        await apiClient.createFollow([], { params: { user_id: String(userId) } });
+        await createFollow({
+          variables: { userId: String(userId) },
+        });
         setIsFollowing(true);
         onFollowChange?.(true);
         successToast({ title: "フォローしました" });
