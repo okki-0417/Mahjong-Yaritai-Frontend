@@ -16,6 +16,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { z } from "zod";
+import { useMemo } from "react";
 
 export default function VoteResultModal({
   voteResult,
@@ -38,6 +39,39 @@ export default function VoteResultModal({
     React.SetStateAction<z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]>
   >;
 }) {
+  // 手牌とツモ牌のユニークな並びを生成
+  const uniqueTiles = useMemo(() => {
+    const allTiles = [
+      problem.hand1_id,
+      problem.hand2_id,
+      problem.hand3_id,
+      problem.hand4_id,
+      problem.hand5_id,
+      problem.hand6_id,
+      problem.hand7_id,
+      problem.hand8_id,
+      problem.hand9_id,
+      problem.hand10_id,
+      problem.hand11_id,
+      problem.hand12_id,
+      problem.hand13_id,
+      problem.tsumo_id,
+    ].filter(Boolean);
+
+    // ユニークな牌IDを取得
+    const uniqueTileIds = Array.from(new Set(allTiles));
+
+    // 各牌の投票結果を取得
+    return uniqueTileIds.map((tileId) => {
+      const voteData = voteResult.find((result) => result.tile_id === tileId);
+      return {
+        tile_id: tileId,
+        count: voteData?.count || 0,
+        is_voted_by_me: voteData?.is_voted_by_me || false,
+      };
+    });
+  }, [problem, voteResult]);
+
   return (
     <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose} isCentered size="3xl">
       <ModalOverlay />
@@ -59,32 +93,44 @@ export default function VoteResultModal({
             </Box>
           </HStack>
 
-          <HStack className="bg-mj-mat" justify="center" gap={["1px", "2"]}>
-            {voteResult?.map((result, index) => {
-              return (
-                <Grid key={index} gridTemplateRows="repeat(5,minmax(0,1fr))" gap="1">
-                  <VStack gridRow="span 4/ span 4" justifyContent="flex-end" gap="0">
-                    <Text fontFamily="sans-serif" className="text-neutral">
-                      {result.count}
-                    </Text>
+          <HStack className="bg-mj-mat" justify="center" gap={["1px", "2"]} wrap="wrap">
+            {uniqueTiles.map((tile) => {
+              const maxCount = Math.max(...uniqueTiles.map(t => t.count));
+              const hasVotes = maxCount > 0;
 
-                    <Box
-                      className={`${result.is_voted_by_me ? "bg-sky-400" : "bg-green-400"} `}
-                      borderTopRadius="sm"
-                      w="6"
-                      border="1px solid white"
-                      borderBottom="0px"
-                      shadow="sm"
-                      style={{
-                        height: `${Math.round((result.count / Math.max(...voteResult.map(rslt => rslt?.count))) * 100)}%`,
-                      }}
-                    />
+              return (
+                <Grid key={tile.tile_id} gridTemplateRows="repeat(5,minmax(0,1fr))" gap="1">
+                  <VStack gridRow="span 4/ span 4" justifyContent="flex-end" gap="0">
+                    {tile.count > 0 && (
+                      <Text fontFamily="sans-serif" className="text-neutral">
+                        {tile.count}
+                      </Text>
+                    )}
+
+                    {hasVotes && tile.count > 0 && (
+                      <Box
+                        className={`${tile.is_voted_by_me ? "bg-sky-400" : "bg-green-400"} `}
+                        borderTopRadius="sm"
+                        w="6"
+                        border="1px solid white"
+                        borderBottom="0px"
+                        shadow="sm"
+                        style={{
+                          height: `${Math.round((tile.count / maxCount) * 100)}%`,
+                        }}
+                      />
+                    )}
                   </VStack>
 
-                  <Box gridRow="span 1/span 1">
+                  <Box
+                    gridRow="span 1/span 1"
+                    border={tile.is_voted_by_me ? "3px solid #0ea5e9" : "none"}
+                    borderRadius="md"
+                    p={tile.is_voted_by_me ? "1px" : "4px"}
+                  >
                     <VoteButton
                       problem={problem}
-                      tileId={result.tile_id}
+                      tileId={tile.tile_id}
                       myVoteTileId={myVoteTileId}
                       setMyVoteTileId={setMyVoteTileId}
                       voteResult={voteResult}
