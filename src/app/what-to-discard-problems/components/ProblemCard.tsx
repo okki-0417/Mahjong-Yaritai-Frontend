@@ -48,9 +48,13 @@ export default function ProblemCard({
 
     // 投票結果をREST APIフォーマットに変換
     if (graphqlProblem.voteResults) {
+      const currentVoteTileId = graphqlProblem.myVote?.tileId
+        ? Number(graphqlProblem.myVote.tileId)
+        : null;
       const restVoteResults = graphqlProblem.voteResults.map((result: any) => ({
         tile_id: Number(result.tileId),
         count: result.count,
+        is_voted_by_me: currentVoteTileId === Number(result.tileId),
       }));
       setVoteResult(restVoteResults);
     }
