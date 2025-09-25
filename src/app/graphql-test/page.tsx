@@ -3,7 +3,10 @@
 import { ApolloProvider, useQuery } from "@apollo/client/react";
 import { apolloClient } from "@/src/lib/apollo/client";
 import { CurrentSessionDocument } from "@/src/generated/graphql";
-import { Box, Heading, Text, VStack, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
+import { Box, Heading, Text, VStack, Spinner, Alert, AlertIcon, Divider } from "@chakra-ui/react";
+import ProblemCardWithGraphQL from "@/src/app/what-to-discard-problems/components/ProblemCardWithGraphQL";
+import ProblemsSectionWithGraphQL from "@/src/app/what-to-discard-problems/components/ProblemsSectionWithGraphQL";
+import VoteTestSection from "@/src/app/graphql-test/VoteTestSection";
 
 function SessionDisplay() {
   const { data, loading, error } = useQuery(CurrentSessionDocument);
@@ -76,6 +79,30 @@ export default function GraphQLTestPage() {
       <Box maxW="container.md" mx="auto" p={8}>
         <Heading mb={6}>GraphQL 接続テスト</Heading>
         <SessionDisplay />
+
+        <Divider my={8} />
+
+        <VStack align="stretch" spacing={4}>
+          <Heading size="md">何切る問題詳細 (GraphQL)</Heading>
+          <Text fontSize="sm" color="gray.600">
+            問題ID: 1 を表示
+          </Text>
+          <ProblemCardWithGraphQL problemId="1" />
+        </VStack>
+
+        <Divider my={8} />
+
+        <VStack align="stretch" spacing={4}>
+          <Heading size="md">何切る問題一覧 (GraphQL)</Heading>
+          <Text fontSize="sm" color="gray.600">
+            最新3件を表示
+          </Text>
+          <ProblemsSectionWithGraphQL />
+        </VStack>
+
+        <Divider my={8} />
+
+        <VoteTestSection />
       </Box>
     </ApolloProvider>
   );

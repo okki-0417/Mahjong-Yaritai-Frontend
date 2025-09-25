@@ -1,0 +1,10 @@
+mutation UpdateUser($name: String, $avatar: String) {
+  updateUser(input: { name: $name, avatar: $avatar }) {
+    user {
+      id
+      name
+      avatarUrl
+    }
+    errors
+  }
+}

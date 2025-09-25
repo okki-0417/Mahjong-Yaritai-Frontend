@@ -4,8 +4,9 @@ import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import PopButton from "@/src/components/PopButton";
 import { HStack, Text } from "@chakra-ui/react";
-import { apiClient } from "@/src/lib/api/client";
 import useErrorToast from "@/src/hooks/useErrorToast";
+import { useQuery } from "@apollo/client/react";
+import { WhatToDiscardProblemDetailDocument } from "@/src/generated/graphql";
 import Image from "next/image";
 import VoteIconDefault from "@/public/vote-icon-default.webp";
 import VoteIconBlue from "@/public/vote-icon-blue.webp";
@@ -29,22 +30,28 @@ export default function ProblemVoteSection({
 }) {
   const errorToast = useErrorToast();
 
+  const { refetch } = useQuery(WhatToDiscardProblemDetailDocument, {
+    variables: { id: String(problem.id) },
+    skip: true,
+  });
+
   const handleClick = async () => {
     try {
-      const response = await apiClient.getWhatToDiscardProblemVoteResult({
-        params: {
-          what_to_discard_problem_id: String(problem.id),
-        },
-      });
+      const { data } = await refetch();
 
-      const tileUniqueResult = Array.from(
-        new Map(
-          response.what_to_discard_problem_vote_result.map(result => [result.tile_id, result]),
-        ).values(),
-      );
+      if (data?.whatToDiscardProblem?.voteResults) {
+        const voteResults = data.whatToDiscardProblem.voteResults.map((result: any) => ({
+          tile_id: Number(result.tileId),
+          count: result.count,
+        }));
 
-      setVoteResult(tileUniqueResult);
-      handleDisplayVoteResult();
+        const tileUniqueResult = Array.from(
+          new Map(voteResults.map((result: any) => [result.tile_id, result])).values(),
+        );
+
+        setVoteResult(tileUniqueResult);
+        handleDisplayVoteResult();
+      }
     } catch (error) {
       errorToast({ title: "投票の取得に失敗しました", error });
     }

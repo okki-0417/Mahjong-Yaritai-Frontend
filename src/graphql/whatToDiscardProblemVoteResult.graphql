@@ -1,0 +1,10 @@
+query WhatToDiscardProblemVoteResult($problemId: ID!) {
+  whatToDiscardProblem(id: $problemId) {
+    id
+    voteResults {
+      tileId
+      count
+      percentage
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export type SessionType = z.infer<typeof schemas.Session>;
 
+// GraphQL移行中のため、一時的にREST APIを維持
 export default async function getSession() {
   const apiPageClient = await createApiPageClient();
 

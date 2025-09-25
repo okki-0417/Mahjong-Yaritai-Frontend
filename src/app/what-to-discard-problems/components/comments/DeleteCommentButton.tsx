@@ -1,4 +1,5 @@
-import { apiClient } from "@/src/lib/api/client";
+"use client";
+
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { schemas } from "@/src/zodios/api";
@@ -6,6 +7,8 @@ import { Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import { z } from "zod";
+import { useMutation } from "@apollo/client/react";
+import { DeleteCommentDocument } from "@/src/generated/graphql";
 
 export default function DeleteCommentButton({
   comment,
@@ -16,6 +19,8 @@ export default function DeleteCommentButton({
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
 
+  const [deleteCommentMutation] = useMutation(DeleteCommentDocument);
+
   const deleteComment = async () => {
     if (deleting) return;
     setDeleting(true);
@@ -23,12 +28,14 @@ export default function DeleteCommentButton({
     try {
       const isConfirmed = confirm("コメントを削除しますか？");
 
-      if (!isConfirmed) return;
+      if (!isConfirmed) {
+        setDeleting(false);
+        return;
+      }
 
-      await apiClient.deleteComment([], {
-        params: {
-          what_to_discard_problem_id: String(comment.commentable_id),
-          id: String(comment.id),
+      await deleteCommentMutation({
+        variables: {
+          commentId: String(comment.id),
         },
       });
 

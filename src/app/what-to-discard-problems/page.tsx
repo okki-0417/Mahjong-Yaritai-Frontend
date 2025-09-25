@@ -1,6 +1,6 @@
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
-import ProblemsSection from "@/src/app/what-to-discard-problems/components/ProblemsSection";
+import ProblemsSectionWithGraphQL from "@/src/app/what-to-discard-problems/components/ProblemsSectionWithGraphQL";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
 import { Metadata } from "next";
@@ -23,7 +23,7 @@ export default function WhatToDiscardProblems() {
   return (
     <Container mt={["6", "12"]} maxW="4xl" px={["3", "0"]}>
       <Suspense fallback={<ProblemsSectionSkeleton />}>
-        <ProblemsSection />
+        <ProblemsSectionWithGraphQL />
       </Suspense>
     </Container>
   );

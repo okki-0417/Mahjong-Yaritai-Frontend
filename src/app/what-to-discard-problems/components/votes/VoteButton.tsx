@@ -5,9 +5,14 @@ import { Box, Skeleton, useDisclosure } from "@chakra-ui/react";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
-import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
 import { schemas } from "@/src/zodios/api";
+import { useMutation, useQuery } from "@apollo/client/react";
+import {
+  CreateWhatToDiscardProblemVoteDocument,
+  DeleteWhatToDiscardProblemVoteDocument,
+  WhatToDiscardProblemDetailDocument,
+} from "@/src/generated/graphql";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
@@ -38,7 +43,15 @@ export default function VoteButton({
   const errorToast = useErrorToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [createVote] = useMutation(CreateWhatToDiscardProblemVoteDocument);
+  const [deleteVote] = useMutation(DeleteWhatToDiscardProblemVoteDocument);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { refetch } = useQuery(WhatToDiscardProblemDetailDocument, {
+    variables: { id: String(problem.id) },
+    skip: true,
+  });
 
   const { session } = useContext(SessionContext);
   const isLoggedIn = Boolean(session?.is_logged_in);
@@ -51,81 +64,83 @@ export default function VoteButton({
 
     try {
       if (!myVoteTileId) {
-        const response = await apiClient.createWhatToDiscardProblemMyVote(
-          {
-            what_to_discard_problem_my_vote: {
-              tile_id: tileId,
-            },
-          },
-          {
-            params: {
-              what_to_discard_problem_id: String(problem.id),
-            },
-          },
-        );
-
-        setVotesCount(prev => prev + 1);
-        setMyVoteTileId(response.what_to_discard_problem_my_vote.tile.id);
-
-        const voteResultResponse = await apiClient.getWhatToDiscardProblemVoteResult({
-          params: {
-            what_to_discard_problem_id: String(problem.id),
+        const { data } = await createVote({
+          variables: {
+            whatToDiscardProblemId: String(problem.id),
+            tileId: String(tileId),
           },
         });
 
-        setVoteResult(voteResultResponse.what_to_discard_problem_vote_result);
+        if (data?.createWhatToDiscardProblemVote?.vote) {
+          setVotesCount(prev => prev + 1);
+          setMyVoteTileId(Number(data.createWhatToDiscardProblemVote.vote.tileId));
 
-        successToast({ title: "投票しました" });
+          // GraphQLで投票結果を再取得
+          const { data: refreshedData } = await refetch();
+          if (refreshedData?.whatToDiscardProblem?.voteResults) {
+            const voteResults = refreshedData.whatToDiscardProblem.voteResults.map(
+              (result: any) => ({
+                tile_id: Number(result.tileId),
+                count: result.count,
+              }),
+            );
+            setVoteResult(voteResults);
+          }
+
+          successToast({ title: "投票しました" });
+        }
       } else if (myVoteTileId == tileId) {
-        await apiClient.deleteWhatToDiscardProblemMyVote([], {
-          params: {
-            what_to_discard_problem_id: String(problem.id),
+        await deleteVote({
+          variables: {
+            whatToDiscardProblemId: String(problem.id),
           },
         });
 
         setVotesCount(prev => prev - 1);
         setMyVoteTileId(null);
 
-        const response = await apiClient.getWhatToDiscardProblemVoteResult({
-          params: {
-            what_to_discard_problem_id: String(problem.id),
-          },
-        });
-
-        setVoteResult(response.what_to_discard_problem_vote_result);
+        // GraphQLで投票結果を再取得
+        const { data: refreshedData } = await refetch();
+        if (refreshedData?.whatToDiscardProblem?.voteResults) {
+          const voteResults = refreshedData.whatToDiscardProblem.voteResults.map((result: any) => ({
+            tile_id: Number(result.tileId),
+            count: result.count,
+          }));
+          setVoteResult(voteResults);
+        }
 
         successToast({ title: "投票を取り消しました" });
       } else {
-        await apiClient.deleteWhatToDiscardProblemMyVote([], {
-          params: {
-            what_to_discard_problem_id: String(problem.id),
+        await deleteVote({
+          variables: {
+            whatToDiscardProblemId: String(problem.id),
           },
         });
 
-        const response = await apiClient.createWhatToDiscardProblemMyVote(
-          {
-            what_to_discard_problem_my_vote: {
-              tile_id: tileId,
-            },
-          },
-          {
-            params: {
-              what_to_discard_problem_id: String(problem.id),
-            },
-          },
-        );
-
-        setMyVoteTileId(response.what_to_discard_problem_my_vote.tile.id);
-
-        const voteResultResponse = await apiClient.getWhatToDiscardProblemVoteResult({
-          params: {
-            what_to_discard_problem_id: String(problem.id),
+        const { data } = await createVote({
+          variables: {
+            whatToDiscardProblemId: String(problem.id),
+            tileId: String(tileId),
           },
         });
 
-        setVoteResult(voteResultResponse.what_to_discard_problem_vote_result);
+        if (data?.createWhatToDiscardProblemVote?.vote) {
+          setMyVoteTileId(Number(data.createWhatToDiscardProblemVote.vote.tileId));
 
-        successToast({ title: "投票しました" });
+          // GraphQLで投票結果を再取得
+          const { data: refreshedData } = await refetch();
+          if (refreshedData?.whatToDiscardProblem?.voteResults) {
+            const voteResults = refreshedData.whatToDiscardProblem.voteResults.map(
+              (result: any) => ({
+                tile_id: Number(result.tileId),
+                count: result.count,
+              }),
+            );
+            setVoteResult(voteResults);
+          }
+
+          successToast({ title: "投票しました" });
+        }
       }
     } catch (error) {
       errorToast({ error, title: "投票の操作に失敗しました" });

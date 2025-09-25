@@ -1,0 +1,6 @@
+mutation CreateWhatToDiscardProblemLike($whatToDiscardProblemId: ID!) {
+  createWhatToDiscardProblemLike(input: { whatToDiscardProblemId: $whatToDiscardProblemId }) {
+    success
+    errors
+  }
+}
