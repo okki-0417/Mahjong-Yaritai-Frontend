@@ -7,6 +7,7 @@ if [ -z "$files" ]; then
   exit 0
 fi
 
+# ESLint check (but don't auto-fix to avoid breaking changes)
 npx eslint $files
 if [ $? -ne 0 ]; then
   echo "ESLint failed. Commit aborted."
@@ -14,9 +15,15 @@ if [ $? -ne 0 ]; then
 fi
 echo "EsLint OK."
 
+# Prettier auto-fix and re-stage
+echo "Checking formatting..."
 npx prettier --check $files
 if [ $? -ne 0 ]; then
-  echo "Prettier check failed. Commit aborted."
-  exit 1
+  echo "Code style issues found. Auto-fixing with Prettier..."
+  npx prettier --write $files
+  git add $files
+  echo "Prettier auto-fix applied and files re-staged."
+else
+  echo "All matched files use Prettier code style!"
 fi
 echo "Prettier OK."
