@@ -93,7 +93,7 @@ export default function VoteResultModal({
             </Box>
           </HStack>
 
-          <HStack className="bg-mj-mat" justify="center" gap={["1px", "2"]} wrap="wrap">
+          <HStack className="bg-mj-mat" justify="center" gap={["1px", "2"]}>
             {uniqueTiles.map(tile => {
               const maxCount = Math.max(...uniqueTiles.map(t => t.count));
               const hasVotes = maxCount > 0;
