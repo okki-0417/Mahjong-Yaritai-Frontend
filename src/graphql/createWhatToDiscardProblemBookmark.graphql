@@ -1,0 +1,12 @@
+mutation CreateWhatToDiscardProblemBookmark($problemId: ID!) {
+  createWhatToDiscardProblemBookmark(input: { problemId: $problemId }) {
+    bookmark {
+      id
+      userId
+      problemId
+      createdAt
+    }
+    success
+    errors
+  }
+}

@@ -6,7 +6,7 @@ import z from "zod";
 
 export const SessionContext = createContext<{
   session: z.infer<typeof schemas.Session> | null;
-} | null>(null);
+}>({ session: null });
 
 export default function SessionContextProvider({
   session,

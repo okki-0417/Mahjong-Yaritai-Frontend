@@ -26,6 +26,8 @@ export default function ProblemCard({
   const [voteResult, setVoteResult] = useState<
     z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]
   >([]);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarksCount, setBookmarksCount] = useState(0);
 
   const { data: problemData } = useQuery(WhatToDiscardProblemDetailDocument, {
     variables: { id: String(problem.id) },
@@ -61,6 +63,14 @@ export default function ProblemCard({
 
     // 投票数更新
     setVotesCount(graphqlProblem.votesCount);
+
+    // ブックマーク情報更新
+    if (graphqlProblem.isBookmarkedByMe !== undefined) {
+      setIsBookmarked(graphqlProblem.isBookmarkedByMe);
+    }
+    if (graphqlProblem.bookmarksCount !== undefined) {
+      setBookmarksCount(graphqlProblem.bookmarksCount);
+    }
   }, [problemData]);
 
   const { session } = useContext(SessionContext);
@@ -84,7 +94,16 @@ export default function ProblemCard({
 
       <VStack borderRadius="md" shadow="md" alignItems="stretch" gap="0" overflow="hidden">
         <Box pt="2" px={["2", "4"]} pb="3" className="bg-mj-mat">
-          <ProblemCardHeader problem={problem} myUserId={myUserId} />
+          <ProblemCardHeader
+            problem={problem}
+            myUserId={myUserId}
+            isBookmarked={isBookmarked}
+            bookmarksCount={bookmarksCount}
+            onBookmarkUpdate={(newIsBookmarked, newBookmarksCount) => {
+              setIsBookmarked(newIsBookmarked);
+              setBookmarksCount(newBookmarksCount);
+            }}
+          />
 
           <Wrap mt="2" spacingY="0" align="center">
             {problem.round && <Text fontSize={["lg", "xl"]}>{problem.round}局</Text>}

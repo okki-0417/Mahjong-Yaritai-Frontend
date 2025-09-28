@@ -5,6 +5,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import UserModal from "@/src/components/Modals/UserModal";
+import BookmarkButton from "@/src/components/BookmarkButton";
 import {
   Button,
   Circle,
@@ -27,9 +28,17 @@ import { ProblemsContext } from "@/src/app/what-to-discard-problems/context-prov
 export default function ProblemCardHeader({
   problem,
   myUserId,
+  isBookmarked,
+  bookmarksCount,
+  onBookmarkUpdate,
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
   myUserId: number | null;
+  isBookmarked: boolean;
+  bookmarksCount: number;
+  /* eslint-disable no-unused-vars */
+  onBookmarkUpdate: (isBookmarked: boolean, bookmarksCount: number) => void;
+  /* eslint-enable no-unused-vars */
 }) {
   const {
     isOpen: isUserModalOpen,
@@ -41,9 +50,12 @@ export default function ProblemCardHeader({
     onOpen: onUpdateFormOpen,
     onClose: onUpdateFormClose,
   } = useDisclosure();
+
   const isMyProblem = problem.user.id === myUserId;
   const { deleteProblem } = useProblemDelete(problem.id);
-  const { setProblems } = useContext(ProblemsContext);
+  // ProblemsContextは自分の問題の場合のみ必要
+  const context = useContext(ProblemsContext);
+  const setProblems = context?.setProblems;
 
   return (
     <HStack justifyContent="space-between">
@@ -62,36 +74,47 @@ export default function ProblemCardHeader({
         </HStack>
       </Button>
 
-      {isMyProblem && (
-        <Menu>
-          <MenuButton as="button">
-            <HiOutlineDotsHorizontal size={22} />
-          </MenuButton>
-          <MenuList>
-            <Fragment>
-              <MenuItem icon={<FiEdit3 size={18} color="black" />} onClick={onUpdateFormOpen}>
-                <span className="text-primary">編集する</span>
-              </MenuItem>
+      <HStack spacing={2}>
+        {!isMyProblem && (
+          <BookmarkButton
+            problemId={String(problem.id)}
+            isBookmarked={isBookmarked}
+            bookmarksCount={bookmarksCount}
+            onBookmarkUpdate={onBookmarkUpdate}
+          />
+        )}
 
-              <ProblemUpdateFormModal
-                isOpen={isUpdateFormOpen}
-                onClose={onUpdateFormClose}
-                setProblems={setProblems}
-                problem={problem}
-              />
-            </Fragment>
-            {isMyProblem ? (
-              <MenuItem icon={<AiOutlineDelete size={18} color="red" />} onClick={deleteProblem}>
-                <span className="text-red-500">削除する</span>
-              </MenuItem>
-            ) : (
-              <MenuItem icon={<FiAlertTriangle size={18} color="red" />}>
-                <span className="text-red-500">通報する</span>
-              </MenuItem>
-            )}
-          </MenuList>
-        </Menu>
-      )}
+        {isMyProblem && (
+          <Menu>
+            <MenuButton as="button">
+              <HiOutlineDotsHorizontal size={22} />
+            </MenuButton>
+            <MenuList>
+              <Fragment>
+                <MenuItem icon={<FiEdit3 size={18} color="black" />} onClick={onUpdateFormOpen}>
+                  <span className="text-primary">編集する</span>
+                </MenuItem>
+
+                <ProblemUpdateFormModal
+                  isOpen={isUpdateFormOpen}
+                  onClose={onUpdateFormClose}
+                  setProblems={setProblems!}
+                  problem={problem}
+                />
+              </Fragment>
+              {isMyProblem ? (
+                <MenuItem icon={<AiOutlineDelete size={18} color="red" />} onClick={deleteProblem}>
+                  <span className="text-red-500">削除する</span>
+                </MenuItem>
+              ) : (
+                <MenuItem icon={<FiAlertTriangle size={18} color="red" />}>
+                  <span className="text-red-500">通報する</span>
+                </MenuItem>
+              )}
+            </MenuList>
+          </Menu>
+        )}
+      </HStack>
 
       <UserModal
         user={problem.user}

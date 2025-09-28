@@ -2,6 +2,7 @@
 
 import LoginUserMenuCheckBox from "@/src/components/LoginUserMenu/LoginUserMenuCheckBox";
 import { CgProfile } from "react-icons/cg";
+import { MdBookmarkAdded } from "react-icons/md";
 import UserIcon from "@/src/components/LoginUserMenu/UserIcon";
 import {
   Box,
@@ -57,6 +58,15 @@ export default function LoginUserMenu() {
                       <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                         <CgProfile size={20} />
                         <Text fontSize="lg">プロフィール</Text>
+                      </HStack>
+                    </Link>
+                  </ListItem>
+
+                  <ListItem>
+                    <Link href="/me/what-to-discard-problems/bookmarks" className="w-full">
+                      <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
+                        <MdBookmarkAdded size={20} />
+                        <Text fontSize="lg">お気に入り</Text>
                       </HStack>
                     </Link>
                   </ListItem>

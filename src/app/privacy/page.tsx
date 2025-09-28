@@ -24,7 +24,6 @@ function ListSection({ title, description, items }: ListSectionProps) {
       <Text fontSize={["lg", "xl"]} as="h1" fontWeight="bold" mb="4">
         {title}
       </Text>
-      <Divider />
 
       {description && (
         <VStack align="stretch" mb="4">

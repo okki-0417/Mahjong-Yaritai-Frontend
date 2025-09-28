@@ -96,6 +96,8 @@ query WhatToDiscardProblemDetail($id: ID!) {
     }
 
     isLikedByMe
+    isBookmarkedByMe
+    bookmarksCount
     myVote {
       id
       tileId

@@ -131,10 +131,10 @@ await apiClient.createComment(
   {
     what_to_discard_problem_comment: {
       parent_comment_id: null,
-      content: "コメント内容"
-    }
+      content: "コメント内容",
+    },
   },
-  { params: { what_to_discard_problem_id: String(problemId) } }
+  { params: { what_to_discard_problem_id: String(problemId) } },
 );
 
 // FormData形式
@@ -150,12 +150,12 @@ await apiClient.updateUser(formData);
 await apiClient.createWhatToDiscardProblemMyVote(
   {
     what_to_discard_problem_my_vote: {
-      tile_id: tileId
-    }
+      tile_id: tileId,
+    },
   },
   {
-    params: { what_to_discard_problem_id: String(problemId) }
-  }
+    params: { what_to_discard_problem_id: String(problemId) },
+  },
 );
 ```
 
@@ -165,8 +165,8 @@ await apiClient.createWhatToDiscardProblemMyVote(
 await apiClient.getWhatToDiscardProblems({
   queries: {
     cursor: String(cursor),
-    limit: String(limit)
-  }
+    limit: String(limit),
+  },
 });
 ```
 
@@ -178,7 +178,7 @@ const session = await apiClient.getSession();
 
 // POST（ボディのみ）
 await apiClient.createAuthRequest({
-  auth_request: { email: "user@example.com" }
+  auth_request: { email: "user@example.com" },
 });
 
 // DELETE
@@ -187,55 +187,58 @@ await apiClient.deleteSession([]);
 
 #### よくある間違いと修正例
 
-| 間違い | 正しい書き方 | 説明 |
-|--------|-------------|------|
+| 間違い                                      | 正しい書き方                                    | 説明                                 |
+| ------------------------------------------- | ----------------------------------------------- | ------------------------------------ |
 | `apiClient.deleteFollow({ params: {...} })` | `apiClient.deleteFollow([], { params: {...} })` | DELETEでもボディ引数（空配列）が必要 |
-| `apiClient.createFollow({ params: {...} })` | `apiClient.createFollow([], { params: {...} })` | POSTでボディがない場合は空配列 |
-| `apiClient.getUser({ id: "1" })` | `apiClient.getUser({ params: { id: "1" } })` | paramsオブジェクトで囲む |
+| `apiClient.createFollow({ params: {...} })` | `apiClient.createFollow([], { params: {...} })` | POSTでボディがない場合は空配列       |
+| `apiClient.getUser({ id: "1" })`            | `apiClient.getUser({ params: { id: "1" } })`    | paramsオブジェクトで囲む             |
 
 #### 実装例
 
 **フォロー機能**
+
 ```typescript
 // フォロー作成
 await apiClient.createFollow([], {
-  params: { user_id: String(userId) }
+  params: { user_id: String(userId) },
 });
 
 // フォロー削除
 await apiClient.deleteFollow([], {
-  params: { user_id: String(userId) }
+  params: { user_id: String(userId) },
 });
 ```
 
 **投票機能**
+
 ```typescript
 // 投票作成
 await apiClient.createWhatToDiscardProblemMyVote(
   {
-    what_to_discard_problem_my_vote: { tile_id: tileId }
+    what_to_discard_problem_my_vote: { tile_id: tileId },
   },
   {
-    params: { what_to_discard_problem_id: String(problemId) }
-  }
+    params: { what_to_discard_problem_id: String(problemId) },
+  },
 );
 
 // 投票削除
 await apiClient.deleteWhatToDiscardProblemMyVote([], {
-  params: { what_to_discard_problem_id: String(problemId) }
+  params: { what_to_discard_problem_id: String(problemId) },
 });
 ```
 
 **いいね機能**
+
 ```typescript
 // いいね作成
 await apiClient.createWhatToDiscardProblemMyLike([], {
-  params: { what_to_discard_problem_id: String(problemId) }
+  params: { what_to_discard_problem_id: String(problemId) },
 });
 
 // いいね削除
 await apiClient.deleteWhatToDiscardProblemMyLike([], {
-  params: { what_to_discard_problem_id: String(problemId) }
+  params: { what_to_discard_problem_id: String(problemId) },
 });
 ```
 
@@ -246,6 +249,7 @@ await apiClient.deleteWhatToDiscardProblemMyLike([], {
 #### 基本的な使い方
 
 **成功通知**
+
 ```typescript
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 
@@ -257,18 +261,19 @@ successToast({ title: "フォローしました" });
 // 詳細説明付き
 successToast({
   title: "投稿が完成しました",
-  description: "問題が正常に作成されました"
+  description: "問題が正常に作成されました",
 });
 
 // カスタム設定
 successToast({
   title: "保存完了",
-  duration: 5000,        // 5秒表示
-  isClosable: true       // 閉じるボタン表示
+  duration: 5000, // 5秒表示
+  isClosable: true, // 閉じるボタン表示
 });
 ```
 
 **エラー通知**
+
 ```typescript
 import useErrorToast from "@/src/hooks/useErrorToast";
 
@@ -285,13 +290,14 @@ try {
 // カスタムエラーメッセージ
 errorToast({
   title: "エラーが発生しました",
-  description: "もう一度お試しください"
+  description: "もう一度お試しください",
 });
 ```
 
 #### 実装例
 
 **フォロー機能**
+
 ```typescript
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
@@ -315,16 +321,17 @@ const handleFollow = async () => {
 ```
 
 **いいね機能**
+
 ```typescript
 try {
   if (isLiked) {
     await apiClient.deleteWhatToDiscardProblemMyLike([], {
-      params: { what_to_discard_problem_id: String(problemId) }
+      params: { what_to_discard_problem_id: String(problemId) },
     });
     successToast({ title: "いいねを取り消しました" });
   } else {
     await apiClient.createWhatToDiscardProblemMyLike([], {
-      params: { what_to_discard_problem_id: String(problemId) }
+      params: { what_to_discard_problem_id: String(problemId) },
     });
     successToast({ title: "いいねしました" });
   }
@@ -334,10 +341,11 @@ try {
 ```
 
 **コメント投稿**
+
 ```typescript
 try {
   const response = await apiClient.createComment(formData, {
-    params: { what_to_discard_problem_id: String(problemId) }
+    params: { what_to_discard_problem_id: String(problemId) },
   });
   successToast({ title: "コメントを投稿しました" });
 } catch (error) {

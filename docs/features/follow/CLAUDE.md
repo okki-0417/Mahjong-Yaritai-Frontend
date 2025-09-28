@@ -52,6 +52,7 @@ src/
 #### 機能詳細
 
 1. **フォロー状態管理**
+
    ```typescript
    const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
    const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +63,7 @@ src/
    - 自分自身の場合: ボタンを非表示（`return null`）
 
 3. **フォロー/フォロー解除処理**
+
    ```typescript
    const handleFollow = async () => {
      if (!currentUserId) {
@@ -172,7 +174,9 @@ return (
   - `user_id`: string (Path)
 - **レスポンス**:
   ```typescript
-  { message: string }
+  {
+    message: string;
+  }
   ```
 - **エラー**:
   - `401 unauthorized`: 認証が必要
@@ -186,7 +190,9 @@ return (
   - `user_id`: string (Path)
 - **レスポンス**:
   ```typescript
-  { message: string }
+  {
+    message: string;
+  }
   ```
 - **エラー**:
   - `401 unauthorized`: 認証が必要
@@ -373,6 +379,7 @@ const userResponse = await apiPageClient.getUser({ params: { id } });
 
 - **未ログイン時の処理**:
   - **現状**: ログインページにリダイレクト
+
     ```typescript
     if (!currentUserId) {
       router.push("/auth/login");
@@ -381,6 +388,7 @@ const userResponse = await apiPageClient.getUser({ params: { id } });
     ```
 
   - **推奨実装**: 未ログインモーダルを表示（他の機能と統一）
+
     ```typescript
     // NotLoggedInModalを使用する実装例
     import { useDisclosure } from "@chakra-ui/react";
@@ -416,6 +424,7 @@ const userResponse = await apiPageClient.getUser({ params: { id } });
 ### エラーハンドリング
 
 - **現状**: エラーはコンソールに出力のみ
+
   ```typescript
   catch (error) {
     console.error("Failed to toggle follow:", error);
@@ -441,6 +450,7 @@ const userResponse = await apiPageClient.getUser({ params: { id } });
 ### サーバーサイドデータ取得
 
 - **並列取得**: ユーザー情報とセッション情報を同時取得
+
   ```typescript
   const [userResponse, sessionResponse] = await Promise.all([
     apiPageClient.getUser({ params: { id } }),

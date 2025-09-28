@@ -14,7 +14,9 @@ interface FollowButtonProps {
   currentUserId: number | null;
   variant?: "solid" | "outline";
   size?: "sm" | "md" | "lg";
+  /* eslint-disable no-unused-vars */
   onFollowChange?: (newIsFollowing: boolean) => void;
+  /* eslint-enable no-unused-vars */
 }
 
 export default function FollowButton({
