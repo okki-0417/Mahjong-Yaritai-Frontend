@@ -79,7 +79,7 @@ export default function BookmarkButton({
           setIsBookmarkedState(false);
           setBookmarksCountState(newBookmarksCount);
           onBookmarkUpdate?.(false, newBookmarksCount);
-          successToast({ title: "お気に入りから削除しました" });
+          successToast({ title: "ブックマークから削除しました" });
         } else {
           const errors = data?.deleteWhatToDiscardProblemBookmark?.errors;
           throw new Error(
@@ -99,12 +99,12 @@ export default function BookmarkButton({
           setIsBookmarkedState(true);
           setBookmarksCountState(newBookmarksCount);
           onBookmarkUpdate?.(true, newBookmarksCount);
-          successToast({ title: "お気に入りに追加しました" });
+          successToast({ title: "ブックマークに追加しました" });
         } else {
           const errors = data?.createWhatToDiscardProblemBookmark?.errors;
           if (errors && errors.some((e: any) => e.includes("unique") || e.includes("already"))) {
             setIsBookmarkedState(true);
-            successToast({ title: "すでにお気に入りに追加されています" });
+            successToast({ title: "すでにブックマークに追加されています" });
           } else {
             throw new Error(
               `Failed to create bookmark: ${errors ? JSON.stringify(errors) : "Unknown error"}`,
@@ -113,7 +113,7 @@ export default function BookmarkButton({
         }
       }
     } catch (error) {
-      errorToast({ error, title: "お気に入りの操作に失敗しました" });
+      errorToast({ error, title: "ブックマークの操作に失敗しました" });
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +122,7 @@ export default function BookmarkButton({
   return (
     <>
       <IconButton
-        aria-label={isBookmarkedState ? "お気に入りから削除" : "お気に入りに追加"}
+        aria-label={isBookmarkedState ? "ブックマークから削除" : "ブックマークに追加"}
         icon={isBookmarkedState ? <MdBookmarkAdded size={26} /> : <FaRegBookmark size={22} />}
         className="hover:scale-105 transition-transform"
         colorScheme=""

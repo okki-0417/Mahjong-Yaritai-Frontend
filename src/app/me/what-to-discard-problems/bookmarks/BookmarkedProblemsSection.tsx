@@ -148,10 +148,10 @@ export default function BookmarkedProblemsSection({
     return (
       <Box textAlign="center" py={10}>
         <Text color="gray.500" fontSize="lg">
-          お気に入りの問題がありません
+          ブックマークした問題はありません
         </Text>
         <Text color="gray.400" mt={2}>
-          問題をお気に入りに追加すると、ここに表示されます
+          問題をブックマークすると、ここに表示されます
         </Text>
       </Box>
     );

@@ -1,4 +1,4 @@
-import { Container, Text, VStack } from "@chakra-ui/react";
+import { Container, VStack } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import getSession from "@/src/lib/getSession";
@@ -12,9 +12,6 @@ export default async function BookmarkedProblemsPage() {
   return (
     <Container maxW="container.lg" py={[6, 8]}>
       <VStack spacing={[4, 8]}>
-        <Text as="h1" fontSize="2xl" fontWeight="bold">
-          ブックマークした何切る問題
-        </Text>
         <Suspense fallback={<Fallback />}>
           <BookmarkedProblemsSection session={session} />
         </Suspense>
