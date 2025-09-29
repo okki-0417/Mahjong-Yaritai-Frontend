@@ -3,20 +3,44 @@
 files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|ts|jsx|tsx)$')
 
 if [ -z "$files" ]; then
-  echo "No JavaScript/TypeScript files to lint."
+  echo "No JavaScript/TypeScript files to check."
   exit 0
 fi
 
-# ESLint check (but don't auto-fix to avoid breaking changes)
-npx eslint $files
+echo "Running pre-commit checks on staged files..."
+
+# TypeScript type check
+echo "Running TypeScript type check..."
+npm run typecheck
 if [ $? -ne 0 ]; then
-  echo "ESLint failed. Commit aborted."
+  echo "TypeScript type check failed. Please fix type errors before committing."
   exit 1
 fi
-echo "EsLint OK."
+echo "TypeScript type check OK."
+
+# ESLint with auto-fix
+echo "Running ESLint with auto-fix..."
+npx eslint --fix $files
+eslint_exit_code=$?
+if [ $eslint_exit_code -ne 0 ]; then
+  # Re-stage files after auto-fix attempts
+  git add $files
+  echo "ESLint auto-fix applied. Please review the changes."
+
+  # Run ESLint again to check if there are still unfixable errors
+  npx eslint $files
+  if [ $? -ne 0 ]; then
+    echo "ESLint still has errors that cannot be auto-fixed. Please fix manually and try again."
+    exit 1
+  fi
+else
+  # Re-stage files in case any were auto-fixed
+  git add $files
+  echo "ESLint OK."
+fi
 
 # Prettier auto-fix and re-stage
-echo "Checking formatting..."
+echo "Running Prettier formatting..."
 npx prettier --check $files
 if [ $? -ne 0 ]; then
   echo "Code style issues found. Auto-fixing with Prettier..."
@@ -24,6 +48,8 @@ if [ $? -ne 0 ]; then
   git add $files
   echo "Prettier auto-fix applied and files re-staged."
 else
-  echo "All matched files use Prettier code style!"
+  echo "All files use Prettier code style!"
 fi
 echo "Prettier OK."
+
+echo "All pre-commit checks passed!"

@@ -1,9 +1,13 @@
-mutation CreateUser($name: String!, $email: String!, $avatar: String) {
-  createUser(input: { name: $name, email: $email, avatar: $avatar }) {
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
     user {
       id
       name
+      email
+      profileText
       avatarUrl
+      createdAt
+      updatedAt
     }
     errors
   }

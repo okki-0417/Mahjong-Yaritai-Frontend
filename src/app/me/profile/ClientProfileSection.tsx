@@ -1,7 +1,7 @@
 "use client";
 
 import UserProfile from "@/src/components/UserProfile";
-import ProfileEditForm from "@/src/app/me/profile/ProfileEditForm";
+import ProfileEditFormGraphQL from "@/src/app/me/profile/ProfileEditFormGraphQL";
 import { schemas } from "@/src/zodios/api";
 import { EditIcon } from "@chakra-ui/icons";
 import { Box, Button } from "@chakra-ui/react";
@@ -29,7 +29,7 @@ export default function ClientProfileSection({
       </Box>
 
       {isEditMode ? (
-        <ProfileEditForm setIsEditMode={setIsEditMode} user={profile} setUser={setProfile} />
+        <ProfileEditFormGraphQL setIsEditMode={setIsEditMode} user={profile} setUser={setProfile} />
       ) : (
         <UserProfile user={profile} currentUserId={currentUserId} />
       )}

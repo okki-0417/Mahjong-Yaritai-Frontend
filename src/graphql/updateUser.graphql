@@ -1,9 +1,13 @@
-mutation UpdateUser($name: String, $avatar: String) {
-  updateUser(input: { name: $name, avatar: $avatar }) {
+mutation UpdateUser($input: UpdateUserInput!) {
+  updateUser(input: $input) {
     user {
       id
       name
+      email
+      profileText
       avatarUrl
+      createdAt
+      updatedAt
     }
     errors
   }
