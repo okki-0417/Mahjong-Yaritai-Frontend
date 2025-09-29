@@ -2,8 +2,9 @@ import { useQuery } from "@apollo/client/react";
 import { CurrentSessionDocument } from "@/src/generated/graphql";
 
 export function useSession() {
+  // キャッシュを使いつつネットワークからも更新
   const { data, loading, error, refetch } = useQuery(CurrentSessionDocument, {
-    fetchPolicy: "cache-and-network", // キャッシュを使いつつネットワークからも更新
+    fetchPolicy: "cache-and-network",
   });
 
   return {

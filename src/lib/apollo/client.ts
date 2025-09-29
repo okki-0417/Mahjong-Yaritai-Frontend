@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const httpLink = new HttpLink({
+  // eslint-disable-next-line no-process-env
   uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
   credentials: "include",
 });

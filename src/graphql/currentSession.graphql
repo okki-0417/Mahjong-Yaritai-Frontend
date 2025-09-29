@@ -6,6 +6,8 @@ query CurrentSession {
       id
       name
       avatarUrl
+      followingCount
+      followersCount
     }
   }
 }

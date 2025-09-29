@@ -106,6 +106,17 @@ query BookmarkedWhatToDiscardProblems($cursor: String, $limit: Int) {
           id
           tileId
         }
+
+        voteResults {
+          tileId
+          count
+          percentage
+          tile {
+            id
+            suit
+            ordinalNumberInSuit
+          }
+        }
       }
       cursor
     }

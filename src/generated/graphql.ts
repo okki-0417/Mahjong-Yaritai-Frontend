@@ -390,6 +390,10 @@ export type Query = {
   bookmarkedWhatToDiscardProblems: WhatToDiscardProblemConnection;
   /** Get current user session */
   currentSession: Session;
+  /** Get users that current user is following */
+  followedUsers: Array<User>;
+  /** Get users that are following current user */
+  followers: Array<User>;
   /** Get all learning categories */
   learningCategories: Array<LearningCategory>;
   /** Get learning category by ID */
@@ -486,6 +490,8 @@ export type User = {
   __typename?: "User";
   avatarUrl?: Maybe<Scalars["String"]["output"]>;
   createdAt: Scalars["ISO8601DateTime"]["output"];
+  followersCount: Scalars["Int"]["output"];
+  followingCount: Scalars["Int"]["output"];
   id: Scalars["ID"]["output"];
   isFollowing: Scalars["Boolean"]["output"];
   name: Scalars["String"]["output"];
@@ -633,6 +639,13 @@ export type BookmarkedWhatToDiscardProblemsQuery = {
         hand13: { __typename?: "Tile"; id: string; suit: string; ordinalNumberInSuit: number };
         tsumo: { __typename?: "Tile"; id: string; suit: string; ordinalNumberInSuit: number };
         myVote?: { __typename?: "WhatToDiscardProblemVote"; id: string; tileId: string } | null;
+        voteResults: Array<{
+          __typename?: "WhatToDiscardProblemVoteResult";
+          tileId: string;
+          count: number;
+          percentage: number;
+          tile: { __typename?: "Tile"; id: string; suit: string; ordinalNumberInSuit: number };
+        }>;
       };
     }>;
     pageInfo: { __typename?: "PageInfo"; hasNextPage: boolean; endCursor?: string | null };
@@ -803,7 +816,14 @@ export type CurrentSessionQuery = {
     __typename?: "Session";
     isLoggedIn: boolean;
     userId?: number | null;
-    user?: { __typename?: "User"; id: string; name: string; avatarUrl?: string | null } | null;
+    user?: {
+      __typename?: "User";
+      id: string;
+      name: string;
+      avatarUrl?: string | null;
+      followingCount: number;
+      followersCount: number;
+    } | null;
   };
 };
 
@@ -883,6 +903,36 @@ export type DeleteWhatToDiscardProblemVoteMutation = {
     success: boolean;
     errors?: Array<string> | null;
   } | null;
+};
+
+export type FollowedUsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FollowedUsersQuery = {
+  __typename?: "Query";
+  followedUsers: Array<{
+    __typename?: "User";
+    id: string;
+    name: string;
+    profileText?: string | null;
+    avatarUrl?: string | null;
+    isFollowing: boolean;
+    createdAt: any;
+  }>;
+};
+
+export type FollowersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FollowersQuery = {
+  __typename?: "Query";
+  followers: Array<{
+    __typename?: "User";
+    id: string;
+    name: string;
+    profileText?: string | null;
+    avatarUrl?: string | null;
+    isFollowing: boolean;
+    createdAt: any;
+  }>;
 };
 
 export type LearningQuestionsQueryVariables = Exact<{
@@ -1094,8 +1144,11 @@ export type WhatToDiscardProblemsQuery = {
         votesCount: number;
         commentsCount: number;
         likesCount: number;
+        bookmarksCount: number;
         createdAt: any;
         updatedAt: any;
+        isLikedByMe: boolean;
+        isBookmarkedByMe: boolean;
         user: { __typename?: "User"; id: string; name: string; avatarUrl?: string | null };
         doraId: { __typename?: "Tile"; id: string };
         hand1Id: { __typename?: "Tile"; id: string };
@@ -1112,6 +1165,14 @@ export type WhatToDiscardProblemsQuery = {
         hand12Id: { __typename?: "Tile"; id: string };
         hand13Id: { __typename?: "Tile"; id: string };
         tsumoId: { __typename?: "Tile"; id: string };
+        myVote?: { __typename?: "WhatToDiscardProblemVote"; id: string; tileId: string } | null;
+        voteResults: Array<{
+          __typename?: "WhatToDiscardProblemVoteResult";
+          tileId: string;
+          count: number;
+          percentage: number;
+          tile: { __typename?: "Tile"; id: string; suit: string; ordinalNumberInSuit: number };
+        }>;
       };
     }>;
     pageInfo: { __typename?: "PageInfo"; hasNextPage: boolean; endCursor?: string | null };
@@ -1441,6 +1502,33 @@ export const BookmarkedWhatToDiscardProblemsDocument = {
                                 selections: [
                                   { kind: "Field", name: { kind: "Name", value: "id" } },
                                   { kind: "Field", name: { kind: "Name", value: "tileId" } },
+                                ],
+                              },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "voteResults" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  { kind: "Field", name: { kind: "Name", value: "tileId" } },
+                                  { kind: "Field", name: { kind: "Name", value: "count" } },
+                                  { kind: "Field", name: { kind: "Name", value: "percentage" } },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "tile" },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        { kind: "Field", name: { kind: "Name", value: "id" } },
+                                        { kind: "Field", name: { kind: "Name", value: "suit" } },
+                                        {
+                                          kind: "Field",
+                                          name: { kind: "Name", value: "ordinalNumberInSuit" },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -2174,6 +2262,8 @@ export const CurrentSessionDocument = {
                       { kind: "Field", name: { kind: "Name", value: "id" } },
                       { kind: "Field", name: { kind: "Name", value: "name" } },
                       { kind: "Field", name: { kind: "Name", value: "avatarUrl" } },
+                      { kind: "Field", name: { kind: "Name", value: "followingCount" } },
+                      { kind: "Field", name: { kind: "Name", value: "followersCount" } },
                     ],
                   },
                 },
@@ -2515,6 +2605,66 @@ export const DeleteWhatToDiscardProblemVoteDocument = {
   DeleteWhatToDiscardProblemVoteMutation,
   DeleteWhatToDiscardProblemVoteMutationVariables
 >;
+export const FollowedUsersDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "FollowedUsers" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "followedUsers" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "profileText" } },
+                { kind: "Field", name: { kind: "Name", value: "avatarUrl" } },
+                { kind: "Field", name: { kind: "Name", value: "isFollowing" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FollowedUsersQuery, FollowedUsersQueryVariables>;
+export const FollowersDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "Followers" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "followers" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "profileText" } },
+                { kind: "Field", name: { kind: "Name", value: "avatarUrl" } },
+                { kind: "Field", name: { kind: "Name", value: "isFollowing" } },
+                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FollowersQuery, FollowersQueryVariables>;
 export const LearningQuestionsDocument = {
   kind: "Document",
   definitions: [
@@ -3484,6 +3634,7 @@ export const WhatToDiscardProblemsDocument = {
                             { kind: "Field", name: { kind: "Name", value: "votesCount" } },
                             { kind: "Field", name: { kind: "Name", value: "commentsCount" } },
                             { kind: "Field", name: { kind: "Name", value: "likesCount" } },
+                            { kind: "Field", name: { kind: "Name", value: "bookmarksCount" } },
                             { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                             { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                             {
@@ -3660,6 +3811,46 @@ export const WhatToDiscardProblemsDocument = {
                                 kind: "SelectionSet",
                                 selections: [
                                   { kind: "Field", name: { kind: "Name", value: "id" } },
+                                ],
+                              },
+                            },
+                            { kind: "Field", name: { kind: "Name", value: "isLikedByMe" } },
+                            { kind: "Field", name: { kind: "Name", value: "isBookmarkedByMe" } },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "myVote" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  { kind: "Field", name: { kind: "Name", value: "id" } },
+                                  { kind: "Field", name: { kind: "Name", value: "tileId" } },
+                                ],
+                              },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "voteResults" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  { kind: "Field", name: { kind: "Name", value: "tileId" } },
+                                  { kind: "Field", name: { kind: "Name", value: "count" } },
+                                  { kind: "Field", name: { kind: "Name", value: "percentage" } },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "tile" },
+                                    selectionSet: {
+                                      kind: "SelectionSet",
+                                      selections: [
+                                        { kind: "Field", name: { kind: "Name", value: "id" } },
+                                        { kind: "Field", name: { kind: "Name", value: "suit" } },
+                                        {
+                                          kind: "Field",
+                                          name: { kind: "Name", value: "ordinalNumberInSuit" },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },

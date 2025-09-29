@@ -16,6 +16,7 @@ export default function BookmarkedProblemsSection({
   session: z.infer<typeof schemas.Session> | null;
 }) {
   const [problems, setProblems] = useState<z.infer<typeof schemas.WhatToDiscardProblem>[]>([]);
+  const [graphqlProblems, setGraphqlProblems] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(false);
 
   const { data, loading, error, fetchMore } = useQuery(BookmarkedWhatToDiscardProblemsDocument, {
@@ -73,6 +74,7 @@ export default function BookmarkedProblemsSection({
     });
 
     setProblems(convertedProblems);
+    setGraphqlProblems(edges.map(edge => edge.node));
     setHasMore(pageInfo.hasNextPage);
   }, [data]);
 
@@ -132,6 +134,7 @@ export default function BookmarkedProblemsSection({
       });
 
       setProblems(prev => [...prev, ...convertedProblems]);
+      setGraphqlProblems(prev => [...prev, ...edges.map(edge => edge.node)]);
       setHasMore(pageInfo.hasNextPage);
     }
   };
@@ -161,9 +164,12 @@ export default function BookmarkedProblemsSection({
     <ProblemsContextProvider initialProblems={problems}>
       <SessionContextProvider session={session}>
         <VStack spacing={6} w="full">
-          {problems.map(problem => (
-            <ProblemCard key={problem.id} problem={problem} />
-          ))}
+          {problems.map((problem, index) => {
+            const graphqlProblem = graphqlProblems[index];
+            return (
+              <ProblemCard key={problem.id} problem={problem} graphqlProblem={graphqlProblem} />
+            );
+          })}
 
           {hasMore && (
             <Button

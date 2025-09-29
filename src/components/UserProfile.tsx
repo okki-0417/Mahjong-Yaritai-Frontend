@@ -2,6 +2,7 @@ import { schemas } from "@/src/zodios/api";
 import { Box, Circle, Image, Text, VStack } from "@chakra-ui/react";
 import { z } from "zod";
 import FollowButton from "@/src/components/FollowButton";
+import { FollowStats } from "@/src/components/FollowStats";
 
 export default function UserProfile({
   user,
@@ -32,12 +33,18 @@ export default function UserProfile({
           </Text>
         </Box>
 
-        <FollowButton
-          userId={user.id}
-          initialIsFollowing={isFollowing}
-          currentUserId={currentUserId}
-          size="lg"
-        />
+        {/* 自分のプロフィールの場合のみフォロー数を表示 */}
+        {currentUserId === user.id && <FollowStats />}
+
+        {/* 他のユーザーの場合はフォローボタンを表示 */}
+        {currentUserId !== user.id && (
+          <FollowButton
+            userId={user.id}
+            initialIsFollowing={isFollowing}
+            currentUserId={currentUserId}
+            size="lg"
+          />
+        )}
 
         <Box>
           {user?.profile_text ? (

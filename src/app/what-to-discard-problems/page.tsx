@@ -1,10 +1,12 @@
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
 import ProblemsSectionWithGraphQL from "@/src/app/what-to-discard-problems/components/ProblemsSectionWithGraphQL";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import WhatToDiscardProblemsSideNavigation from "@/src/app/what-to-discard-problems/components/WhatToDiscardProblemsSideNavigation";
 import { Metadata } from "next";
 import ProblemsSectionSkeleton from "@/src/app/what-to-discard-problems/components/ProblemsSectionSkeleton";
+import getSession from "@/src/lib/getSession";
+import { z } from "zod";
+import { schemas } from "@/src/zodios/api";
 
 export type WhatToDiscardProblems = z.infer<typeof schemas.WhatToDiscardProblem>[] | [];
 
@@ -19,12 +21,30 @@ export const metadata: Metadata = {
   },
 };
 
-export default function WhatToDiscardProblems() {
+export default async function WhatToDiscardProblems() {
+  const session = await getSession();
+
   return (
-    <Container mt={["6", "12"]} maxW="4xl" px={["3", "0"]}>
-      <Suspense fallback={<ProblemsSectionSkeleton />}>
-        <ProblemsSectionWithGraphQL />
-      </Suspense>
+    <Container maxW="8xl" px={["1px", "6"]} mt={["6", "12"]}>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-3 items-start justify-items-end">
+        <div className="w-full lg:col-span-1">
+          <div className="sticky left-20 top-20 w-full ">
+            <WhatToDiscardProblemsSideNavigation session={session} />
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto lg:col-span-2">
+          <Suspense fallback={<ProblemsSectionSkeleton />}>
+            <ProblemsSectionWithGraphQL />
+          </Suspense>
+        </div>
+
+        <div className="lg:col-span-1">
+          <div className="hidden lg:flex justify-start">
+            {/* 将来的に他の関連コンテンツを配置予定 */}
+          </div>
+        </div>
+      </div>
     </Container>
   );
 }

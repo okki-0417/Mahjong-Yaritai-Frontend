@@ -13,13 +13,14 @@ import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
 import TileImage from "@/src/components/TileImage";
 import ProblemDescriptionModal from "@/src/app/what-to-discard-problems/components/ProblemDescriptionModal";
-import { useQuery } from "@apollo/client/react";
-import { WhatToDiscardProblemDetailDocument } from "@/src/generated/graphql";
 
 export default function ProblemCard({
   problem,
+  graphqlProblem,
 }: {
   problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+  // GraphQLのWhatToDiscardProblem型
+  graphqlProblem?: any;
 }) {
   const [myVoteTileId, setMyVoteTileId] = useState<number>(null);
   const [votesCount, setVotesCount] = useState<number>(problem.votes_count || 0);
@@ -29,17 +30,11 @@ export default function ProblemCard({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarksCount, setBookmarksCount] = useState(0);
 
-  const { data: problemData } = useQuery(WhatToDiscardProblemDetailDocument, {
-    variables: { id: String(problem.id) },
-    skip: !problem.id,
-  });
-
   useEffect(() => {
-    if (!problemData?.whatToDiscardProblem) {
+    // GraphQLデータがない場合は何もしない
+    if (!graphqlProblem) {
       return;
     }
-
-    const graphqlProblem = problemData.whatToDiscardProblem;
 
     // GraphQLデータから投票情報を取得
     if (graphqlProblem.myVote?.tileId) {
@@ -71,7 +66,7 @@ export default function ProblemCard({
     if (graphqlProblem.bookmarksCount !== undefined) {
       setBookmarksCount(graphqlProblem.bookmarksCount);
     }
-  }, [problemData]);
+  }, [graphqlProblem]);
 
   const { session } = useContext(SessionContext);
   const myUserId = session?.user_id;

@@ -3,9 +3,10 @@ import { CurrentSessionDocument } from "@/src/generated/graphql";
 
 export default async function getSessionWithGraphQL() {
   try {
+    // キャッシュを使わず常に最新のセッション情報を取得
     const { data } = await apolloClient.query({
       query: CurrentSessionDocument,
-      fetchPolicy: "network-only", // キャッシュを使わず常に最新のセッション情報を取得
+      fetchPolicy: "network-only",
     });
 
     if (!data?.currentSession) {

@@ -14,8 +14,11 @@ import { ProblemsContext } from "@/src/app/what-to-discard-problems/context-prov
 
 export default function ClientProblemSection({
   initialCursor,
+  graphqlProblems = [],
 }: {
   initialCursor: z.infer<typeof schemas.CursorPagination>;
+  // GraphQLのWhatToDiscardProblem型の配列
+  graphqlProblems?: any[];
 }) {
   const { problems, setProblems } = useContext(ProblemsContext);
   const { session } = useContext(SessionContext);
@@ -48,9 +51,11 @@ export default function ClientProblemSection({
       <ProblemCreateFormModal isOpen={isFormOpen} onClose={onCloseForm} setProblems={setProblems} />
 
       <VStack gap={["8", "16"]}>
-        {problems.map(problem => (
-          <ProblemCard key={problem.id} problem={problem} />
-        ))}
+        {problems.map((problem, index) => {
+          // GraphQLデータがあればそれを渡す
+          const graphqlProblem = graphqlProblems[index];
+          return <ProblemCard key={problem.id} problem={problem} graphqlProblem={graphqlProblem} />;
+        })}
       </VStack>
 
       <Flex justify="center" mt={5}>

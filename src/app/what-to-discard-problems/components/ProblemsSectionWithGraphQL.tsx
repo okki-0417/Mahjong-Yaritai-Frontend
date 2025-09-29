@@ -1,6 +1,6 @@
 "use client";
 
-import ClientProblemSection from "@/src/app/what-to-discard-problems/components/ClientProblemSection";
+import ProblemsPresentation from "@/src/app/what-to-discard-problems/components/ProblemsPresentation";
 import ProblemsContextProvider from "@/src/app/what-to-discard-problems/context-providers/ProblemsContextProvider";
 import SessionContextProvider from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
 import { CurrentSessionDocument, WhatToDiscardProblemsDocument } from "@/src/generated/graphql";
@@ -42,6 +42,9 @@ export default function ProblemsSectionWithGraphQL() {
     data?.whatToDiscardProblems.edges.map(edge => adaptGraphQLProblemListNodeToREST(edge.node)) ||
     [];
 
+  // GraphQLの生データも保持
+  const graphqlProblems = data?.whatToDiscardProblems.edges.map(edge => edge.node) || [];
+
   const cursor = data?.whatToDiscardProblems.pageInfo.endCursor
     ? {
         next: Number(data.whatToDiscardProblems.pageInfo.endCursor),
@@ -67,7 +70,7 @@ export default function ProblemsSectionWithGraphQL() {
   return (
     <ProblemsContextProvider initialProblems={problems}>
       <SessionContextProvider session={session}>
-        <ClientProblemSection initialCursor={cursor} />
+        <ProblemsPresentation initialCursor={cursor} graphqlProblems={graphqlProblems} />
       </SessionContextProvider>
     </ProblemsContextProvider>
   );

@@ -1,0 +1,10 @@
+query FollowedUsers {
+  followedUsers {
+    id
+    name
+    profileText
+    avatarUrl
+    isFollowing
+    createdAt
+  }
+}

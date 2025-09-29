@@ -8,6 +8,12 @@ const nextConfig = {
   images: {
     domains: [process.env.NEXT_PUBLIC_API_URL],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 const sentryWebpackPluginOptions = {

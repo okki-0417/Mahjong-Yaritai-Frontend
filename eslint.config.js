@@ -8,7 +8,10 @@ import tslint from "typescript-eslint";
 
 const config = defineConfig([
   {
-    files: ["./src/**/*.{tsx, ts}"],
+    ignores: [".next/**", "node_modules/**", ".git/**", "src/generated/**"],
+  },
+  {
+    files: ["./src/**/*.{tsx,ts}"],
     languageOptions: {
       parser,
       globals: {
@@ -19,26 +22,26 @@ const config = defineConfig([
     },
   },
   {
-    files: ["./src/**/*.{tsx, ts}"],
+    files: ["./src/**/*.{tsx,ts}"],
     ...react.configs.flat.recommended,
     rules: {
       "react/react-in-jsx-scope": "off",
     },
   },
   {
-    files: ["./src/**/*.{tsx, ts}"],
+    files: ["./src/**/*.{tsx,ts}"],
     ...reactHooks.configs["recommended-latest"],
   },
   {
-    files: ["./src/**/*.{tsx, ts}"],
+    files: ["./src/**/*.{tsx,ts}"],
     ...tslint.configs.recommended[0],
   },
   {
-    files: ["./src/**/*.{tsx, ts}"],
+    files: ["./src/**/*.{tsx,ts}"],
     ...shopify.configs.esnext[0],
   },
   {
-    files: ["./src/**/*.{tsx, ts}"],
+    files: ["./src/**/*.{tsx,ts}"],
     rules: {
       "no-console": "warn",
       camelcase: "off",

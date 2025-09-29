@@ -4,6 +4,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 
+// eslint-disable-next-line no-process-env
 if (process.env.NODE_ENV == "production") {
   Sentry.init({
     dsn: "https://47617af507e9e4cedcbb638b45b00102@o4509556776042496.ingest.us.sentry.io/4509556779188224",
