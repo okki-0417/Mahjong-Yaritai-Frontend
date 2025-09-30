@@ -20,8 +20,26 @@ import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
-import { updateUserWithFile } from "@/src/lib/graphqlFileUpload";
+import { useMutation } from "@apollo/client/react";
+import { gql } from "@apollo/client";
+
+// GraphQL Mutation定義
+const UPDATE_USER_MUTATION = gql`
+  mutation UpdateUserProfile($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+      user {
+        id
+        name
+        email
+        profileText
+        avatarUrl
+        createdAt
+        updatedAt
+      }
+      errors
+    }
+  }
+`;
 
 // GraphQL用のスキーマ定義
 const updateUserGraphQLSchema = z.object({
@@ -52,15 +70,8 @@ export default function ProfileEditFormGraphQL({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  // eslint-disable-next-line no-process-env
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-  const apolloClient = new ApolloClient({
-    link: createHttpLink({
-      uri: `${apiUrl}/graphql`,
-      credentials: "include",
-    }),
-    cache: new InMemoryCache(),
-  });
+
+  const [updateUser, { loading: isUpdating }] = useMutation(UPDATE_USER_MUTATION);
 
   const {
     register,
@@ -74,24 +85,29 @@ export default function ProfileEditFormGraphQL({
 
   const onSubmit: SubmitHandler<z.infer<typeof updateUserGraphQLSchema>> = async formInputs => {
     try {
-      const input = {
-        name: formInputs.name,
-        profileText: formInputs.profile_text || undefined,
-        avatar: selectedFile || undefined,
+      const variables = {
+        input: {
+          name: formInputs.name,
+          profileText: formInputs.profile_text || undefined,
+          avatar: selectedFile || undefined,
+        },
       };
 
-      const result = await updateUserWithFile(apolloClient, input);
+      const result = await updateUser({ variables });
 
-      if (result.data?.updateUser?.errors?.length > 0) {
+      // 型安全性のため一時的にany使用
+      const data = result.data as any;
+
+      if (data?.updateUser?.errors?.length > 0) {
         errorToast({
           title: "プロフィール更新に失敗しました",
-          description: result.data.updateUser.errors.join(", "),
+          description: data.updateUser.errors.join(", "),
         });
         return;
       }
 
-      if (result.data?.updateUser?.user) {
-        const updatedUser = result.data.updateUser.user;
+      if (data?.updateUser?.user) {
+        const updatedUser = data.updateUser.user;
         setUser({
           ...user,
           id: updatedUser.id ? Number(updatedUser.id) : user.id,
@@ -181,7 +197,7 @@ export default function ProfileEditFormGraphQL({
           </Box>
         </FormControl>
 
-        <Button type="submit" isLoading={isSubmitting} colorScheme="pink" size="lg">
+        <Button type="submit" isLoading={isSubmitting || isUpdating} colorScheme="pink" size="lg">
           更新する (GraphQL)
         </Button>
         <Button onClick={() => setIsEditMode(false)} size="lg">

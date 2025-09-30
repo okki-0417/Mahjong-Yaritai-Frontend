@@ -1,19 +1,18 @@
 "use client";
 
-import { schemas } from "@/src/zodios/api";
+import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import { createContext, Dispatch, SetStateAction, useState } from "react";
-import z from "zod";
 
 export const ProblemsContext = createContext<{
-  problems: z.infer<typeof schemas.WhatToDiscardProblem>[] | null;
-  setProblems: Dispatch<SetStateAction<z.infer<typeof schemas.WhatToDiscardProblem>[] | null>>;
+  problems: WhatToDiscardProblem[] | null;
+  setProblems: Dispatch<SetStateAction<WhatToDiscardProblem[] | null>>;
 } | null>(null);
 
 export default function ProblemsContextProvider({
   initialProblems,
   children,
 }: {
-  initialProblems: z.infer<typeof schemas.WhatToDiscardProblem>[] | null;
+  initialProblems: WhatToDiscardProblem[] | null;
   children: React.ReactNode;
 }) {
   const [problems, setProblems] = useState(initialProblems);

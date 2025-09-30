@@ -26,6 +26,7 @@ export default function useErrorToast() {
     // APIからのエラーレスポンスをパース
     let errorDescription = description;
 
+    // eslint-disable-next-line no-console
     console.log(error);
 
     if (!errorDescription && error?.response?.data) {
@@ -36,6 +37,7 @@ export default function useErrorToast() {
           const errors = responseData.errors as z.infer<typeof schemas.Errors>;
           errorDescription = errors.map(err => err.message).join(", ");
         }
+        // eslint-disable-next-line no-unused-vars
       } catch (parseError) {
         // パースに失敗した場合は元のエラーメッセージを使用
         errorDescription = error?.message;

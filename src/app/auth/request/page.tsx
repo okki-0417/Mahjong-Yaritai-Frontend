@@ -1,5 +1,5 @@
 import { Container, Divider, Text, VStack } from "@chakra-ui/react";
-import AuthRequestSection from "@/src/app/auth/components/AuthRequestSection";
+import AuthRequestContent from "@/src/app/auth/components/AuthRequestContent";
 import { Suspense } from "react";
 import Fallback from "@/src/components/fallbacks/Fallback";
 
@@ -13,7 +13,7 @@ export default function AuthRequest() {
 
       <VStack mt="8" gap="12" w="full" align="stretch">
         <Suspense fallback={<Fallback />}>
-          <AuthRequestSection />
+          <AuthRequestContent />
         </Suspense>
       </VStack>
     </Container>

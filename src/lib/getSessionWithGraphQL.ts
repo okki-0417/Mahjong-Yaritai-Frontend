@@ -13,19 +13,20 @@ export default async function getSessionWithGraphQL() {
       return null;
     }
 
-    // REST APIのレスポンス形式に合わせる
+    // schemas.Session形式に変換（snake_case）
     return {
       is_logged_in: data.currentSession.isLoggedIn,
       user_id: data.currentSession.userId,
       user: data.currentSession.user
         ? {
-            id: data.currentSession.user.id,
+            id: Number(data.currentSession.user.id),
             name: data.currentSession.user.name,
             avatar_url: data.currentSession.user.avatarUrl,
           }
         : null,
     };
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("GraphQL session fetch error:", error);
     return null;
   }

@@ -2,19 +2,14 @@
 
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { schemas } from "@/src/zodios/api";
+import { Comment } from "@/src/generated/graphql";
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
-import { z } from "zod";
 import { useMutation } from "@apollo/client/react";
 import { DeleteCommentDocument } from "@/src/generated/graphql";
 
-export default function DeleteCommentButton({
-  comment,
-}: {
-  comment: z.infer<typeof schemas.Comment>;
-}) {
+export default function DeleteCommentButton({ comment }: { comment: Comment }) {
   const [deleting, setDeleting] = useState(false);
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();

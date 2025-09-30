@@ -3,7 +3,6 @@ import { createApiClient } from "@/src/zodios/api";
 import { API_BASE_URL } from "@/config/apiConfig";
 
 const axiosInstance = axios.create({
-  // eslint-disable-next-line no-process-env
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   timeout: 10000,

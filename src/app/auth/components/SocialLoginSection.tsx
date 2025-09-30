@@ -11,9 +11,7 @@ export default function SocialLoginSection() {
   const router = useRouter();
   const errorToast = useErrorToast();
 
-  /* eslint-disable no-process-env */
   const handleGoogleLogin = () => router.push(process.env.NEXT_PUBLIC_GOOGLE_LOGIN_URL);
-  /* eslint-enable no-process-env */
 
   const handleLineLogin = async () => {
     try {

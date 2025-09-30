@@ -66,7 +66,7 @@ export default function LoginUserMenu() {
                     <Link href="/me/what-to-discard-problems/bookmarks" className="w-full">
                       <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                         <MdBookmarkAdded size={20} />
-                        <Text fontSize="lg">ブックマークした何切る問題</Text>
+                        <Text fontSize="lg">ブックマークした問題</Text>
                       </HStack>
                     </Link>
                   </ListItem>

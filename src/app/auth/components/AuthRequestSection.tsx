@@ -1,11 +1,19 @@
+"use client";
+
 import SocialLoginSection from "@/src/app/auth/components/SocialLoginSection";
 import AuthRequestForm from "@/src/app/auth/request/AuthRequestForm";
-import getSession from "@/src/lib/getSession";
+import { useGraphQLSession } from "@/src/app/what-to-discard-problems/context-providers/GraphQLSessionProvider";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
-export default async function AuthRequestSection() {
-  const session = await getSession();
-  if (session?.is_logged_in) redirect("/dashboard");
+export default function AuthRequestSection() {
+  const { session } = useGraphQLSession();
+
+  useEffect(() => {
+    if (session?.isLoggedIn) {
+      redirect("/dashboard");
+    }
+  }, [session]);
 
   return (
     <>

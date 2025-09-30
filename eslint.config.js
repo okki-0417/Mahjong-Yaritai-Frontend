@@ -57,6 +57,7 @@ const config = defineConfig([
       "no-redeclare": "off",
       "no-warning-comments": "warn",
       "id-length": "off",
+      "no-process-env": "off",
     },
   },
 ]);

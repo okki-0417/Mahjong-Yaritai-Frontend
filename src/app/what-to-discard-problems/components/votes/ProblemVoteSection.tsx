@@ -1,7 +1,10 @@
 "use client";
 
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import {
+  WhatToDiscardProblem,
+  WhatToDiscardProblemVoteResult,
+  Tile,
+} from "@/src/generated/graphql";
 import PopButton from "@/src/components/PopButton";
 import { HStack, Text } from "@chakra-ui/react";
 import useErrorToast from "@/src/hooks/useErrorToast";
@@ -11,7 +14,7 @@ import Image from "next/image";
 import VoteIconDefault from "@/public/vote-icon-default.webp";
 import VoteIconBlue from "@/public/vote-icon-blue.webp";
 
-export type MyVoteType = z.infer<typeof schemas.Tile> | null;
+export type MyVoteType = Tile | null;
 
 export default function ProblemVoteSection({
   isVoted,
@@ -22,10 +25,8 @@ export default function ProblemVoteSection({
 }: {
   isVoted: boolean;
   votesCount: number;
-  setVoteResult: React.Dispatch<
-    React.SetStateAction<z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]>
-  >;
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+  setVoteResult: React.Dispatch<React.SetStateAction<WhatToDiscardProblemVoteResult[]>>;
+  problem: WhatToDiscardProblem;
   handleDisplayVoteResult: () => void;
 }) {
   const errorToast = useErrorToast();

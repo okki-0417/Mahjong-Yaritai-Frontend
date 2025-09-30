@@ -1,12 +1,20 @@
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { apiClient } from "@/src/lib/api/client";
 import { useState } from "react";
+import { useMutation } from "@apollo/client/react";
+import {
+  DeleteWhatToDiscardProblemDocument,
+  DeleteWhatToDiscardProblemMutation,
+} from "@/src/generated/graphql";
 
 export default function useProblemDelete(problemId: number) {
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
   const [loading, setLoading] = useState(false);
+
+  const [deleteProblemMutation] = useMutation<DeleteWhatToDiscardProblemMutation>(
+    DeleteWhatToDiscardProblemDocument,
+  );
 
   const deleteProblem = async () => {
     if (loading) return;
@@ -16,11 +24,20 @@ export default function useProblemDelete(problemId: number) {
 
     setLoading(true);
     try {
-      await apiClient.deleteWhatToDiscardProblem([], {
-        params: {
-          id: String(problemId),
+      const result = await deleteProblemMutation({
+        variables: {
+          input: {
+            id: String(problemId),
+          },
         },
       });
+
+      if (
+        result.data?.deleteWhatToDiscardProblem?.errors &&
+        result.data.deleteWhatToDiscardProblem.errors.length > 0
+      ) {
+        throw new Error(result.data.deleteWhatToDiscardProblem.errors.join(", "));
+      }
 
       successToast({
         title: "何切る問題を削除しました",

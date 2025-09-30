@@ -5,14 +5,16 @@ import { Box, Skeleton, useDisclosure } from "@chakra-ui/react";
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+
 import { useMutation, useQuery } from "@apollo/client/react";
 import {
   CreateWhatToDiscardProblemVoteDocument,
   DeleteWhatToDiscardProblemVoteDocument,
   WhatToDiscardProblemDetailDocument,
+  WhatToDiscardProblemVoteResult,
 } from "@/src/generated/graphql";
+
+// Unused types - keeping for potential future use
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
@@ -29,15 +31,13 @@ export default function VoteButton({
   voteResult,
   setVoteResult,
 }: {
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+  problem: any;
   tileId: number;
   myVoteTileId: number | null;
   setMyVoteTileId: React.Dispatch<React.SetStateAction<number | null>>;
   setVotesCount: React.Dispatch<React.SetStateAction<number>>;
-  voteResult: z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[];
-  setVoteResult: React.Dispatch<
-    React.SetStateAction<z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]>
-  >;
+  voteResult: WhatToDiscardProblemVoteResult[];
+  setVoteResult: React.Dispatch<React.SetStateAction<WhatToDiscardProblemVoteResult[]>>;
 }) {
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
@@ -78,13 +78,7 @@ export default function VoteButton({
           // GraphQLで投票結果を再取得
           const { data: refreshedData } = await refetch();
           if (refreshedData?.whatToDiscardProblem?.voteResults) {
-            const voteResults = refreshedData.whatToDiscardProblem.voteResults.map(
-              (result: any) => ({
-                tile_id: Number(result.tileId),
-                count: result.count,
-              }),
-            );
-            setVoteResult(voteResults);
+            setVoteResult(refreshedData.whatToDiscardProblem.voteResults);
           }
 
           successToast({ title: "投票しました" });
@@ -102,11 +96,7 @@ export default function VoteButton({
         // GraphQLで投票結果を再取得
         const { data: refreshedData } = await refetch();
         if (refreshedData?.whatToDiscardProblem?.voteResults) {
-          const voteResults = refreshedData.whatToDiscardProblem.voteResults.map((result: any) => ({
-            tile_id: Number(result.tileId),
-            count: result.count,
-          }));
-          setVoteResult(voteResults);
+          setVoteResult(refreshedData.whatToDiscardProblem.voteResults);
         }
 
         successToast({ title: "投票を取り消しました" });
@@ -130,13 +120,7 @@ export default function VoteButton({
           // GraphQLで投票結果を再取得
           const { data: refreshedData } = await refetch();
           if (refreshedData?.whatToDiscardProblem?.voteResults) {
-            const voteResults = refreshedData.whatToDiscardProblem.voteResults.map(
-              (result: any) => ({
-                tile_id: Number(result.tileId),
-                count: result.count,
-              }),
-            );
-            setVoteResult(voteResults);
+            setVoteResult(refreshedData.whatToDiscardProblem.voteResults);
           }
 
           successToast({ title: "投票しました" });
@@ -162,10 +146,10 @@ export default function VoteButton({
 
     const mostVotedTileIds = voteResult
       .filter(vote => vote.count == mostVotedCount)
-      .map(vote => vote.tile_id);
+      .map(vote => Number(vote.tileId));
     const leastVotedTileIds = voteResult
       .filter(vote => vote.count == leastVotedCount)
-      .map(vote => vote.tile_id);
+      .map(vote => Number(vote.tileId));
 
     if (mostVotedTileIds.length <= 2 && mostVotedTileIds.includes(tileId)) {
       return (

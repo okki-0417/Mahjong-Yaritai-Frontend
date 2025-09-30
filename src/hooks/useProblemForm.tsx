@@ -2,7 +2,7 @@ import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import { customCreateWhatToDiscardProblem_BodySchema } from "@/src/app/what-to-discard-problems/schema/customWhatToDiscardProblemSchema";
 import { useCustomForm } from "@/src/hooks/useCustomForm";
-import { schemas } from "@/src/zodios/api";
+// Removed schemas import as it's no longer available
 import {
   Box,
   Button,
@@ -48,7 +48,30 @@ const tileFieldNames = [
   "what_to_discard_problem.dora_id",
 ] as const;
 
-export default function useProblemForm(problem: z.infer<typeof schemas.WhatToDiscardProblem> = {}) {
+type WhatToDiscardProblemType = {
+  hand1_id?: number;
+  hand2_id?: number;
+  hand3_id?: number;
+  hand4_id?: number;
+  hand5_id?: number;
+  hand6_id?: number;
+  hand7_id?: number;
+  hand8_id?: number;
+  hand9_id?: number;
+  hand10_id?: number;
+  hand11_id?: number;
+  hand12_id?: number;
+  hand13_id?: number;
+  tsumo_id?: number;
+  dora_id?: number;
+  round?: string;
+  turn?: string;
+  wind?: string;
+  points?: number;
+  description?: string;
+};
+
+export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
   const [focussedTileFieldName, setFocussedTileFieldName] = useState<
     (typeof tileFieldNames)[number]
   >("what_to_discard_problem.hand1_id");
@@ -84,7 +107,7 @@ export default function useProblemForm(problem: z.infer<typeof schemas.WhatToDis
         round: problem.round,
         turn: String(problem.turn || ""),
         wind: problem.wind,
-        points: String(problem.points || ""),
+        points: problem.points || 0,
         description: problem.description || "",
       },
     },
@@ -366,7 +389,7 @@ export default function useProblemForm(problem: z.infer<typeof schemas.WhatToDis
                     onClick={() =>
                       setValue(
                         "what_to_discard_problem.points",
-                        String(Number(getValues("what_to_discard_problem.points")) + addend),
+                        Number(getValues("what_to_discard_problem.points")) + addend,
                       )
                     }>
                     <Text as="span" fontSize="lg">

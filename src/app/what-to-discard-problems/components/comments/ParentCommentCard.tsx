@@ -6,12 +6,12 @@ import { InsertCommentToThread } from "@/src/app/what-to-discard-problems/compon
 import DeleteCommentButton from "@/src/app/what-to-discard-problems/components/comments/DeleteCommentButton";
 import FetchRepliesButton from "@/src/app/what-to-discard-problems/components/comments/FetchRepliesButton";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
-import { schemas } from "@/src/zodios/api";
+import { Comment } from "@/src/generated/graphql";
+import { CreateCommentBodyType } from "@/src/lib/types/schema-compat";
 import { Box, Button, Circle, HStack, Img, Text, useDisclosure, VStack } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { UseFormSetFocus, UseFormSetValue } from "react-hook-form";
 import { MdOutlineReply } from "react-icons/md";
-import { z } from "zod";
 
 export default function ParentCommentCard({
   parentComment,
@@ -19,26 +19,28 @@ export default function ParentCommentCard({
   setFocus,
   setInsertCommentToThread,
   setReplyingToComment,
+  problemId,
 }: {
-  parentComment: z.infer<typeof schemas.Comment>;
-  setValue: UseFormSetValue<z.infer<typeof schemas.createComment_Body>>;
-  setFocus: UseFormSetFocus<z.infer<typeof schemas.createComment_Body>>;
+  parentComment: Comment;
+  setValue: UseFormSetValue<CreateCommentBodyType>;
+  setFocus: UseFormSetFocus<CreateCommentBodyType>;
   setInsertCommentToThread: React.Dispatch<React.SetStateAction<InsertCommentToThread>>;
-  setReplyingToComment: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>>>;
+  setReplyingToComment: React.Dispatch<React.SetStateAction<Comment | null>>;
+  problemId: string;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { session } = useContext(SessionContext);
-  const isLoggedIn = Boolean(session?.is_logged_in);
-  const myUserId = session?.user_id;
+  const isLoggedIn = Boolean(session?.isLoggedIn);
+  const myUserId = session?.userId;
 
-  const [replies, setReplies] = useState<z.infer<typeof schemas.Comment>[] | []>([]);
+  const [replies, setReplies] = useState<Comment[]>([]);
 
   const handleReply = () => {
     setFocus("what_to_discard_problem_comment.content");
-    setValue("what_to_discard_problem_comment.parent_comment_id", String(parentComment.id));
+    setValue("what_to_discard_problem_comment.parent_comment_id", Number(parentComment.id));
     setReplyingToComment(parentComment);
-    setInsertCommentToThread(() => (reply: z.infer<typeof schemas.Comment>) => {
+    setInsertCommentToThread(() => (reply: Comment) => {
       setReplies(prev => [...prev, reply]);
     });
   };
@@ -58,7 +60,7 @@ export default function ParentCommentCard({
               <HStack>
                 <Circle size="8" overflow="hidden" border="1px">
                   <Img
-                    src={parentComment.user.avatar_url || "/no-image.webp"}
+                    src={parentComment.user.avatarUrl || "/no-image.webp"}
                     className="w-full h-full object-cover"
                   />
                 </Circle>
@@ -77,19 +79,23 @@ export default function ParentCommentCard({
           </HStack>
 
           <Text fontFamily="sans-serif" fontSize="xs" className="text-primary">
-            {new Date(parentComment.created_at).toLocaleString()}
+            {new Date(parentComment.createdAt).toLocaleString()}
           </Text>
         </Box>
 
         <Text mt="2">{parentComment.content}</Text>
 
-        {Boolean(parentComment.replies_count) && Boolean(!replies.length) && (
-          <FetchRepliesButton setReplies={setReplies} comment={parentComment} />
+        {Boolean(parentComment.repliesCount) && Boolean(!replies.length) && (
+          <FetchRepliesButton
+            setReplies={setReplies}
+            comment={parentComment}
+            problemId={problemId}
+          />
         )}
 
         {Boolean(replies.length) && (
           <VStack mt="4">
-            {replies.map((reply: z.infer<typeof schemas.Comment>, index: number) => {
+            {replies.map((reply: Comment, index: number) => {
               return (
                 <HStack w="full" pl="4" h="24" key={index} gap="4">
                   <Box w="1" h="full" className="bg-secondary" rounded="full" />
@@ -105,8 +111,8 @@ export default function ParentCommentCard({
         user={parentComment.user}
         isOpen={isOpen}
         onClose={onClose}
-        isFollowing={parentComment.user.is_following}
-        currentUserId={myUserId}
+        isFollowing={false}
+        currentUserId={myUserId ? Number(myUserId) : null}
       />
     </>
   );

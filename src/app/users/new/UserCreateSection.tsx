@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export default async function UserCreateSection() {
   const session = await getSession();
-  if (session?.is_logged_in) redirect("/dashboard");
+  if (session?.isLoggedIn) redirect("/dashboard");
 
   return <UserForm />;
 }

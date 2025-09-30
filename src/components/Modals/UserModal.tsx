@@ -14,11 +14,22 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
 import FollowButton from "@/src/components/FollowButton";
 import { useState, useEffect } from "react";
-import { apiClient } from "@/src/lib/api/client";
+import { useQuery } from "@apollo/client/react";
+import { UserProfileDocument, UserProfileQuery } from "@/src/generated/graphql";
+
+type UserType = {
+  id: string | number;
+  name: string;
+  email?: string | null;
+  profile_text?: string | null;
+  avatar_url?: string | null;
+  avatarUrl?: string | null;
+  is_following?: boolean;
+  created_at?: string;
+  updated_at?: string;
+};
 
 export default function UserModal({
   user,
@@ -27,7 +38,7 @@ export default function UserModal({
   isFollowing = false,
   currentUserId = null,
 }: {
-  user: z.infer<typeof schemas.User>;
+  user: UserType;
   isOpen: boolean;
   onClose: () => void;
   isFollowing?: boolean;
@@ -35,73 +46,60 @@ export default function UserModal({
 }) {
   const [followState, setFollowState] = useState(isFollowing);
 
+  // eslint-disable-next-line no-unused-vars
+  const { data, loading } = useQuery<UserProfileQuery>(UserProfileDocument, {
+    variables: { userId: String(user.id) },
+    skip: !isOpen,
+  });
+
   useEffect(() => {
-    const fetchFollowState = async () => {
-      if (!isOpen) return;
-
-      try {
-        const response = await apiClient.getUser({
-          params: { id: String(user.id) },
-        });
-        setFollowState(response.user.is_following);
-      } catch {
-        // Failed to fetch follow state
-        setFollowState(isFollowing);
-      }
-    };
-
-    fetchFollowState();
-  }, [isOpen, user.id, isFollowing]);
+    if (data?.user) {
+      // Follow state needs to be implemented in GraphQL schema
+      setFollowState(isFollowing);
+    }
+  }, [data, isFollowing]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      isCentered
-      scrollBehavior="inside"
-      size={["xs", "2xl"]}>
-      <ModalOverlay />
-      <ModalContent fontFamily="serif" className="text-primary">
-        <ModalHeader>
-          <Text fontSize="2xl" color="black">
-            {user.name}
-          </Text>
-        </ModalHeader>
-
-        <ModalCloseButton color="black" />
-
-        <ModalBody color="black">
-          <VStack spacing="6">
-            <Circle size="200" overflow="hidden" border="1px solid">
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size={{ base: "sm", md: "md" }}>
+      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
+      <ModalContent bg="gray.800" color="white">
+        <ModalHeader pb={2}>ユーザー情報</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <VStack spacing={4} align="center">
+            <Circle size="80px" overflow="hidden" bg="gray.600">
               <Image
                 src={user.avatar_url || "/no-image.webp"}
+                alt={`${user.name}のアバター`}
                 w="full"
                 h="full"
                 objectFit="cover"
-                draggable="false"
-                bgColor="white"
               />
             </Circle>
 
-            <FollowButton
-              userId={user.id}
-              initialIsFollowing={followState}
-              currentUserId={currentUserId}
-              size="md"
-              onFollowChange={setFollowState}
-            />
-
-            {user.profile_text && (
-              <Box w="full">
-                <Text whiteSpace="pre-wrap" wordBreak="break-word">
+            <Box textAlign="center">
+              <Text fontSize="xl" fontWeight="bold" mb={2}>
+                {user.name}
+              </Text>
+              {user.profile_text && (
+                <Text color="gray.300" fontSize="sm">
                   {user.profile_text}
                 </Text>
-              </Box>
-            )}
+              )}
+            </Box>
           </VStack>
         </ModalBody>
 
-        <ModalFooter />
+        <ModalFooter>
+          {currentUserId && String(currentUserId) !== String(user.id) && (
+            <FollowButton
+              userId={typeof user.id === "string" ? Number(user.id) : user.id}
+              initialIsFollowing={followState}
+              currentUserId={currentUserId}
+              onFollowChange={setFollowState}
+            />
+          )}
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

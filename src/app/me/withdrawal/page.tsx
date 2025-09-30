@@ -7,7 +7,7 @@ import Fallback from "@/src/components/fallbacks/Fallback";
 
 export default async function WithdrawalSummaryPage() {
   const session = await getSession();
-  if (!session?.is_logged_in) redirect("/auth/request");
+  if (!session?.isLoggedIn) redirect("/auth/request");
 
   return (
     <Container mt="20" maxW="2xl" mb="20">

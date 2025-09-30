@@ -1,4 +1,3 @@
-import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
 
 export const MAX_DUPLICATE_TILES_NUM = 4;
@@ -25,6 +24,39 @@ export const tileFieldNames = [...handFieldNames, "dora_id", "tsumo_id"] as cons
 
 export const pointFieldNames = ["point_east", "point_south", "point_west", "point_north"] as const;
 
+// Define base schema to replace the removed schemas import
+const baseWhatToDiscardProblemSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  round: z.string().optional(),
+  turn: z.string().optional(),
+  wind: z.string().optional(),
+  points: z.number().optional(),
+  point_east: z.number().optional(),
+  point_south: z.number().optional(),
+  point_west: z.number().optional(),
+  point_north: z.number().optional(),
+  hand1_id: z.string(),
+  hand2_id: z.string(),
+  hand3_id: z.string(),
+  hand4_id: z.string(),
+  hand5_id: z.string(),
+  hand6_id: z.string(),
+  hand7_id: z.string(),
+  hand8_id: z.string(),
+  hand9_id: z.string(),
+  hand10_id: z.string(),
+  hand11_id: z.string(),
+  hand12_id: z.string(),
+  hand13_id: z.string(),
+  tsumo_id: z.string(),
+  dora_id: z.string(),
+});
+
+const createWhatToDiscardProblem_Body = z.object({
+  what_to_discard_problem: baseWhatToDiscardProblemSchema,
+});
+
 /**
  * 牌の重複をチェックする
  * 最大4枚までしか使えない
@@ -37,6 +69,7 @@ function validateTileDuplication(inputtedTileIds: number[], ctx: z.RefinementCtx
 
   // 5枚以上使用されている牌を検出
   const overusedTileIds = Object.entries(tileUsage)
+    // eslint-disable-next-line no-unused-vars
     .filter(([_, count]) => count > MAX_DUPLICATE_TILES_NUM)
     .map(([tileId]) => Number(tileId));
 
@@ -71,7 +104,7 @@ function validateHandTileOrder(inputtedTileIds: number[], ctx: z.RefinementCtx) 
  * 点数は200,000点を超えてはいけない
  */
 function validatePointUpperLimit(
-  data: z.infer<typeof schemas.createWhatToDiscardProblem_Body>,
+  data: z.infer<typeof createWhatToDiscardProblem_Body>,
   ctx: z.RefinementCtx,
 ) {
   const point = Number(data.what_to_discard_problem.points);
@@ -90,7 +123,7 @@ function validatePointUpperLimit(
  * 合計は必ず100,000点になる必要がある
  */
 function validatePointSum(
-  data: z.infer<typeof schemas.createWhatToDiscardProblem_Body>,
+  data: z.infer<typeof createWhatToDiscardProblem_Body>,
   ctx: z.RefinementCtx,
 ) {
   const pointSum = pointFieldNames.reduce((sum, fieldName) => {
@@ -109,7 +142,7 @@ function validatePointSum(
 }
 
 export const customCreateWhatToDiscardProblem_BodySchema =
-  schemas.createWhatToDiscardProblem_Body.superRefine((data, ctx) => {
+  createWhatToDiscardProblem_Body.superRefine((data, ctx) => {
     // 入力された牌IDを抽出（null/undefinedを除外）
     const inputtedTileIds = tileFieldNames
       .map(fieldName => Number(data.what_to_discard_problem[fieldName]))

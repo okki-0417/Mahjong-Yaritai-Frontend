@@ -2,9 +2,9 @@
 
 import { SubmitHandler } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
-import { schemas } from "@/src/zodios/api";
-import { z } from "zod";
+import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import { customCreateWhatToDiscardProblem_BodySchema } from "@/src/app/what-to-discard-problems/schema/customWhatToDiscardProblemSchema";
+import { z } from "zod";
 import useProblemForm from "@/src/hooks/useProblemForm";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
@@ -16,7 +16,7 @@ export default function ProblemCreateForm({
   setProblems,
 }: {
   onClose: () => void;
-  setProblems: Dispatch<SetStateAction<z.infer<typeof schemas.WhatToDiscardProblem>[]>>;
+  setProblems: Dispatch<SetStateAction<WhatToDiscardProblem[]>>;
 }) {
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
@@ -59,31 +59,35 @@ export default function ProblemCreateForm({
       });
 
       if (data?.createWhatToDiscardProblem?.whatToDiscardProblem) {
-        // GraphQLデータをREST APIフォーマットに変換
         const graphqlProblem = data.createWhatToDiscardProblem.whatToDiscardProblem;
-        const restFormatProblem: z.infer<typeof schemas.WhatToDiscardProblem> = {
-          id: Number(graphqlProblem.id),
-          round: graphqlProblem.round || null,
-          turn: graphqlProblem.turn || null,
-          wind: graphqlProblem.wind || null,
-          points: graphqlProblem.points || null,
-          description: graphqlProblem.description || null,
-          votes_count: graphqlProblem.votesCount,
-          comments_count: graphqlProblem.commentsCount,
-          likes_count: graphqlProblem.likesCount,
-          created_at: graphqlProblem.createdAt,
-          user: {
-            id: Number(graphqlProblem.user.id),
-            name: graphqlProblem.user.name,
-            avatar_url: graphqlProblem.user.avatarUrl || null,
-          },
-          // 他の必要なフィールドはデフォルト値を設定
-          is_liked_by_me: false,
-          is_voted_by_me: false,
-          my_vote_tile_id: null,
-        } as any;
-
-        setProblems(prev => [restFormatProblem, ...prev]);
+        // GraphQL レスポンスを完全な WhatToDiscardProblem 型に変換
+        const newProblem: WhatToDiscardProblem = {
+          ...graphqlProblem,
+          // 不足しているフィールドを補完
+          bookmarksCount: 0,
+          comments: [],
+          isLikedByMe: false,
+          isBookmarkedByMe: false,
+          updatedAt: graphqlProblem.createdAt,
+          dora: null,
+          hand1: null,
+          hand2: null,
+          hand3: null,
+          hand4: null,
+          hand5: null,
+          hand6: null,
+          hand7: null,
+          hand8: null,
+          hand9: null,
+          hand10: null,
+          hand11: null,
+          hand12: null,
+          hand13: null,
+          tsumo: null,
+          myVote: null,
+          voteResults: [],
+        } as WhatToDiscardProblem;
+        setProblems(prev => [newProblem, ...prev]);
         onClose();
         successToast({ title: "何切る問題を作成しました" });
       }

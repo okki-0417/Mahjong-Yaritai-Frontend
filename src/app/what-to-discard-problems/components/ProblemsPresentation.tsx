@@ -4,8 +4,7 @@ import LoadNextPageProblemButton from "@/src/app/what-to-discard-problems/compon
 import ProblemCard from "@/src/app/what-to-discard-problems/components/ProblemCard";
 import { Box, Flex, useDisclosure, VStack, Text } from "@chakra-ui/react";
 import { useContext } from "react";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import { CursorPaginationType } from "@/src/lib/types/schema-compat";
 import PopButton from "@/src/components/PopButton";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
@@ -16,7 +15,7 @@ export default function ClientProblemSection({
   initialCursor,
   graphqlProblems = [],
 }: {
-  initialCursor: z.infer<typeof schemas.CursorPagination>;
+  initialCursor: CursorPaginationType;
   // GraphQLのWhatToDiscardProblem型の配列
   graphqlProblems?: any[];
 }) {

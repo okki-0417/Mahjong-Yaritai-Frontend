@@ -14,8 +14,8 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import { Comment } from "@/src/generated/graphql";
+import { createCommentBodySchema, CreateCommentBodyType } from "@/src/lib/types/schema-compat";
 import CommentForm from "@/src/app/what-to-discard-problems/components/comments/CommentForm";
 import ParentCommentCard from "@/src/app/what-to-discard-problems/components/comments/ParentCommentCard";
 import { useForm } from "react-hook-form";
@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 
 /* eslint no-unused-vars: 0 */
-export type InsertCommentToThread = (comment: z.infer<typeof schemas.Comment>) => void;
+export type InsertCommentToThread = (comment: Comment) => void;
 
 export default function CommentsModal({
   isOpen,
@@ -35,17 +35,15 @@ export default function CommentsModal({
   isOpen: boolean;
   onClose: () => void;
   problemId: number;
-  parentComments: z.infer<typeof schemas.Comment>[];
-  setParentComments: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>[]>>;
+  parentComments: Comment[];
+  setParentComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 }) {
   const [insertCommentToThread, setInsertCommentToThread] = useState<InsertCommentToThread>(
-    () => (comment: z.infer<typeof schemas.Comment>) => {
+    () => (comment: Comment) => {
       setParentComments(prev => (prev ? [...prev, comment] : [comment]));
     },
   );
-  const [replyingToComment, setReplyingToComment] = useState<z.infer<
-    typeof schemas.Comment
-  > | null>(null);
+  const [replyingToComment, setReplyingToComment] = useState<Comment | null>(null);
 
   const {
     register,
@@ -54,8 +52,8 @@ export default function CommentsModal({
     setValue,
     setFocus,
     resetField,
-  } = useForm<z.infer<typeof schemas.createComment_Body>>({
-    resolver: zodResolver(schemas.createComment_Body),
+  } = useForm<CreateCommentBodyType>({
+    resolver: zodResolver(createCommentBodySchema),
   });
 
   return (
@@ -91,6 +89,7 @@ export default function CommentsModal({
                       setFocus={setFocus}
                       setInsertCommentToThread={setInsertCommentToThread}
                       setReplyingToComment={setReplyingToComment}
+                      problemId={String(problemId)}
                     />
                   );
                 })}

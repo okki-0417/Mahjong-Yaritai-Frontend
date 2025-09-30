@@ -2,9 +2,8 @@
 
 import ProblemCardHeader from "@/src/app/what-to-discard-problems/components/ProblemCardHeader";
 import ProblemLikeSection from "@/src/app/what-to-discard-problems/components/likes/ProblemLikeSection";
-import { schemas } from "@/src/zodios/api";
+import { WhatToDiscardProblem, WhatToDiscardProblemVoteResult } from "@/src/generated/graphql";
 import { Box, HStack, Text, useDisclosure, VStack, Wrap } from "@chakra-ui/react";
-import { z } from "zod";
 import ProblemVoteSection from "@/src/app/what-to-discard-problems/components/votes/ProblemVoteSection";
 import ProblemCommentSection from "@/src/app/what-to-discard-problems/components/comments/ProblemCommentSection";
 import { Fragment, useContext, useEffect, useState } from "react";
@@ -14,19 +13,19 @@ import { SessionContext } from "@/src/app/what-to-discard-problems/context-provi
 import TileImage from "@/src/components/TileImage";
 import ProblemDescriptionModal from "@/src/app/what-to-discard-problems/components/ProblemDescriptionModal";
 
+// Define compatibility types - unused, keeping for potential future use
+
 export default function ProblemCard({
   problem,
   graphqlProblem,
 }: {
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+  problem: WhatToDiscardProblem;
   // GraphQLのWhatToDiscardProblem型
   graphqlProblem?: any;
 }) {
   const [myVoteTileId, setMyVoteTileId] = useState<number>(null);
-  const [votesCount, setVotesCount] = useState<number>(problem.votes_count || 0);
-  const [voteResult, setVoteResult] = useState<
-    z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]
-  >([]);
+  const [votesCount, setVotesCount] = useState<number>(problem.votesCount || 0);
+  const [voteResult, setVoteResult] = useState<WhatToDiscardProblemVoteResult[]>([]);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarksCount, setBookmarksCount] = useState(0);
 
@@ -85,7 +84,7 @@ export default function ProblemCard({
 
   return (
     <Box className="md:max-w-2xl w-screen px-1">
-      <Text fontSize="sm">{new Date(problem.created_at).toLocaleString()}</Text>
+      <Text fontSize="sm">{new Date(problem.createdAt).toLocaleString()}</Text>
 
       <VStack borderRadius="md" shadow="md" alignItems="stretch" gap="0" overflow="hidden">
         <Box pt="2" px={["2", "4"]} pb="3" className="bg-mj-mat">
@@ -108,7 +107,7 @@ export default function ProblemCard({
             <HStack gap="1">
               <Text fontSize={["md", "lg"]}>ドラ</Text>
               <Box h="8" aspectRatio="7/9">
-                <TileImage tileId={problem.dora_id} hover={false} />
+                <TileImage tileId={Number(problem.dora?.id)} hover={false} />
               </Box>
             </HStack>
 
@@ -118,7 +117,7 @@ export default function ProblemCard({
                 <HStack w="6">
                   <VoteButton
                     problem={problem}
-                    tileId={problem.tsumo_id}
+                    tileId={Number(problem.tsumo?.id)}
                     myVoteTileId={myVoteTileId}
                     setMyVoteTileId={setMyVoteTileId}
                     setVotesCount={setVotesCount}
@@ -133,19 +132,19 @@ export default function ProblemCard({
           <HStack gap="2" mt={["2", "0"]} align="flex-end">
             <HStack gap="1px">
               {[
-                problem.hand1_id,
-                problem.hand2_id,
-                problem.hand3_id,
-                problem.hand4_id,
-                problem.hand5_id,
-                problem.hand6_id,
-                problem.hand7_id,
-                problem.hand8_id,
-                problem.hand9_id,
-                problem.hand10_id,
-                problem.hand11_id,
-                problem.hand12_id,
-                problem.hand13_id,
+                Number(problem.hand1?.id),
+                Number(problem.hand2?.id),
+                Number(problem.hand3?.id),
+                Number(problem.hand4?.id),
+                Number(problem.hand5?.id),
+                Number(problem.hand6?.id),
+                Number(problem.hand7?.id),
+                Number(problem.hand8?.id),
+                Number(problem.hand9?.id),
+                Number(problem.hand10?.id),
+                Number(problem.hand11?.id),
+                Number(problem.hand12?.id),
+                Number(problem.hand13?.id),
               ].map((hand_id, index) => {
                 return (
                   <VoteButton
@@ -167,7 +166,7 @@ export default function ProblemCard({
                 <Text fontSize={["sm", "md"]}>ツモ</Text>
                 <VoteButton
                   problem={problem}
-                  tileId={problem.tsumo_id}
+                  tileId={Number(problem.tsumo?.id)}
                   myVoteTileId={myVoteTileId}
                   setMyVoteTileId={setMyVoteTileId}
                   setVotesCount={setVotesCount}

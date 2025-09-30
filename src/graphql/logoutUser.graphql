@@ -1,0 +1,6 @@
+mutation LogoutUser($input: LogoutInput!) {
+  logout(input: $input) {
+    success
+    errors
+  }
+}

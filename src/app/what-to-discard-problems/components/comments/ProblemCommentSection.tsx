@@ -4,22 +4,15 @@ import { FaRegComment } from "react-icons/fa";
 import PopButton from "@/src/components/PopButton";
 import { HStack, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import CommentsModal from "@/src/app/what-to-discard-problems/components/comments/CommentsModal";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import { WhatToDiscardProblem, Comment } from "@/src/generated/graphql";
 import { Fragment, useState } from "react";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { useQuery } from "@apollo/client/react";
 import { WhatToDiscardProblemDetailDocument } from "@/src/generated/graphql";
 
-export default function ProblemCommentSection({
-  problem,
-}: {
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
-}) {
+export default function ProblemCommentSection({ problem }: { problem: WhatToDiscardProblem }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [parentComments, setParentComments] = useState<z.infer<typeof schemas.Comment>[] | null>(
-    null,
-  );
+  const [parentComments, setParentComments] = useState<Comment[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const errorToast = useErrorToast();
 
@@ -36,25 +29,25 @@ export default function ProblemCommentSection({
       const { data } = await refetch();
 
       if (data?.whatToDiscardProblem?.comments) {
-        // GraphQLデータをREST APIフォーマットに変換
-        const restComments: z.infer<typeof schemas.Comment>[] =
-          data.whatToDiscardProblem.comments.map((comment: any) => ({
-            id: Number(comment.id),
-            content: comment.content,
-            user_id: Number(comment.user.id),
-            parent_comment_id: comment.parentCommentId ? Number(comment.parentCommentId) : null,
-            replies_count: comment.repliesCount,
-            created_at: comment.createdAt,
-            commentable_id: Number(problem.id),
-            commentable_type: "WhatToDiscardProblem",
+        // 親コメントのみをフィルタリング
+        const filteredParentComments = data.whatToDiscardProblem.comments
+          .filter(comment => !(comment as any).parentCommentId)
+          .map(comment => ({
+            ...comment,
+            replies: [],
+            updatedAt: comment.createdAt,
+            userId: comment.user.id,
             user: {
-              id: Number(comment.user.id),
-              name: comment.user.name,
-              avatar_url: comment.user.avatarUrl || null,
+              ...comment.user,
+              createdAt: comment.createdAt,
+              updatedAt: comment.createdAt,
+              followersCount: 0,
+              followingCount: 0,
+              isFollowing: false,
             },
           }));
 
-        setParentComments(restComments);
+        setParentComments(filteredParentComments);
         onOpen();
       }
     } catch (error) {
@@ -70,7 +63,7 @@ export default function ProblemCommentSection({
         <HStack>
           {isLoading ? <Spinner size="sm" /> : <FaRegComment color="#333" size={24} />}
           <Text fontFamily="sans-serif" fontWeight="bold">
-            {parentComments?.length || problem.comments_count}
+            {parentComments?.length || problem.commentsCount}
           </Text>
         </HStack>
       </PopButton>
@@ -78,7 +71,7 @@ export default function ProblemCommentSection({
       <CommentsModal
         isOpen={isOpen}
         onClose={onClose}
-        problemId={problem.id}
+        problemId={Number(problem.id)}
         parentComments={parentComments}
         setParentComments={setParentComments}
       />

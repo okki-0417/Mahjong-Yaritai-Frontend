@@ -2,17 +2,11 @@
 
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
 import { FaRegBookmark } from "react-icons/fa";
+import { useGraphQLSession } from "@/src/app/what-to-discard-problems/context-providers/GraphQLSessionProvider";
 
-interface WhatToDiscardProblemsSidebarProps {
-  session: z.infer<typeof schemas.Session> | null;
-}
-
-export default function WhatToDiscardProblemsSideNavigation({
-  session,
-}: WhatToDiscardProblemsSidebarProps) {
+export default function WhatToDiscardProblemsSideNavigation() {
+  const { session } = useGraphQLSession();
   return (
     <Box
       p={4}
@@ -29,7 +23,7 @@ export default function WhatToDiscardProblemsSideNavigation({
       </Text>
       <VStack spacing={3} align="stretch">
         {/* ブックマークした問題 */}
-        {session?.is_logged_in ? (
+        {session?.isLoggedIn ? (
           <Link href="/me/what-to-discard-problems/bookmarks">
             <HStack
               align="center"

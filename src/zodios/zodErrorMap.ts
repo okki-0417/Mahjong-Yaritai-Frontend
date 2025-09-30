@@ -23,7 +23,7 @@ export const customDefaultErrorMap: z.ZodErrorMap = (issue, ctx) => {
         case "string":
           return { message: "文字列を入力してください" };
         case "number":
-          if (ctx.data < 0) return;
+          if (ctx.data < 0) return { message: "0以上の数値を入力してください" };
           return { message: "数値を入力してください" };
         case "boolean":
           return { message: "真偽値を入力してください" };

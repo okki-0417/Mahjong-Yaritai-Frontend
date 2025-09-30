@@ -18,10 +18,33 @@ import { Controller, SubmitHandler } from "react-hook-form";
 import { useCustomForm } from "@/src/hooks/useCustomForm";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { apiClient } from "@/src/lib/api/client";
 import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@apollo/client/react";
+import {
+  UpdateUserProfileDocument,
+  UpdateUserProfileMutation,
+  UpdateUserProfileMutationVariables,
+} from "@/src/generated/graphql";
+
+// GraphQL用のスキーマ定義
+const updateUserGraphQLSchema = z.object({
+  name: z.string().min(1, "名前を入力してください").max(20, "名前は20文字以内で入力してください"),
+  profileText: z
+    .string()
+    .max(500, "プロフィールは500文字以内で入力してください")
+    .nullable()
+    .optional(),
+  avatar: z.instanceof(File).optional(),
+});
+
+type UserType = {
+  id?: string | number;
+  name?: string;
+  profileText?: string | null;
+  avatarUrl?: string | null;
+  email?: string | null;
+};
 
 export default function ProfileEditForm({
   setIsEditMode,
@@ -29,8 +52,8 @@ export default function ProfileEditForm({
   setUser,
 }: {
   setIsEditMode: React.Dispatch<SetStateAction<boolean>>;
-  user: z.infer<typeof schemas.User>;
-  setUser: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.User>>>;
+  user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
 }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const previousImageUrlRef = useRef<string | null>(null);
@@ -38,6 +61,11 @@ export default function ProfileEditForm({
 
   const successToast = useSuccessToast();
   const errorToast = useErrorToast();
+
+  const [updateUser, { loading: isUpdating }] = useMutation<
+    UpdateUserProfileMutation,
+    UpdateUserProfileMutationVariables
+  >(UpdateUserProfileDocument);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -61,18 +89,42 @@ export default function ProfileEditForm({
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useCustomForm<z.infer<typeof schemas.updateUser_Body>>({
-    resolver: zodResolver(schemas.updateUser_Body),
-    defaultValues: { name: user.name, profile_text: user.profile_text },
+  } = useCustomForm<z.infer<typeof updateUserGraphQLSchema>>({
+    resolver: zodResolver(updateUserGraphQLSchema),
+    defaultValues: { name: user.name || "", profileText: user.profileText || "" },
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof schemas.updateUser_Body>> = async formInputs => {
+  const onSubmit: SubmitHandler<z.infer<typeof updateUserGraphQLSchema>> = async formInputs => {
     try {
-      const response = await apiClient.updateUser(formInputs);
+      const result = await updateUser({
+        variables: {
+          input: {
+            name: formInputs.name,
+            profileText: formInputs.profileText,
+          },
+        },
+      });
 
-      setUser(response.user);
-      setIsEditMode(false);
-      successToast({ title: "プロフィールを更新しました" });
+      if (result.data?.updateUser?.errors && result.data.updateUser.errors.length > 0) {
+        errorToast({
+          title: "プロフィール更新に失敗しました",
+          description: result.data.updateUser.errors.join(", "),
+        });
+        return;
+      }
+
+      if (result.data?.updateUser?.user) {
+        const updatedUser = result.data.updateUser.user;
+        setUser({
+          ...user,
+          id: updatedUser.id,
+          name: updatedUser.name,
+          profileText: updatedUser.profileText,
+          avatarUrl: updatedUser.avatarUrl,
+        });
+        setIsEditMode(false);
+        successToast({ title: "プロフィールを更新しました" });
+      }
     } catch (error) {
       errorToast({
         error,
@@ -87,7 +139,7 @@ export default function ProfileEditForm({
         <VStack>
           <Circle size="200" overflow="hidden">
             <Image
-              src={imageUrl || user?.avatar_url || "/no-image.webp"}
+              src={imageUrl || user?.avatarUrl || "/no-image.webp"}
               w="full"
               h="full"
               objectFit="cover"
@@ -133,25 +185,27 @@ export default function ProfileEditForm({
             w="full"
             h="fit-content"
             {...register("name")}
+            isDisabled={isSubmitting || isUpdating}
           />
           <FormErrorMessage color="red.200">{errors.name?.message}</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={Boolean(errors.profile_text)}>
+        <FormControl isInvalid={Boolean(errors.profileText)}>
           <FormLabel color="white">自己紹介</FormLabel>
           <Textarea
             placeholder="自己紹介を入力してください（500文字まで）"
-            defaultValue={user?.profile_text || ""}
+            defaultValue={user?.profileText || ""}
             maxLength={500}
             resize="vertical"
             minH="120px"
-            {...register("profile_text")}
+            {...register("profileText")}
+            isDisabled={isSubmitting || isUpdating}
           />
-          <FormErrorMessage color="red.200">{errors.profile_text?.message}</FormErrorMessage>
+          <FormErrorMessage color="red.200">{errors.profileText?.message}</FormErrorMessage>
         </FormControl>
 
         <Box w="full" textAlign="right">
-          <Button type="submit" colorScheme="pink" isLoading={isSubmitting}>
+          <Button type="submit" colorScheme="pink" isLoading={isSubmitting || isUpdating}>
             送信
           </Button>
         </Box>

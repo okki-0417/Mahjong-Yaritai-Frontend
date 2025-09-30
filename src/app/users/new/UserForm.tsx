@@ -10,7 +10,6 @@ import {
   FormLabel,
   Image,
   Input,
-  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -19,10 +18,16 @@ import { Controller, SubmitHandler } from "react-hook-form";
 import { useCustomForm } from "@/src/hooks/useCustomForm";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
-import { apiClient } from "@/src/lib/api/client";
-import { schemas } from "@/src/zodios/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@apollo/client/react";
+import { CreateUserDocument, CreateUserMutation } from "@/src/generated/graphql";
+
+const createUserSchema = z.object({
+  name: z.string().min(1, "名前を入力してください").max(20, "名前は20文字以内で入力してください"),
+  email: z.string().email("有効なメールアドレスを入力してください"),
+  avatar: z.instanceof(File).optional(),
+});
 
 export default function UserForm() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -32,6 +37,8 @@ export default function UserForm() {
   const router = useRouter();
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
+
+  const [createUser] = useMutation<CreateUserMutation>(CreateUserDocument);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -55,13 +62,25 @@ export default function UserForm() {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useCustomForm<z.infer<typeof schemas.createUser_Body>>({
-    resolver: zodResolver(schemas.createUser_Body),
+  } = useCustomForm<z.infer<typeof createUserSchema>>({
+    resolver: zodResolver(createUserSchema),
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof schemas.createUser_Body>> = async formData => {
+  const onSubmit: SubmitHandler<z.infer<typeof createUserSchema>> = async formData => {
     try {
-      await apiClient.createUser(formData);
+      const result = await createUser({
+        variables: {
+          input: {
+            name: formData.name,
+            email: formData.email,
+            avatar: formData.avatar || undefined,
+          },
+        },
+      });
+
+      if (result.data?.createUser?.errors && result.data.createUser.errors.length > 0) {
+        throw new Error(result.data.createUser.errors.join(", "));
+      }
 
       successToast({ title: "ユーザーを作成しました" });
       router.push("/dashboard");
@@ -109,31 +128,40 @@ export default function UserForm() {
               />
             )}
           />
-
           <FormErrorMessage>{errors.avatar?.message}</FormErrorMessage>
         </FormControl>
 
-        <FormControl isRequired isInvalid={Boolean(errors.name)}>
+        <FormControl isInvalid={Boolean(errors.name)}>
           <FormLabel color="white">ハンドルネーム</FormLabel>
-          <Input type="text" fontSize="2xl" w="full" h="fit-content" {...register("name")} />
+          <Input
+            type="text"
+            placeholder="ハンドルネーム"
+            fontSize="2xl"
+            w="full"
+            h="fit-content"
+            {...register("name")}
+            isDisabled={isSubmitting}
+          />
           <FormErrorMessage color="red.200">{errors.name?.message}</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={Boolean(errors.profile_text)}>
-          <FormLabel color="white">自己紹介</FormLabel>
-          <Textarea
-            placeholder="自己紹介を入力してください（500文字まで）"
-            maxLength={500}
-            resize="vertical"
-            minH="120px"
-            {...register("profile_text")}
+        <FormControl isInvalid={Boolean(errors.email)}>
+          <FormLabel color="white">メールアドレス</FormLabel>
+          <Input
+            type="email"
+            placeholder="メールアドレス"
+            fontSize="lg"
+            w="full"
+            h="fit-content"
+            {...register("email")}
+            isDisabled={isSubmitting}
           />
-          <FormErrorMessage color="red.200">{errors.profile_text?.message}</FormErrorMessage>
+          <FormErrorMessage color="red.200">{errors.email?.message}</FormErrorMessage>
         </FormControl>
 
         <Box w="full" textAlign="right">
           <Button type="submit" colorScheme="pink" isLoading={isSubmitting}>
-            登録
+            ユーザー作成
           </Button>
         </Box>
       </VStack>

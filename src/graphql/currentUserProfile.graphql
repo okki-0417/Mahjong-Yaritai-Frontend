@@ -1,0 +1,15 @@
+query CurrentUserProfile {
+  currentSession {
+    isLoggedIn
+    userId
+    user {
+      id
+      name
+      email
+      profileText
+      avatarUrl
+      createdAt
+      updatedAt
+    }
+  }
+}

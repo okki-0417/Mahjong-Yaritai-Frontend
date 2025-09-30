@@ -1,5 +1,9 @@
 "use client";
 
+// @deprecated このライブラリは非推奨です
+// 新しい実装では Apollo Client + apollo-upload-client を使用してください
+// 詳細: docs/GraphQLPatterns.md
+
 // GraphQL file upload utilities
 
 interface GraphQLFileUploadOptions {
@@ -21,7 +25,6 @@ export async function executeFileUploadMutation({ query, variables }: GraphQLFil
   const processedVariables = processVariables(variables, formData);
   formData.append("variables", JSON.stringify(processedVariables));
 
-  // eslint-disable-next-line no-process-env
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
   const response = await fetch(`${apiUrl}/graphql`, {
     method: "POST",

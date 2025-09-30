@@ -3,8 +3,11 @@
 import ProblemCard from "@/src/app/what-to-discard-problems/components/ProblemCard";
 import ProblemsContextProvider from "@/src/app/what-to-discard-problems/context-providers/ProblemsContextProvider";
 import SessionContextProvider from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
-import { CurrentSessionDocument, WhatToDiscardProblemDocument } from "@/src/generated/graphql";
-import { adaptGraphQLProblemToREST } from "@/src/lib/graphql/adapters";
+import {
+  CurrentSessionDocument,
+  WhatToDiscardProblemDocument,
+  WhatToDiscardProblem,
+} from "@/src/generated/graphql";
 import { useQuery } from "@apollo/client/react";
 import { Box, Spinner, Text } from "@chakra-ui/react";
 
@@ -41,7 +44,24 @@ export default function ProblemCardWithGraphQL({ problemId }: { problemId: strin
     );
   }
 
-  const problem = adaptGraphQLProblemToREST(data.whatToDiscardProblem);
+  // GraphQLの型をWhatToDiscardProblem型に変換
+  const graphqlProblem = data.whatToDiscardProblem;
+  const problem: WhatToDiscardProblem = {
+    ...graphqlProblem,
+    user: {
+      ...graphqlProblem.user,
+      createdAt: graphqlProblem.createdAt,
+      followersCount: 0,
+      followingCount: 0,
+      isFollowing: false,
+      updatedAt: graphqlProblem.createdAt,
+    },
+    bookmarksCount: 0,
+    comments: [],
+    isBookmarkedByMe: false,
+    isLikedByMe: false,
+    voteResults: [],
+  } as unknown as WhatToDiscardProblem;
 
   const session = sessionData?.currentSession
     ? {

@@ -18,8 +18,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import useProblemDelete from "@/src/hooks/useProblemDelete";
 import { Fragment, useContext } from "react";
 import ProblemUpdateFormModal from "@/src/app/what-to-discard-problems/components/ProblemUpdateFormModal";
@@ -32,13 +31,12 @@ export default function ProblemCardHeader({
   bookmarksCount,
   onBookmarkUpdate,
 }: {
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+  problem: WhatToDiscardProblem;
   myUserId: number | null;
   isBookmarked: boolean;
   bookmarksCount: number;
-  /* eslint-disable no-unused-vars */
+  // eslint-disable-next-line no-unused-vars
   onBookmarkUpdate: (isBookmarked: boolean, bookmarksCount: number) => void;
-  /* eslint-enable no-unused-vars */
 }) {
   const {
     isOpen: isUserModalOpen,
@@ -51,8 +49,8 @@ export default function ProblemCardHeader({
     onClose: onUpdateFormClose,
   } = useDisclosure();
 
-  const isMyProblem = problem.user.id === myUserId;
-  const { deleteProblem } = useProblemDelete(problem.id);
+  const isMyProblem = problem.user.id === String(myUserId);
+  const { deleteProblem } = useProblemDelete(Number(problem.id));
   // ProblemsContextは自分の問題の場合のみ必要
   const context = useContext(ProblemsContext);
   const setProblems = context?.setProblems;
@@ -63,7 +61,7 @@ export default function ProblemCardHeader({
         <HStack>
           <Circle overflow="hidden" size={["7", "9"]}>
             <Image
-              src={problem.user.avatar_url || "/no-image.webp"}
+              src={problem.user.avatarUrl || "/no-image.webp"}
               alt={problem.user.name}
               w="full"
               h="full"
@@ -120,7 +118,7 @@ export default function ProblemCardHeader({
         user={problem.user}
         isOpen={isUserModalOpen}
         onClose={onUserModalClose}
-        isFollowing={problem.user.is_following}
+        isFollowing={problem.user.isFollowing}
         currentUserId={myUserId}
       />
     </HStack>

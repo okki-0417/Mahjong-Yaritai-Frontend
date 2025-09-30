@@ -23,9 +23,18 @@ import {
 import Link from "next/link";
 import useErrorToast from "@/src/hooks/useErrorToast";
 import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
 import { useMutation } from "@apollo/client/react";
-import { CreateCommentDocument } from "@/src/generated/graphql";
+import { CreateCommentDocument, Comment } from "@/src/generated/graphql";
+
+// Custom form schema for comment creation
+const createCommentBodySchema = z.object({
+  what_to_discard_problem_comment: z.object({
+    content: z.string().min(1, "コメントを入力してください"),
+    parent_comment_id: z.number().nullable().optional(),
+  }),
+});
+
+type CreateCommentBodyType = z.infer<typeof createCommentBodySchema>;
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { useContext } from "react";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
@@ -42,15 +51,15 @@ export default function CommentForm({
   setReplyingToComment,
 }: {
   problemId: number;
-  register: UseFormRegister<z.infer<typeof schemas.createComment_Body>>;
-  handleSubmit: UseFormHandleSubmit<z.infer<typeof schemas.createComment_Body>>;
-  errors: FieldErrors<z.infer<typeof schemas.createComment_Body>>;
-  resetField: UseFormResetField<z.infer<typeof schemas.createComment_Body>>;
+  register: UseFormRegister<CreateCommentBodyType>;
+  handleSubmit: UseFormHandleSubmit<CreateCommentBodyType>;
+  errors: FieldErrors<CreateCommentBodyType>;
+  resetField: UseFormResetField<CreateCommentBodyType>;
   isSubmitting: boolean;
   /* eslint no-unused-vars: 0 */
-  insertCommentToThread: (comment: z.infer<typeof schemas.Comment>) => void;
-  replyingToComment: z.infer<typeof schemas.Comment>;
-  setReplyingToComment: React.Dispatch<React.SetStateAction<z.infer<typeof schemas.Comment>>>;
+  insertCommentToThread: (comment: Comment) => void;
+  replyingToComment: Comment | null;
+  setReplyingToComment: React.Dispatch<React.SetStateAction<Comment | null>>;
 }) {
   const errorToast = useErrorToast();
   const successToast = useSuccessToast();
@@ -58,9 +67,9 @@ export default function CommentForm({
   const [createComment] = useMutation(CreateCommentDocument);
 
   const { session } = useContext(SessionContext);
-  const isLoggedIn = Boolean(session?.is_logged_in);
+  const isLoggedIn = Boolean(session?.isLoggedIn);
 
-  const onSubmit: SubmitHandler<z.infer<typeof schemas.createComment_Body>> = async formData => {
+  const onSubmit: SubmitHandler<CreateCommentBodyType> = async formData => {
     try {
       const { data } = await createComment({
         variables: {
@@ -73,24 +82,21 @@ export default function CommentForm({
       });
 
       if (data?.createComment?.comment) {
-        const graphqlComment = data.createComment.comment;
-        const restComment: z.infer<typeof schemas.Comment> = {
-          id: Number(graphqlComment.id),
-          content: graphqlComment.content,
-          user_id: Number(graphqlComment.userId),
-          parent_comment_id: graphqlComment.parentCommentId
-            ? Number(graphqlComment.parentCommentId)
-            : null,
-          replies_count: graphqlComment.repliesCount,
-          created_at: graphqlComment.createdAt,
+        // Add missing fields to match Comment type
+        const completeComment: Comment = {
+          ...data.createComment.comment,
+          replies: [],
+          updatedAt: data.createComment.comment.createdAt,
           user: {
-            id: Number(graphqlComment.user.id),
-            name: graphqlComment.user.name,
-            avatar_url: graphqlComment.user.avatarUrl || null,
+            ...data.createComment.comment.user,
+            createdAt: data.createComment.comment.createdAt,
+            updatedAt: data.createComment.comment.createdAt,
+            followersCount: 0,
+            followingCount: 0,
+            isFollowing: false,
           },
         };
-
-        insertCommentToThread(restComment);
+        insertCommentToThread(completeComment);
 
         resetField("what_to_discard_problem_comment.content");
         resetField("what_to_discard_problem_comment.parent_comment_id");
@@ -138,7 +144,7 @@ export default function CommentForm({
                 defaultValue={null}
               />
               <FormErrorMessage>
-                {errors.what_to_discard_problem_comment?.parentCommentId?.message}
+                {errors.what_to_discard_problem_comment?.parent_comment_id?.message}
               </FormErrorMessage>
             </FormControl>
 

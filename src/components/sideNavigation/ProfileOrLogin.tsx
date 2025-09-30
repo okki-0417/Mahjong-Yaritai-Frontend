@@ -1,38 +1,37 @@
 "use client";
 
-import { apiClient } from "@/src/lib/api/client";
-import { schemas } from "@/src/zodios/api";
 import { HStack, ListItem, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import z from "zod";
+import { useQuery } from "@apollo/client/react";
+import { CurrentSessionDocument, CurrentSessionQuery } from "@/src/generated/graphql";
+
+type SessionType = {
+  isLoggedIn: boolean;
+  userId?: number | null;
+};
 
 export default function ProfileOrLogin() {
-  const [session, setSession] = useState<z.infer<typeof schemas.Session>>(null);
-  const pathName = usePathname();
+  const [session, setSession] = useState<SessionType | null>(null);
+  const { data } = useQuery<CurrentSessionQuery>(CurrentSessionDocument);
 
-  const isLoggedIn = Boolean(session?.is_logged_in);
+  const isLoggedIn = Boolean(session?.isLoggedIn);
 
   useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const sessionData = await apiClient.getSession();
-        return setSession(sessionData);
-      } catch (error) {
-        return error;
-      }
-    };
-
-    fetchSession();
-  }, [pathName]);
+    if (data?.currentSession) {
+      setSession({
+        isLoggedIn: data.currentSession.isLoggedIn,
+        userId: data.currentSession.userId,
+      });
+    }
+  }, [data]);
 
   return (
     <Fragment>
       {isLoggedIn ? (
         <ListItem>
-          <Link href={`/users/${session?.user_id}`} className="w-full ">
+          <Link href={`/users/${session?.userId}`} className="w-full ">
             <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
               <FaUser size={18} />
               <Text fontSize="lg">プロフィール</Text>

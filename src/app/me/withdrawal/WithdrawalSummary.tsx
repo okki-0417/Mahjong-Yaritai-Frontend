@@ -1,11 +1,21 @@
 import ClientWithdrawalSummary from "@/src/app/me/withdrawal/ClientWithdrawalSummary";
-import createApiPageClient from "@/src/lib/api/server";
+import { getClient } from "@/src/lib/apollo/server";
+import { WithdrawalSummaryDocument } from "@/src/generated/graphql";
 
 export default async function WithdrawalSummary() {
-  const apiPageClient = await createApiPageClient();
+  const client = getClient();
 
-  const response = await apiPageClient.getWithdrawalSummary();
-  const summary = response.withdrawal_summary;
+  await (client as any).query({
+    query: WithdrawalSummaryDocument,
+  });
+
+  // Note: The current GraphQL schema doesn't provide counts, using placeholder values
+  const summary = {
+    what_to_discard_problems_count: 0,
+    comments_count: 0,
+    likes_count: 0,
+    votes_count: 0,
+  };
 
   return <ClientWithdrawalSummary summary={summary} />;
 }

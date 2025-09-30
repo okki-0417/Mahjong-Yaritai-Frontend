@@ -1,5 +1,5 @@
 import ProblemUpdateForm from "@/src/app/what-to-discard-problems/components/forms/ProblemUpdateForm";
-import { schemas } from "@/src/zodios/api";
+import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import {
   Modal,
   ModalBody,
@@ -9,7 +9,6 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { z } from "zod";
 
 export default function ProblemUpdateFormModal({
   isOpen,
@@ -19,10 +18,8 @@ export default function ProblemUpdateFormModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
-  setProblems: React.Dispatch<
-    React.SetStateAction<z.infer<typeof schemas.createWhatToDiscardProblem_Body>[]>
-  >;
+  problem: WhatToDiscardProblem;
+  setProblems: React.Dispatch<React.SetStateAction<WhatToDiscardProblem[]>>;
 }) {
   const handleFormClose = () => {
     const isConfirmed = window.confirm("フォームを閉じますか？入力内容は保存されません。");

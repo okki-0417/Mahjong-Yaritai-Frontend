@@ -1,7 +1,6 @@
 "use client";
 
-import { z } from "zod";
-import { schemas } from "@/src/zodios/api";
+import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import { useContext, useEffect, useState } from "react";
 import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
@@ -16,11 +15,7 @@ import {
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
 
-export default function ProblemLikeSection({
-  problem,
-}: {
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
-}) {
+export default function ProblemLikeSection({ problem }: { problem: WhatToDiscardProblem }) {
   const { data: problemData } = useQuery(WhatToDiscardProblemDetailDocument, {
     variables: { id: String(problem.id) },
     skip: !problem.id,
@@ -32,8 +27,8 @@ export default function ProblemLikeSection({
     }
   }, [problemData]);
 
-  const [isLiked, setIsLiked] = useState(Boolean(problem.is_liked_by_me));
-  const [likesCount, setLikesCount] = useState(problem.likes_count);
+  const [isLiked, setIsLiked] = useState(Boolean(problem.isLikedByMe));
+  const [likesCount, setLikesCount] = useState(problem.likesCount);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const successToast = useSuccessToast();

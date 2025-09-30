@@ -1,10 +1,9 @@
 import TileImage from "@/src/components/TileImage";
 import VoteButton from "@/src/app/what-to-discard-problems/components/votes/VoteButton";
-import { schemas } from "@/src/zodios/api";
+import { WhatToDiscardProblem, WhatToDiscardProblemVoteResult } from "@/src/generated/graphql";
 import {
   Box,
   Grid,
-  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,7 +14,6 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { z } from "zod";
 import { useMemo } from "react";
 
 export default function VoteResultModal({
@@ -28,118 +26,112 @@ export default function VoteResultModal({
   setVotesCount,
   setVoteResult,
 }: {
-  voteResult: z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[];
+  voteResult: WhatToDiscardProblemVoteResult[];
   isOpen: boolean;
   onClose: () => void;
-  problem: z.infer<typeof schemas.WhatToDiscardProblem>;
+  problem: WhatToDiscardProblem;
   myVoteTileId: number | null;
   setMyVoteTileId: React.Dispatch<React.SetStateAction<number | null>>;
   setVotesCount: React.Dispatch<React.SetStateAction<number>>;
-  setVoteResult: React.Dispatch<
-    React.SetStateAction<z.infer<typeof schemas.WhatToDiscardProblemVoteResult>[]>
-  >;
+  setVoteResult: React.Dispatch<React.SetStateAction<WhatToDiscardProblemVoteResult[]>>;
 }) {
   // 手牌とツモ牌のユニークな並びを生成
   const uniqueTiles = useMemo(() => {
     const allTiles = [
-      problem.hand1_id,
-      problem.hand2_id,
-      problem.hand3_id,
-      problem.hand4_id,
-      problem.hand5_id,
-      problem.hand6_id,
-      problem.hand7_id,
-      problem.hand8_id,
-      problem.hand9_id,
-      problem.hand10_id,
-      problem.hand11_id,
-      problem.hand12_id,
-      problem.hand13_id,
-      problem.tsumo_id,
-    ].filter(Boolean);
+      problem.hand1?.id,
+      problem.hand2?.id,
+      problem.hand3?.id,
+      problem.hand4?.id,
+      problem.hand5?.id,
+      problem.hand6?.id,
+      problem.hand7?.id,
+      problem.hand8?.id,
+      problem.hand9?.id,
+      problem.hand10?.id,
+      problem.hand11?.id,
+      problem.hand12?.id,
+      problem.hand13?.id,
+      problem.tsumo?.id,
+    ]
+      .filter((id): id is string => id !== undefined)
+      .map(id => Number(id));
 
-    // ユニークな牌IDを取得
-    const uniqueTileIds = Array.from(new Set(allTiles));
-
-    // 各牌の投票結果を取得
-    return uniqueTileIds.map(tileId => {
-      const voteData = voteResult.find(result => result.tile_id === tileId);
-      return {
-        tile_id: tileId,
-        count: voteData?.count || 0,
-        is_voted_by_me: voteData?.is_voted_by_me || false,
-      };
-    });
-  }, [problem, voteResult]);
+    // ユニークなタイルのみを抽出
+    const uniqueIds = [...new Set(allTiles)];
+    return uniqueIds;
+  }, [problem]);
 
   return (
-    <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose} isCentered size="3xl">
-      <ModalOverlay />
-
-      <ModalContent overflow="hidden">
-        <ModalHeader className="bg-neutral" fontFamily="serif">
-          投票結果
-        </ModalHeader>
-
-        <ModalCloseButton className="text-primary" />
-
-        <ModalBody py="8" px={["1", "4"]} className=" bg-mj-mat" fontFamily="serif">
-          <HStack w={["18", "24"]}>
-            <Text as="span" className="text-neutral" fontSize={["md", "lg"]}>
-              ドラ
+    <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
+      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
+      <ModalContent bg="gray.800" color="white" maxW="95vw">
+        <ModalHeader>投票結果</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody py={6}>
+          <VStack spacing={6}>
+            <Text fontSize="lg" fontWeight="bold">
+              みんなの投票結果
             </Text>
-            <Box w={["6", "8"]}>
-              <TileImage tileId={problem.dora_id} hover={false} />
-            </Box>
-          </HStack>
 
-          <HStack className="bg-mj-mat" justify="center" gap={["1px", "2"]}>
-            {uniqueTiles.map(tile => {
-              const maxCount = Math.max(...uniqueTiles.map(t => t.count));
-              const hasVotes = maxCount > 0;
+            <Grid templateColumns="repeat(auto-fit, minmax(120px, 1fr))" gap={4} w="full">
+              {uniqueTiles.map(tileId => {
+                const result = voteResult.find(r => Number(r.tileId) === tileId);
+                const voteCount = result?.count || 0;
+                const percentage = result?.percentage || 0;
 
-              return (
-                <Grid key={tile.tile_id} gridTemplateRows="repeat(5,minmax(0,1fr))" gap="1">
-                  <VStack gridRow="span 4/ span 4" justifyContent="flex-end" gap="0">
-                    {tile.count > 0 && (
-                      <Text fontFamily="sans-serif" className="text-neutral">
-                        {tile.count}
+                return (
+                  <VStack key={tileId} spacing={2} align="center">
+                    <Box position="relative">
+                      <TileImage tileId={tileId} />
+                      {myVoteTileId === tileId && (
+                        <Box
+                          position="absolute"
+                          top="-2px"
+                          right="-2px"
+                          w="20px"
+                          h="20px"
+                          bg="pink.500"
+                          borderRadius="full"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          fontSize="xs"
+                          fontWeight="bold">
+                          ✓
+                        </Box>
+                      )}
+                    </Box>
+
+                    <VStack spacing={1}>
+                      <Text fontSize="sm" fontWeight="bold">
+                        {voteCount}票
                       </Text>
-                    )}
+                      <Text fontSize="xs" color="gray.400">
+                        {percentage.toFixed(1)}%
+                      </Text>
+                    </VStack>
 
-                    {hasVotes && tile.count > 0 && (
-                      <Box
-                        className={`${tile.is_voted_by_me ? "bg-sky-400" : "bg-green-400"} `}
-                        borderTopRadius="sm"
-                        w="6"
-                        border="1px solid white"
-                        borderBottom="0px"
-                        shadow="sm"
-                        style={{
-                          height: `${Math.round((tile.count / maxCount) * 100)}%`,
-                        }}
-                      />
-                    )}
-                  </VStack>
-
-                  <Box gridRow="span 1/span 1">
                     <VoteButton
                       problem={problem}
-                      tileId={tile.tile_id}
+                      tileId={tileId}
                       myVoteTileId={myVoteTileId}
                       setMyVoteTileId={setMyVoteTileId}
-                      voteResult={voteResult}
                       setVotesCount={setVotesCount}
+                      voteResult={voteResult}
                       setVoteResult={setVoteResult}
                     />
-                  </Box>
-                </Grid>
-              );
-            })}
-          </HStack>
+                  </VStack>
+                );
+              })}
+            </Grid>
+          </VStack>
         </ModalBody>
 
-        <ModalFooter />
+        <ModalFooter>
+          <Text fontSize="sm" color="gray.400">
+            総投票数: {voteResult.reduce((sum, r) => sum + r.count, 0)}票
+          </Text>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
