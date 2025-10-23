@@ -22,7 +22,7 @@ export default function ProblemCreateForm({
   const errorToast = useErrorToast();
 
   const [createProblem] = useMutation(CreateWhatToDiscardProblemDocument);
-  const { BaseForm } = useProblemForm();
+  const { BaseForm } = useProblemForm(problem);
 
   const onSubmit: SubmitHandler<
     z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>

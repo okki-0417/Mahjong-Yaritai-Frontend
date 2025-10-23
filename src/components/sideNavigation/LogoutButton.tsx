@@ -8,6 +8,7 @@ import { useState } from "react";
 import { IoMdLogOut } from "react-icons/io";
 import { useMutation } from "@apollo/client/react";
 import { LogoutUserDocument, LogoutUserMutation } from "@/src/generated/graphql";
+import useGetSession from "@/src/hooks/useGetSession";
 
 export default function LogoutSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,6 +16,7 @@ export default function LogoutSection() {
   const errorToast = useErrorToast();
 
   const router = useRouter();
+  const { refetch } = useGetSession();
 
   const [logoutUser] = useMutation<LogoutUserMutation>(LogoutUserDocument);
 
@@ -35,6 +37,9 @@ export default function LogoutSection() {
       if (result.data?.logout?.errors && result.data.logout.errors.length > 0) {
         throw new Error(result.data.logout.errors.join(", "));
       }
+
+      // セッション情報を再取得
+      await refetch();
 
       successToast({ title: "ログアウトしました" });
       router.push("/");

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useContext, useEffect } from "react";
-import { IconButton, useDisclosure } from "@chakra-ui/react";
+import { Fragment, useState } from "react";
+import { Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { MdBookmarkAdded } from "react-icons/md";
 import { FaRegBookmark } from "react-icons/fa";
 import { useMutation } from "@apollo/client/react";
@@ -10,128 +10,96 @@ import {
   DeleteWhatToDiscardProblemBookmarkMutation,
   CreateWhatToDiscardProblemBookmarkDocument,
   DeleteWhatToDiscardProblemBookmarkDocument,
+  WhatToDiscardProblem,
 } from "@/src/generated/graphql";
-import useSuccessToast from "@/src/hooks/useSuccessToast";
-import useErrorToast from "@/src/hooks/useErrorToast";
-import { SessionContext } from "@/src/app/what-to-discard-problems/context-providers/SessionContextProvider";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
+import useGetSession from "@/src/hooks/useGetSession";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-interface BookmarkButtonProps {
-  problemId: string;
-  isBookmarked: boolean;
-  bookmarksCount: number;
-  /* eslint-disable no-unused-vars */
-  onBookmarkUpdate?: (isBookmarked: boolean, bookmarksCount: number) => void;
-  /* eslint-enable no-unused-vars */
-}
+type Props = {
+  problem: WhatToDiscardProblem;
+};
 
-export default function BookmarkButton({
-  problemId,
-  isBookmarked,
-  bookmarksCount,
-  onBookmarkUpdate,
-}: BookmarkButtonProps) {
-  const [isBookmarkedState, setIsBookmarkedState] = useState(isBookmarked);
-  const [bookmarksCountState, setBookmarksCountState] = useState(bookmarksCount);
-  const [isLoading, setIsLoading] = useState(false);
+export default function BookmarkButton({ problem }: Props) {
+  const { session } = useGetSession();
 
-  // Props が更新されたら state も更新
-  useEffect(() => {
-    setIsBookmarkedState(isBookmarked);
-    setBookmarksCountState(bookmarksCount);
-  }, [isBookmarked, bookmarksCount]);
+  const [isBookmarked, setIsBookmarked] = useState(problem.isBookmarkedByMe);
+  const [bookmarksCount, setBookmarksCount] = useState(problem.bookmarksCount);
+  const toast = useToast();
 
-  const { session } = useContext(SessionContext);
-  const isLoggedIn = Boolean(session?.is_logged_in);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const successToast = useSuccessToast();
-  const errorToast = useErrorToast();
+  const {
+    isOpen: isNotLoggedInModalOpen,
+    onOpen: onNotLoggedInModalOpen,
+    onClose: onNotLoggedInModalClose,
+  } = useDisclosure();
 
   const [createBookmark] = useMutation<CreateWhatToDiscardProblemBookmarkMutation>(
     CreateWhatToDiscardProblemBookmarkDocument,
+    {
+      onCompleted: () => {
+        setIsBookmarked(true);
+        setBookmarksCount(bookmarksCount + 1);
+
+        toast({
+          title: "ブックマークに追加しました",
+          status: "success",
+        });
+      },
+      onError: error => {
+        toast({
+          title: "ブックマークの追加に失敗しました",
+          description: error.message,
+          status: "error",
+        });
+      },
+    },
   );
 
   const [deleteBookmark] = useMutation<DeleteWhatToDiscardProblemBookmarkMutation>(
     DeleteWhatToDiscardProblemBookmarkDocument,
+    {
+      onCompleted: () => {
+        setIsBookmarked(false);
+        setBookmarksCount(bookmarksCount - 1);
+
+        toast({ title: "ブックマークから削除しました", status: "success" });
+      },
+      onError: error => {
+        toast({
+          title: "ブックマークの削除に失敗しました",
+          description: error.message,
+          status: "error",
+        });
+      },
+    },
   );
 
-  const handleBookmarkToggle = async () => {
-    if (!isLoggedIn) {
-      onOpen();
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm();
+
+  const onSubmit: SubmitHandler<{}> = () => {
+    if (!session?.isLoggedIn) {
+      onNotLoggedInModalOpen();
       return;
     }
-
-    setIsLoading(true);
-
-    try {
-      if (isBookmarkedState) {
-        const { data } = await deleteBookmark({
-          variables: {
-            problemId,
-          },
-          refetchQueries: ["WhatToDiscardProblemDetail"],
-        });
-
-        if (data?.deleteWhatToDiscardProblemBookmark?.success) {
-          const newBookmarksCount = Math.max(0, bookmarksCountState - 1);
-          setIsBookmarkedState(false);
-          setBookmarksCountState(newBookmarksCount);
-          onBookmarkUpdate?.(false, newBookmarksCount);
-          successToast({ title: "ブックマークから削除しました" });
-        } else {
-          const errors = data?.deleteWhatToDiscardProblemBookmark?.errors;
-          throw new Error(
-            `Failed to delete bookmark: ${errors ? JSON.stringify(errors) : "Unknown error"}`,
-          );
-        }
-      } else {
-        const { data } = await createBookmark({
-          variables: {
-            problemId,
-          },
-          refetchQueries: ["WhatToDiscardProblemDetail"],
-        });
-
-        if (data?.createWhatToDiscardProblemBookmark?.success) {
-          const newBookmarksCount = bookmarksCountState + 1;
-          setIsBookmarkedState(true);
-          setBookmarksCountState(newBookmarksCount);
-          onBookmarkUpdate?.(true, newBookmarksCount);
-          successToast({ title: "ブックマークに追加しました" });
-        } else {
-          const errors = data?.createWhatToDiscardProblemBookmark?.errors;
-          if (errors && errors.some((e: any) => e.includes("unique") || e.includes("already"))) {
-            setIsBookmarkedState(true);
-            successToast({ title: "すでにブックマークに追加されています" });
-          } else {
-            throw new Error(
-              `Failed to create bookmark: ${errors ? JSON.stringify(errors) : "Unknown error"}`,
-            );
-          }
-        }
-      }
-    } catch (error) {
-      errorToast({ error, title: "ブックマークの操作に失敗しました" });
-    } finally {
-      setIsLoading(false);
+    if (isBookmarked) {
+      deleteBookmark({ variables: { problemId: String(problem.id) } });
+    } else {
+      createBookmark({ variables: { problemId: String(problem.id) } });
     }
   };
 
   return (
-    <>
-      <IconButton
-        aria-label={isBookmarkedState ? "ブックマークから削除" : "ブックマークに追加"}
-        icon={isBookmarkedState ? <MdBookmarkAdded size={26} /> : <FaRegBookmark size={22} />}
-        className="hover:scale-105 transition-transform"
-        colorScheme=""
-        size="sm"
-        onClick={handleBookmarkToggle}
-        isLoading={isLoading}
-      />
+    <Fragment>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Button type="submit" isLoading={isSubmitting} size="sm" colorScheme="">
+          {isBookmarked ? <MdBookmarkAdded size={24} /> : <FaRegBookmark size={20} />}
+        </Button>
+      </form>
 
-      <NotLoggedInModal isOpen={isOpen} onClose={onClose} />
-    </>
+      <NotLoggedInModal isOpen={isNotLoggedInModalOpen} onClose={onNotLoggedInModalClose} />
+    </Fragment>
   );
 }

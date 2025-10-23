@@ -2,10 +2,9 @@
 
 import { useToast } from "@chakra-ui/react";
 import { AxiosError } from "axios";
-import { schemas } from "@/src/zodios/api";
-import { z } from "zod";
+import { ErrorLike } from "@apollo/client";
 
-type ErrorToastType = AxiosError;
+type ErrorToastType = ErrorLike | AxiosError | Error;
 
 export default function useErrorToast() {
   const toast = useToast();
@@ -23,18 +22,24 @@ export default function useErrorToast() {
     duration?: number;
     isClosable?: boolean;
   }) => {
-    // APIからのエラーレスポンスをパース
     let errorDescription = description;
 
-    // eslint-disable-next-line no-console
-    console.log(error);
+    // Apollo Clientのエラー処理
+    if (!errorDescription && error && "graphQLErrors" in error) {
+      const apolloError = error as ErrorLike & { graphQLErrors?: any[]; networkError?: any };
+      if (apolloError.graphQLErrors && apolloError.graphQLErrors.length > 0) {
+        errorDescription = apolloError.graphQLErrors.map(err => err.message).join(", ");
+      } else if (apolloError.networkError) {
+        errorDescription = apolloError.networkError.message;
+      }
+    }
 
-    if (!errorDescription && error?.response?.data) {
+    // Axiosのエラー処理
+    if (!errorDescription && error instanceof AxiosError && error.response?.data) {
       try {
-        // response.data.errorsからエラーメッセージを抽出
         const responseData = error.response.data as any;
         if (responseData.errors && Array.isArray(responseData.errors)) {
-          const errors = responseData.errors as z.infer<typeof schemas.Errors>;
+          const errors = responseData.errors;
           errorDescription = errors.map(err => err.message).join(", ");
         }
         // eslint-disable-next-line no-unused-vars

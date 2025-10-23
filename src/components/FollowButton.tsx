@@ -9,9 +9,9 @@ import useSuccessToast from "@/src/hooks/useSuccessToast";
 import useErrorToast from "@/src/hooks/useErrorToast";
 
 interface FollowButtonProps {
-  userId: number;
+  userId: string;
   initialIsFollowing: boolean;
-  currentUserId: number | null;
+  currentUserId: string | null;
   variant?: "solid" | "outline";
   size?: "sm" | "md" | "lg";
   /* eslint-disable no-unused-vars */

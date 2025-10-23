@@ -1,6 +1,0 @@
-mutation DeleteComment($commentId: ID!) {
-  deleteComment(input: { commentId: $commentId }) {
-    success
-    errors
-  }
-}

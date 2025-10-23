@@ -1,8 +1,6 @@
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
-import { customCreateWhatToDiscardProblem_BodySchema } from "@/src/app/what-to-discard-problems/schema/customWhatToDiscardProblemSchema";
 import { useCustomForm } from "@/src/hooks/useCustomForm";
-// Removed schemas import as it's no longer available
 import {
   Box,
   Button,
@@ -19,62 +17,41 @@ import {
   VStack,
   Wrap,
 } from "@chakra-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
+import {
+  CreateWhatToDiscardProblemInput,
+  UpdateWhatToDiscardProblemInput,
+  WhatToDiscardProblem,
+} from "@/src/generated/graphql";
 import { SubmitHandler } from "react-hook-form";
-import { z } from "zod";
 
 const MAX_TURN = 18;
 const ALL_TILES_NUM = 34;
 const handFieldNames = [
-  "what_to_discard_problem.hand1_id",
-  "what_to_discard_problem.hand2_id",
-  "what_to_discard_problem.hand3_id",
-  "what_to_discard_problem.hand4_id",
-  "what_to_discard_problem.hand5_id",
-  "what_to_discard_problem.hand6_id",
-  "what_to_discard_problem.hand7_id",
-  "what_to_discard_problem.hand8_id",
-  "what_to_discard_problem.hand9_id",
-  "what_to_discard_problem.hand10_id",
-  "what_to_discard_problem.hand11_id",
-  "what_to_discard_problem.hand12_id",
-  "what_to_discard_problem.hand13_id",
+  "hand1Id",
+  "hand2Id",
+  "hand3Id",
+  "hand4Id",
+  "hand5Id",
+  "hand6Id",
+  "hand7Id",
+  "hand8Id",
+  "hand9Id",
+  "hand10Id",
+  "hand11Id",
+  "hand12Id",
+  "hand13Id",
 ] as const;
 
-const tileFieldNames = [
-  ...handFieldNames,
-  "what_to_discard_problem.tsumo_id",
-  "what_to_discard_problem.dora_id",
-] as const;
+const tileFieldNames = [...handFieldNames, "tsumoId", "doraId"] as const;
 
-type WhatToDiscardProblemType = {
-  hand1_id?: number;
-  hand2_id?: number;
-  hand3_id?: number;
-  hand4_id?: number;
-  hand5_id?: number;
-  hand6_id?: number;
-  hand7_id?: number;
-  hand8_id?: number;
-  hand9_id?: number;
-  hand10_id?: number;
-  hand11_id?: number;
-  hand12_id?: number;
-  hand13_id?: number;
-  tsumo_id?: number;
-  dora_id?: number;
-  round?: string;
-  turn?: string;
-  wind?: string;
-  points?: number;
-  description?: string;
-};
+type ProblemFormInputs = CreateWhatToDiscardProblemInput | UpdateWhatToDiscardProblemInput;
 
-export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
-  const [focussedTileFieldName, setFocussedTileFieldName] = useState<
-    (typeof tileFieldNames)[number]
-  >("what_to_discard_problem.hand1_id");
+type Props = WhatToDiscardProblem | null;
+
+export default function useProblemForm(problem: Props) {
+  const [focussedTileFieldName, setFocussedTileFieldName] =
+    useState<(typeof tileFieldNames)[number]>("hand1Id");
   const [detailSettingVisible, setDetailSettingVisible] = useState(false);
 
   const {
@@ -84,51 +61,47 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
     watch,
     getValues,
     formState: { errors, isSubmitting },
-  } = useCustomForm<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>({
-    resolver: zodResolver(customCreateWhatToDiscardProblem_BodySchema),
-    mode: "onChange",
+  } = useCustomForm<ProblemFormInputs>({
     defaultValues: {
-      what_to_discard_problem: {
-        hand1_id: String(problem.hand1_id || ""),
-        hand2_id: String(problem.hand2_id || ""),
-        hand3_id: String(problem.hand3_id || ""),
-        hand4_id: String(problem.hand4_id || ""),
-        hand5_id: String(problem.hand5_id || ""),
-        hand6_id: String(problem.hand6_id || ""),
-        hand7_id: String(problem.hand7_id || ""),
-        hand8_id: String(problem.hand8_id || ""),
-        hand9_id: String(problem.hand9_id || ""),
-        hand10_id: String(problem.hand10_id || ""),
-        hand11_id: String(problem.hand11_id || ""),
-        hand12_id: String(problem.hand12_id || ""),
-        hand13_id: String(problem.hand13_id || ""),
-        dora_id: String(problem.dora_id || ""),
-        tsumo_id: String(problem.tsumo_id || ""),
-        round: problem.round,
-        turn: String(problem.turn || ""),
-        wind: problem.wind,
-        points: problem.points || 0,
-        description: problem.description || "",
-      },
+      hand1Id: problem?.hand1Id || "",
+      hand2Id: problem?.hand2Id || "",
+      hand3Id: problem?.hand3Id || "",
+      hand4Id: problem?.hand4Id || "",
+      hand5Id: problem?.hand5Id || "",
+      hand6Id: problem?.hand6Id || "",
+      hand7Id: problem?.hand7Id || "",
+      hand8Id: problem?.hand8Id || "",
+      hand9Id: problem?.hand9Id || "",
+      hand10Id: problem?.hand10Id || "",
+      hand11Id: problem?.hand11Id || "",
+      hand12Id: problem?.hand12Id || "",
+      hand13Id: problem?.hand13Id || "",
+      doraId: problem?.doraId || "",
+      tsumoId: problem?.tsumoId || "",
+      round: problem?.round || "",
+      turn: problem?.turn || null,
+      wind: problem?.wind || "",
+      points: problem?.points ? Number(problem.points) : null,
+      description: problem?.description || "",
     },
   });
 
   const tileFieldErrors = [
-    errors.what_to_discard_problem?.hand1_id,
-    errors.what_to_discard_problem?.hand2_id,
-    errors.what_to_discard_problem?.hand3_id,
-    errors.what_to_discard_problem?.hand4_id,
-    errors.what_to_discard_problem?.hand5_id,
-    errors.what_to_discard_problem?.hand6_id,
-    errors.what_to_discard_problem?.hand7_id,
-    errors.what_to_discard_problem?.hand8_id,
-    errors.what_to_discard_problem?.hand9_id,
-    errors.what_to_discard_problem?.hand10_id,
-    errors.what_to_discard_problem?.hand11_id,
-    errors.what_to_discard_problem?.hand12_id,
-    errors.what_to_discard_problem?.hand13_id,
-    errors.what_to_discard_problem?.tsumo_id,
-    errors.what_to_discard_problem?.dora_id,
+    errors?.hand1Id,
+    errors?.hand2Id,
+    errors?.hand3Id,
+    errors?.hand4Id,
+    errors?.hand5Id,
+    errors?.hand6Id,
+    errors?.hand7Id,
+    errors?.hand8Id,
+    errors?.hand9Id,
+    errors?.hand10Id,
+    errors?.hand11Id,
+    errors?.hand12Id,
+    errors?.hand13Id,
+    errors?.tsumoId,
+    errors?.doraId,
   ];
 
   const handleTileClick = (tileId: string) => {
@@ -147,7 +120,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
 
   const handleTileReset = () => {
     tileFieldNames.map(fieldName => setValue(fieldName, null));
-    setFocussedTileFieldName("what_to_discard_problem.hand1_id");
+    setFocussedTileFieldName("hand1Id");
   };
 
   const TileDisplay = ({ fieldName }: { fieldName: typeof focussedTileFieldName }) => {
@@ -168,11 +141,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
     );
   };
 
-  const BaseForm = ({
-    onSubmit,
-  }: {
-    onSubmit: SubmitHandler<z.infer<typeof customCreateWhatToDiscardProblem_BodySchema>>;
-  }) => (
+  const BaseForm = ({ onSubmit }: { onSubmit: SubmitHandler<ProblemFormInputs> }) => (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-neutral text-primary">
       <VStack gap={6} align="stretch">
         <FormControl isRequired isInvalid={tileFieldErrors.some(Boolean)}>
@@ -181,7 +150,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
 
             <Box>
               <FormLabel fontSize="lg" m="0">
-                <span>手牌</span>
+                手牌
               </FormLabel>
 
               <Wrap gap="0" mt="2">
@@ -197,7 +166,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                   <span>ツモ</span>
                 </FormLabel>
 
-                <TileDisplay fieldName="what_to_discard_problem.tsumo_id" />
+                <TileDisplay fieldName="tsumoId" />
               </Box>
 
               <Box>
@@ -205,7 +174,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                   <span>ドラ</span>
                 </FormLabel>
 
-                <TileDisplay fieldName="what_to_discard_problem.dora_id" />
+                <TileDisplay fieldName="doraId" />
               </Box>
             </HStack>
 
@@ -242,7 +211,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
         <VStack>
           <FormControl>
             <Textarea
-              {...register("what_to_discard_problem.description")}
+              {...register("description")}
               placeholder="問題にコメントを追加する（任意）"
               rows={5}
             />
@@ -250,17 +219,14 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
         </VStack>
 
         <VStack spacing="6" display={detailSettingVisible ? "flex" : "none"}>
-          <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.round)}>
+          <FormControl isInvalid={Boolean(errors.round)}>
             <VStack alignItems="start">
               <FormLabel fontSize="lg" m="0">
                 局数
               </FormLabel>
-              <VisuallyHiddenInput {...register("what_to_discard_problem.round")} readOnly />
-              <FormErrorMessage>{errors.what_to_discard_problem?.round?.message}</FormErrorMessage>
-              <DisplayInput>
-                {watch("what_to_discard_problem.round") &&
-                  `${watch("what_to_discard_problem.round")}局`}
-              </DisplayInput>
+              <VisuallyHiddenInput {...register("round")} readOnly />
+              <FormErrorMessage>{errors.round?.message}</FormErrorMessage>
+              <DisplayInput>{watch("round") && `${watch("round")}局`}</DisplayInput>
 
               <Wrap gap={2}>
                 {["東一", "東二", "東三", "東四", "南一", "南二", "南三", "南四"].map(
@@ -268,7 +234,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                     return (
                       <PopButton
                         key={index}
-                        onClick={() => setValue("what_to_discard_problem.round", roundName)}
+                        onClick={() => setValue("round", roundName)}
                         className="form-button">
                         <Text as="span" fontSize="lg">
                           {roundName}
@@ -279,9 +245,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                 )}
               </Wrap>
 
-              <PopButton
-                className="form-button"
-                onClick={() => setValue("what_to_discard_problem.round", null)}>
+              <PopButton className="form-button" onClick={() => setValue("round", null)}>
                 <Text as="span" fontSize="lg">
                   局数をリセット
                 </Text>
@@ -289,24 +253,21 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
             </VStack>
           </FormControl>
 
-          <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.turn)}>
+          <FormControl isInvalid={Boolean(errors.turn)}>
             <VStack alignItems="start">
               <FormLabel fontSize="lg" m="0">
                 巡目
               </FormLabel>
-              <FormErrorMessage>{errors.what_to_discard_problem?.turn?.message}</FormErrorMessage>
-              <VisuallyHiddenInput {...register("what_to_discard_problem.turn")} readOnly />
-              <DisplayInput>
-                {watch("what_to_discard_problem.turn") &&
-                  `${getValues("what_to_discard_problem.turn")}巡目`}
-              </DisplayInput>
+              <FormErrorMessage>{errors.turn?.message}</FormErrorMessage>
+              <VisuallyHiddenInput {...register("turn")} readOnly />
+              <DisplayInput>{watch("turn") && `${getValues("turn")}巡目`}</DisplayInput>
 
               <Wrap gap={2}>
                 {Array.from({ length: MAX_TURN }).map((_, index) => {
-                  const turn = String(index + 1);
+                  const turn = index + 1;
                   return (
                     <PopButton
-                      onClick={() => setValue("what_to_discard_problem.turn", turn)}
+                      onClick={() => setValue("turn", turn)}
                       className="form-button"
                       key={index}>
                       <Text fontSize="lg">{`${turn}巡目`}</Text>
@@ -315,9 +276,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                 })}
               </Wrap>
 
-              <PopButton
-                className="form-button"
-                onClick={() => setValue("what_to_discard_problem.turn", null)}>
+              <PopButton className="form-button" onClick={() => setValue("turn", null)}>
                 <Text as="span" fontSize="lg">
                   巡目をリセット
                 </Text>
@@ -325,24 +284,21 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
             </VStack>
           </FormControl>
 
-          <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.wind)}>
+          <FormControl isInvalid={Boolean(errors.wind)}>
             <VStack alignItems="start">
               <FormLabel fontSize="lg" m="0">
                 風
               </FormLabel>
-              <FormErrorMessage>{errors.what_to_discard_problem?.wind?.message}</FormErrorMessage>
-              <VisuallyHiddenInput {...register("what_to_discard_problem.wind")} readOnly />
-              <DisplayInput>
-                {watch("what_to_discard_problem.wind") &&
-                  `${getValues("what_to_discard_problem.wind")}家`}
-              </DisplayInput>
+              <FormErrorMessage>{errors.wind?.message}</FormErrorMessage>
+              <VisuallyHiddenInput {...register("wind")} readOnly />
+              <DisplayInput>{watch("wind") && `${getValues("wind")}家`}</DisplayInput>
 
               <Wrap gap={2}>
                 {["東", "南", "西", "北"].map((windName, index) => {
                   return (
                     <PopButton
                       key={index}
-                      onClick={() => setValue("what_to_discard_problem.wind", windName)}
+                      onClick={() => setValue("wind", windName)}
                       className="form-button">
                       <Text fontSize="lg">{windName}</Text>
                     </PopButton>
@@ -350,9 +306,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                 })}
               </Wrap>
 
-              <PopButton
-                className="form-button"
-                onClick={() => setValue("what_to_discard_problem.wind", null)}>
+              <PopButton className="form-button" onClick={() => setValue("wind", null)}>
                 <Text as="span" fontSize="lg">
                   風をリセット
                 </Text>
@@ -360,24 +314,20 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
             </VStack>
           </FormControl>
 
-          <FormControl isInvalid={Boolean(errors.what_to_discard_problem?.points)}>
+          <FormControl isInvalid={Boolean(errors.points)}>
             <VStack alignItems="start">
               <Box>
                 <FormLabel m="0" fontSize="xl">
                   持ち点
                 </FormLabel>
 
-                <FormErrorMessage>
-                  {errors.what_to_discard_problem?.points?.message}
-                </FormErrorMessage>
+                <FormErrorMessage>{errors.points?.message}</FormErrorMessage>
 
-                <VisuallyHiddenInput {...register("what_to_discard_problem.points")} readOnly />
+                <VisuallyHiddenInput {...register("points")} readOnly />
 
                 <DisplayInput>
-                  {watch("what_to_discard_problem.points") &&
-                    new Intl.NumberFormat("en-US").format(
-                      Number(watch("what_to_discard_problem.points")),
-                    )}
+                  {watch("points") &&
+                    new Intl.NumberFormat("en-US").format(Number(watch("points")))}
                 </DisplayInput>
               </Box>
 
@@ -386,12 +336,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                   <PopButton
                     key={index}
                     className="form-button"
-                    onClick={() =>
-                      setValue(
-                        "what_to_discard_problem.points",
-                        Number(getValues("what_to_discard_problem.points")) + addend,
-                      )
-                    }>
+                    onClick={() => setValue("points", Number(getValues("points")) + addend)}>
                     <Text as="span" fontSize="lg">
                       {`${addend > 0 ? "+" : ""} ${new Intl.NumberFormat("en-US").format(addend)}`}
                     </Text>
@@ -399,9 +344,7 @@ export default function useProblemForm(problem: WhatToDiscardProblemType = {}) {
                 ))}
               </Wrap>
 
-              <PopButton
-                className="form-button"
-                onClick={() => setValue("what_to_discard_problem.points", null)}>
+              <PopButton className="form-button" onClick={() => setValue("points", null)}>
                 <Text as="span" fontSize="lg">
                   得点をリセット
                 </Text>
@@ -427,7 +370,7 @@ const DisplayInput = ({
   className,
   onClick,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   onClick?: () => void;
 }) => {

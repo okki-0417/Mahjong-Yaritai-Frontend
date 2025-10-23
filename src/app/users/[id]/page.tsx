@@ -1,14 +1,15 @@
 import UserProfileSkeleton from "@/src/components/fallbacks/UserProfileSkeleton";
-import UserProfileSection from "@/src/app/users/[id]/UserProfileSection";
+import UserProfileSection from "@/src/app/users/[id]/components/UserProfileSection";
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
 
-export type UserType = {
-  name: string;
-  avatar_url: string;
+type Props = {
+  params: Promise<{
+    id: string;
+  }>;
 };
 
-export default async function UserShow({ params }: { params: Promise<{ id: string }> }) {
+export async function UserShow({ params }: Props) {
   const { id } = await params;
 
   return (

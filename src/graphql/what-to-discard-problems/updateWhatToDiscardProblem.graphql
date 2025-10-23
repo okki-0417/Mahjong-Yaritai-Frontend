@@ -1,0 +1,85 @@
+mutation UpdateWhatToDiscardProblem(
+  $id: ID!
+  $description: String
+  $doraId: ID
+  $hand1Id: ID
+  $hand2Id: ID
+  $hand3Id: ID
+  $hand4Id: ID
+  $hand5Id: ID
+  $hand6Id: ID
+  $hand7Id: ID
+  $hand8Id: ID
+  $hand9Id: ID
+  $hand10Id: ID
+  $hand11Id: ID
+  $hand12Id: ID
+  $hand13Id: ID
+  $tsumoId: ID
+) {
+  updateWhatToDiscardProblem(
+    input: {
+      id: $id
+      description: $description
+      doraId: $doraId
+      hand1Id: $hand1Id
+      hand2Id: $hand2Id
+      hand3Id: $hand3Id
+      hand4Id: $hand4Id
+      hand5Id: $hand5Id
+      hand6Id: $hand6Id
+      hand7Id: $hand7Id
+      hand8Id: $hand8Id
+      hand9Id: $hand9Id
+      hand10Id: $hand10Id
+      hand11Id: $hand11Id
+      hand12Id: $hand12Id
+      hand13Id: $hand13Id
+      tsumoId: $tsumoId
+    }
+  ) {
+    whatToDiscardProblem {
+      id
+      round
+      turn
+      wind
+      points
+      description
+      votesCount
+      commentsCount
+      likesCount
+      bookmarksCount
+      doraId
+      hand1Id
+      hand2Id
+      hand3Id
+      hand4Id
+      hand5Id
+      hand6Id
+      hand7Id
+      hand8Id
+      hand9Id
+      hand10Id
+      hand11Id
+      hand12Id
+      hand13Id
+      tsumoId
+      isLikedByMe
+      isBookmarkedByMe
+      createdAt
+      updatedAt
+      user {
+        id
+        name
+        email
+        profileText
+        avatarUrl
+        isFollowing
+        followingCount
+        followersCount
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}

@@ -1,6 +1,0 @@
-mutation DeleteWhatToDiscardProblemVote($whatToDiscardProblemId: ID!) {
-  deleteWhatToDiscardProblemVote(input: { whatToDiscardProblemId: $whatToDiscardProblemId }) {
-    success
-    errors
-  }
-}

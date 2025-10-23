@@ -1,13 +1,26 @@
 "use client";
 
-import { useQuery } from "@apollo/client/react";
-import { CurrentSessionDocument } from "@/src/generated/graphql";
-import { HStack, Text, Button, useDisclosure } from "@chakra-ui/react";
+import { useLazyQuery } from "@apollo/client/react";
+import {
+  FollowersDocument,
+  FollowersQuery,
+  FollowingDocument,
+  FollowingQuery,
+} from "@/src/generated/graphql";
+import { HStack, Text, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { FollowingListModal } from "@/src/components/Modals/FollowingListModal";
-import { FollowersListModal } from "@/src/components/Modals/FollowersListModal";
+import { FollowersListModal } from "@/src/components/Modals/FollowerListModal/index";
+import { useState } from "react";
 
-export function FollowStats() {
-  const { data, loading } = useQuery(CurrentSessionDocument);
+type Props = {
+  followingCount: number;
+  followersCount: number;
+};
+
+export function FollowStats({ followingCount, followersCount }: Props) {
+  const [followings, setFollowings] = useState<FollowingQuery["following"]["edges"]>([]);
+  const [followers, setFollowers] = useState<FollowersQuery["followers"]["edges"]>([]);
+
   const {
     isOpen: isFollowingOpen,
     onOpen: onFollowingOpen,
@@ -19,53 +32,64 @@ export function FollowStats() {
     onClose: onFollowersClose,
   } = useDisclosure();
 
-  if (loading || !data?.currentSession?.user) {
-    return (
-      <HStack spacing={6} justify="center">
-        <Text color="gray.400">フォロー: --</Text>
-        <Text color="gray.400">フォロワー: --</Text>
-      </HStack>
-    );
-  }
+  const [getFollowing, { data: followingData, loading: followingLoading, error: followingError }] =
+    useLazyQuery(FollowingDocument);
+  const [getFollowers, { data: followersData, loading: followersLoading, error: followersError }] =
+    useLazyQuery(FollowersDocument);
 
-  const user = data.currentSession.user;
-  const followingCount = user.followingCount || 0;
-  const followersCount = user.followersCount || 0;
+  const toast = useToast();
+
+  const handleFollowingOpen = async () => {
+    await getFollowing();
+
+    if (followingData?.following) setFollowings(followingData.following.edges);
+    if (followingError) {
+      toast({
+        title: "フォロー一覧の取得に失敗しました",
+        description: followingError.message,
+        status: "error",
+      });
+    }
+    onFollowingOpen();
+  };
+
+  const handleFollowersOpen = async () => {
+    await getFollowers();
+
+    if (followersData?.followers) setFollowers(followersData.followers.edges);
+    if (followersError) {
+      toast({
+        title: "フォロワー一覧の取得に失敗しました",
+        description: followersError.message,
+        status: "error",
+      });
+    }
+    onFollowersOpen();
+  };
 
   return (
     <>
       <HStack spacing={6} justify="center">
-        <Button
-          variant="ghost"
-          p={2}
-          h="auto"
-          onClick={onFollowingOpen}
-          _hover={{ bg: "gray.100" }}>
-          <Text fontSize="sm">
-            <Text as="span" fontWeight="bold" color="blue.600">
-              {followingCount}
-            </Text>{" "}
-            フォロー
-          </Text>
+        <Button onClick={handleFollowingOpen} isLoading={followingLoading}>
+          <Text fontSize="sm">フォロー：{followingCount}</Text>
         </Button>
 
-        <Button
-          variant="ghost"
-          p={2}
-          h="auto"
-          onClick={onFollowersOpen}
-          _hover={{ bg: "gray.100" }}>
-          <Text fontSize="sm">
-            <Text as="span" fontWeight="bold" color="green.600">
-              {followersCount}
-            </Text>{" "}
-            フォロワー
-          </Text>
+        <Button onClick={handleFollowersOpen} isLoading={followersLoading}>
+          <Text fontSize="sm">フォロワー：{followersCount}</Text>
         </Button>
       </HStack>
 
-      <FollowingListModal isOpen={isFollowingOpen} onClose={onFollowingClose} />
-      <FollowersListModal isOpen={isFollowersOpen} onClose={onFollowersClose} />
+      <FollowingListModal
+        isOpen={isFollowingOpen}
+        onClose={onFollowingClose}
+        followings={followings}
+      />
+
+      <FollowersListModal
+        isOpen={isFollowersOpen}
+        onClose={onFollowersClose}
+        followers={followers}
+      />
     </>
   );
 }

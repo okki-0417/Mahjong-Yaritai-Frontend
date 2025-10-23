@@ -1,26 +1,41 @@
-import { Box, Container, Divider, Text } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import getSession from "@/src/lib/getSession";
-import WithdrawalSummary from "@/src/app/me/withdrawal/WithdrawalSummary";
-import Fallback from "@/src/components/fallbacks/Fallback";
+import { Container, ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
+import WithdrawForm from "@/src/app/me/withdrawal/components/WithdrawForm";
 
-export default async function WithdrawalSummaryPage() {
-  const session = await getSession();
-  if (!session?.isLoggedIn) redirect("/auth/request");
-
+export default function WithdrawalPage() {
   return (
     <Container mt="20" maxW="2xl" mb="20">
-      <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
+      <Text as="h1" fontSize="2xl" fontWeight="bold" mb={6}>
         退会前の確認
       </Text>
-      <Divider />
 
-      <Box mt="8">
-        <Suspense fallback={<Fallback />}>
-          <WithdrawalSummary />
-        </Suspense>
-      </Box>
+      <VStack gap={6} align="stretch">
+        <VStack align="start" gap={6}>
+          <Text>
+            退会すると、アカウントに関連するすべてのデータ（投稿、コメント、プロフィール情報など）が削除されます。
+          </Text>
+
+          <VStack align="start" gap={2}>
+            <Text fontWeight="semibold">注意事項</Text>
+            <VStack align="start" spacing={1}>
+              <UnorderedList>
+                <ListItem>
+                  <Text>一度退会すると、データの復元はできません。</Text>
+                </ListItem>
+                <ListItem>
+                  <Text>同じメールアドレスで再登録しても、過去のデータは引き継がれません。</Text>
+                </ListItem>
+                <ListItem>
+                  <Text>退会処理は即座に実行されます。</Text>
+                </ListItem>
+              </UnorderedList>
+            </VStack>
+          </VStack>
+
+          <Text>退会を希望される場合は、下の「退会する」ボタンを押してください。</Text>
+        </VStack>
+
+        <WithdrawForm />
+      </VStack>
     </Container>
   );
 }

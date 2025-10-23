@@ -18,10 +18,10 @@ import Link from "next/link";
 import { Fragment } from "react";
 import LogoutSection from "@/src/components/sideNavigation/LogoutButton";
 import { FaUserTimes } from "react-icons/fa";
-import { useSession } from "@/src/hooks/useSession";
+import useGetSession from "@/src/hooks/useGetSession";
 
 export default function LoginUserMenu() {
-  const { session } = useSession();
+  const { session } = useGetSession();
   const profile = session?.user;
 
   return (

@@ -1,9 +1,9 @@
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
-import WhatToDiscardProblemsContent from "@/src/app/what-to-discard-problems/components/WhatToDiscardProblemsContent";
 import { Metadata } from "next";
 import ProblemsSectionSkeleton from "@/src/app/what-to-discard-problems/components/ProblemsSectionSkeleton";
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
+import ProblemsSection from "@/src/app/what-to-discard-problems/components/ProblemsSection";
 
 export type WhatToDiscardProblems = WhatToDiscardProblem[] | [];
 
@@ -22,7 +22,7 @@ export default function WhatToDiscardProblems() {
   return (
     <Container maxW="8xl" px={["1px", "6"]} mt={["6", "12"]}>
       <Suspense fallback={<ProblemsSectionSkeleton />}>
-        <WhatToDiscardProblemsContent />
+        <ProblemsSection />
       </Suspense>
     </Container>
   );

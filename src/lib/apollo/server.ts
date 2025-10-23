@@ -7,7 +7,7 @@ const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:3001/graphql",
 });
 
-const authLink = new SetContextLink(async (prevContext, operation) => {
+const authLink = new SetContextLink(async prevContext => {
   const headersList = await headers();
   const cookie = headersList.get("cookie");
 
@@ -22,7 +22,7 @@ const authLink = new SetContextLink(async (prevContext, operation) => {
 
 let apolloClient: any = null;
 
-export function getClient(): any {
+export function getClient(): ApolloClient {
   if (!apolloClient) {
     apolloClient = new ApolloClient({
       link: authLink.concat(httpLink),

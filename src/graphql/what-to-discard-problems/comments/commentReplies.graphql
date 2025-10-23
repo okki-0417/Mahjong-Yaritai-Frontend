@@ -1,0 +1,46 @@
+query CommentReplies(
+  $parentCommentId: ID!
+  $commentableType: String!
+  $commentableId: ID!
+  $first: Int
+  $after: String
+) {
+  replies(
+    parentCommentId: $parentCommentId
+    commentableType: $commentableType
+    commentableId: $commentableId
+    first: $first
+    after: $after
+  ) {
+    edges {
+      node {
+        id
+        content
+        userId
+        parentCommentId
+        repliesCount
+        createdAt
+        updatedAt
+        user {
+          id
+          name
+          email
+          profileText
+          avatarUrl
+          isFollowing
+          followingCount
+          followersCount
+          createdAt
+          updatedAt
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

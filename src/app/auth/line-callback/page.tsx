@@ -1,10 +1,10 @@
-import GoogleVerification from "@/src/app/auth/google-callback/GoogleVerification";
+import LineVerification from "@/src/app/auth/line-callback/components/LineVerification";
 import { Suspense } from "react";
 
-export default function GoogleCallbackPage() {
+export default function LineCallbackPage() {
   return (
     <Suspense>
-      <GoogleVerification />
+      <LineVerification />
     </Suspense>
   );
 }

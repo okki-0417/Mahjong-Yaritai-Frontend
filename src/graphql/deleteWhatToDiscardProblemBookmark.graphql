@@ -1,6 +1,0 @@
-mutation DeleteWhatToDiscardProblemBookmark($problemId: ID!) {
-  deleteWhatToDiscardProblemBookmark(input: { problemId: $problemId }) {
-    success
-    errors
-  }
-}

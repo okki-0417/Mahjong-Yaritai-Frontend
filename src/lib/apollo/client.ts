@@ -3,28 +3,23 @@ import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 
 // ファイルアップロード対応のカスタムfetch関数
 const customFetch = (uri: string | Request | URL, options?: any) => {
+  if (!(options.body instanceof FormData)) return fetch(uri, options);
+
   // multipart/form-dataの場合はContent-Typeを削除（ブラウザが自動設定）
-  if (options?.body instanceof FormData) {
-    const headers = new Headers(options.headers);
-    headers.delete("content-type");
-    return fetch(uri, {
-      ...options,
-      headers,
-    });
-  }
-  return fetch(uri, options);
+  const headers = new Headers(options.headers);
+  headers.delete("content-type");
+
+  return fetch(uri, { ...options, headers });
 };
 
-// アップロード対応のLink作成
-const uploadLink = new UploadHttpLink({
+const httpLink = new UploadHttpLink({
   uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
   credentials: "include",
   fetch: customFetch,
 });
 
-// ファイルアップロード対応のlinkを使用
 export const apolloClient = new ApolloClient({
-  link: uploadLink,
+  link: httpLink,
   cache: new InMemoryCache(),
   defaultOptions: {
     watchQuery: {

@@ -1,22 +1,14 @@
-import { Container, VStack } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
+import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
-import getSession from "@/src/lib/getSession";
-import BookmarkedProblemsSection from "@/src/app/me/what-to-discard-problems/bookmarks/BookmarkedProblemsSection";
 import Fallback from "@/src/components/fallbacks/Fallback";
-import BookmarkedProblemsContent from "@/src/app/me/what-to-discard-problems/bookmarks/BookmarkedProblemsContent";
+import BookmarkedProblemsSection from "@/src/app/me/what-to-discard-problems/bookmarks/components/BookmarkedProblemsSection";
 
-export default async function BookmarkedProblemsPage() {
-  const session = await getSession();
-  if (!session?.isLoggedIn) redirect("/auth/request");
-
+export default function BookmarkedProblemsPage() {
   return (
     <Container maxW="container.lg" py={[6, 8]}>
-      <VStack spacing={[4, 8]}>
-        <Suspense fallback={<Fallback />}>
-          <BookmarkedProblemsContent />
-        </Suspense>
-      </VStack>
+      <Suspense fallback={<Fallback />}>
+        <BookmarkedProblemsSection />
+      </Suspense>
     </Container>
   );
 }

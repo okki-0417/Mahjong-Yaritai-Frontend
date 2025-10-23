@@ -1,29 +1,34 @@
-import { schemas } from "@/src/zodios/api";
-import { Box, Circle, Image, Text, VStack } from "@chakra-ui/react";
-import { z } from "zod";
+import { Box, Button, Circle, Text, VStack } from "@chakra-ui/react";
+import { CiEdit } from "react-icons/ci";
 import FollowButton from "@/src/components/FollowButton";
 import { FollowStats } from "@/src/components/FollowStats";
+import { User } from "@/src/generated/graphql";
+import Link from "next/link";
+import Image from "next/image";
 
-export default function UserProfile({
-  user,
-  isFollowing = false,
-  currentUserId = null,
-}: {
-  user: z.infer<typeof schemas.User>;
-  isFollowing?: boolean;
-  currentUserId?: number | null;
-}) {
+type Props = {
+  user: User;
+  isMyProfile?: boolean;
+};
+
+export default function UserProfile({ user, isMyProfile = false }: Props) {
   return (
     <VStack gap="4" align="stretch">
+      {isMyProfile && (
+        <Link href="/me/profile/edit">
+          <Button>
+            <CiEdit size={20} />
+          </Button>
+        </Link>
+      )}
+
       <VStack spacing={4}>
         <Circle size={["150", "200"]} overflow="hidden">
           <Image
-            src={user?.avatar_url || "/no-image.webp"}
-            w="full"
-            h="full"
-            objectFit="cover"
-            draggable="false"
-            bgColor="white"
+            src={user.avatarUrl || "/no-image.webp"}
+            alt={user.name}
+            width={200}
+            height={200}
           />
         </Circle>
 
@@ -33,30 +38,19 @@ export default function UserProfile({
           </Text>
         </Box>
 
-        {/* 自分のプロフィールの場合のみフォロー数を表示 */}
-        {currentUserId === user.id && <FollowStats />}
+        <FollowStats followersCount={user.followersCount} followingCount={user.followingCount} />
 
-        {/* 他のユーザーの場合はフォローボタンを表示 */}
-        {currentUserId !== user.id && (
+        {isMyProfile == false && (
           <FollowButton
             userId={user.id}
-            initialIsFollowing={isFollowing}
-            currentUserId={currentUserId}
-            size="lg"
+            initialIsFollowing={user.isFollowing}
+            currentUserId={user.id}
           />
         )}
 
-        <Box>
-          {user?.profile_text ? (
-            <Text fontSize={["md", "lg"]} whiteSpace="pre-wrap" wordBreak="break-word">
-              {user.profile_text}
-            </Text>
-          ) : (
-            <Text fontSize={["md", "lg"]} color="gray.500" fontStyle="italic">
-              自己紹介文が設定されていません
-            </Text>
-          )}
-        </Box>
+        <Text fontSize={["md", "lg"]} whiteSpace="pre-wrap" wordBreak="break-word">
+          {user.profileText}
+        </Text>
       </VStack>
     </VStack>
   );

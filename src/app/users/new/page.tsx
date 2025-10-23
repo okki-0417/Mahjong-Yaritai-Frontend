@@ -1,5 +1,5 @@
 import { Box, Container, Divider, Text } from "@chakra-ui/react";
-import UserCreateSection from "@/src/app/users/new/UserCreateSection";
+import UserCreateSection from "@/src/app/users/new/components/UserCreateSection";
 import { Suspense } from "react";
 import Fallback from "@/src/components/fallbacks/Fallback";
 
