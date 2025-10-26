@@ -3,6 +3,8 @@ import UserCreateSection from "@/src/app/users/new/components/UserCreateSection"
 import { Suspense } from "react";
 import Fallback from "@/src/components/fallbacks/Fallback";
 
+export const dynamic = "force-dynamic";
+
 export default function UserCreate() {
   return (
     <Container mt="20" size="xl">
