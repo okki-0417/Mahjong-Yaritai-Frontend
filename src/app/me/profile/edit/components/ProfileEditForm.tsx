@@ -1,6 +1,6 @@
 "use client";
 
-import { AttachmentIcon } from "@chakra-ui/icons";
+// import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -14,8 +14,8 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { ChangeEvent, useRef, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+// import { ChangeEvent, useRef, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
 import {
   UpdateUserInput,
@@ -56,7 +56,7 @@ export default function ProfileEditForm({ user }: Props) {
   const {
     register,
     handleSubmit,
-    control,
+    // control,
     formState: { errors, isSubmitting },
   } = useForm<ProfileEditFormInputs>({
     defaultValues: {
@@ -78,24 +78,24 @@ export default function ProfileEditForm({ user }: Props) {
     });
   };
 
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const previousImageUrlRef = useRef<string | null>(null);
-  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  // const [imageUrl, setImageUrl] = useState<string | null>(null);
+  // const previousImageUrlRef = useRef<string | null>(null);
+  // const imageInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files?.length == 0) return null;
+  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   const files = event.target.files;
+  //   if (files?.length == 0) return null;
 
-    if (previousImageUrlRef.current) {
-      URL.revokeObjectURL(previousImageUrlRef.current);
-    }
+  //   if (previousImageUrlRef.current) {
+  //     URL.revokeObjectURL(previousImageUrlRef.current);
+  //   }
 
-    const url = URL.createObjectURL(files[0]);
-    previousImageUrlRef.current = url;
+  // const url = URL.createObjectURL(files[0]);
+  // previousImageUrlRef.current = url;
 
-    setImageUrl(url);
-    return files[0];
-  };
+  // setImageUrl(url);
+  // return files[0];
+  // };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

@@ -41,11 +41,7 @@ export default function UserProfile({ user, isMyProfile = false }: Props) {
         <FollowStats followersCount={user.followersCount} followingCount={user.followingCount} />
 
         {isMyProfile == false && (
-          <FollowButton
-            userId={user.id}
-            initialIsFollowing={user.isFollowing}
-            currentUserId={user.id}
-          />
+          <FollowButton userId={user.id} initialIsFollowing={user.isFollowing} />
         )}
 
         <Text fontSize={["md", "lg"]} whiteSpace="pre-wrap" wordBreak="break-word">

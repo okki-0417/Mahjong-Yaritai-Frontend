@@ -13,7 +13,7 @@ export default function ProblemClientSection() {
   const { problems } = useProblems();
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-3 items-start justify-items-end">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-3 items-start justify-items-end">
       <div className="w-full lg:col-span-1">
         <div className="sticky left-20 top-20 w-full ">
           {isLoggedIn && <WhatToDiscardProblemsSideNavigation />}
