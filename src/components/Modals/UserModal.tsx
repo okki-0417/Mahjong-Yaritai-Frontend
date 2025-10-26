@@ -86,7 +86,6 @@ export default function UserModal({
             <FollowButton
               userId={user.id}
               initialIsFollowing={followState}
-              currentUserId={currentUserId}
               onFollowChange={setFollowState}
             />
           )}
