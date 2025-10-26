@@ -1,5 +1,5 @@
-mutation DeleteWhatToDiscardProblem($id: ID!) {
-  deleteWhatToDiscardProblem(input: { id: $id }) {
-    success
+mutation DeleteWhatToDiscardProblem($input: DeleteWhatToDiscardProblemInput!) {
+  deleteWhatToDiscardProblem(input: $input) {
+    id
   }
 }

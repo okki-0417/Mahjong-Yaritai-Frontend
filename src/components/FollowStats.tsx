@@ -17,9 +17,12 @@ type Props = {
   followersCount: number;
 };
 
+type Followings = FollowingQuery["following"]["edges"][number]["node"][];
+type Followers = FollowersQuery["followers"]["edges"][number]["node"][];
+
 export function FollowStats({ followingCount, followersCount }: Props) {
-  const [followings, setFollowings] = useState<FollowingQuery["following"]["edges"]>([]);
-  const [followers, setFollowers] = useState<FollowersQuery["followers"]["edges"]>([]);
+  const [followings, setFollowings] = useState<Followings>([]);
+  const [followers, setFollowers] = useState<Followers>([]);
 
   const {
     isOpen: isFollowingOpen,
@@ -32,38 +35,48 @@ export function FollowStats({ followingCount, followersCount }: Props) {
     onClose: onFollowersClose,
   } = useDisclosure();
 
-  const [getFollowing, { data: followingData, loading: followingLoading, error: followingError }] =
-    useLazyQuery(FollowingDocument);
-  const [getFollowers, { data: followersData, loading: followersLoading, error: followersError }] =
-    useLazyQuery(FollowersDocument);
+  const [getFollowing, { loading: followingLoading }] = useLazyQuery(FollowingDocument);
+  const [getFollowers, { loading: followersLoading }] = useLazyQuery(FollowersDocument);
 
   const toast = useToast();
 
   const handleFollowingOpen = async () => {
-    await getFollowing();
+    const { data, error } = await getFollowing();
 
-    if (followingData?.following) setFollowings(followingData.following.edges);
-    if (followingError) {
+    if (error) {
       toast({
         title: "フォロー一覧の取得に失敗しました",
-        description: followingError.message,
+        description: error.message,
         status: "error",
       });
+      return;
     }
+
+    if (data) {
+      const followingsData = data.following.edges.map(edge => edge.node);
+      setFollowings(followingsData);
+    }
+
     onFollowingOpen();
   };
 
   const handleFollowersOpen = async () => {
-    await getFollowers();
+    const { data, error } = await getFollowers();
 
-    if (followersData?.followers) setFollowers(followersData.followers.edges);
-    if (followersError) {
+    if (error) {
       toast({
         title: "フォロワー一覧の取得に失敗しました",
-        description: followersError.message,
+        description: error.message,
         status: "error",
       });
+      return;
     }
+
+    if (data) {
+      const followersData = data.followers.edges.map(edge => edge.node);
+      setFollowers(followersData);
+    }
+
     onFollowersOpen();
   };
 

@@ -10,15 +10,20 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+  problem: WhatToDiscardProblem;
+  /* eslint-disable-next-line no-unused-vars */
+  onProblemUpdated: (updatedProblem: WhatToDiscardProblem) => void;
+};
+
 export default function ProblemUpdateFormModal({
   isOpen,
   onClose,
   problem,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  problem: WhatToDiscardProblem;
-}) {
+  onProblemUpdated,
+}: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl" scrollBehavior="inside">
       <ModalOverlay />
@@ -29,7 +34,7 @@ export default function ProblemUpdateFormModal({
         <ModalCloseButton onClick={onClose} />
 
         <ModalBody>
-          <ProblemUpdateForm onClose={onClose} problem={problem} />
+          <ProblemUpdateForm problem={problem} onProblemUpdated={onProblemUpdated} />
         </ModalBody>
 
         <ModalFooter />

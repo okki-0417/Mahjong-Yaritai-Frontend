@@ -1,6 +1,5 @@
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
-import { useCustomForm } from "@/src/hooks/useCustomForm";
 import {
   Box,
   Button,
@@ -23,7 +22,7 @@ import {
   UpdateWhatToDiscardProblemInput,
   WhatToDiscardProblem,
 } from "@/src/generated/graphql";
-import { SubmitHandler } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 const MAX_TURN = 18;
 const ALL_TILES_NUM = 34;
@@ -47,10 +46,8 @@ const tileFieldNames = [...handFieldNames, "tsumoId", "doraId"] as const;
 
 type ProblemFormInputs = CreateWhatToDiscardProblemInput | UpdateWhatToDiscardProblemInput;
 
-type Props = WhatToDiscardProblem | null;
-
-export default function useProblemForm(problem: Props) {
-  const [focussedTileFieldName, setFocussedTileFieldName] =
+export default function useProblemForm(problem?: WhatToDiscardProblem) {
+  const [currentFocussedTileField, setCurrentFocussedTileField] =
     useState<(typeof tileFieldNames)[number]>("hand1Id");
   const [detailSettingVisible, setDetailSettingVisible] = useState(false);
 
@@ -61,7 +58,7 @@ export default function useProblemForm(problem: Props) {
     watch,
     getValues,
     formState: { errors, isSubmitting },
-  } = useCustomForm<ProblemFormInputs>({
+  } = useForm<ProblemFormInputs>({
     defaultValues: {
       hand1Id: problem?.hand1Id || "",
       hand2Id: problem?.hand2Id || "",
@@ -104,34 +101,32 @@ export default function useProblemForm(problem: Props) {
     errors?.doraId,
   ];
 
-  const handleTileClick = (tileId: string) => {
-    setValue(focussedTileFieldName, tileId);
+  const handleTileSelected = (tileId: string) => {
+    setValue(currentFocussedTileField, tileId);
 
-    const nextFocussedTileFieldName = tileFieldNames.find(
-      name => Boolean(getValues(name)) == false,
-    );
-
-    if (nextFocussedTileFieldName) {
-      setFocussedTileFieldName(nextFocussedTileFieldName);
-    }
-
-    return null;
+    const nextFocussedTileField = tileFieldNames.find(name => Boolean(getValues(name)) == false);
+    if (nextFocussedTileField) setCurrentFocussedTileField(nextFocussedTileField);
   };
 
-  const handleTileReset = () => {
+  const handleTileSelectionReset = () => {
     tileFieldNames.map(fieldName => setValue(fieldName, null));
-    setFocussedTileFieldName("hand1Id");
+    setCurrentFocussedTileField("hand1Id");
   };
 
-  const TileDisplay = ({ fieldName }: { fieldName: typeof focussedTileFieldName }) => {
+  const TileDisplay = ({ fieldName }: { fieldName: typeof currentFocussedTileField }) => {
     return (
       <Box>
-        <VisuallyHiddenInput {...register(fieldName)} readOnly />
+        <VisuallyHiddenInput
+          {...register(fieldName, {
+            required: "すべての牌を選択してください",
+          })}
+          readOnly
+        />
         <button
           type="button"
-          onClick={() => setFocussedTileFieldName(fieldName)}
+          onClick={() => setCurrentFocussedTileField(fieldName)}
           className={`h-12 aspect-tile border rounded-sm ${
-            focussedTileFieldName == fieldName
+            currentFocussedTileField == fieldName
               ? "border-blue-500 shadow shadow-blue-500"
               : "border-secondary"
           }`}>
@@ -178,7 +173,7 @@ export default function useProblemForm(problem: Props) {
               </Box>
             </HStack>
 
-            <PopButton className="form-button" onClick={() => handleTileReset()}>
+            <PopButton className="form-button" onClick={() => handleTileSelectionReset()}>
               <Text as="span" fontSize={["md", "lg"]}>
                 牌をリセット
               </Text>
@@ -195,7 +190,7 @@ export default function useProblemForm(problem: Props) {
                 return (
                   <Flex flexDir="column" alignItems="center" key={index}>
                     <PopButton
-                      onClick={() => handleTileClick(tileId)}
+                      onClick={() => handleTileSelected(tileId)}
                       className="h-12 aspect-7/9 border  border-primary rounded-sm">
                       <TileImage tile={tileId} hover={false} />
                     </PopButton>

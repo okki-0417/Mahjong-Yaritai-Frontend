@@ -77,6 +77,8 @@ export default function AuthVerificationForm() {
           <FormLabel htmlFor="token">認証コード</FormLabel>
           <Input
             type="text"
+            letterSpacing="0.3rem"
+            fontSize="xl"
             placeholder="認証コード（例：123456）"
             {...register("token", { required: "認証コードは必須です" })}
           />

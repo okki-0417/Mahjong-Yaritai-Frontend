@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import ProblemsSectionSkeleton from "@/src/app/what-to-discard-problems/components/ProblemsSectionSkeleton";
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
-import ProblemsSection from "@/src/app/what-to-discard-problems/components/ProblemsSection";
+import ProblemsSection from "@/src/app/what-to-discard-problems/components/ProblemSection";
 
 export type WhatToDiscardProblems = WhatToDiscardProblem[] | [];
 

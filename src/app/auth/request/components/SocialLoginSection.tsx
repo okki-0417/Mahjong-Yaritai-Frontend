@@ -1,15 +1,14 @@
 "use client";
 
 import SocialLoginButton from "@/src/app/auth/request/components/SocialLoginButton";
-import useErrorToast from "@/src/hooks/useErrorToast";
 import { apiClient } from "@/src/lib/api/client";
-import { ListItem, Text, UnorderedList, VStack } from "@chakra-ui/react";
+import { ListItem, Text, UnorderedList, useToast, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function SocialLoginSection() {
   const router = useRouter();
-  const errorToast = useErrorToast();
+  const toast = useToast();
 
   const handleGoogleLogin = () => router.push(process.env.NEXT_PUBLIC_GOOGLE_LOGIN_URL);
 
@@ -20,7 +19,11 @@ export default function SocialLoginSection() {
 
       router.push(response.login_url);
     } catch (error) {
-      errorToast({ error, title: "LINEのログインURLの取得に失敗しました" });
+      toast({
+        title: "LINEのログインURLの取得に失敗しました",
+        description: error.message,
+        status: "error",
+      });
     }
   };
 

@@ -1,11 +1,12 @@
-import { schemas } from "@/src/zodios/api";
+import { User } from "@/src/generated/graphql";
 import { Image } from "@chakra-ui/react";
-import { z } from "zod";
 
-export default function UserIcon({ user }: { user: z.infer<typeof schemas.User> | null }) {
+type Props = {
+  user: User | null;
+};
+
+export default function UserIcon({ user }: Props) {
   if (!user) return null;
 
-  return (
-    <Image src={user.avatar_url || "/no-image.webp"} alt="" boxSize="12" borderRadius="full" />
-  );
+  return <Image src={user.avatarUrl || "/no-image.webp"} alt="" boxSize="12" borderRadius="full" />;
 }

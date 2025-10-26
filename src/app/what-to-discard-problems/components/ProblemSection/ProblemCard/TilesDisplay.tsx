@@ -11,7 +11,6 @@ type Props = {
   /* eslint-disable-next-line no-unused-vars */
   onVoteCreate: (tileId: string) => void;
   onVoteDelete: () => void;
-  isLoggedIn: boolean;
 };
 
 export default function TilesDisplay({
@@ -21,7 +20,6 @@ export default function TilesDisplay({
   myVoteTileId,
   onVoteCreate,
   onVoteDelete,
-  isLoggedIn,
 }: Props) {
   return (
     <HStack gap="1px">
@@ -35,7 +33,6 @@ export default function TilesDisplay({
             isVoted={tileId === myVoteTileId}
             onCreate={() => onVoteCreate(tileId)}
             onDelete={onVoteDelete}
-            isLoggedIn={isLoggedIn}
           />
         );
       })}

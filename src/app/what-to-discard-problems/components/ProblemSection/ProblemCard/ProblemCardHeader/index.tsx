@@ -6,7 +6,7 @@ import { Button, Circle, HStack, Image, Text, useDisclosure } from "@chakra-ui/r
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
 
 import useGetSession from "@/src/hooks/useGetSession";
-import ProblemOperationMenu from "@/src/app/what-to-discard-problems/components/ProblemCard/ProblemCardHeader/ProblemOperationMenu";
+import ProblemOperationMenu from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCardHeader/ProblemOperationMenu";
 
 type Props = {
   problem: WhatToDiscardProblem;

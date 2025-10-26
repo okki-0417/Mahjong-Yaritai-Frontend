@@ -10,19 +10,17 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 
-export default function ProblemCreateFormModal({
-  isOpen,
-  onClose,
-  setProblems,
-}: {
+type Props = {
   isOpen: boolean;
   onClose: () => void;
-  setProblems: React.Dispatch<React.SetStateAction<WhatToDiscardProblem[]>>;
-}) {
-  const handleFormClose = () => {
-    const isConfirmed = window.confirm("フォームを閉じますか？入力内容は保存されません。");
+  /* eslint-disable-next-line no-unused-vars */
+  onProblemCreated: (newProblem: WhatToDiscardProblem) => void;
+};
 
-    if (isConfirmed) onClose();
+export default function ProblemCreateFormModal({ isOpen, onClose, onProblemCreated }: Props) {
+  const onProblemCreatedWrapper = (newProblem: WhatToDiscardProblem) => {
+    onProblemCreated(newProblem);
+    onClose();
   };
 
   return (
@@ -34,12 +32,16 @@ export default function ProblemCreateFormModal({
       size="xl"
       scrollBehavior="inside">
       <ModalOverlay />
+
       <ModalContent fontFamily="serif">
         <ModalHeader>何切る問題を作成</ModalHeader>
-        <ModalCloseButton onClick={handleFormClose} />
+
+        <ModalCloseButton />
+
         <ModalBody>
-          <ProblemCreateForm onClose={onClose} setProblems={setProblems} />
+          <ProblemCreateForm onProblemCreated={onProblemCreatedWrapper} />
         </ModalBody>
+
         <ModalFooter />
       </ModalContent>
     </Modal>

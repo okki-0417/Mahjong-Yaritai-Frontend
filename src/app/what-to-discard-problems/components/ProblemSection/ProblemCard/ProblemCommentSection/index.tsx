@@ -3,7 +3,7 @@
 import { FaRegComment } from "react-icons/fa";
 import PopButton from "@/src/components/PopButton";
 import { HStack, Spinner, Text, useDisclosure, useToast } from "@chakra-ui/react";
-import CommentsModal from "@/src/app/what-to-discard-problems/components/ProblemCard/ProblemCommentSection/CommentsModal";
+import CommentsModal from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCommentSection/CommentsModal";
 import { Comment, ParentCommentsDocument } from "@/src/generated/graphql";
 import { Fragment, useState } from "react";
 import { useQuery } from "@apollo/client/react";

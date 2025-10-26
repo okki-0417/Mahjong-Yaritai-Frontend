@@ -1,5 +1,5 @@
 mutation DeleteFollow($userId: ID!) {
   deleteFollow(input: { userId: $userId }) {
-    success
+    id
   }
 }

@@ -1,10 +1,9 @@
-import { Box, Button, Circle, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Circle, Image, Text, VStack } from "@chakra-ui/react";
 import { CiEdit } from "react-icons/ci";
 import FollowButton from "@/src/components/FollowButton";
 import { FollowStats } from "@/src/components/FollowStats";
 import { User } from "@/src/generated/graphql";
 import Link from "next/link";
-import Image from "next/image";
 
 type Props = {
   user: User;
@@ -27,14 +26,15 @@ export default function UserProfile({ user, isMyProfile = false }: Props) {
           <Image
             src={user.avatarUrl || "/no-image.webp"}
             alt={user.name}
-            width={200}
-            height={200}
+            w="full"
+            h="full"
+            objectFit="cover"
           />
         </Circle>
 
         <Box textAlign="center" maxW="md" mx="auto">
           <Text fontSize={["2xl", "4xl"]} wordBreak="break-word">
-            {user?.name}
+            {user.name}
           </Text>
         </Box>
 

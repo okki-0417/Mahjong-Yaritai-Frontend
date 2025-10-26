@@ -1,5 +1,5 @@
 mutation DeleteComment($commentId: ID!) {
   deleteWhatToDiscardProblemComment(input: { commentId: $commentId }) {
-    success
+    id
   }
 }

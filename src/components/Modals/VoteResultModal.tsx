@@ -3,7 +3,8 @@
 import VoteButton from "@/src/app/what-to-discard-problems/components/votes/VoteButton";
 import { WhatToDiscardProblemVoteResult } from "@/src/generated/graphql";
 import {
-  Grid,
+  Box,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -37,55 +38,54 @@ export default function VoteResultModal({
   onVoteDelete,
   myVoteTileId,
 }: Props) {
-  const sortedVoteResults = [...voteResults].sort((a, b) => Number(b.tileId) - Number(a.tileId));
+  const sortedVoteResults = [...voteResults].sort((a, b) => Number(a.tileId) - Number(b.tileId));
+  const mostVotedCount = Math.max(...voteResults.map(r => r.count), 0);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered>
       <ModalOverlay />
 
-      <ModalContent>
+      <ModalContent background="gray.50" fontFamily="serif">
         <ModalHeader fontFamily="serif">投票結果</ModalHeader>
 
         <ModalCloseButton />
 
-        <ModalBody>
-          <VStack spacing={6}>
-            <Grid templateColumns="repeat(auto-fit, minmax(120px, 1fr))" gap={4} w="full">
-              {sortedVoteResults.map(result => {
-                const tileId = result.tileId;
-                const voteCount = result.count;
-                const percentage = result.percentage;
+        <ModalBody className="bg-mj-mat">
+          <HStack spacing="1px" mt="3">
+            {sortedVoteResults.map(result => {
+              const tileId = result.tileId;
+              const voteCount = result.count;
 
-                return (
-                  <VStack key={tileId} spacing={2} align="center">
-                    <VStack spacing={1}>
-                      <Text fontSize="sm" fontWeight="bold">
-                        {voteCount}票
-                      </Text>
-                      <Text fontSize="xs" color="gray.400">
-                        {percentage.toFixed(1)}%
-                      </Text>
-                    </VStack>
-
-                    <VoteButton
-                      problemId={problemId}
-                      doraId={doraId}
-                      tileId={result.tileId}
-                      isVoted={Boolean(myVoteTileId == result.tileId)}
-                      onCreate={() => onVoteCreate(result.tileId)}
-                      onDelete={onVoteDelete}
+              return (
+                <VStack key={tileId} spacing="1" align="center" h="250px">
+                  <VStack spacing="1" h="200px" justify="flex-end">
+                    <Text fontSize="sm" className="text-neutral">
+                      {voteCount}票
+                    </Text>
+                    <Box
+                      h={`${Math.round((voteCount / mostVotedCount) * 100)}%`}
+                      w="5"
+                      className={`${myVoteTileId == tileId ? "bg-blue-400" : "bg-green-400"}
+                        border border-neutral border-b-0 rounded-t-sm`}
                     />
                   </VStack>
-                );
-              })}
-            </Grid>
-          </VStack>
+
+                  <VoteButton
+                    problemId={problemId}
+                    doraId={doraId}
+                    tileId={result.tileId}
+                    isVoted={Boolean(myVoteTileId == result.tileId)}
+                    onCreate={() => onVoteCreate(result.tileId)}
+                    onDelete={onVoteDelete}
+                  />
+                </VStack>
+              );
+            })}
+          </HStack>
         </ModalBody>
 
         <ModalFooter>
-          <Text fontSize="sm" color="gray.400">
-            総投票数: {voteResults.reduce((sum, r) => sum + r.count, 0)}票
-          </Text>
+          <Text fontSize="sm">総投票数: {voteResults.reduce((sum, r) => sum + r.count, 0)}票</Text>
         </ModalFooter>
       </ModalContent>
     </Modal>

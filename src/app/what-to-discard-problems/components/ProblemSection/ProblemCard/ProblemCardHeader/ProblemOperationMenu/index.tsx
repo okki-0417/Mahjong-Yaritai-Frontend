@@ -1,7 +1,7 @@
 "use client";
 
-import ProblemDeleteItem from "@/src/app/what-to-discard-problems/components/ProblemCard/ProblemCardHeader/ProblemOperationMenu/ProblemDeleteItem";
-import ProblemEditItem from "@/src/app/what-to-discard-problems/components/ProblemCard/ProblemCardHeader/ProblemOperationMenu/ProblemEditItem";
+import ProblemDeleteItem from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCardHeader/ProblemOperationMenu/ProblemDeleteItem";
+import ProblemEditItem from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCardHeader/ProblemOperationMenu/ProblemEditItem";
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import { Menu, MenuButton, MenuList } from "@chakra-ui/react";
 import { Fragment } from "react";

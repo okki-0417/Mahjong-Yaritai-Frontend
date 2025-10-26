@@ -8,22 +8,22 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Image,
   Input,
   Textarea,
   useToast,
   VStack,
 } from "@chakra-ui/react";
 import { ChangeEvent, useRef, useState } from "react";
-import { Controller, SubmitHandler } from "react-hook-form";
-import { useCustomForm } from "@/src/hooks/useCustomForm";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
 import {
   UpdateUserInput,
-  UpdateUserMutationVariables,
+  UpdateUserProfileMutation,
+  UpdateUserProfileMutationVariables,
   UpdateUserProfileDocument,
   User,
 } from "@/src/generated/graphql";
-import Image from "next/image";
 
 type Props = {
   user: User;
@@ -34,7 +34,7 @@ type ProfileEditFormInputs = UpdateUserInput;
 export default function ProfileEditForm({ user }: Props) {
   const toast = useToast();
 
-  const [updateUser] = useMutation<UpdateUserInput, UpdateUserMutationVariables>(
+  const [updateUser] = useMutation<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>(
     UpdateUserProfileDocument,
     {
       onCompleted: () => {
@@ -58,7 +58,7 @@ export default function ProfileEditForm({ user }: Props) {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useCustomForm<ProfileEditFormInputs>({
+  } = useForm<ProfileEditFormInputs>({
     defaultValues: {
       name: user.name,
       profileText: user.profileText || "",
@@ -66,27 +66,16 @@ export default function ProfileEditForm({ user }: Props) {
     },
   });
 
-  const onSubmit: SubmitHandler<ProfileEditFormInputs> = async formInputs => {
-    if (formInputs.avatar) {
-      await updateUser({
-        variables: {
-          input: {
-            name: formInputs.name,
-            avatar: formInputs.avatar,
-            profileText: formInputs.profileText,
-          },
+  const onSubmit: SubmitHandler<ProfileEditFormInputs> = async formData => {
+    await updateUser({
+      variables: {
+        input: {
+          name: formData.name,
+          profileText: formData.profileText,
+          // avatar: 一旦無効化
         },
-      });
-    } else {
-      await updateUser({
-        variables: {
-          input: {
-            name: formInputs.name,
-            profileText: formInputs.profileText,
-          },
-        },
-      });
-    }
+      },
+    });
   };
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -114,18 +103,20 @@ export default function ProfileEditForm({ user }: Props) {
         <VStack>
           <Circle size="200" overflow="hidden">
             <Image
-              src={imageUrl || user?.avatarUrl || "/no-image.webp"}
+              src={user?.avatarUrl || "/no-image.webp"}
               alt={user.name}
-              width={200}
-              height={200}
+              w="full"
+              h="full"
+              objectFit="cover"
             />
           </Circle>
-          <Button onClick={() => imageInputRef.current?.click()}>
+          {/* <Button onClick={() => imageInputRef.current?.click()} isDisabled>
             <AttachmentIcon />
-          </Button>
+          </Button> */}
         </VStack>
 
-        <FormControl>
+        {/* 画像アップロード機能は一旦無効化 */}
+        {/* <FormControl>
           <Controller
             control={control}
             name="avatar"
@@ -147,7 +138,7 @@ export default function ProfileEditForm({ user }: Props) {
           />
 
           <FormErrorMessage>{String(errors.avatar?.message)}</FormErrorMessage>
-        </FormControl>
+        </FormControl> */}
 
         <FormControl isInvalid={Boolean(errors.name)}>
           <FormLabel color="white">ハンドルネーム</FormLabel>

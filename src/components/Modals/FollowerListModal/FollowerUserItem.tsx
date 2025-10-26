@@ -1,6 +1,5 @@
 import { User } from "@/src/generated/graphql";
-import { Box, Button, Circle, HStack, Text } from "@chakra-ui/react";
-import Image from "next/image";
+import { Box, Button, Circle, HStack, Image, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
 type Props = {
@@ -15,8 +14,9 @@ export default function FollowerUserItem({ user, onClose }: Props) {
         <Image
           src={user.avatarUrl || "/no-image.webp"}
           alt={user.name}
-          fill
-          style={{ objectFit: "cover" }}
+          w="full"
+          h="full"
+          objectFit="cover"
         />
       </Circle>
 

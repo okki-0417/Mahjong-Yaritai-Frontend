@@ -3,6 +3,7 @@
 import { SubmitHandler } from "react-hook-form";
 import {
   UpdateWhatToDiscardProblemInput,
+  UpdateWhatToDiscardProblemMutation,
   UpdateWhatToDiscardProblemMutationVariables,
   WhatToDiscardProblem,
 } from "@/src/generated/graphql";
@@ -15,22 +16,23 @@ type ProblemUpdateFormInputs = UpdateWhatToDiscardProblemInput;
 
 type Props = {
   problem: WhatToDiscardProblem;
-  onClose: () => void;
+  /* eslint-disable-next-line no-unused-vars */
+  onProblemUpdated: (updatedProblem: WhatToDiscardProblem) => void;
 };
 
-export default function ProblemUpdateForm({ problem, onClose }: Props) {
+export default function ProblemUpdateForm({ problem, onProblemUpdated }: Props) {
   const toast = useToast();
 
   const [updateProblem] = useMutation<
-    UpdateWhatToDiscardProblemInput,
+    UpdateWhatToDiscardProblemMutation,
     UpdateWhatToDiscardProblemMutationVariables
   >(UpdateWhatToDiscardProblemDocument, {
-    onCompleted: () => {
+    onCompleted: data => {
+      onProblemUpdated(data.updateWhatToDiscardProblem.whatToDiscardProblem);
       toast({
         title: "何切る問題を更新しました",
         status: "success",
       });
-      onClose();
     },
     onError: error => {
       toast({
@@ -47,7 +49,14 @@ export default function ProblemUpdateForm({ problem, onClose }: Props) {
     const isConfirmed = confirm("これで更新しますか？");
     if (!isConfirmed) return;
 
-    await updateProblem({ variables: { ...formData } });
+    await updateProblem({
+      variables: {
+        input: {
+          id: problem.id,
+          ...formData,
+        },
+      },
+    });
   };
 
   return <BaseForm onSubmit={onSubmit} />;

@@ -1,15 +1,13 @@
 import { Button, Circle, HStack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 
-export default function SocialLoginButton({
-  handler,
-  label,
-  iconSrc,
-}: {
+type Props = {
   handler: () => any;
   label: string;
   iconSrc: string;
-}) {
+};
+
+export default function SocialLoginButton({ handler, label, iconSrc }: Props) {
   return (
     <Button onClick={handler} rounded="full" w="72" bgColor="white" fontWeight="normal" py="2">
       <HStack w="full">

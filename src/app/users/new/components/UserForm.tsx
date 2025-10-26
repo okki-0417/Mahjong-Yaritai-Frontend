@@ -15,8 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { Controller, SubmitHandler } from "react-hook-form";
-import { useCustomForm } from "@/src/hooks/useCustomForm";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
 import {
   CreateUserDocument,
@@ -64,7 +63,7 @@ export default function UserForm() {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useCustomForm<UserFormData>();
+  } = useForm<UserFormData>();
 
   const onSubmit: SubmitHandler<UserFormData> = async formData => {
     await createUser({

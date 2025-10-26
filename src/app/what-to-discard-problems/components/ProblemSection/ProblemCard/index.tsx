@@ -9,29 +9,29 @@ import { Box, HStack, Text, useDisclosure, useToast, VStack, Wrap } from "@chakr
 import { Fragment, useState } from "react";
 import VoteButton from "@/src/app/what-to-discard-problems/components/votes/VoteButton";
 import TileImage from "@/src/components/TileImage";
-import ProblemDescriptionModal from "@/src/app/what-to-discard-problems/components/ProblemDescriptionModal";
-import ProblemLikeSection from "@/src/app/what-to-discard-problems/components/ProblemCard/ProblemLikeSection";
-import ProblemCardHeader from "@/src/app/what-to-discard-problems/components/ProblemCard/ProblemCardHeader";
-import TilesDisplay from "@/src/app/what-to-discard-problems/components/ProblemCard/TilesDisplay";
-import ProblemCommentSection from "@/src/app/what-to-discard-problems/components/ProblemCard/ProblemCommentSection";
+import ProblemDescriptionModal from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemDescriptionModal";
+import ProblemLikeSection from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemLikeSection";
+import ProblemCardHeader from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCardHeader";
+import TilesDisplay from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/TilesDisplay";
+import ProblemCommentSection from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCommentSection";
 import ProblemVoteSection from "@/src/app/what-to-discard-problems/components/votes/ProblemVoteSection";
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { useLazyQuery } from "@apollo/client/react";
 
 type Props = {
-  initialProblem: WhatToDiscardProblem;
-  isLoggedIn: boolean;
+  problem: WhatToDiscardProblem;
 };
 
-export default function ProblemCard({ initialProblem, isLoggedIn }: Props) {
-  const [problem, setProblem] = useState<WhatToDiscardProblem>(initialProblem);
-  const [votesCount, setVotesCount] = useState<number>(0);
+export default function ProblemCard({ problem }: Props) {
+  const [votesCount, setVotesCount] = useState(0);
   const [voteResults, setVoteResults] = useState<WhatToDiscardProblemVoteResult[]>([]);
   const [myVoteTileId, setMyVoteTileId] = useState<string | null>(null);
 
   const toast = useToast();
 
-  const [fetchVoteResults, { loading }] = useLazyQuery(WhatToDiscardProblemVoteResultDocument);
+  const [fetchVoteResults, { loading: isLoadingVoteResults }] = useLazyQuery(
+    WhatToDiscardProblemVoteResultDocument,
+  );
 
   const {
     isOpen: isDescriptionOpen,
@@ -46,7 +46,7 @@ export default function ProblemCard({ initialProblem, isLoggedIn }: Props) {
   } = useDisclosure();
 
   const handleVoteResultOpen = async () => {
-    if (loading) return;
+    if (isLoadingVoteResults) return;
 
     const result = await fetchVoteResults({
       variables: { whatToDiscardProblemId: problem.id },
@@ -67,10 +67,16 @@ export default function ProblemCard({ initialProblem, isLoggedIn }: Props) {
     }
   };
 
-  const onVoteCreate = (tileId: string) => {
+  const onVoteCreate = async (tileId: string) => {
     setMyVoteTileId(tileId);
     setVotesCount(votesCount + 1);
-    onVoteResultOpen();
+
+    if (isVoteResultOpen) {
+      const result = await fetchVoteResults({
+        variables: { whatToDiscardProblemId: problem.id },
+      });
+      setVoteResults(result.data.whatToDiscardProblemVoteResults);
+    }
   };
 
   const onVoteDelete = () => {
@@ -138,7 +144,6 @@ export default function ProblemCard({ initialProblem, isLoggedIn }: Props) {
               myVoteTileId={myVoteTileId}
               onVoteCreate={onVoteCreate}
               onVoteDelete={onVoteDelete}
-              isLoggedIn={isLoggedIn}
             />
 
             <Box display={["none", "block"]}>
@@ -208,7 +213,7 @@ export default function ProblemCard({ initialProblem, isLoggedIn }: Props) {
               onClose={onVoteResultClose}
               onVoteCreate={onVoteCreate}
               onVoteDelete={onVoteDelete}
-              myVoteTileId={problem.doraId}
+              myVoteTileId={myVoteTileId}
             />
           )}
         </HStack>

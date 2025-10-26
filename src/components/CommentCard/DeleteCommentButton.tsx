@@ -1,9 +1,7 @@
 "use client";
 
-import useErrorToast from "@/src/hooks/useErrorToast";
-import useSuccessToast from "@/src/hooks/useSuccessToast";
 import { Comment } from "@/src/generated/graphql";
-import { Button } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { IoMdTrash } from "react-icons/io";
 import { useMutation } from "@apollo/client/react";
@@ -11,8 +9,7 @@ import { DeleteCommentDocument } from "@/src/generated/graphql";
 
 export default function DeleteCommentButton({ comment }: { comment: Comment }) {
   const [deleting, setDeleting] = useState(false);
-  const errorToast = useErrorToast();
-  const successToast = useSuccessToast();
+  const toast = useToast();
 
   const [deleteCommentMutation] = useMutation(DeleteCommentDocument);
 
@@ -34,14 +31,15 @@ export default function DeleteCommentButton({ comment }: { comment: Comment }) {
         },
       });
 
-      successToast({
+      toast({
         title: "コメントを削除しました",
-        description: "リロードでページの表示も更新されます",
+        status: "success",
       });
     } catch (error) {
-      errorToast({
-        error,
+      toast({
         title: "コメントの削除に失敗しました",
+        description: error.message,
+        status: "error",
       });
     } finally {
       setDeleting(false);

@@ -76,18 +76,16 @@ export default function AuthRequestForm() {
             <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
           </FormControl>
 
-          <FormControl>
-            <Text fontSize="sm">
-              <Link href="/terms" className="text-blue-200 underline" target="_blank">
-                利用規約
-              </Link>
-              と
-              <Link href="/privacy" className="text-blue-200 underline" target="_blank">
-                プライバシーポリシー
-              </Link>
-              に同意の上、ログイン/登録を行ってください。
-            </Text>
-          </FormControl>
+          <Text fontSize="sm">
+            <Link href="/terms" className="text-blue-200 underline" target="_blank">
+              利用規約
+            </Link>
+            と
+            <Link href="/privacy" className="text-blue-200 underline" target="_blank">
+              プライバシーポリシー
+            </Link>
+            に同意の上、ログイン/登録を行ってください。
+          </Text>
 
           <Button type="submit" isLoading={isSubmitting} colorScheme="pink">
             確認メールを送信する

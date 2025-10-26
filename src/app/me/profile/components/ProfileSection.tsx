@@ -15,8 +15,10 @@ export default async function ProfileSection() {
     query: CurrentUserProfileDocument,
   });
 
-  if (userData.currentSession.user) {
-    return <UserProfile user={userData.currentSession.user} isMyProfile={true} />;
+  const user = userData.currentSession.user;
+
+  if (user) {
+    return <UserProfile user={user} isMyProfile={true} />;
   } else {
     return <div>プロフィールの取得に失敗しました</div>;
   }

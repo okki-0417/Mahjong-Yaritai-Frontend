@@ -1,12 +1,10 @@
 "use client";
 
-import { Button, useDisclosure } from "@chakra-ui/react";
+import { Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client/react";
 import { CreateFollowDocument, DeleteFollowDocument } from "@/src/generated/graphql";
 import { useState, useEffect } from "react";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
-import useSuccessToast from "@/src/hooks/useSuccessToast";
-import useErrorToast from "@/src/hooks/useErrorToast";
 
 interface FollowButtonProps {
   userId: string;
@@ -33,8 +31,8 @@ export default function FollowButton({
 
   const [createFollow] = useMutation(CreateFollowDocument);
   const [deleteFollow] = useMutation(DeleteFollowDocument);
-  const successToast = useSuccessToast();
-  const errorToast = useErrorToast();
+
+  const toast = useToast();
 
   useEffect(() => {
     setIsFollowing(initialIsFollowing);
@@ -59,17 +57,17 @@ export default function FollowButton({
         });
         setIsFollowing(false);
         onFollowChange?.(false);
-        successToast({ title: "フォローを解除しました" });
+        toast({ title: "フォローを解除しました", status: "success" });
       } else {
         await createFollow({
           variables: { userId: String(userId) },
         });
         setIsFollowing(true);
         onFollowChange?.(true);
-        successToast({ title: "フォローしました" });
+        toast({ title: "フォローしました", status: "success" });
       }
     } catch (error) {
-      errorToast({ error, title: "フォローの操作に失敗しました" });
+      toast({ title: "フォローの操作に失敗しました", status: "error" });
     } finally {
       setIsLoading(false);
     }

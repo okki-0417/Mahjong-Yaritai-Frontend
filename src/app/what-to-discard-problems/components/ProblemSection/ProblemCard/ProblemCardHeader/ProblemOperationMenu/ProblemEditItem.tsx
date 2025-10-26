@@ -1,6 +1,7 @@
 "use client";
 
-import ProblemUpdateFormModal from "@/src/app/what-to-discard-problems/components/ProblemUpdateFormModal";
+import ProblemUpdateFormModal from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCardHeader/ProblemOperationMenu/ProblemUpdateFormModal";
+import useProblems from "@/src/app/what-to-discard-problems/hooks/useProblems";
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import { MenuItem, useDisclosure } from "@chakra-ui/react";
 import { Fragment } from "react";
@@ -17,6 +18,17 @@ export default function ProblemEditItem({ problem }: Props) {
     onClose: onUpdateFormClose,
   } = useDisclosure();
 
+  const { problems: prevProblems, setProblems } = useProblems();
+
+  const onProblemUpdated = (updatedProblem: WhatToDiscardProblem) => {
+    setProblems(
+      prevProblems.map(prevProblem =>
+        prevProblem.id == updatedProblem.id ? updatedProblem : prevProblem,
+      ),
+    );
+    onUpdateFormClose();
+  };
+
   return (
     <Fragment>
       <MenuItem icon={<FiEdit3 size={18} color="black" />} onClick={onUpdateFormOpen}>
@@ -27,6 +39,7 @@ export default function ProblemEditItem({ problem }: Props) {
         isOpen={isUpdateFormOpen}
         onClose={onUpdateFormClose}
         problem={problem}
+        onProblemUpdated={onProblemUpdated}
       />
     </Fragment>
   );
