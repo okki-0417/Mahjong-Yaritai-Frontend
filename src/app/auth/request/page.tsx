@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import Fallback from "@/src/components/fallbacks/Fallback";
 import AuthRequestSection from "@/src/app/auth/request/components/AuthRequestSection";
 
+export const dynamic = "force-dynamic";
+
 export default function AuthRequest() {
   return (
     <Container mt="20" maxW="2xl">

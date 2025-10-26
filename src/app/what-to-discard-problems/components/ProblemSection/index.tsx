@@ -14,11 +14,10 @@ export default async function ProblemsSection() {
   });
 
   const initialProblems = problemsData.whatToDiscardProblems.edges.map(edge => edge.node);
+  const pageInfo = problemsData.whatToDiscardProblems.pageInfo;
 
   return (
-    <ProblemsContextProvider
-      initialProblems={initialProblems}
-      initialPageInfo={problemsData.whatToDiscardProblems.pageInfo}>
+    <ProblemsContextProvider initialProblems={initialProblems} initialPageInfo={pageInfo}>
       <ProblemClientSection />
     </ProblemsContextProvider>
   );

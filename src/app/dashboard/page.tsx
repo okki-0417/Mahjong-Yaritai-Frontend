@@ -2,6 +2,8 @@ import { CurrentSessionDocument } from "@/src/generated/graphql";
 import { getClient } from "@/src/lib/apollo/server";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function Dashboard() {
   const client = getClient();
 

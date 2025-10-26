@@ -3,6 +3,8 @@ import ProfileEditSection from "@/src/app/me/profile/edit/components/ProfileEdit
 import { Suspense } from "react";
 import { Container } from "@chakra-ui/react";
 
+export const dynamic = "force-dynamic";
+
 export default function ProfileEdit() {
   return (
     <Container mt={["10", "12"]} maxW="lg" mb="20">

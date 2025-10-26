@@ -7,7 +7,7 @@ export default async function AuthVerificationSection() {
   const client = getClient();
   const { data } = await client.query({ query: CurrentUserProfileDocument });
 
-  if (data.currentSession.isLoggedIn == false) redirect("/auth/request");
+  if (data.currentSession.isLoggedIn) redirect("/what-to-discard-problems");
 
   return <AuthVerificationForm />;
 }

@@ -7,6 +7,8 @@ import ProblemsSection from "@/src/app/what-to-discard-problems/components/Probl
 
 export type WhatToDiscardProblems = WhatToDiscardProblem[] | [];
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "何切る問題集",
   description:

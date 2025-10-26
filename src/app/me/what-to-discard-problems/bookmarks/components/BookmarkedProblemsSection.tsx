@@ -12,7 +12,7 @@ export default async function BookmarkedProblemsSection() {
     query: CurrentUserProfileDocument,
   });
 
-  if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
+  if (!sessionData.currentSession.isLoggedIn) redirect("/auth/request");
 
   const { data: problemData, error } = await client.query({
     query: BookmarkedWhatToDiscardProblemsDocument,

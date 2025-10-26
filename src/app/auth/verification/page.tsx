@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import Fallback from "@/src/components/fallbacks/Fallback";
 import AuthVerificationSection from "@/src/app/auth/verification/components/AuthVerificationSection";
 
+export const dynamic = "force-dynamic";
+
 export default function AuthVerification() {
   return (
     <Container maxW="2xl" mt="20">

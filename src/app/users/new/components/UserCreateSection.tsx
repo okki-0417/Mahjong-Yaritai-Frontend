@@ -1,17 +1,17 @@
-"use client";
-
 import UserForm from "@/src/app/users/new/components/UserForm";
-import useGetSession from "@/src/hooks/useGetSession";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { CurrentSessionDocument } from "@/src/generated/graphql";
+import { getClient } from "@/src/lib/apollo/server";
+import { redirect } from "next/navigation";
 
-export default function UserCreateSection() {
-  const { session } = useGetSession();
-  const router = useRouter();
+export const dynamic = "force-dynamic";
 
-  useEffect(() => {
-    if (session?.isLoggedIn) router.push("/dashboard");
-  }, [session, router]);
+export default async function UserCreateSection() {
+  const client = getClient();
+  const { data } = await client.query({
+    query: CurrentSessionDocument,
+  });
+
+  if (data.currentSession.isLoggedIn) redirect("/dashboard");
 
   return <UserForm />;
 }

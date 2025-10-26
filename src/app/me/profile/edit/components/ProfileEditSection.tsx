@@ -12,11 +12,13 @@ export default async function ProfileEditSection() {
     query: CurrentUserProfileDocument,
   });
 
-  if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
+  if (!sessionData.currentSession.isLoggedIn) redirect("/auth/request");
 
   const { data: userData } = await client.query({
     query: CurrentUserProfileDocument,
   });
+
+  if (!userData.currentSession.user) redirect("/auth/request");
 
   return (
     <>
