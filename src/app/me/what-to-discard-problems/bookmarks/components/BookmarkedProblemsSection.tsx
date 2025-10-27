@@ -10,25 +10,28 @@ import ProblemCard from "@/src/app/what-to-discard-problems/components/ProblemSe
 
 export default async function BookmarkedProblemsSection() {
   const client = getClient();
-  const { data: sessionData, error: sessionError } = await client.query({
-    query: CurrentUserProfileDocument,
-  });
 
-  if (sessionError) return <ErrorPage message={sessionError.message} />;
-  if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
+  try {
+    const { data: sessionData } = await client.query({
+      query: CurrentUserProfileDocument,
+    });
 
-  const { data: problemData, error: problemError } = await client.query({
-    query: BookmarkedWhatToDiscardProblemsDocument,
-  });
+    if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
 
-  if (problemError) return <ErrorPage message={problemError.message} />;
-  const problems = problemData.bookmarkedWhatToDiscardProblems.edges.map(edge => edge.node);
+    const { data: problemData } = await client.query({
+      query: BookmarkedWhatToDiscardProblemsDocument,
+    });
 
-  return (
-    <VStack spacing={6} align="stretch">
-      {problems.map(edge => (
-        <ProblemCard key={edge.id} problem={edge} />
-      ))}
-    </VStack>
-  );
+    const problems = problemData.bookmarkedWhatToDiscardProblems.edges.map(edge => edge.node);
+
+    return (
+      <VStack spacing={6} align="stretch">
+        {problems.map(edge => (
+          <ProblemCard key={edge.id} problem={edge} />
+        ))}
+      </VStack>
+    );
+  } catch (error) {
+    return <ErrorPage message={error.message} />;
+  }
 }

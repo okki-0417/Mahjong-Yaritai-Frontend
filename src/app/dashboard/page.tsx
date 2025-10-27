@@ -8,12 +8,15 @@ export const dynamic = "force-dynamic";
 export default async function Dashboard() {
   const client = getClient();
 
-  const { data, error } = await client.query({ query: CurrentSessionDocument });
+  try {
+    const { data } = await client.query({ query: CurrentSessionDocument });
 
-  if (error) return <ErrorPage message={error.message} />;
-  if (data.currentSession.isLoggedIn == false) redirect("/auth/request");
+    if (data.currentSession.isLoggedIn == false) redirect("/auth/request");
 
-  redirect("/what-to-discard-problems");
+    redirect("/what-to-discard-problems");
 
-  return <div className="bg-red-200 mt-20"></div>;
+    return <div className="bg-red-200 mt-20"></div>;
+  } catch (error) {
+    return <ErrorPage message={error.message} />;
+  }
 }

@@ -28,16 +28,6 @@ export default function Footer() {
               <Divider orientation="vertical" borderColor="white" />
             </Center>
 
-            <Link href="/learning">
-              <ListItem>
-                <ButtonNeutral>ハジメタイ</ButtonNeutral>
-              </ListItem>
-            </Link>
-
-            <Center h={8}>
-              <Divider orientation="vertical" borderColor="white" />
-            </Center>
-
             <Link href="/privacy">
               <ListItem>
                 <ButtonNeutral>プライバシーポリシー</ButtonNeutral>

@@ -7,21 +7,23 @@ import { getClient } from "@/src/lib/apollo/server";
 export default async function ProblemsSection() {
   const client = getClient();
 
-  const { data: problemsData, error } = await client.query({
-    query: WhatToDiscardProblemsDocument,
-    variables: {
-      first: 3,
-    },
-  });
+  try {
+    const { data: problemsData } = await client.query({
+      query: WhatToDiscardProblemsDocument,
+      variables: {
+        first: 3,
+      },
+    });
 
-  if (error) return <ErrorPage message={error.message} />;
+    const initialProblems = problemsData.whatToDiscardProblems.edges.map(edge => edge.node);
+    const pageInfo = problemsData.whatToDiscardProblems.pageInfo;
 
-  const initialProblems = problemsData.whatToDiscardProblems.edges.map(edge => edge.node);
-  const pageInfo = problemsData.whatToDiscardProblems.pageInfo;
-
-  return (
-    <ProblemsContextProvider initialProblems={initialProblems} initialPageInfo={pageInfo}>
-      <ProblemClientSection />
-    </ProblemsContextProvider>
-  );
+    return (
+      <ProblemsContextProvider initialProblems={initialProblems} initialPageInfo={pageInfo}>
+        <ProblemClientSection />
+      </ProblemsContextProvider>
+    );
+  } catch (error) {
+    return <ErrorPage message={error.message} />;
+  }
 }

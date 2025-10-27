@@ -6,12 +6,16 @@ import { redirect } from "next/navigation";
 
 export default async function UserCreateSection() {
   const client = getClient();
-  const { data, error } = await client.query({
-    query: CurrentSessionDocument,
-  });
 
-  if (error) return <ErrorPage message={error.message} />;
-  if (data.currentSession.isLoggedIn) redirect("/dashboard");
+  try {
+    const { data } = await client.query({
+      query: CurrentSessionDocument,
+    });
 
-  return <UserForm />;
+    if (data.currentSession.isLoggedIn) redirect("/dashboard");
+
+    return <UserForm />;
+  } catch (error) {
+    return <ErrorPage message={error.message} />;
+  }
 }

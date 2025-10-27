@@ -30,10 +30,10 @@ export function getClient(): ApolloClient {
       ssrMode: true,
       defaultOptions: {
         watchQuery: {
-          errorPolicy: "all",
+          errorPolicy: "none",
         },
         query: {
-          errorPolicy: "all",
+          errorPolicy: "none",
         },
       },
     });

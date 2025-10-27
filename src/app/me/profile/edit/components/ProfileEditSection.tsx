@@ -9,31 +9,34 @@ import { CiEdit } from "react-icons/ci";
 
 export default async function ProfileEditSection() {
   const client = getClient();
-  const { data: sessionData, error: sessionError } = await client.query({
-    query: CurrentUserProfileDocument,
-  });
 
-  if (sessionError) return <ErrorPage message={sessionError.message} />;
-  if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
+  try {
+    const { data: sessionData } = await client.query({
+      query: CurrentUserProfileDocument,
+    });
 
-  const { data: userData, error: userError } = await client.query({
-    query: CurrentUserProfileDocument,
-  });
+    if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
 
-  if (userError) return <ErrorPage message={userError.message} />;
-  const user = userData.currentSession.user;
+    const { data: userData } = await client.query({
+      query: CurrentUserProfileDocument,
+    });
 
-  return (
-    <>
-      <VStack gap="4" align="stretch">
-        <Link href="/me/profile">
-          <Button colorScheme="pink">
-            <CiEdit size={20} />
-          </Button>
-        </Link>
+    const user = userData.currentSession.user;
 
-        <ProfileEditForm user={user} />
-      </VStack>
-    </>
-  );
+    return (
+      <>
+        <VStack gap="4" align="stretch">
+          <Link href="/me/profile">
+            <Button colorScheme="pink">
+              <CiEdit size={20} />
+            </Button>
+          </Link>
+
+          <ProfileEditForm user={user} />
+        </VStack>
+      </>
+    );
+  } catch (error) {
+    return <ErrorPage message={error.message} />;
+  }
 }

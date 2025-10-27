@@ -1,10 +1,12 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Container } from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Container, Text } from "@chakra-ui/react";
 
 type Props = {
   message: string;
 };
 
 export default function ErrorPage({ message }: Props) {
+  const errorMessage = message || "不明なエラーが発生しました。";
+
   return (
     <Container mt="20" maxW="2xl" mb="20">
       <Alert
@@ -18,11 +20,11 @@ export default function ErrorPage({ message }: Props) {
         <AlertIcon boxSize="40px" mr={0} />
 
         <AlertTitle mt={4} mb={1} fontSize="lg">
-          エラーが発生しました
+          <Text color="red.700">エラーが発生しました</Text>
         </AlertTitle>
 
-        <AlertDescription mt="2" ml="8">
-          {message}
+        <AlertDescription mt="2">
+          <Text color="red.700">{errorMessage}</Text>
         </AlertDescription>
       </Alert>
     </Container>

@@ -9,7 +9,7 @@ type Props = {
   }>;
 };
 
-export async function UserShow({ params }: Props) {
+export default async function UserShow({ params }: Props) {
   const { id } = await params;
 
   return (

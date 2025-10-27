@@ -11,6 +11,8 @@ type Props = {
 };
 
 export default function UserProfile({ user, isMyProfile = false }: Props) {
+  if (!user) return <Box>ユーザーが見つかりません。</Box>;
+
   return (
     <VStack gap="4" align="stretch">
       {isMyProfile && (

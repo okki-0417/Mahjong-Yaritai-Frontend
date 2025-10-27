@@ -6,19 +6,22 @@ import ErrorPage from "@/src/components/errors/ErrorPage";
 
 export default async function ProfileSection() {
   const client = getClient();
-  const { data: sessionData, error: sessionError } = await client.query({
-    query: CurrentUserProfileDocument,
-  });
 
-  if (sessionError) return <ErrorPage message={sessionError.message} />;
-  if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
+  try {
+    const { data: sessionData } = await client.query({
+      query: CurrentUserProfileDocument,
+    });
 
-  const { data: userData, error: userError } = await client.query({
-    query: CurrentUserProfileDocument,
-  });
+    if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
 
-  if (userError) return <ErrorPage message={userError.message} />;
-  const user = userData.currentSession.user;
+    const { data: userData } = await client.query({
+      query: CurrentUserProfileDocument,
+    });
 
-  return <UserProfile user={user} isMyProfile={true} />;
+    const user = userData.currentSession.user;
+
+    return <UserProfile user={user} isMyProfile={true} />;
+  } catch (error) {
+    return <ErrorPage message={error.message} />;
+  }
 }

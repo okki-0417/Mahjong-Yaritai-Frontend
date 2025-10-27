@@ -7,16 +7,19 @@ import ErrorPage from "@/src/components/errors/ErrorPage";
 
 export default async function AuthRequestSection() {
   const client = getClient();
-  const { data, error } = await client.query({ query: CurrentUserProfileDocument });
 
-  if (error) return <ErrorPage message={error.message} />;
+  try {
+    const { data } = await client.query({ query: CurrentUserProfileDocument });
 
-  if (data.currentSession.isLoggedIn) redirect("/what-to-discard-problems");
+    if (data.currentSession.isLoggedIn) redirect("/what-to-discard-problems");
 
-  return (
-    <>
-      <SocialLoginSection />
-      <AuthRequestForm />
-    </>
-  );
+    return (
+      <>
+        <SocialLoginSection />
+        <AuthRequestForm />
+      </>
+    );
+  } catch (error) {
+    return <ErrorPage message={error.message} />;
+  }
 }
