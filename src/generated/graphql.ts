@@ -21,7 +21,7 @@ export type Scalars = {
   /** An ISO 8601-encoded datetime */
   ISO8601DateTime: { input: any; output: any };
   /** Represents an uploaded file */
-  Upload: { input: any; output: any };
+  Upload: { input: File; output: File };
 };
 
 export type Bookmark = {
