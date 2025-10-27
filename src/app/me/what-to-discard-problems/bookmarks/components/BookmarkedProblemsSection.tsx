@@ -5,34 +5,30 @@ import {
 import { getClient } from "@/src/lib/apollo/server";
 import { VStack } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
+import ErrorPage from "@/src/components/errors/ErrorPage";
+import ProblemCard from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard";
 
 export default async function BookmarkedProblemsSection() {
   const client = getClient();
-  const { data: sessionData } = await client.query({
+  const { data: sessionData, error: sessionError } = await client.query({
     query: CurrentUserProfileDocument,
   });
 
-  if (!sessionData.currentSession.isLoggedIn) redirect("/auth/request");
+  if (sessionError) return <ErrorPage message={sessionError.message} />;
+  if (sessionData.currentSession.isLoggedIn == false) redirect("/auth/request");
 
-  const { data: problemData, error } = await client.query({
+  const { data: problemData, error: problemError } = await client.query({
     query: BookmarkedWhatToDiscardProblemsDocument,
   });
 
-  if (error) {
-    return (
-      <div>
-        <div>失敗</div>
-        <div>Error: {error.message}</div>
-      </div>
-    );
-  } else {
-    return (
-      <VStack spacing={6} align="stretch">
-        <div>成功</div>
-        {problemData.bookmarkedWhatToDiscardProblems.edges.map(edge => (
-          <div key={edge.node.id}>{edge.node.user.name}</div>
-        ))}
-      </VStack>
-    );
-  }
+  if (problemError) return <ErrorPage message={problemError.message} />;
+  const problems = problemData.bookmarkedWhatToDiscardProblems.edges.map(edge => edge.node);
+
+  return (
+    <VStack spacing={6} align="stretch">
+      {problems.map(edge => (
+        <ProblemCard key={edge.id} problem={edge} />
+      ))}
+    </VStack>
+  );
 }
