@@ -1,3 +1,5 @@
+"use client";
+
 import { User } from "@/src/generated/graphql";
 import { Box, Button, Circle, HStack, Image, Text } from "@chakra-ui/react";
 import Link from "next/link";

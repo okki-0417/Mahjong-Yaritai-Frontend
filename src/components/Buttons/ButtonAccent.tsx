@@ -1,3 +1,5 @@
+"use client";
+
 import PopButton, { ButtonType } from "@/src/components/PopButton";
 import { ReactNode } from "react";
 

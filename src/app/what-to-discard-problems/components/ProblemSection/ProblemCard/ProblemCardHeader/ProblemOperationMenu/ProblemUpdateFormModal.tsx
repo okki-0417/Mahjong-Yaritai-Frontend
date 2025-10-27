@@ -1,3 +1,5 @@
+"use client";
+
 import ProblemUpdateForm from "@/src/app/what-to-discard-problems/components/forms/ProblemUpdateForm";
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
 import {

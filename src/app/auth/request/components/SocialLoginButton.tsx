@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Circle, HStack, Text } from "@chakra-ui/react";
 import Image from "next/image";
 

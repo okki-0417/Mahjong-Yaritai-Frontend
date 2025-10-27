@@ -1,3 +1,5 @@
+"use client";
+
 import PopButton from "@/src/components/PopButton";
 import TileImage from "@/src/components/TileImage";
 import {

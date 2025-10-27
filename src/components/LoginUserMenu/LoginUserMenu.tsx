@@ -33,7 +33,7 @@ export default function LoginUserMenu() {
           <label
             htmlFor="login-user-menu"
             className="absolute left-4 top-2 z-20 inline-block cursor-pointer rounded-full">
-            <UserIcon user={profile} />
+            {profile && <UserIcon user={profile} />}
           </label>
 
           <label

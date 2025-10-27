@@ -34,7 +34,7 @@ import Tile32 from "@/public/tiles/32.webp";
 import Tile33 from "@/public/tiles/33.webp";
 import Tile34 from "@/public/tiles/34.webp";
 import tileNameById from "@/src/lib/utils/tileNameById";
-import { Center, Skeleton } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 
 export const tileImagePathByTileId: Record<number, StaticImageData> = {
   1: Tile1,
@@ -87,22 +87,19 @@ export default function TileImage({
   isShiny?: boolean;
 }) {
   const src = tileImagePathByTileId[tileId || tile];
+  const alt = tileNameById[tileId || tile] || "";
 
   return (
     <Center className="aspect-tile relative overflow-hidden">
-      {src ? (
-        <Image
-          width={47}
-          height={63}
-          src={tileImagePathByTileId[tileId || tile]}
-          alt={tileNameById[tileId || tile] || ""}
-          draggable="false"
-          className={`transition-all rounded ${className} ${hover && "hover:scale-110"}`}
-          loading="lazy"
-        />
-      ) : (
-        <Skeleton height="full" className="aspect-tile" borderRadius="sm" />
-      )}
+      <Image
+        width={47}
+        height={63}
+        src={src}
+        alt={alt}
+        draggable="false"
+        className={`transition-all rounded ${className} ${hover && "hover:scale-110"}`}
+        loading="lazy"
+      />
 
       <div className={`${isShiny ? "shining-tile" : "hidden"}`} />
     </Center>
