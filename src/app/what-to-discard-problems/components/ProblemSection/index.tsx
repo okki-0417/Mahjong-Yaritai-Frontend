@@ -8,6 +8,7 @@ export default async function ProblemsSection() {
   const client = getClient();
 
   try {
+    console.log("Fetching what to discard problems...");
     const { data: problemsData } = await client.query({
       query: WhatToDiscardProblemsDocument,
       variables: {
@@ -17,6 +18,8 @@ export default async function ProblemsSection() {
 
     const initialProblems = problemsData.whatToDiscardProblems.edges.map(edge => edge.node);
     const pageInfo = problemsData.whatToDiscardProblems.pageInfo;
+
+    console.log("Fetched what to discard problems:", initialProblems);
 
     return (
       <ProblemsContextProvider initialProblems={initialProblems} initialPageInfo={pageInfo}>
