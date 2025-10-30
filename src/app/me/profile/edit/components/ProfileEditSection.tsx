@@ -5,6 +5,7 @@ import { getClient } from "@/src/lib/apollo/server";
 import { Button, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { CiEdit } from "react-icons/ci";
 
 export default async function ProfileEditSection() {
@@ -37,6 +38,12 @@ export default async function ProfileEditSection() {
       </>
     );
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
+    /* eslint-disable-next-line no-console */
+    console.error("ProfileEditSection error:", error);
     return <ErrorPage message={error.message} />;
   }
 }

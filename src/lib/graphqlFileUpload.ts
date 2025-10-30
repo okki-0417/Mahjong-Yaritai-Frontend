@@ -1,5 +1,7 @@
 "use client";
 
+import { API_BASE_URL } from "@/config/apiConfig";
+
 // @deprecated このライブラリは非推奨です
 // 新しい実装では Apollo Client + apollo-upload-client を使用してください
 // 詳細: docs/GraphQLPatterns.md
@@ -25,7 +27,7 @@ export async function executeFileUploadMutation({ query, variables }: GraphQLFil
   const processedVariables = processVariables(variables, formData);
   formData.append("variables", JSON.stringify(processedVariables));
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const apiUrl = API_BASE_URL || "http://localhost:3001";
   const response = await fetch(`${apiUrl}/graphql`, {
     method: "POST",
     // Cookie認証のため

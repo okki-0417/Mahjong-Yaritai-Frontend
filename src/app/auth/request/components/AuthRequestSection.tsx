@@ -4,6 +4,7 @@ import { CurrentUserProfileDocument } from "@/src/generated/graphql";
 import { getClient } from "@/src/lib/apollo/server";
 import { redirect } from "next/navigation";
 import ErrorPage from "@/src/components/errors/ErrorPage";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export default async function AuthRequestSection() {
   const client = getClient();
@@ -20,6 +21,12 @@ export default async function AuthRequestSection() {
       </>
     );
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
+    /* eslint-disable-next-line no-console */
+    console.error("AuthRequestSection error:", error);
     return <ErrorPage message={error.message} />;
   }
 }

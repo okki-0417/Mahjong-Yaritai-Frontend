@@ -14,6 +14,8 @@ export default async function UserProfileSection({ id }: { id: string }) {
 
     return <UserProfile user={data.user} />;
   } catch (error) {
+    /* eslint-disable-next-line no-console */
+    console.error("UserProfileSection error:", error);
     return <ErrorPage message={error.message} />;
   }
 }

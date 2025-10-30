@@ -14,6 +14,8 @@ export default async function Dashboard() {
     const { data } = await client.query({ query: CurrentSessionDocument });
     sessionData = data;
   } catch (error) {
+    /* eslint-disable-next-line no-console */
+    console.error("Dashboard error:", error);
     return <ErrorPage message={error.message} />;
   }
 

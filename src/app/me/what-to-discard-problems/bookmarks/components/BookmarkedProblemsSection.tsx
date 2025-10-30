@@ -5,6 +5,7 @@ import {
 import { getClient } from "@/src/lib/apollo/server";
 import { VStack } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import ProblemCard from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard";
 
@@ -32,6 +33,12 @@ export default async function BookmarkedProblemsSection() {
       </VStack>
     );
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
+    /* eslint-disable-next-line no-console */
+    console.error("BookmarkedProblemsSection error:", error);
     return <ErrorPage message={error.message} />;
   }
 }
