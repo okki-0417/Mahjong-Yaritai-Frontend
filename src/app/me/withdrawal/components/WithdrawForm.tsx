@@ -11,11 +11,12 @@ import { useForm } from "react-hook-form";
 export default function WithdrawForm() {
   const router = useRouter();
   const toast = useToast();
-  const { refetch } = useGetSession();
+  const { triggerSessionRefetch } = useGetSession();
 
   const [withdrawUser] = useMutation<WithdrawUserMutation>(WithdrawUserDocument, {
-    onCompleted: async () => {
-      await refetch();
+    onCompleted: () => {
+      triggerSessionRefetch();
+
       toast({
         title: "退会が完了しました",
         description: "ご利用ありがとうございました。",

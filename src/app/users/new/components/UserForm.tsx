@@ -34,13 +34,13 @@ export default function UserForm() {
   const toast = useToast();
 
   const router = useRouter();
-  const { refetch } = useGetSession();
+  const { triggerSessionRefetch } = useGetSession();
 
   const [createUser] = useMutation<CreateUserMutation, CreateUserMutationVariables>(
     CreateUserDocument,
     {
-      onCompleted: async () => {
-        await refetch();
+      onCompleted: () => {
+        triggerSessionRefetch();
 
         toast({
           status: "success",

@@ -21,7 +21,7 @@ import useGetSession from "@/src/hooks/useGetSession";
 export default function GoogleVerification() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { refetch } = useGetSession();
+  const { triggerSessionRefetch } = useGetSession();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +38,7 @@ export default function GoogleVerification() {
       try {
         const response = await apiClient.createGoogleCallback({ code });
         // セッション情報を再取得
-        await refetch();
+        triggerSessionRefetch();
 
         if (response.session?.is_logged_in) {
           router.push("/dashboard");
@@ -53,7 +53,7 @@ export default function GoogleVerification() {
     };
 
     handleCallback();
-  }, [searchParams, router, refetch]);
+  }, [triggerSessionRefetch, router, searchParams]);
 
   if (isProcessing) {
     return (

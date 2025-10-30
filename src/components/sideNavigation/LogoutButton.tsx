@@ -5,47 +5,44 @@ import { useRouter } from "next/navigation";
 import { IoMdLogOut } from "react-icons/io";
 import { useMutation } from "@apollo/client/react";
 import { LogoutUserDocument, LogoutUserMutation } from "@/src/generated/graphql";
-import useGetSession from "@/src/hooks/useGetSession";
 import { useForm } from "react-hook-form";
+import useGetSession from "@/src/hooks/useGetSession";
 
 export default function LogoutSection() {
   const toast = useToast();
   const router = useRouter();
-  const { refetch } = useGetSession();
+
+  const { triggerSessionRefetch } = useGetSession();
 
   const {
     formState: { isSubmitting },
     handleSubmit,
   } = useForm();
 
-  const [logoutUser] = useMutation<LogoutUserMutation>(LogoutUserDocument);
+  const [logoutUser] = useMutation<LogoutUserMutation>(LogoutUserDocument, {
+    onCompleted: () => {
+      triggerSessionRefetch();
 
-  const onSubmit = async () => {
-    const isConfirmed = confirm("ログアウトしますか？");
-    if (!isConfirmed) return;
-
-    const { data, error } = await logoutUser();
-
-    if (error) {
+      toast({
+        title: "ログアウトしました。",
+        status: "success",
+      });
+      router.push("/");
+    },
+    onError: error => {
       toast({
         title: "ログアウトに失敗しました。",
         description: error.message,
         status: "error",
       });
-      return;
-    }
+    },
+  });
 
-    if (data) {
-      toast({
-        title: "ログアウトしました。",
-        status: "success",
-      });
+  const onSubmit = async () => {
+    const isConfirmed = confirm("ログアウトしますか？");
+    if (!isConfirmed) return;
 
-      // セッション情報を再取得
-      await refetch();
-
-      router.push("/");
-    }
+    await logoutUser();
   };
 
   return (
