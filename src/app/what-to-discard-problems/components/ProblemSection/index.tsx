@@ -27,6 +27,8 @@ export default async function ProblemsSection() {
       </ProblemsContextProvider>
     );
   } catch (error) {
+    /* eslint-disable-next-line no-console */
+    console.error(error);
     return <ErrorPage message={error.message} />;
   }
 }
