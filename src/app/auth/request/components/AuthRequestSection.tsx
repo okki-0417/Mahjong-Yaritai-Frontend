@@ -20,6 +20,8 @@ export default async function AuthRequestSection() {
       </>
     );
   } catch (error) {
+    /* eslint-disable-next-line no-console */
+    console.error(error);
     return <ErrorPage message={error.message} />;
   }
 }
