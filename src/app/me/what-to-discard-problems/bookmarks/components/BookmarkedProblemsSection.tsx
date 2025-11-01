@@ -25,13 +25,17 @@ export default async function BookmarkedProblemsSection() {
 
     const problems = problemData.bookmarkedWhatToDiscardProblems.edges.map(edge => edge.node);
 
-    return (
-      <VStack spacing={6}>
-        {problems.map(edge => (
-          <ProblemCard key={edge.id} problem={edge} />
-        ))}
-      </VStack>
-    );
+    if (problems.length == 0) {
+      return <div>まだブックマークした問題はありません。</div>;
+    } else {
+      return (
+        <VStack spacing={6}>
+          {problems.map(edge => (
+            <ProblemCard key={edge.id} problem={edge} />
+          ))}
+        </VStack>
+      );
+    }
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
