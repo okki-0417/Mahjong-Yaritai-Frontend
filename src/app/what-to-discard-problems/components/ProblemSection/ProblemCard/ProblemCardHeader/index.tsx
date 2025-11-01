@@ -41,12 +41,10 @@ export default function ProblemCardHeader({ problem }: Props) {
         </HStack>
       </Button>
 
-      {isMyProblem ? (
-        <HStack spacing={2}>
-          {!isMyProblem && <BookmarkButton problem={problem} />}
-          <ProblemOperationMenu problem={problem} isMyProblem={isMyProblem} />
-        </HStack>
-      ) : null}
+      <HStack spacing={2}>
+        {!isMyProblem && <BookmarkButton problem={problem} />}
+        {isMyProblem && <ProblemOperationMenu problem={problem} isMyProblem={isMyProblem} />}
+      </HStack>
 
       <UserModal
         user={problem.user}

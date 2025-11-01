@@ -26,7 +26,7 @@ export default async function BookmarkedProblemsSection() {
     const problems = problemData.bookmarkedWhatToDiscardProblems.edges.map(edge => edge.node);
 
     return (
-      <VStack spacing={6} align="stretch">
+      <VStack spacing={6}>
         {problems.map(edge => (
           <ProblemCard key={edge.id} problem={edge} />
         ))}
