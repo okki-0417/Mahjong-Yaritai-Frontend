@@ -11,6 +11,7 @@ export default async function GoogleVerification({ code }: Props) {
   const client = await createApiPageClient();
 
   try {
+    console.log("Google verification code:", code);
     const response = await client.createGoogleCallback({ code });
     const session = response.session;
 
@@ -21,6 +22,9 @@ export default async function GoogleVerification({ code }: Props) {
     }
   } catch (error) {
     if (isRedirectError(error)) throw error;
+
+    /* eslint-disable-next-line no-console */
+    console.error("Google verification failed:", error);
 
     return <ErrorPage message={error.message || "認証に失敗しました"} />;
   }
