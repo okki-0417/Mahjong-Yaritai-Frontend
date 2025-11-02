@@ -6,7 +6,7 @@ import {
   DeleteWhatToDiscardProblemMutation,
   DeleteWhatToDiscardProblemMutationVariables,
 } from "@/src/generated/graphql";
-import { Button, HStack, MenuItem, useToast } from "@chakra-ui/react";
+import { HStack, MenuItem, useToast } from "@chakra-ui/react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useMutation } from "@apollo/client/react";
 import useProblems from "@/src/app/what-to-discard-problems/hooks/useProblems";
@@ -59,14 +59,10 @@ export default function ProblemDeleteItem({ problem }: Props) {
 
   return (
     <MenuItem onClick={handleDelete} isDisabled={loading}>
-      <form onSubmit={handleDelete}>
-        <Button type="submit">
-          <HStack>
-            <AiOutlineDelete size={18} color="red" />
-            <span className="text-red-500">削除する</span>
-          </HStack>
-        </Button>
-      </form>
+      <HStack>
+        <AiOutlineDelete size={18} color="red" />
+        <span className="text-red-500">削除する</span>
+      </HStack>
     </MenuItem>
   );
 }
