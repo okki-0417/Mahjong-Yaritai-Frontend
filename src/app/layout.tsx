@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="mb-16">
                   <Header />
                 </div>
-                {children}
+                <div className="flex-grow flex items-stretch">{children}</div>
                 <Footer />
               </main>
             </SessionProvider>

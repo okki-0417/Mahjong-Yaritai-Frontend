@@ -79,15 +79,17 @@ export default function BookmarkButton({ problem }: Props) {
     formState: { isSubmitting },
   } = useForm();
 
-  const onSubmit: SubmitHandler<{}> = () => {
+  const onSubmit: SubmitHandler<{}> = async () => {
+    await (() => new Promise(resolve => setTimeout(resolve, 500)))();
+
     if (!session?.isLoggedIn) {
       onNotLoggedInModalOpen();
       return;
     }
     if (isBookmarked) {
-      deleteBookmark({ variables: { problemId: String(problem.id) } });
+      await deleteBookmark({ variables: { problemId: String(problem.id) } });
     } else {
-      createBookmark({ variables: { problemId: String(problem.id) } });
+      await createBookmark({ variables: { problemId: String(problem.id) } });
     }
   };
 

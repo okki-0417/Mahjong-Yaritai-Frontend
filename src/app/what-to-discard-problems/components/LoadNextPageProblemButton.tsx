@@ -33,11 +33,6 @@ export default function LoadNextPageProblemButton() {
       const newProblems = data.whatToDiscardProblems.edges.map((edge: any) => edge.node);
       const newPageInfo = data.whatToDiscardProblems.pageInfo;
 
-      toast({
-        title: "さらに問題を読み込みました",
-        status: "success",
-      });
-
       setProblems(prevProblems => [...prevProblems, ...newProblems]);
       setPageInfo(newPageInfo);
     }
@@ -46,8 +41,8 @@ export default function LoadNextPageProblemButton() {
   return (
     <>
       {pageInfo.hasNextPage ? (
-        <Button isLoading={loading} onClick={handleLoadNextPage}>
-          さらに読み込む
+        <Button isLoading={loading} onClick={handleLoadNextPage} variant="outline">
+          <Text className="text-neutral">さらに読み込む</Text>
         </Button>
       ) : (
         <Text>これ以上問題はありません</Text>
