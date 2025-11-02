@@ -1,28 +1,45 @@
-import { redirect } from "next/navigation";
-import createApiPageClient from "@/src/lib/api/server";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { apiClient } from "@/src/lib/api/client";
 import ErrorPage from "@/src/components/errors/ErrorPage";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import Fallback from "@/src/components/fallbacks/Fallback";
 
 type Props = { code: string };
 
-export default async function GoogleVerification({ code }: Props) {
-  const client = await createApiPageClient();
+// サーバーコンポーネントのAPI通信ではレスポンスのSetCookieがブラウザに反映されないため、
+// クライアントコンポーネントにする必要がある。
+export default function GoogleVerification({ code }: Props) {
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
 
-  try {
-    const response = await client.createGoogleCallback({ code });
-    const session = response.session;
+  useEffect(() => {
+    if (isVerified) return;
 
-    if (session?.is_logged_in) {
-      redirect("/dashboard");
-    } else {
-      redirect("/users/new");
-    }
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
+    const verifyGoogleCallback = async () => {
+      try {
+        const response = await apiClient.createGoogleCallback({ code });
+        const session = response.session;
 
-    /* eslint-disable-next-line no-console */
-    console.error("Google verification failed:", error);
+        if (session?.is_logged_in) {
+          router.push("/dashboard");
+        } else {
+          router.push("/users/new");
+        }
+      } catch (error) {
+        setErrorMessage(error.message || "認証に失敗しました");
+      }
+    };
 
-    return <ErrorPage message={error.message || "認証に失敗しました"} />;
+    verifyGoogleCallback();
+    setIsVerified(true);
+  }, [code, router, isVerified]);
+
+  if (errorMessage) {
+    return <ErrorPage message={errorMessage} />;
   }
+
+  return <Fallback />;
 }
