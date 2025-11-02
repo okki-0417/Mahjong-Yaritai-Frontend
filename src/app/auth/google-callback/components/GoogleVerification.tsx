@@ -5,15 +5,17 @@ import { useRouter } from "next/navigation";
 import { apiClient } from "@/src/lib/api/client";
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import Fallback from "@/src/components/fallbacks/Fallback";
+import useGetSession from "@/src/hooks/useGetSession";
 
 type Props = { code: string };
 
 // サーバーコンポーネントのAPI通信ではレスポンスのSetCookieがブラウザに反映されないため、
 // クライアントコンポーネントにする必要がある。
 export default function GoogleVerification({ code }: Props) {
-  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
+  const router = useRouter();
+  const { updateSession } = useGetSession();
 
   useEffect(() => {
     if (isVerified) return;
@@ -22,8 +24,11 @@ export default function GoogleVerification({ code }: Props) {
       try {
         const response = await apiClient.createGoogleCallback({ code });
         const session = response.session;
+        if (!session) throw new Error("正常に認証できませんでした。");
 
-        if (session?.is_logged_in) {
+        await updateSession();
+
+        if (session.is_logged_in) {
           router.push("/dashboard");
         } else {
           router.push("/users/new");
@@ -35,7 +40,7 @@ export default function GoogleVerification({ code }: Props) {
 
     verifyGoogleCallback();
     setIsVerified(true);
-  }, [code, router, isVerified]);
+  }, [code, router, isVerified, updateSession]);
 
   if (errorMessage) {
     return <ErrorPage message={errorMessage} />;
