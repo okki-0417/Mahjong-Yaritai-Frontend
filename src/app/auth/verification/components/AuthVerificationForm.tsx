@@ -22,11 +22,11 @@ type AuthVerificationFormData = {
 export default function AuthVerificationForm() {
   const router = useRouter();
   const toast = useToast();
-  const { triggerSessionRefetch } = useGetSession();
+  const { updateSession } = useGetSession();
 
   const [verifyAuth] = useMutation(VerifyAuthDocument, {
-    onCompleted: data => {
-      triggerSessionRefetch();
+    onCompleted: async data => {
+      await updateSession();
 
       if (data.verifyAuth?.user) {
         toast({

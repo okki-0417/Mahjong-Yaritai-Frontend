@@ -12,7 +12,7 @@ export default function LogoutSection() {
   const toast = useToast();
   const router = useRouter();
 
-  const { triggerSessionRefetch } = useGetSession();
+  const { updateSession } = useGetSession();
 
   const {
     formState: { isSubmitting },
@@ -20,8 +20,8 @@ export default function LogoutSection() {
   } = useForm();
 
   const [logoutUser] = useMutation<LogoutUserMutation>(LogoutUserDocument, {
-    onCompleted: () => {
-      triggerSessionRefetch();
+    onCompleted: async () => {
+      await updateSession();
 
       toast({
         title: "ログアウトしました。",

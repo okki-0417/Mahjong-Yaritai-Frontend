@@ -21,7 +21,7 @@ import useGetSession from "@/src/hooks/useGetSession";
 export default function LineVerification() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { triggerSessionRefetch } = useGetSession();
+  const { updateSession } = useGetSession();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,8 +42,8 @@ export default function LineVerification() {
     const handleCallback = async () => {
       try {
         const response = await apiClient.createLineCallback({ code, state });
-        // セッション情報を再取得
-        triggerSessionRefetch();
+
+        await updateSession();
 
         if (response.session?.is_logged_in) {
           router.push("/dashboard");
@@ -58,7 +58,7 @@ export default function LineVerification() {
     };
 
     handleCallback();
-  }, [searchParams, router, triggerSessionRefetch]);
+  }, [searchParams, router, updateSession]);
 
   if (isProcessing) {
     return (
