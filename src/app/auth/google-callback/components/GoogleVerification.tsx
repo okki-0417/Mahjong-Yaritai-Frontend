@@ -3,15 +3,12 @@ import createApiPageClient from "@/src/lib/api/server";
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
-type Props = {
-  code: string;
-};
+type Props = { code: string };
 
 export default async function GoogleVerification({ code }: Props) {
   const client = await createApiPageClient();
 
   try {
-    console.log("Google verification code:", code);
     const response = await client.createGoogleCallback({ code });
     const session = response.session;
 
