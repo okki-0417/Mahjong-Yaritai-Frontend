@@ -41,6 +41,5 @@ query WhatToDiscardProblem($id: ID!) {
       createdAt
       updatedAt
     }
-
   }
 }

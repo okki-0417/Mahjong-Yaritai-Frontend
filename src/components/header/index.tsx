@@ -11,18 +11,20 @@ import {
 import Link from "next/link";
 import ButtonNeutral from "@/src/components/Buttons/ButtonNeutral";
 import Image from "next/image";
-import LoginSection from "@/src/components/header/LoginSection";
+import LoginSection from "@/src/components/Header/LoginSection";
 import { Fragment } from "react";
-import SideNavigation from "@/src/components/sideNavigation/SideNavigation";
+import SideNavigation from "@/src/components/Header/SideNavigation";
 import LogoImg from "@/public/logo.webp";
-import LoginUserMenu from "@/src/components/LoginUserMenu/LoginUserMenu";
+import HeaderUserAvatar from "@/src/components/Header/HeaderUserAvatar";
 
 export default function Header() {
   return (
     <Fragment>
       <Box as="header" w="full" zIndex="50" position="fixed" top="0" left="0" shadow="md">
         <Center as="nav" h="16" position="relative" className="bg-primary">
-          <LoginUserMenu />
+          <Circle size="12" position="absolute" left="4">
+            <HeaderUserAvatar />
+          </Circle>
 
           <Container maxW="5xl">
             <HStack

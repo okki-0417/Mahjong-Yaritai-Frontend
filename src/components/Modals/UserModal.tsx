@@ -1,9 +1,8 @@
 "use client";
 
 import {
+  Avatar,
   Box,
-  Circle,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,6 +17,7 @@ import FollowButton from "@/src/components/FollowButton";
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client/react";
 import { User, UserProfileDocument, UserProfileQuery } from "@/src/generated/graphql";
+import { canFollow } from "@/src/lib/utils/canFollow";
 
 type Props = {
   user: User;
@@ -58,15 +58,7 @@ export default function UserModal({
 
         <ModalBody>
           <VStack spacing={4} align="center">
-            <Circle size="xs" overflow="hidden" border="1px" borderColor="gray.300">
-              <Image
-                src={user.avatarUrl || "/no-image.webp"}
-                alt={`${user.name}のアバター`}
-                w="full"
-                h="full"
-                objectFit="cover"
-              />
-            </Circle>
+            <Avatar src={user.avatarUrl} size="2xl" />
 
             <Box textAlign="center">
               <Text fontSize="xl" fontWeight="bold" mb={2}>
@@ -82,7 +74,7 @@ export default function UserModal({
         </ModalBody>
 
         <ModalFooter>
-          {currentUserId && String(currentUserId) !== String(user.id) && (
+          {canFollow(currentUserId, user.id) && (
             <FollowButton
               userId={user.id}
               initialIsFollowing={followState}

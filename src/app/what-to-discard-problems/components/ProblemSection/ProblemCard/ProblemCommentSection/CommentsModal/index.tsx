@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import CommentForm from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCommentSection/CommentsModal/CommentForm";
 import { Comment } from "@/src/generated/graphql";
-import ParentCommentCard from "@/src/components/ParentCommentCard";
+import ParentCommentCard from "@/src/components/CommentCard/ParentCommentCard";
 
 type Props = {
   isOpen: boolean;

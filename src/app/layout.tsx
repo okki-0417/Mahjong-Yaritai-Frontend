@@ -1,7 +1,7 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import "@/src/styles/globals.css";
 import { Metadata } from "next";
-import Header from "@/src/components/header/Header";
+import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import { SessionProvider } from "@/src/contexts/SessionProvider";
 import AppolloProviderWrapper from "@/src/contexts/AppolloProviderWrapper";
@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="mb-16">
                   <Header />
                 </div>
-                <div className="flex-grow flex items-stretch">{children}</div>
+                <div className="flex-grow w-screen flex items-stretch">{children}</div>
                 <Footer />
               </main>
             </SessionProvider>

@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div>
-      <div className="w-full h-[650px] relative">
+    <div className="w-full">
+      <div className="h-[650px] relative">
         <div className="absolute top-1/2 -translate-y-1/2 w-full text-white z-20 flex sm:flex-col flex-row-reverse justify-center items-center sm:gap-0 gap-2 sm:pr-0 pr-8">
           <h1 className="fade-in sm:text-center text-start font-bold sm:text-[clamp(0px,10vw,120px)] text-7xl sm:[writing-mode:_horizontal-tb] [writing-mode:_vertical-rl] tracking-widest">
             麻雀

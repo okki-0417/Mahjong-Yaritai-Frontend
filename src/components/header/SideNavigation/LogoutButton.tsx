@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, HStack, Text, useToast } from "@chakra-ui/react";
+import { Button, Grid, GridItem, Text, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { IoMdLogOut } from "react-icons/io";
 import { useMutation } from "@apollo/client/react";
@@ -8,7 +8,7 @@ import { LogoutUserDocument, LogoutUserMutation } from "@/src/generated/graphql"
 import { useForm } from "react-hook-form";
 import useGetSession from "@/src/hooks/useGetSession";
 
-export default function LogoutSection() {
+export default function LogoutButton() {
   const toast = useToast();
   const router = useRouter();
 
@@ -49,20 +49,17 @@ export default function LogoutSection() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Button
         type="submit"
-        w="full"
-        py={3}
-        px={4}
-        borderRadius="md"
-        color="red.500"
-        variant="ghost"
-        _hover={{ bg: "red.50" }}
-        isLoading={isSubmitting}
-        leftIcon={<IoMdLogOut />}
-        justifyContent="start"
-        transition="background-color 0.2s">
-        <HStack w="full" justify="start">
-          <Text fontSize="lg">ログアウト</Text>
-        </HStack>
+        colorScheme=""
+        className="w-full py-3 px-4 rounded hover:bg-gray-600 transition-colors"
+        isLoading={isSubmitting}>
+        <Grid w="full" h="full" templateColumns="repeat(8, 1fr)">
+          <GridItem colSpan={1}>
+            <IoMdLogOut size={20} />
+          </GridItem>
+          <GridItem colSpan={7} textAlign="left">
+            <Text>ログアウト</Text>
+          </GridItem>
+        </Grid>
       </Button>
     </form>
   );

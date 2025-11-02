@@ -2,7 +2,7 @@
 
 import UserModal from "@/src/components/Modals/UserModal";
 import BookmarkButton from "@/src/components/BookmarkButton";
-import { Button, Circle, HStack, Image, Text, useDisclosure } from "@chakra-ui/react";
+import { Avatar, Button, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
 
 import useGetSession from "@/src/hooks/useGetSession";
@@ -28,15 +28,7 @@ export default function ProblemCardHeader({ problem }: Props) {
     <HStack justifyContent="space-between">
       <Button onClick={onUserModalOpen} colorScheme="" p="0">
         <HStack>
-          <Circle overflow="hidden" size={["7", "9"]}>
-            <Image
-              src={problem.user.avatarUrl || "/no-image.webp"}
-              alt={problem.user.name}
-              w="full"
-              h="full"
-              objectFit="cover"
-            />
-          </Circle>
+          <Avatar src={problem.user.avatarUrl} size="sm" />
           <Text fontSize="sm">{problem.user.name}</Text>
         </HStack>
       </Button>

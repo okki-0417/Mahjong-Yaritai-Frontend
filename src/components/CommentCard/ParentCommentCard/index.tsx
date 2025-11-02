@@ -1,6 +1,6 @@
 "use client";
 
-import FetchRepliesButton from "@/src/components/ParentCommentCard/FetchRepliesButton";
+import FetchRepliesButton from "@/src/components/CommentCard/ParentCommentCard/FetchRepliesButton";
 import { Comment } from "@/src/generated/graphql";
 import { Box, Button, Circle, HStack, Img, Text, useDisclosure, VStack } from "@chakra-ui/react";
 import { useState } from "react";
@@ -8,7 +8,7 @@ import { MdOutlineReply } from "react-icons/md";
 import useGetSession from "@/src/hooks/useGetSession";
 import UserModal from "@/src/components/Modals/UserModal";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
-import ChildCommentCard from "@/src/components/ChildCommentCard";
+import ChildCommentCard from "@/src/components/CommentCard/ChildCommentCard";
 
 type Props = {
   comment: Comment;

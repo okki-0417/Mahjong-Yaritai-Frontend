@@ -43,7 +43,7 @@ const UPDATE_USER_MUTATION = gql`
 function MyComponent() {
   const [updateUser, { loading }] = useMutation(UPDATE_USER_MUTATION);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async formData => {
     const variables = {
       input: {
         name: formData.name,
@@ -99,12 +99,14 @@ try {
 ## GraphQL vs REST使い分け
 
 ### GraphQL使用 ✅
+
 - 何切る問題関連機能（既存実装）
 - ユーザープロフィール管理
 - ファイルアップロードが必要な機能
 - リアルタイム更新が必要な機能
 
 ### REST継続使用 ❌→✅
+
 - 認証・セッション管理（技術的複雑性のため）
 - OAuth連携（外部API統合のため）
 - 学習機能（開発停止中のため）
@@ -153,7 +155,7 @@ const [requestAuth, { loading }] = useMutation(REQUEST_AUTH_MUTATION);
 
 const handleAuthRequest = async (email: string) => {
   const result = await requestAuth({
-    variables: { input: { email } }
+    variables: { input: { email } },
   });
 
   if ((result.data as any)?.requestAuth?.success) {
@@ -171,7 +173,11 @@ const VERIFY_AUTH_MUTATION = gql`
     verifyAuth(input: $input) {
       success
       errors
-      user { id name email }
+      user {
+        id
+        name
+        email
+      }
     }
   }
 `;
@@ -179,7 +185,7 @@ const VERIFY_AUTH_MUTATION = gql`
 // セッション状態管理が必要
 const handleVerify = async (email: string, token: string) => {
   const result = await verifyAuth({
-    variables: { input: { email, token } }
+    variables: { input: { email, token } },
   });
 
   // 成功時のリダイレクト分岐
@@ -203,6 +209,7 @@ const handleVerify = async (email: string, token: string) => {
 ### 認証機能の移行判断
 
 **REST継続推奨理由:**
+
 - セッション管理の複雑性
 - 既存実装の安定性
 - エラーハンドリングの複雑化
