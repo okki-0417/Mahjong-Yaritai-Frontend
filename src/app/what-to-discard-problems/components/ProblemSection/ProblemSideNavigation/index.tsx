@@ -34,7 +34,7 @@ export default function ProblemsSideNavigation() {
             </ListItem>
 
             <ListItem>
-              <Link href="/me/what-to-discard-problems/bookmarks">
+              <Link href="/me/what-to-discard-problems/bookmarks" prefetch={false}>
                 <Button variant="ghost" w="full" justifyContent="start">
                   <HStack className="text-primary">
                     <FaRegBookmark size={20} />

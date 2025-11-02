@@ -28,7 +28,7 @@ export default function Header() {
             <HStack
               justifyContent={["center", "center", "space-between"]}
               className="w-[70vw] mx-auto">
-              <Link href="/">
+              <Link href="/" prefetch={false}>
                 <HStack>
                   <Circle overflow="hidden" size={["8", "auto"]}>
                     <Image

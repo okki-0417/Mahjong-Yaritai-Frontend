@@ -8,7 +8,7 @@ export default function Footer() {
       <Container as="nav" maxW="5xl" pt={20} pb={16}>
         <UnorderedList styleType="none">
           <Wrap spacing="12">
-            <Link href="/">
+            <Link href="/" prefetch={false}>
               <ListItem>
                 <ButtonNeutral>ホーム</ButtonNeutral>
               </ListItem>
@@ -18,7 +18,7 @@ export default function Footer() {
               <Divider orientation="vertical" borderColor="white" />
             </Center>
 
-            <Link href="/what-to-discard-problems">
+            <Link href="/what-to-discard-problems" prefetch={false}>
               <ListItem>
                 <ButtonNeutral>何切る問題</ButtonNeutral>
               </ListItem>
@@ -28,7 +28,7 @@ export default function Footer() {
               <Divider orientation="vertical" borderColor="white" />
             </Center>
 
-            <Link href="/privacy">
+            <Link href="/privacy" prefetch={false}>
               <ListItem>
                 <ButtonNeutral>プライバシーポリシー</ButtonNeutral>
               </ListItem>
@@ -38,7 +38,7 @@ export default function Footer() {
               <Divider orientation="vertical" borderColor="white" />
             </Center>
 
-            <Link href="/terms">
+            <Link href="/terms" prefetch={false}>
               <ListItem>
                 <ButtonNeutral>利用規約</ButtonNeutral>
               </ListItem>

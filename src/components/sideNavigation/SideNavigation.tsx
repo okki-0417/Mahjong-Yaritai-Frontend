@@ -36,7 +36,7 @@ export default function SideNavigation() {
           <UnorderedList listStyleType="none">
             <VStack alignItems="stretch" gap="0">
               <ListItem>
-                <Link href="/what-to-discard-problems" className="w-full">
+                <Link href="/what-to-discard-problems" prefetch={false} className="w-full">
                   <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                     <GiThink size={20} />
                     <Text fontSize="lg">何切る問題</Text>
@@ -45,7 +45,7 @@ export default function SideNavigation() {
               </ListItem>
 
               <ListItem>
-                <Link href="/privacy" className="w-full">
+                <Link href="/privacy" prefetch={false} className="w-full">
                   <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                     <Text fontSize="md">プライバシーポリシー</Text>
                   </HStack>
@@ -53,7 +53,7 @@ export default function SideNavigation() {
               </ListItem>
 
               <ListItem>
-                <Link href="/terms" className="w-full">
+                <Link href="/terms" prefetch={false} className="w-full">
                   <HStack className="py-3 px-4 rounded hover:bg-gray-400 transition-colors">
                     <Text fontSize="md">利用規約</Text>
                   </HStack>
