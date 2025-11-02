@@ -21,23 +21,18 @@ const authLink = new SetContextLink(async prevContext => {
   };
 });
 
-let apolloClient: any = null;
-
 export function getClient(): ApolloClient {
-  if (!apolloClient) {
-    apolloClient = new ApolloClient({
-      link: authLink.concat(httpLink),
-      cache: new InMemoryCache(),
-      ssrMode: true,
-      defaultOptions: {
-        watchQuery: {
-          errorPolicy: "none",
-        },
-        query: {
-          errorPolicy: "none",
-        },
+  return new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+    ssrMode: true,
+    defaultOptions: {
+      watchQuery: {
+        errorPolicy: "none",
       },
-    });
-  }
-  return apolloClient;
+      query: {
+        errorPolicy: "none",
+      },
+    },
+  });
 }

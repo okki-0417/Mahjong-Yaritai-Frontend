@@ -13,15 +13,16 @@ export const SessionContext = createContext<SessionContextType | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const { data, refetch } = useQuery(CurrentSessionDocument);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
 
-  // useQueryを呼んだ直後はdataがundefinedなので、dataが更新されたときにsessionをセットする
-  // その他にdataが変わるケースは無く、初回のみロードされる想定
   useEffect(() => {
+    if (isLoaded) return;
     if (!data?.currentSession) return;
 
     setSession(data.currentSession);
-  }, [data]);
+    setIsLoaded(true);
+  }, [isLoaded, data]);
 
   const updateSession = async () => {
     const refetchData = await refetch();
