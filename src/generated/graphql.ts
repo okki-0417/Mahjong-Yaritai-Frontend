@@ -446,7 +446,6 @@ export type Query = {
   user?: Maybe<User>;
   /** Get a single what to discard problem by ID */
   whatToDiscardProblem?: Maybe<WhatToDiscardProblem>;
-  /** Get vote results for a what to discard problem */
   whatToDiscardProblemVoteResults: Array<WhatToDiscardProblemVoteResult>;
   /** Get all what to discard problems */
   whatToDiscardProblems: WhatToDiscardProblemConnection;
@@ -666,6 +665,7 @@ export type WhatToDiscardProblem = {
   isBookmarkedByMe: Scalars["Boolean"]["output"];
   isLikedByMe: Scalars["Boolean"]["output"];
   likesCount: Scalars["Int"]["output"];
+  myVoteTileId?: Maybe<Scalars["ID"]["output"]>;
   points?: Maybe<Scalars["String"]["output"]>;
   round?: Maybe<Scalars["String"]["output"]>;
   tsumoId: Scalars["ID"]["output"];
@@ -1572,6 +1572,7 @@ export type WhatToDiscardProblemsQuery = {
         tsumoId: string;
         isLikedByMe: boolean;
         isBookmarkedByMe: boolean;
+        myVoteTileId?: string | null;
         createdAt: any;
         updatedAt: any;
         user: {
@@ -3847,6 +3848,7 @@ export const WhatToDiscardProblemsDocument = {
                             { kind: "Field", name: { kind: "Name", value: "tsumoId" } },
                             { kind: "Field", name: { kind: "Name", value: "isLikedByMe" } },
                             { kind: "Field", name: { kind: "Name", value: "isBookmarkedByMe" } },
+                            { kind: "Field", name: { kind: "Name", value: "myVoteTileId" } },
                             { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                             { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                             {

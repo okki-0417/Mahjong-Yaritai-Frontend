@@ -51,7 +51,7 @@ export default function VoteResultModal({
         <ModalCloseButton />
 
         <ModalBody className="bg-mj-mat">
-          <HStack spacing="1px" mt="3">
+          <HStack spacing="1px" mt="3" justify="center" align="flex-end">
             {sortedVoteResults.map(result => {
               const tileId = result.tileId;
               const voteCount = result.count;

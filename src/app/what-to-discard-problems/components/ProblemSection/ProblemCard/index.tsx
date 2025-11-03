@@ -17,15 +17,16 @@ import ProblemCommentSection from "@/src/app/what-to-discard-problems/components
 import ProblemVoteSection from "@/src/app/what-to-discard-problems/components/votes/ProblemVoteSection";
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { useLazyQuery } from "@apollo/client/react";
+import { clearQueryCache } from "@/src/lib/apollo/cache";
 
 type Props = {
   problem: WhatToDiscardProblem;
 };
 
 export default function ProblemCard({ problem }: Props) {
-  const [votesCount, setVotesCount] = useState(0);
+  const [votesCount, setVotesCount] = useState(problem.votesCount);
   const [voteResults, setVoteResults] = useState<WhatToDiscardProblemVoteResult[]>([]);
-  const [myVoteTileId, setMyVoteTileId] = useState<string | null>(null);
+  const [myVoteTileId, setMyVoteTileId] = useState<string | null>(problem.myVoteTileId || null);
 
   const toast = useToast();
 
@@ -68,8 +69,12 @@ export default function ProblemCard({ problem }: Props) {
   };
 
   const onVoteCreate = async (tileId: string) => {
+    const prevMyVoteTileId = myVoteTileId;
     setMyVoteTileId(tileId);
-    setVotesCount(votesCount + 1);
+
+    if (prevMyVoteTileId == null) setVotesCount(votesCount + 1);
+
+    clearQueryCache("whatToDiscardProblemVoteResults");
 
     if (isVoteResultOpen) {
       const result = await fetchVoteResults({
@@ -82,6 +87,8 @@ export default function ProblemCard({ problem }: Props) {
   const onVoteDelete = () => {
     setMyVoteTileId(null);
     setVotesCount(votesCount - 1);
+
+    clearQueryCache("whatToDiscardProblemVoteResults");
   };
 
   return (
@@ -204,18 +211,16 @@ export default function ProblemCard({ problem }: Props) {
             onOpenVoteResult={handleVoteResultOpen}
           />
 
-          {voteResults.length > 0 && (
-            <VoteResultModal
-              doraId={problem.doraId}
-              problemId={problem.id}
-              voteResults={voteResults}
-              isOpen={isVoteResultOpen}
-              onClose={onVoteResultClose}
-              onVoteCreate={onVoteCreate}
-              onVoteDelete={onVoteDelete}
-              myVoteTileId={myVoteTileId}
-            />
-          )}
+          <VoteResultModal
+            doraId={problem.doraId}
+            problemId={problem.id}
+            voteResults={voteResults}
+            isOpen={isVoteResultOpen}
+            onClose={onVoteResultClose}
+            onVoteCreate={onVoteCreate}
+            onVoteDelete={onVoteDelete}
+            myVoteTileId={myVoteTileId}
+          />
         </HStack>
       </VStack>
     </Box>
