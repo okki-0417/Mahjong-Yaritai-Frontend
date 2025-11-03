@@ -1,10 +1,10 @@
 "use client";
 
 import { Comment } from "@/src/generated/graphql";
-import { Button, Text, useToast } from "@chakra-ui/react";
+import { Button, HStack, Text, useToast } from "@chakra-ui/react";
 import { useLazyQuery } from "@apollo/client/react";
 import { CommentRepliesDocument } from "@/src/generated/graphql";
-import { MdOutlineInsertComment } from "react-icons/md";
+import { FaRegComment } from "react-icons/fa6";
 
 type Props = {
   parentComment: Comment;
@@ -51,15 +51,18 @@ export default function FetchRepliesButton({
 
   return (
     <Button
-      className="text-primary"
       onClick={handleFetchReplies}
       isLoading={loading}
+      variant="ghost"
       size="sm"
-      disabled={parentComment.repliesCount == 0}>
-      <MdOutlineInsertComment />
-      <Text fontSize="xs" className="text-secondary">
-        {parentComment.repliesCount}件の返信
-      </Text>
+      px="1"
+      mx="0">
+      <HStack gap="1">
+        <FaRegComment size={20} />
+        <Text fontSize="md" fontFamily="sans-serif" fontWeight="bold">
+          {parentComment.repliesCount}
+        </Text>
+      </HStack>
     </Button>
   );
 }

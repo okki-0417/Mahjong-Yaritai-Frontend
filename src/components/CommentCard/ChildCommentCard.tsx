@@ -14,7 +14,7 @@ type Props = {
 
 export default function ChildCommentCard({ reply, onReply }: Props) {
   return (
-    <HStack pl="8" alignItems="start" spacing="4" w="full">
+    <HStack alignItems="start" spacing="4" w="full">
       <Box borderLeft="2px" borderLeftColor="gray.500" w="full" pl="4">
         <CommentCard comment={reply} onReply={onReply} />
       </Box>

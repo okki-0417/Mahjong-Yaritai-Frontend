@@ -2,13 +2,24 @@
 
 import FetchRepliesButton from "@/src/components/CommentCard/ParentCommentCard/FetchRepliesButton";
 import { Comment } from "@/src/generated/graphql";
-import { Box, Button, Circle, HStack, Img, Text, useDisclosure, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Circle,
+  Divider,
+  HStack,
+  Img,
+  Text,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react";
 import { useState } from "react";
-import { MdOutlineReply } from "react-icons/md";
+import { MdKeyboardArrowUp, MdOutlineReply } from "react-icons/md";
 import useGetSession from "@/src/hooks/useGetSession";
 import UserModal from "@/src/components/Modals/UserModal";
 import NotLoggedInModal from "@/src/components/Modals/NotLoggedInModal";
 import ChildCommentCard from "@/src/components/CommentCard/ChildCommentCard";
+import { FaRegComment } from "react-icons/fa6";
 
 type Props = {
   comment: Comment;
@@ -56,7 +67,7 @@ export default function ParentCommentCard({
 
   return (
     <>
-      <Box w="full" py="2">
+      <Box w="full">
         <HStack alignItems="center" justifyContent="space-between">
           <Button colorScheme="" onClick={onUserModalOpen} p="0">
             <HStack>
@@ -79,47 +90,58 @@ export default function ParentCommentCard({
 
         <Text mt="1">{comment.content}</Text>
 
-        <HStack justifyContent="end" mt="1">
-          <Text fontFamily="sans-serif" fontSize="xs" className="text-secondary">
+        <HStack justifyContent="space-between" align="end" mt="1">
+          <Text fontFamily="sans-serif" fontSize="xs" className="text-secondary" flexShrink={0}>
             {new Date(comment.createdAt).toLocaleString()}
           </Text>
+
+          <HStack w="full" justifyContent="end" alignItems="center" mt="1">
+            {comment.repliesCount > 0 && !isRepliesVisible ? (
+              <FetchRepliesButton
+                parentComment={comment}
+                commentableType={commentableType}
+                commentableId={commentableId}
+                onRepliesFetched={onRepliesFetched}
+              />
+            ) : (
+              <HStack gap="1" mx="1">
+                <FaRegComment size={20} color="gray" />
+                <Text fontSize="md" fontWeight="semibold" fontFamily="sans-serif" color="gray">
+                  {comment.repliesCount}
+                </Text>
+              </HStack>
+            )}
+          </HStack>
         </HStack>
       </Box>
 
-      <Box w="full">
-        {replies.length == 0 || !isRepliesVisible ? (
-          <HStack justifyContent="end" alignItems="center" gap="1" cursor="pointer" mt="1">
-            <FetchRepliesButton
-              parentComment={comment}
-              commentableType={commentableType}
-              commentableId={commentableId}
-              onRepliesFetched={onRepliesFetched}
-            />
+      {isRepliesVisible && (
+        <Box w="full" mt="4">
+          <VStack pl="8" divider={<Divider />} alignItems="stretch">
+            {replies.map((reply: Comment) => (
+              <ChildCommentCard
+                key={reply.id}
+                reply={reply}
+                commentableType={commentableType}
+                commentableId={commentableId}
+                onReply={onReply}
+              />
+            ))}
+          </VStack>
+          <HStack justifyContent="end" w="full" mt="2">
+            <Button
+              px="2"
+              py="1"
+              size="sm"
+              fontSize="xs"
+              onClick={() => setIsRepliesVisible(false)}
+              variant="ghost">
+              <MdKeyboardArrowUp size={20} />
+              <Text className="text-secondary">スレッドを閉じる</Text>
+            </Button>
           </HStack>
-        ) : (
-          <Box mt="4">
-            {isRepliesVisible && (
-              <VStack>
-                {replies.map((reply: Comment, index: number) => (
-                  <ChildCommentCard
-                    key={index}
-                    reply={reply}
-                    commentableType={commentableType}
-                    commentableId={commentableId}
-                    onReply={onReply}
-                  />
-                ))}
-
-                <HStack justifyContent="end" w="full">
-                  <Button size="sm" fontSize="xs" onClick={() => setIsRepliesVisible(false)}>
-                    返信を非表示
-                  </Button>
-                </HStack>
-              </VStack>
-            )}
-          </Box>
-        )}
-      </Box>
+        </Box>
+      )}
 
       <NotLoggedInModal isOpen={isNotLoggedInModalOpen} onClose={onNotLoggedInModalClose} />
       <UserModal user={comment.user} isOpen={isUserModalOpen} onClose={onUserModalClose} />

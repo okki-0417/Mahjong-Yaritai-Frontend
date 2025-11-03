@@ -12,16 +12,18 @@ export type MyVoteType = Tile | null;
 type Props = {
   isVoted: boolean;
   votesCount: number;
+  isLoadingVoteResults?: boolean;
   onOpenVoteResult?: () => void;
 };
 
 export default function ProblemVoteSection({
   isVoted,
   votesCount,
+  isLoadingVoteResults,
   onOpenVoteResult = () => null,
 }: Props) {
   return (
-    <PopButton onClick={onOpenVoteResult}>
+    <PopButton onClick={onOpenVoteResult} isLoading={isLoadingVoteResults}>
       <HStack gap="2px">
         {isVoted ? (
           <Image src={VoteIconBlue} alt="投票結果を見る" width={30} height={30} />

@@ -209,6 +209,7 @@ export default function ProblemCard({ problem }: Props) {
             isVoted={Boolean(myVoteTileId)}
             votesCount={votesCount}
             onOpenVoteResult={handleVoteResultOpen}
+            isLoadingVoteResults={isLoadingVoteResults}
           />
 
           <VoteResultModal

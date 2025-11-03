@@ -39,7 +39,7 @@ export default function CommentCard({ comment, onReply }: Props) {
 
   return (
     <>
-      <Box w="full" py="2">
+      <Box w="full">
         <HStack alignItems="center" justifyContent="space-between">
           <Button colorScheme="" onClick={onUserModalOpen} p="0">
             <HStack>

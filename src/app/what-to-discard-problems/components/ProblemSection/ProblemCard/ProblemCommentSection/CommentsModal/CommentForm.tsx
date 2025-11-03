@@ -31,7 +31,8 @@ type Props = {
   problemId: string;
   replyingToComment: Comment | null;
   onReplyCancel: () => void;
-  onCommentCreate: () => void;
+  /* eslint-disable-next-line no-unused-vars */
+  onCommentCreate: (comment: Comment) => void;
   isFocused?: boolean;
 };
 
@@ -47,14 +48,14 @@ export default function CommentForm({
   const toast = useToast();
 
   const [createComment] = useMutation(CreateCommentDocument, {
-    onCompleted: () => {
+    onCompleted: data => {
       toast({
         status: "success",
         title: "コメントを投稿しました",
       });
 
-      reset();
-      onCommentCreate();
+      resetForm();
+      onCommentCreate(data.createWhatToDiscardProblemComment.comment);
     },
     onError: error => {
       toast({
@@ -77,13 +78,15 @@ export default function CommentForm({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
     setFocus,
     setValue,
-    reset,
+    reset: resetForm,
   } = useForm<CommentCreateFormInputs>({
     defaultValues: {
-      parentCommentId: replyingToComment ? replyingToComment.id : undefined,
+      parentCommentId: replyingToComment
+        ? String(Number(replyingToComment.parentCommentId) || replyingToComment.id)
+        : undefined,
       content: "",
     },
   });
@@ -91,9 +94,12 @@ export default function CommentForm({
   useEffect(() => {
     if (replyingToComment) {
       setFocus("content");
-      setValue("parentCommentId", replyingToComment.id);
+      setValue(
+        "parentCommentId",
+        String(Number(replyingToComment.parentCommentId) || replyingToComment.id),
+      );
     } else {
-      setValue("parentCommentId", undefined);
+      setValue("parentCommentId", null);
     }
   }, [replyingToComment, setFocus, setValue]);
 
@@ -105,12 +111,7 @@ export default function CommentForm({
             {replyingToComment && (
               <HStack justifyContent="space-between">
                 <Text fontStyle="italic">@{replyingToComment.user.name}...</Text>
-                <Button
-                  bgColor="inherit"
-                  size="xs"
-                  fontSize="sm"
-                  color="#365158"
-                  onClick={onReplyCancel}>
+                <Button bgColor="inherit" size="xs" fontSize="sm" onClick={onReplyCancel}>
                   <IoMdClose />
                 </Button>
               </HStack>
@@ -125,13 +126,17 @@ export default function CommentForm({
               <Textarea
                 className="text-primary"
                 placeholder="コメントする..."
-                {...register("content")}
+                {...register("content", { required: true })}
               />
               <FormErrorMessage>{errors.content?.message}</FormErrorMessage>
             </FormControl>
 
             <HStack justifyContent="end">
-              <Button type="submit" colorScheme="pink" isLoading={isSubmitting}>
+              <Button
+                type="submit"
+                colorScheme="pink"
+                isLoading={isSubmitting}
+                isDisabled={!isValid}>
                 送信
               </Button>
             </HStack>

@@ -6,7 +6,8 @@ import { HStack, Spinner, Text, useDisclosure, useToast } from "@chakra-ui/react
 import CommentsModal from "@/src/app/what-to-discard-problems/components/ProblemSection/ProblemCard/ProblemCommentSection/CommentsModal";
 import { Comment, ParentCommentsDocument } from "@/src/generated/graphql";
 import { Fragment, useState } from "react";
-import { useQuery } from "@apollo/client/react";
+import { useLazyQuery } from "@apollo/client/react";
+import { clearQueryCache } from "@/src/lib/apollo/cache";
 
 type Props = {
   initialCommentsCount: number;
@@ -26,27 +27,46 @@ export default function ProblemCommentSection({ problemId, initialCommentsCount 
 
   const onReply = (comment: Comment) => setReplyingToComment(comment);
   const onReplyCancel = () => setReplyingToComment(null);
-  const onCommentCreate = () => setReplyingToComment(null);
+  const onCommentCreate = (comment: Comment) => {
+    setReplyingToComment(null);
 
-  const {
-    data: commentsData,
-    error: commentsError,
-    loading: commentsLoading,
-  } = useQuery(ParentCommentsDocument, {
-    variables: { whatToDiscardProblemId: problemId },
-  });
+    const isReplyComment = Boolean(Number(comment.parentCommentId));
 
-  const handleModalOpen = () => {
+    if (isReplyComment) {
+      const newComments = parentComments.map(prevComment => {
+        if (prevComment.id == comment.parentCommentId) {
+          prevComment.repliesCount++;
+          return prevComment;
+        } else {
+          return prevComment;
+        }
+      });
+
+      setParentComments(newComments);
+      clearQueryCache("replies");
+    } else {
+      setParentComments(prevComments => [comment, ...prevComments]);
+      clearQueryCache("comments");
+    }
+  };
+
+  const [getComments, { loading: commentsLoading }] = useLazyQuery(ParentCommentsDocument);
+
+  const handleModalOpen = async () => {
     if (commentsLoading) return;
 
-    if (commentsError) {
+    const result = await getComments({
+      variables: { whatToDiscardProblemId: problemId },
+    });
+
+    if (result.error) {
       toast({
         status: "error",
         title: "コメントを取得できませんでした",
-        description: commentsError.message,
+        description: result.error.message,
       });
-    } else if (commentsData?.comments) {
-      setParentComments(commentsData.comments.edges.map(edge => edge.node));
+    } else if (result.data?.comments) {
+      setParentComments(result.data.comments.edges.map(edge => edge.node));
       onCommentModalOpen();
     }
   };
@@ -54,7 +74,7 @@ export default function ProblemCommentSection({ problemId, initialCommentsCount 
   return (
     <Fragment>
       <PopButton onClick={handleModalOpen}>
-        <HStack>
+        <HStack gap="1">
           {commentsLoading ? <Spinner size="sm" /> : <FaRegComment color="#333" size={24} />}
           <Text fontFamily="sans-serif" fontWeight="bold">
             {parentComments.length || initialCommentsCount}
@@ -70,7 +90,7 @@ export default function ProblemCommentSection({ problemId, initialCommentsCount 
         onReply={onReply}
         replyingToComment={replyingToComment}
         onReplyCancel={onReplyCancel}
-        onCommentCreate={onCommentCreate}
+        onCommentCreate={(comment: Comment) => onCommentCreate(comment)}
       />
     </Fragment>
   );
