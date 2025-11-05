@@ -1,5 +1,5 @@
 query ParentComments($whatToDiscardProblemId: ID!, $first: Int, $after: String) {
-  comments(whatToDiscardProblemId: $whatToDiscardProblemId, first: $first, after: $after) {
+  whatToDiscardProblemComments(whatToDiscardProblemId: $whatToDiscardProblemId, first: $first, after: $after) {
     edges {
       node {
         id

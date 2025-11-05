@@ -16,6 +16,9 @@ type Props = {
 
 export default function FetchRepliesButton({
   parentComment,
+  // 今は何切る問題のコメントのみを想定しているが、
+  // 将来的な拡張のために commentable形式で受け取るようにしている
+  /* eslint-disable-next-line no-unused-vars */
   commentableType,
   commentableId,
   onRepliesFetched,
@@ -29,8 +32,7 @@ export default function FetchRepliesButton({
 
     const result = await fetchReplies({
       variables: {
-        commentableType,
-        commentableId,
+        problemId: commentableId,
         parentCommentId: parentComment.id,
       },
     });
@@ -44,8 +46,8 @@ export default function FetchRepliesButton({
       return;
     }
 
-    if (result.data?.replies) {
-      onRepliesFetched(result.data.replies.edges.map(edge => edge.node));
+    if (result.data?.whatToDiscardProblemCommentReplies) {
+      onRepliesFetched(result.data.whatToDiscardProblemCommentReplies.edges.map(edge => edge.node));
     }
   };
 

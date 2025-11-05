@@ -1,14 +1,12 @@
 query CommentReplies(
   $parentCommentId: ID!
-  $commentableType: String!
-  $commentableId: ID!
+  $problemId: ID!
   $first: Int
   $after: String
 ) {
-  replies(
+  whatToDiscardProblemCommentReplies(
     parentCommentId: $parentCommentId
-    commentableType: $commentableType
-    commentableId: $commentableId
+    problemId: $problemId
     first: $first
     after: $after
   ) {

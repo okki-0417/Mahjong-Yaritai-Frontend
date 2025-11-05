@@ -1,7 +1,6 @@
 "use client";
 
 import UserModal from "@/src/components/Modals/UserModal";
-import BookmarkButton from "@/src/components/BookmarkButton";
 import { Avatar, Button, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { WhatToDiscardProblem } from "@/src/generated/graphql";
 
@@ -34,7 +33,6 @@ export default function ProblemCardHeader({ problem }: Props) {
       </Button>
 
       <HStack spacing={2}>
-        {!isMyProblem && <BookmarkButton problem={problem} />}
         {isMyProblem && <ProblemOperationMenu problem={problem} isMyProblem={isMyProblem} />}
       </HStack>
 

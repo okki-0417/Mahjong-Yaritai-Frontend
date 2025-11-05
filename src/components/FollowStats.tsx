@@ -1,12 +1,7 @@
 "use client";
 
 import { useLazyQuery } from "@apollo/client/react";
-import {
-  FollowersDocument,
-  FollowersQuery,
-  FollowingDocument,
-  FollowingQuery,
-} from "@/src/generated/graphql";
+import { FollowersDocument, FollowingDocument, User } from "@/src/generated/graphql";
 import { HStack, Text, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { FollowingListModal } from "@/src/components/Modals/FollowingListModal";
 import { FollowersListModal } from "@/src/components/Modals/FollowerListModal/index";
@@ -17,8 +12,8 @@ type Props = {
   followersCount: number;
 };
 
-type Followings = FollowingQuery["following"]["edges"][number]["node"][];
-type Followers = FollowersQuery["followers"]["edges"][number]["node"][];
+type Followings = User[];
+type Followers = User[];
 
 export function FollowStats({ followingCount, followersCount }: Props) {
   const [followings, setFollowings] = useState<Followings>([]);
@@ -53,7 +48,7 @@ export function FollowStats({ followingCount, followersCount }: Props) {
     }
 
     if (data) {
-      const followingsData = data.following.edges.map(edge => edge.node);
+      const followingsData = data.followings.edges.map(edge => edge.node);
       setFollowings(followingsData);
     }
 

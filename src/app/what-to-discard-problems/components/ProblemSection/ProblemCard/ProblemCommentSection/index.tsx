@@ -65,8 +65,8 @@ export default function ProblemCommentSection({ problemId, initialCommentsCount 
         title: "コメントを取得できませんでした",
         description: result.error.message,
       });
-    } else if (result.data?.comments) {
-      setParentComments(result.data.comments.edges.map(edge => edge.node));
+    } else if (result.data?.whatToDiscardProblemComments) {
+      setParentComments(result.data.whatToDiscardProblemComments.edges.map(edge => edge.node));
       onCommentModalOpen();
     }
   };

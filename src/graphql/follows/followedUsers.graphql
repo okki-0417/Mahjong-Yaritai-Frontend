@@ -1,5 +1,5 @@
 query Following($first: Int, $after: String) {
-  following(first: $first, after: $after) {
+  followings(first: $first, after: $after) {
     edges {
       node {
         id
