@@ -10,7 +10,6 @@ mutation CreateWhatToDiscardProblem($input: CreateWhatToDiscardProblemInput!) {
       votesCount
       commentsCount
       likesCount
-      bookmarksCount
       doraId
       hand1Id
       hand2Id
@@ -27,7 +26,6 @@ mutation CreateWhatToDiscardProblem($input: CreateWhatToDiscardProblemInput!) {
       hand13Id
       tsumoId
       isLikedByMe
-      isBookmarkedByMe
       createdAt
       updatedAt
       user {

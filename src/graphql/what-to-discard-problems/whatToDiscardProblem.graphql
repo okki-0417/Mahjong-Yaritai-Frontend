@@ -9,7 +9,6 @@ query WhatToDiscardProblem($id: ID!) {
     votesCount
     commentsCount
     likesCount
-    bookmarksCount
     doraId
     hand1Id
     hand2Id
@@ -26,7 +25,6 @@ query WhatToDiscardProblem($id: ID!) {
     hand13Id
     tsumoId
     isLikedByMe
-    isBookmarkedByMe
     createdAt
     updatedAt
     user {

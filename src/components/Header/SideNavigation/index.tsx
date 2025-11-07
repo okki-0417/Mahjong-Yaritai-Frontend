@@ -1,7 +1,6 @@
 "use client";
 
 import { FaDeleteLeft } from "react-icons/fa6";
-import { MdBookmarkAdded } from "react-icons/md";
 import { SlLogin } from "react-icons/sl";
 import NavigationItem from "@/src/components/Header/SideNavigation/NavigationItem";
 import useGetSession from "@/src/hooks/useGetSession";
@@ -90,14 +89,6 @@ export default function SideNavigation() {
                   icon={<GiThink size={25} color="white" />}
                   text="何切る問題"
                 />
-
-                {isLoggedIn && (
-                  <NavigationItem
-                    href="/me/what-to-discard-problems/bookmarks"
-                    icon={<MdBookmarkAdded size={20} color="white" />}
-                    text="ブックマークした何切る"
-                  />
-                )}
               </VStack>
             </UnorderedList>
           </DrawerBody>

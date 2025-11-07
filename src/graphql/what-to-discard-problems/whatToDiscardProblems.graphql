@@ -11,7 +11,6 @@ query WhatToDiscardProblems($first: Int, $after: String) {
         votesCount
         commentsCount
         likesCount
-        bookmarksCount
         doraId
         hand1Id
         hand2Id
@@ -28,7 +27,6 @@ query WhatToDiscardProblems($first: Int, $after: String) {
         hand13Id
         tsumoId
         isLikedByMe
-        isBookmarkedByMe
         myVoteTileId
         createdAt
         updatedAt
