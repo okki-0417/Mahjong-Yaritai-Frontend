@@ -1,6 +1,5 @@
 "use client";
 
-// import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -14,7 +13,6 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-// import { ChangeEvent, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
 import {
@@ -27,17 +25,20 @@ import {
 
 type Props = {
   user: User;
+  onUpdated?: () => void;
 };
 
 type ProfileEditFormInputs = UpdateUserInput;
 
-export default function ProfileEditForm({ user }: Props) {
+export default function ProfileEditForm({ user, onUpdated }: Props) {
   const toast = useToast();
 
   const [updateUser] = useMutation<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>(
     UpdateUserProfileDocument,
     {
       onCompleted: () => {
+        onUpdated?.();
+
         toast({
           title: "プロフィールを更新しました",
           status: "success",
@@ -56,7 +57,6 @@ export default function ProfileEditForm({ user }: Props) {
   const {
     register,
     handleSubmit,
-    // control,
     formState: { errors, isSubmitting },
   } = useForm<ProfileEditFormInputs>({
     defaultValues: {

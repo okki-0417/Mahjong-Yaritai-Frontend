@@ -1,10 +1,9 @@
-import { ChakraProvider } from "@chakra-ui/react";
 import "@/src/styles/globals.css";
 import { Metadata } from "next";
 import Header from "@/src/components/Header";
-import Footer from "@/src/components/Footer";
 import { SessionProvider } from "@/src/contexts/SessionProvider";
 import AppolloProviderWrapper from "@/src/contexts/AppolloProviderWrapper";
+import ChakraCustomProvider from "@/src/contexts/ChakraCustomProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -49,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja" suppressHydrationWarning>
       <body>
-        <ChakraProvider resetCSS={false}>
+        <ChakraCustomProvider>
           <AppolloProviderWrapper>
             <SessionProvider>
               <main
@@ -59,11 +58,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <Header />
                 </div>
                 <div className="flex-grow w-screen flex items-stretch">{children}</div>
-                <Footer />
               </main>
             </SessionProvider>
           </AppolloProviderWrapper>
-        </ChakraProvider>
+        </ChakraCustomProvider>
       </body>
     </html>
   );
