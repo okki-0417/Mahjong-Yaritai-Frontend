@@ -11,7 +11,7 @@ export default function LogoLink() {
   const homePath = session?.isLoggedIn ? "/dashboard" : "/";
 
   return (
-    <Link href={homePath} prefetch={false}>
+    <Link href={homePath}>
       <HStack>
         <Circle overflow="hidden" size={["8", "auto"]}>
           <Image
