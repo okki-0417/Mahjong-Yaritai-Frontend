@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AppolloProviderWrapper>
             <SessionProvider>
               <main
-                className="flex lg:pb-0 pb-24 flex-col min-h-screen bg-secondary overflow-x-hidden text-neutral"
+                className="flex pb-24 flex-col min-h-screen bg-secondary overflow-x-hidden text-neutral "
                 style={{ fontFamily: "PT Serif, serif" }}>
                 <div className="mb-16">
                   <Header />
