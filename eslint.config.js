@@ -11,7 +11,7 @@ const config = defineConfig([
     ignores: [".next/**", "node_modules/**", ".git/**", "src/generated/**"],
   },
   {
-    files: ["./src/**/*.{tsx,ts}"],
+    files: ["./src/**/*.{tsx,ts}", "./*.ts"],
     languageOptions: {
       parser,
       globals: {
@@ -33,15 +33,15 @@ const config = defineConfig([
     ...reactHooks.configs["recommended-latest"],
   },
   {
-    files: ["./src/**/*.{tsx,ts}"],
+    files: ["./src/**/*.{tsx,ts}", "./*.ts"],
     ...tslint.configs.recommended[0],
   },
   {
-    files: ["./src/**/*.{tsx,ts}"],
+    files: ["./src/**/*.{tsx,ts}", "./*.ts"],
     ...shopify.configs.esnext[0],
   },
   {
-    files: ["./src/**/*.{tsx,ts}"],
+    files: ["./src/**/*.{tsx,ts}", "./*.ts"],
     rules: {
       "no-console": "warn",
       camelcase: "off",

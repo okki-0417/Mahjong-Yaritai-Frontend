@@ -4,7 +4,9 @@ dist
 .next/
 .tsconfig.tsbuildinfo
 
-.env.sentry-build-plugin
-
+.vscode
 tsconfig.tsbuildinfo
 .aider*
+
+# Sentry Config File
+.env.sentry-build-plugin
