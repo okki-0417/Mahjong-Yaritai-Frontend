@@ -99,36 +99,6 @@ export default function ProblemCard({ problem }: Props) {
         <Box pt="2" px={["2", "4"]} pb="3" className="bg-mj-mat">
           <ProblemCardHeader problem={problem} />
 
-          <Wrap mt="2" spacingY="0" align="center">
-            {problem.round && <Text fontSize={["lg", "xl"]}>{problem.round}局</Text>}
-            {problem.turn && <Text fontSize={["lg", "xl"]}>{problem.turn}巡目</Text>}
-            {problem.wind && <Text fontSize={["lg", "xl"]}>{problem.wind}家</Text>}
-            {problem.points && <Text fontSize={["lg", "xl"]}>{problem.points}点持ち</Text>}
-
-            <HStack gap="1">
-              <Text fontSize={["md", "lg"]}>ドラ</Text>
-              <Box h="8" aspectRatio="7/9">
-                <TileImage tileId={Number(problem.doraId)} hover={false} />
-              </Box>
-            </HStack>
-
-            <Box display={["block", "none"]}>
-              <HStack gap="1">
-                <Text fontSize={["md", "lg"]}>ツモ</Text>
-                <HStack w="6">
-                  <VoteButton
-                    problemId={problem.id}
-                    doraId={problem.doraId}
-                    tileId={problem.tsumoId}
-                    isVoted={Boolean(myVoteTileId == problem.tsumoId)}
-                    onCreate={() => onVoteCreate(problem.tsumoId)}
-                    onDelete={onVoteDelete}
-                  />
-                </HStack>
-              </HStack>
-            </Box>
-          </Wrap>
-
           <HStack gap="2" mt={["2", "0"]} align="flex-end">
             <TilesDisplay
               tileIds={[
@@ -168,6 +138,36 @@ export default function ProblemCard({ problem }: Props) {
             </Box>
           </HStack>
 
+          <Wrap mt="2" spacingY="0" align="center">
+            <HStack gap="1">
+              <Text fontSize={["sm", "md"]}>ドラ</Text>
+              <Box h="8" aspectRatio="7/9">
+                <TileImage tileId={Number(problem.doraId)} hover={false} />
+              </Box>
+            </HStack>
+
+            <Box display={["block", "none"]}>
+              <HStack gap="1" align="center">
+                <Text fontSize={["sm", "md"]}>ツモ</Text>
+                <Box h="8" aspectRatio="7/9">
+                  <VoteButton
+                    problemId={problem.id}
+                    doraId={problem.doraId}
+                    tileId={problem.tsumoId}
+                    isVoted={Boolean(myVoteTileId == problem.tsumoId)}
+                    onCreate={() => onVoteCreate(problem.tsumoId)}
+                    onDelete={onVoteDelete}
+                  />
+                </Box>
+              </HStack>
+            </Box>
+
+            {problem.round && <Text fontSize={["sm", "md"]}>{problem.round}局</Text>}
+            {problem.turn && <Text fontSize={["sm", "md"]}>{problem.turn}巡目</Text>}
+            {problem.wind && <Text fontSize={["sm", "md"]}>{problem.wind}家</Text>}
+            {problem.points && <Text fontSize={["sm", "md"]}>{problem.points}点持ち</Text>}
+          </Wrap>
+
           {problem.description && (
             <Fragment>
               <Box
@@ -176,7 +176,7 @@ export default function ProblemCard({ problem }: Props) {
                 cursor="pointer"
                 position="relative"
                 onClick={onDescriptionOpen}>
-                <Text fontSize={["sm", "md"]}>{problem.description}</Text>
+                <Text fontSize={["xs", "sm"]}>{problem.description}</Text>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-mj-mat z-10" />
               </Box>
 
