@@ -24,15 +24,14 @@ export default function GoogleVerification({ code }: Props) {
     const verifyGoogleCallback = async () => {
       try {
         const response = await apiClient.createGoogleCallback({ code });
-        const session = response.session;
-        if (!session) throw new Error("正常に認証できませんでした。");
 
-        await updateSession();
-
-        if (session.is_logged_in) {
+        if (response.session.is_logged_in) {
+          await updateSession();
           router.push("/dashboard");
-        } else {
+        } else if (response.session == null) {
           router.push("/users/new");
+        } else {
+          throw new Error("正常に認証できませんでした。");
         }
       } catch (error) {
         Sentry.captureException(error);
