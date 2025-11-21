@@ -25,11 +25,11 @@ export default function GoogleVerification({ code }: Props) {
       try {
         const response = await apiClient.createGoogleCallback({ code });
 
-        if (response.session.is_logged_in) {
+        if (!response.session) {
+          router.push("/users/new");
+        } else if (response.session.is_logged_in) {
           await updateSession();
           router.push("/dashboard");
-        } else if (response.session == null) {
-          router.push("/users/new");
         } else {
           throw new Error("正常に認証できませんでした。");
         }
