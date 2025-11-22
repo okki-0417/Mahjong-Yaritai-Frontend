@@ -28,6 +28,8 @@ query WhatToDiscardProblems($first: Int, $after: String) {
         tsumoId
         createdAt
         updatedAt
+        isLikedByMe
+        myVoteTileId
         user {
           id
           name
