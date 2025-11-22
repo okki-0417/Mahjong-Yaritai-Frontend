@@ -26,7 +26,6 @@ query WhatToDiscardProblems($first: Int, $after: String) {
         hand12Id
         hand13Id
         tsumoId
-        myVoteTileId
         createdAt
         updatedAt
         user {

@@ -26,7 +26,7 @@ type Props = {
 export default function ProblemCard({ problem }: Props) {
   const [votesCount, setVotesCount] = useState(problem.votesCount);
   const [voteResults, setVoteResults] = useState<WhatToDiscardProblemVoteResult[]>([]);
-  const [myVoteTileId, setMyVoteTileId] = useState<string | null>(problem.myVoteTileId || null);
+  const [myVoteTileId, setMyVoteTileId] = useState<string | null>(problem.myVoteTileId);
 
   const toast = useToast();
 

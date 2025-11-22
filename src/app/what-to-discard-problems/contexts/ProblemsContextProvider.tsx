@@ -1,6 +1,6 @@
 "use client";
 
-import { WhatToDiscardProblem } from "@/src/generated/graphql";
+import { WrappedWhatToDiscardProblem } from "@/src/app/what-to-discard-problems/components/ProblemSection";
 import { createContext, Dispatch, ReactNode, SetStateAction, useState } from "react";
 
 type PageInfo = {
@@ -12,13 +12,9 @@ type PageInfo = {
 
 type ProblemContextType = {
   problems: WrappedWhatToDiscardProblem[];
-  setProblems: Dispatch<SetStateAction<WhatToDiscardProblem[]>>;
+  setProblems: Dispatch<SetStateAction<WrappedWhatToDiscardProblem[]>>;
   pageInfo: PageInfo;
   setPageInfo: Dispatch<SetStateAction<PageInfo>>;
-};
-
-type WrappedWhatToDiscardProblem = WhatToDiscardProblem & {
-  isLikedByMe: boolean;
 };
 
 export const ProblemsContext = createContext<ProblemContextType | null>(null);

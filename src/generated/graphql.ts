@@ -388,6 +388,7 @@ export type Query = {
   followings: UserConnection;
   likedWhatToDiscardProblemIds: Array<Scalars["ID"]["output"]>;
   user?: Maybe<User>;
+  votedTileIds: Array<VotedTile>;
   whatToDiscardProblem?: Maybe<WhatToDiscardProblem>;
   whatToDiscardProblemCommentReplies: CommentConnection;
   whatToDiscardProblemComments: CommentConnection;
@@ -415,6 +416,10 @@ export type QueryLikedWhatToDiscardProblemIdsArgs = {
 
 export type QueryUserArgs = {
   id: Scalars["ID"]["input"];
+};
+
+export type QueryVotedTileIdsArgs = {
+  whatToDiscardProblemIds: Array<Scalars["ID"]["input"]>;
 };
 
 export type QueryWhatToDiscardProblemArgs = {
@@ -581,6 +586,12 @@ export type VerifyAuthPayload = {
   user?: Maybe<User>;
 };
 
+export type VotedTile = {
+  __typename?: "VotedTile";
+  tileId: Scalars["ID"]["output"];
+  whatToDiscardProblemId: Scalars["ID"]["output"];
+};
+
 export type WhatToDiscardProblem = {
   __typename?: "WhatToDiscardProblem";
   commentsCount: Scalars["Int"]["output"];
@@ -602,7 +613,6 @@ export type WhatToDiscardProblem = {
   hand13Id: Scalars["ID"]["output"];
   id: Scalars["ID"]["output"];
   likesCount: Scalars["Int"]["output"];
-  myVoteTileId?: Maybe<Scalars["ID"]["output"]>;
   points?: Maybe<Scalars["String"]["output"]>;
   round?: Maybe<Scalars["String"]["output"]>;
   tsumoId: Scalars["ID"]["output"];
@@ -1265,6 +1275,15 @@ export type UpdateWhatToDiscardProblemMutation = {
   } | null;
 };
 
+export type VotedTileIdsQueryVariables = Exact<{
+  whatToDiscardProblemIds: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
+}>;
+
+export type VotedTileIdsQuery = {
+  __typename?: "Query";
+  votedTileIds: Array<{ __typename?: "VotedTile"; tileId: string; whatToDiscardProblemId: string }>;
+};
+
 export type CreateWhatToDiscardProblemVoteMutationVariables = Exact<{
   problemId: Scalars["ID"]["input"];
   tileId: Scalars["ID"]["input"];
@@ -1407,7 +1426,6 @@ export type WhatToDiscardProblemsQuery = {
         hand12Id: string;
         hand13Id: string;
         tsumoId: string;
-        myVoteTileId?: string | null;
         createdAt: any;
         updatedAt: any;
         user: {
@@ -3090,6 +3108,58 @@ export const UpdateWhatToDiscardProblemDocument = {
   UpdateWhatToDiscardProblemMutation,
   UpdateWhatToDiscardProblemMutationVariables
 >;
+export const VotedTileIdsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "votedTileIds" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "whatToDiscardProblemIds" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "votedTileIds" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "whatToDiscardProblemIds" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "whatToDiscardProblemIds" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "tileId" } },
+                { kind: "Field", name: { kind: "Name", value: "whatToDiscardProblemId" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<VotedTileIdsQuery, VotedTileIdsQueryVariables>;
 export const CreateWhatToDiscardProblemVoteDocument = {
   kind: "Document",
   definitions: [
@@ -3451,7 +3521,6 @@ export const WhatToDiscardProblemsDocument = {
                             { kind: "Field", name: { kind: "Name", value: "hand12Id" } },
                             { kind: "Field", name: { kind: "Name", value: "hand13Id" } },
                             { kind: "Field", name: { kind: "Name", value: "tsumoId" } },
-                            { kind: "Field", name: { kind: "Name", value: "myVoteTileId" } },
                             { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                             { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                             {

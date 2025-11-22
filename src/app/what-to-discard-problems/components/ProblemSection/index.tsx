@@ -3,6 +3,7 @@ import ProblemsContextProvider from "@/src/app/what-to-discard-problems/contexts
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import {
   LikedWhatToDiscardProblemIdsDocument,
+  VotedTileIdsDocument,
   WhatToDiscardProblem,
   WhatToDiscardProblemsDocument,
 } from "@/src/generated/graphql";
@@ -11,6 +12,7 @@ import * as Sentry from "@sentry/nextjs";
 
 export type WrappedWhatToDiscardProblem = WhatToDiscardProblem & {
   isLikedByMe: boolean;
+  myVoteTileId: string | null;
 };
 
 export default async function ProblemsSection() {
@@ -24,19 +26,38 @@ export default async function ProblemsSection() {
       },
     });
 
+    const whatToDiscardProblemIds = problemsData.whatToDiscardProblems.edges.map(
+      edge => edge.node.id,
+    );
+
     const { data: likedProblemIdsData } = await client.query({
       query: LikedWhatToDiscardProblemIdsDocument,
       variables: {
-        whatToDiscardProblemIds: problemsData.whatToDiscardProblems.edges.map(edge => edge.node.id),
+        whatToDiscardProblemIds,
       },
     });
 
+    const { data: votedTileIdsData } = await client.query({
+      query: VotedTileIdsDocument,
+      variables: {
+        whatToDiscardProblemIds,
+      },
+    });
+    const voteTileIds = votedTileIdsData.votedTileIds;
+
     const initialProblems: WrappedWhatToDiscardProblem[] =
       problemsData.whatToDiscardProblems.edges.map(edge => {
-        const isLikedByMe = likedProblemIdsData.likedWhatToDiscardProblemIds.includes(edge.node.id);
+        const problem = edge.node;
+
+        const isLikedByMe = likedProblemIdsData.likedWhatToDiscardProblemIds.includes(problem.id);
+        const myVoteTileId = voteTileIds.find(
+          item => item.whatToDiscardProblemId == problem.id,
+        )?.tileId;
+
         return {
-          ...edge.node,
+          ...problem,
           isLikedByMe,
+          myVoteTileId: myVoteTileId || null,
         };
       });
 
