@@ -12,7 +12,7 @@ export default async function ProblemsSection() {
     const { data: problemsData } = await client.query({
       query: WhatToDiscardProblemsDocument,
       variables: {
-        first: 3,
+        first: 20,
       },
     });
 
