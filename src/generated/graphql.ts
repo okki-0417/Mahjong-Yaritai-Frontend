@@ -386,6 +386,7 @@ export type Query = {
   currentSession: Session;
   followers: UserConnection;
   followings: UserConnection;
+  likedWhatToDiscardProblemIds: Array<Scalars["ID"]["output"]>;
   user?: Maybe<User>;
   whatToDiscardProblem?: Maybe<WhatToDiscardProblem>;
   whatToDiscardProblemCommentReplies: CommentConnection;
@@ -406,6 +407,10 @@ export type QueryFollowingsArgs = {
   before?: InputMaybe<Scalars["String"]["input"]>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+export type QueryLikedWhatToDiscardProblemIdsArgs = {
+  whatToDiscardProblemIds: Array<Scalars["ID"]["input"]>;
 };
 
 export type QueryUserArgs = {
@@ -596,7 +601,6 @@ export type WhatToDiscardProblem = {
   hand12Id: Scalars["ID"]["output"];
   hand13Id: Scalars["ID"]["output"];
   id: Scalars["ID"]["output"];
-  isLikedByMe: Scalars["Boolean"]["output"];
   likesCount: Scalars["Int"]["output"];
   myVoteTileId?: Maybe<Scalars["ID"]["output"]>;
   points?: Maybe<Scalars["String"]["output"]>;
@@ -1137,7 +1141,6 @@ export type CreateWhatToDiscardProblemMutation = {
       hand12Id: string;
       hand13Id: string;
       tsumoId: string;
-      isLikedByMe: boolean;
       createdAt: any;
       updatedAt: any;
       user: {
@@ -1167,6 +1170,15 @@ export type DeleteWhatToDiscardProblemMutation = {
     __typename?: "DeleteWhatToDiscardProblemPayload";
     id: string;
   } | null;
+};
+
+export type LikedWhatToDiscardProblemIdsQueryVariables = Exact<{
+  whatToDiscardProblemIds: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
+}>;
+
+export type LikedWhatToDiscardProblemIdsQuery = {
+  __typename?: "Query";
+  likedWhatToDiscardProblemIds: Array<string>;
 };
 
 export type CreateWhatToDiscardProblemLikeMutationVariables = Exact<{
@@ -1234,7 +1246,6 @@ export type UpdateWhatToDiscardProblemMutation = {
       hand12Id: string;
       hand13Id: string;
       tsumoId: string;
-      isLikedByMe: boolean;
       createdAt: any;
       updatedAt: any;
       user: {
@@ -1340,7 +1351,6 @@ export type WhatToDiscardProblemQuery = {
     hand12Id: string;
     hand13Id: string;
     tsumoId: string;
-    isLikedByMe: boolean;
     createdAt: any;
     updatedAt: any;
     user: {
@@ -1397,7 +1407,6 @@ export type WhatToDiscardProblemsQuery = {
         hand12Id: string;
         hand13Id: string;
         tsumoId: string;
-        isLikedByMe: boolean;
         myVoteTileId?: string | null;
         createdAt: any;
         updatedAt: any;
@@ -2729,7 +2738,6 @@ export const CreateWhatToDiscardProblemDocument = {
                       { kind: "Field", name: { kind: "Name", value: "hand12Id" } },
                       { kind: "Field", name: { kind: "Name", value: "hand13Id" } },
                       { kind: "Field", name: { kind: "Name", value: "tsumoId" } },
-                      { kind: "Field", name: { kind: "Name", value: "isLikedByMe" } },
                       { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                       { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                       {
@@ -2810,6 +2818,54 @@ export const DeleteWhatToDiscardProblemDocument = {
 } as unknown as DocumentNode<
   DeleteWhatToDiscardProblemMutation,
   DeleteWhatToDiscardProblemMutationVariables
+>;
+export const LikedWhatToDiscardProblemIdsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "LikedWhatToDiscardProblemIds" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "whatToDiscardProblemIds" } },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "ListType",
+              type: {
+                kind: "NonNullType",
+                type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "likedWhatToDiscardProblemIds" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "whatToDiscardProblemIds" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "whatToDiscardProblemIds" },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  LikedWhatToDiscardProblemIdsQuery,
+  LikedWhatToDiscardProblemIdsQueryVariables
 >;
 export const CreateWhatToDiscardProblemLikeDocument = {
   kind: "Document",
@@ -2999,7 +3055,6 @@ export const UpdateWhatToDiscardProblemDocument = {
                       { kind: "Field", name: { kind: "Name", value: "hand12Id" } },
                       { kind: "Field", name: { kind: "Name", value: "hand13Id" } },
                       { kind: "Field", name: { kind: "Name", value: "tsumoId" } },
-                      { kind: "Field", name: { kind: "Name", value: "isLikedByMe" } },
                       { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                       { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                       {
@@ -3291,7 +3346,6 @@ export const WhatToDiscardProblemDocument = {
                 { kind: "Field", name: { kind: "Name", value: "hand12Id" } },
                 { kind: "Field", name: { kind: "Name", value: "hand13Id" } },
                 { kind: "Field", name: { kind: "Name", value: "tsumoId" } },
-                { kind: "Field", name: { kind: "Name", value: "isLikedByMe" } },
                 { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                 { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
                 {
@@ -3397,7 +3451,6 @@ export const WhatToDiscardProblemsDocument = {
                             { kind: "Field", name: { kind: "Name", value: "hand12Id" } },
                             { kind: "Field", name: { kind: "Name", value: "hand13Id" } },
                             { kind: "Field", name: { kind: "Name", value: "tsumoId" } },
-                            { kind: "Field", name: { kind: "Name", value: "isLikedByMe" } },
                             { kind: "Field", name: { kind: "Name", value: "myVoteTileId" } },
                             { kind: "Field", name: { kind: "Name", value: "createdAt" } },
                             { kind: "Field", name: { kind: "Name", value: "updatedAt" } },

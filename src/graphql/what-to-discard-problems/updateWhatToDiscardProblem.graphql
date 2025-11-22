@@ -25,7 +25,6 @@ mutation UpdateWhatToDiscardProblem($input: UpdateWhatToDiscardProblemInput!) {
       hand12Id
       hand13Id
       tsumoId
-      isLikedByMe
       createdAt
       updatedAt
       user {

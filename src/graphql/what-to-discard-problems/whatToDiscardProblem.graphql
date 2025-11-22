@@ -24,7 +24,6 @@ query WhatToDiscardProblem($id: ID!) {
     hand12Id
     hand13Id
     tsumoId
-    isLikedByMe
     createdAt
     updatedAt
     user {

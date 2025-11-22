@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  WhatToDiscardProblem,
   WhatToDiscardProblemVoteResult,
   WhatToDiscardProblemVoteResultDocument,
 } from "@/src/generated/graphql";
@@ -18,9 +17,10 @@ import ProblemVoteSection from "@/src/app/what-to-discard-problems/components/vo
 import VoteResultModal from "@/src/components/Modals/VoteResultModal";
 import { useLazyQuery } from "@apollo/client/react";
 import { clearQueryCache } from "@/src/lib/apollo/cache";
+import { WrappedWhatToDiscardProblem } from "@/src/app/what-to-discard-problems/components/ProblemSection";
 
 type Props = {
-  problem: WhatToDiscardProblem;
+  problem: WrappedWhatToDiscardProblem;
 };
 
 export default function ProblemCard({ problem }: Props) {

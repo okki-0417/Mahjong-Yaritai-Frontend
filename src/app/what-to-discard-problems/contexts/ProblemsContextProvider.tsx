@@ -11,16 +11,20 @@ type PageInfo = {
 };
 
 type ProblemContextType = {
-  problems: WhatToDiscardProblem[];
+  problems: WrappedWhatToDiscardProblem[];
   setProblems: Dispatch<SetStateAction<WhatToDiscardProblem[]>>;
   pageInfo: PageInfo;
   setPageInfo: Dispatch<SetStateAction<PageInfo>>;
 };
 
+type WrappedWhatToDiscardProblem = WhatToDiscardProblem & {
+  isLikedByMe: boolean;
+};
+
 export const ProblemsContext = createContext<ProblemContextType | null>(null);
 
 type Props = {
-  initialProblems: WhatToDiscardProblem[];
+  initialProblems: WrappedWhatToDiscardProblem[];
   initialPageInfo: PageInfo;
   children: ReactNode;
 };
