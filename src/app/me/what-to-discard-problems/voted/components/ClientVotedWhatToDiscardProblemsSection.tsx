@@ -57,7 +57,7 @@ export default function ClientVotedWhatToDiscardProblemsSection() {
       ))}
 
       <div ref={targetRef}>
-        {pageInfo && pageInfo.hasNextPage ? "読み込み中..." : "全ての問題を読み込みました✨"}
+        {pageInfo && pageInfo.hasNextPage ? "読み込み中..." : "全ての問題を読み込みました ✅"}
       </div>
     </VStack>
   );
