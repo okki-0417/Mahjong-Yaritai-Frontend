@@ -1,5 +1,5 @@
-query WhatToDiscardProblems($first: Int, $after: String) {
-  whatToDiscardProblems(first: $first, after: $after) {
+query VotedWhatToDiscardProblems($after: String, $first: Int) {
+  votedWhatToDiscardProblems(after: $after, first: $first) {
     edges {
       node {
         id

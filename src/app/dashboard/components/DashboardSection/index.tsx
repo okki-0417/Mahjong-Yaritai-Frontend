@@ -2,7 +2,20 @@ import ProfileEditButton from "@/src/app/dashboard/components/DashboardSection/P
 import UserDashboardMenu from "@/src/app/dashboard/components/DashboardSection/UserDashboardMenu";
 import { FollowStats } from "@/src/components/FollowStats";
 import { User } from "@/src/generated/graphql";
-import { Avatar, Box, Center, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardBody,
+  Center,
+  HStack,
+  LinkBox,
+  LinkOverlay,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import Link from "next/link";
 
 type Props = {
   user: User;
@@ -37,6 +50,24 @@ export default function DashboardSection({ user }: Props) {
       <HStack justify="start">
         <FollowStats followingCount={user.followingCount} followersCount={user.followersCount} />
       </HStack>
+
+      <VStack spacing={4} align="stretch" mt="8">
+        <LinkBox>
+          <Button
+            as={Card}
+            variant="link"
+            w="full"
+            bg="secondary.300"
+            _hover={{ bg: "secondary.100" }}
+            color="neutral.50">
+            <CardBody w="full" textAlign="left">
+              <LinkOverlay as={Link} href="/me/what-to-discard-problems/voted">
+                投票した何切る問題
+              </LinkOverlay>
+            </CardBody>
+          </Button>
+        </LinkBox>
+      </VStack>
     </VStack>
   );
 }

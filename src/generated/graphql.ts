@@ -110,23 +110,23 @@ export type CreateWhatToDiscardProblemInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars["String"]["input"]>;
   description?: InputMaybe<Scalars["String"]["input"]>;
-  doraId?: InputMaybe<Scalars["ID"]["input"]>;
-  hand1Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand2Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand3Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand4Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand5Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand6Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand7Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand8Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand9Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand10Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand11Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand12Id?: InputMaybe<Scalars["ID"]["input"]>;
-  hand13Id?: InputMaybe<Scalars["ID"]["input"]>;
+  doraId: Scalars["ID"]["input"];
+  hand1Id: Scalars["ID"]["input"];
+  hand2Id: Scalars["ID"]["input"];
+  hand3Id: Scalars["ID"]["input"];
+  hand4Id: Scalars["ID"]["input"];
+  hand5Id: Scalars["ID"]["input"];
+  hand6Id: Scalars["ID"]["input"];
+  hand7Id: Scalars["ID"]["input"];
+  hand8Id: Scalars["ID"]["input"];
+  hand9Id: Scalars["ID"]["input"];
+  hand10Id: Scalars["ID"]["input"];
+  hand11Id: Scalars["ID"]["input"];
+  hand12Id: Scalars["ID"]["input"];
+  hand13Id: Scalars["ID"]["input"];
   points?: InputMaybe<Scalars["Int"]["input"]>;
   round?: InputMaybe<Scalars["String"]["input"]>;
-  tsumoId?: InputMaybe<Scalars["ID"]["input"]>;
+  tsumoId: Scalars["ID"]["input"];
   turn?: InputMaybe<Scalars["Int"]["input"]>;
   wind?: InputMaybe<Scalars["String"]["input"]>;
 };
@@ -389,6 +389,7 @@ export type Query = {
   likedWhatToDiscardProblemIds: Array<Scalars["ID"]["output"]>;
   user?: Maybe<User>;
   votedTileIds: Array<VotedTile>;
+  votedWhatToDiscardProblems: WhatToDiscardProblemConnection;
   whatToDiscardProblem?: Maybe<WhatToDiscardProblem>;
   whatToDiscardProblemCommentReplies: CommentConnection;
   whatToDiscardProblemComments: CommentConnection;
@@ -420,6 +421,13 @@ export type QueryUserArgs = {
 
 export type QueryVotedTileIdsArgs = {
   whatToDiscardProblemIds: Array<Scalars["ID"]["input"]>;
+};
+
+export type QueryVotedWhatToDiscardProblemsArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type QueryWhatToDiscardProblemArgs = {
@@ -818,6 +826,72 @@ export type FollowersQuery = {
         followersCount?: number | null;
         createdAt: any;
         updatedAt: any;
+      } | null;
+    } | null> | null;
+    pageInfo: {
+      __typename?: "PageInfo";
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+      endCursor?: string | null;
+    };
+  };
+};
+
+export type VotedWhatToDiscardProblemsQueryVariables = Exact<{
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
+
+export type VotedWhatToDiscardProblemsQuery = {
+  __typename?: "Query";
+  votedWhatToDiscardProblems: {
+    __typename?: "WhatToDiscardProblemConnection";
+    edges?: Array<{
+      __typename?: "WhatToDiscardProblemEdge";
+      cursor: string;
+      node?: {
+        __typename?: "WhatToDiscardProblem";
+        id: string;
+        round?: string | null;
+        turn?: number | null;
+        wind?: string | null;
+        points?: string | null;
+        description?: string | null;
+        votesCount: number;
+        commentsCount: number;
+        likesCount: number;
+        doraId: string;
+        hand1Id: string;
+        hand2Id: string;
+        hand3Id: string;
+        hand4Id: string;
+        hand5Id: string;
+        hand6Id: string;
+        hand7Id: string;
+        hand8Id: string;
+        hand9Id: string;
+        hand10Id: string;
+        hand11Id: string;
+        hand12Id: string;
+        hand13Id: string;
+        tsumoId: string;
+        createdAt: any;
+        updatedAt: any;
+        isLikedByMe: boolean;
+        myVoteTileId?: string | null;
+        user: {
+          __typename?: "User";
+          id: string;
+          name: string;
+          profileText?: string | null;
+          avatarUrl?: string | null;
+          isFollowing?: boolean | null;
+          followingCount?: number | null;
+          followersCount?: number | null;
+          createdAt: any;
+          updatedAt: any;
+        };
       } | null;
     } | null> | null;
     pageInfo: {
@@ -1440,7 +1514,6 @@ export type WhatToDiscardProblemsQuery = {
           __typename?: "User";
           id: string;
           name: string;
-          email?: string | null;
           profileText?: string | null;
           avatarUrl?: string | null;
           isFollowing?: boolean | null;
@@ -1923,6 +1996,141 @@ export const FollowersDocument = {
     },
   ],
 } as unknown as DocumentNode<FollowersQuery, FollowersQueryVariables>;
+export const VotedWhatToDiscardProblemsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "VotedWhatToDiscardProblems" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "after" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "first" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "votedWhatToDiscardProblems" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "after" },
+                value: { kind: "Variable", name: { kind: "Name", value: "after" } },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "first" },
+                value: { kind: "Variable", name: { kind: "Name", value: "first" } },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "round" } },
+                            { kind: "Field", name: { kind: "Name", value: "turn" } },
+                            { kind: "Field", name: { kind: "Name", value: "wind" } },
+                            { kind: "Field", name: { kind: "Name", value: "points" } },
+                            { kind: "Field", name: { kind: "Name", value: "description" } },
+                            { kind: "Field", name: { kind: "Name", value: "votesCount" } },
+                            { kind: "Field", name: { kind: "Name", value: "commentsCount" } },
+                            { kind: "Field", name: { kind: "Name", value: "likesCount" } },
+                            { kind: "Field", name: { kind: "Name", value: "doraId" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand1Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand2Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand3Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand4Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand5Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand6Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand7Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand8Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand9Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand10Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand11Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand12Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "hand13Id" } },
+                            { kind: "Field", name: { kind: "Name", value: "tsumoId" } },
+                            { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                            { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                            { kind: "Field", name: { kind: "Name", value: "isLikedByMe" } },
+                            { kind: "Field", name: { kind: "Name", value: "myVoteTileId" } },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "user" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  { kind: "Field", name: { kind: "Name", value: "id" } },
+                                  { kind: "Field", name: { kind: "Name", value: "name" } },
+                                  { kind: "Field", name: { kind: "Name", value: "profileText" } },
+                                  { kind: "Field", name: { kind: "Name", value: "avatarUrl" } },
+                                  { kind: "Field", name: { kind: "Name", value: "isFollowing" } },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "followingCount" },
+                                  },
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "followersCount" },
+                                  },
+                                  { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+                                  { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "cursor" } },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "pageInfo" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "hasNextPage" } },
+                      { kind: "Field", name: { kind: "Name", value: "hasPreviousPage" } },
+                      { kind: "Field", name: { kind: "Name", value: "startCursor" } },
+                      { kind: "Field", name: { kind: "Name", value: "endCursor" } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  VotedWhatToDiscardProblemsQuery,
+  VotedWhatToDiscardProblemsQueryVariables
+>;
 export const CreateUserDocument = {
   kind: "Document",
   definitions: [
@@ -3545,7 +3753,6 @@ export const WhatToDiscardProblemsDocument = {
                                 selections: [
                                   { kind: "Field", name: { kind: "Name", value: "id" } },
                                   { kind: "Field", name: { kind: "Name", value: "name" } },
-                                  { kind: "Field", name: { kind: "Name", value: "email" } },
                                   { kind: "Field", name: { kind: "Name", value: "profileText" } },
                                   { kind: "Field", name: { kind: "Name", value: "avatarUrl" } },
                                   { kind: "Field", name: { kind: "Name", value: "isFollowing" } },
