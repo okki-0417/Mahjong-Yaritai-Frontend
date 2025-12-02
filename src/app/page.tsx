@@ -10,7 +10,7 @@ export default async function Home() {
     const sessionData = await client.query({ query: CurrentSessionDocument });
 
     if (sessionData.data.currentSession?.isLoggedIn) {
-      redirect("/dashboard");
+      redirect("/me");
     } else {
       redirect("/top");
     }

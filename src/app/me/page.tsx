@@ -3,9 +3,10 @@ import { CurrentSessionDocument } from "@/src/generated/graphql";
 import { getClient } from "@/src/lib/apollo/server";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import DashboardSection from "@/src/app/dashboard/components/DashboardSection";
 import { Suspense } from "react";
-import { Container } from "@chakra-ui/react";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Container } from "@chakra-ui/react";
+import DashboardSection from "@/src/app/me/components/DashboardSection";
+import Fallback from "@/src/components/fallbacks/Fallback";
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +21,14 @@ export default async function Dashboard() {
     }
 
     return (
-      <Container maxW="container.md" py={8}>
-        <Suspense>
+      <Container maxW="container.xl" py="4">
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <BreadcrumbLink isCurrentPage>マイページ</BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+
+        <Suspense fallback={<Fallback />}>
           <DashboardSection user={data.currentSession.user} />
         </Suspense>
       </Container>

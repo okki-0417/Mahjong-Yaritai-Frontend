@@ -33,7 +33,7 @@ export default function AuthVerificationForm() {
           status: "success",
           title: "認証が完了しました",
         });
-        router.push("/dashboard");
+        router.push("/me");
       } else {
         toast({
           status: "success",

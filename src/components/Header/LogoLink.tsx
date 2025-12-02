@@ -8,7 +8,7 @@ import useGetSession from "@/src/hooks/useGetSession";
 
 export default function LogoLink() {
   const { session } = useGetSession();
-  const homePath = session?.isLoggedIn ? "/dashboard" : "/";
+  const homePath = session?.isLoggedIn ? "/me" : "/";
 
   return (
     <Link href={homePath}>

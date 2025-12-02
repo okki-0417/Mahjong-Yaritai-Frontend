@@ -29,7 +29,7 @@ export default function LineVerification({ code, state }: Props) {
           router.push("/users/new");
         } else if (response.session.is_logged_in) {
           await updateSession();
-          router.push("/dashboard");
+          router.push("/me");
         } else {
           throw new Error("正常に認証できませんでした。");
         }

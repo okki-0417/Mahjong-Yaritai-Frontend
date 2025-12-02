@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default function AuthRequest() {
   return (
-    <Container mt="20" maxW="2xl">
+    <Container mt="12" maxW="2xl">
       <Text fontSize={["2xl", "4xl"]} fontWeight="bold">
         認証リクエスト
       </Text>

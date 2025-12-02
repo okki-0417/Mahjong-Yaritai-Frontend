@@ -46,7 +46,7 @@ export default function UserForm() {
           status: "success",
           title: "ユーザーを作成しました",
         });
-        router.push("/dashboard");
+        router.push("/me");
       },
       onError: error => {
         toast({

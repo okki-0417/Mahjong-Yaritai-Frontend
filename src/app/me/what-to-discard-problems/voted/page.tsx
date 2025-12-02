@@ -9,8 +9,8 @@ export default function VotedWhatToDiscardProblemsPage() {
       <Container mt="4" maxW="container.xl" px="1">
         <Breadcrumb>
           <BreadcrumbItem>
-            <BreadcrumbLink as={Link} href="/dashboard">
-              ダッシュボード
+            <BreadcrumbLink as={Link} href="/me">
+              マイページ
             </BreadcrumbLink>
           </BreadcrumbItem>
 
