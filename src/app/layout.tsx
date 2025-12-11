@@ -4,6 +4,7 @@ import Header from "@/src/components/Header";
 import { SessionProvider } from "@/src/contexts/SessionProvider";
 import AppolloProviderWrapper from "@/src/contexts/AppolloProviderWrapper";
 import ChakraCustomProvider from "@/src/contexts/ChakraCustomProvider";
+import ServiceWorkerRegistration from "@/src/components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
   title: {
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description:
     "麻雀が好きな人、麻雀を新しく始めたい人が集まる場所です。ライトに麻雀を楽しむための情報やコミュニティを提供します。",
   authors: [{ name: "麻雀ヤリタイ" }],
+  manifest: "/manifest.json",
   openGraph: {
     title: "麻雀ヤリタイ | 麻雀好きが集まる場所",
     description: "麻雀が好きな人、麻雀を新しく始めたい人が集まる場所です。",
@@ -48,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja" suppressHydrationWarning>
       <body>
+        <ServiceWorkerRegistration />
         <ChakraCustomProvider>
           <AppolloProviderWrapper>
             <SessionProvider>
