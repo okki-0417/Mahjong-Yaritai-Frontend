@@ -13,7 +13,7 @@ export default async function ParticipatedMahjongSessionPage({ params }: Props) 
   const { id } = await params;
 
   return (
-    <Container maxW="container.xl" py="4" px="0">
+    <Container maxW="container.xl" px="0">
       <Suspense fallback={<Fallback />}>
         <ParticipatedMahjongSessionSection id={id} />
       </Suspense>

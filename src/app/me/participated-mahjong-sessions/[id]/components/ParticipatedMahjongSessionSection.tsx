@@ -7,7 +7,11 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Center,
   Container,
+  Divider,
+  HStack,
+  SimpleGrid,
   Table,
   Tbody,
   Td,
@@ -37,7 +41,7 @@ export default async function ParticipatedMahjongSessionSection({ id }: Props) {
 
     return (
       <Box>
-        <Box px="2">
+        <Container maxW="container.xl" mb="4" px="1" mt="2">
           <Breadcrumb>
             <BreadcrumbItem>
               <BreadcrumbLink href="/me">マイページ</BreadcrumbLink>
@@ -55,196 +59,311 @@ export default async function ParticipatedMahjongSessionSection({ id }: Props) {
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
-        </Box>
+        </Container>
 
-        <Container mt="16" px="1">
-          <Table mt="1" size={["sm", "md"]}>
-            <Thead>
-              <Tr display="flex" className="divide-x">
-                <Th px="0" w={["41px", "16"]} display="inline-block" />
+        <Container px="0" maxW="container.md" mt="2">
+          <Box px="1">
+            <Text fontSize={["2xl", "3xl"]}>
+              {new Date(mahjongSession.createdAt).toLocaleDateString("ja-JP", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </Text>
 
-                {mahjongSession.mahjongParticipants.map(participant => (
-                  <VStack
-                    as={Th}
-                    key={participant.id}
-                    scope="col"
-                    className="flex-1"
-                    gap={["1", "2"]}
-                    _even={{ bg: "neutral.200" }}>
-                    <Avatar src={participant.user.avatarUrl} size={["sm", "md"]} />
-                    <Text as="span" noOfLines={1} fontSize={["sm", "md"]} color="primary.500">
-                      {participant.name}
-                    </Text>
-                  </VStack>
-                ))}
-              </Tr>
+            <HStack mb="1" gap="4">
+              <HStack align="baseline" gap="1">
+                <Text as="span" fontSize={["xs", "sm"]}>
+                  レート
+                </Text>
+                <Text as="span" fontSize={["lg", "xl"]}>
+                  {mahjongSession.mahjongScoringSetting.rate}
+                </Text>
+                <Text as="span" fontSize={["xs", "sm"]}>
+                  pt
+                </Text>
+              </HStack>
+
+              <HStack align="baseline" gap="1">
+                <Text as="span" fontSize={["xs", "sm"]}>
+                  チップ
+                </Text>
+                <Text as="span" fontSize={["lg", "xl"]}>
+                  {mahjongSession.mahjongScoringSetting.chipAmount}
+                </Text>
+                <Text as="span" fontSize={["xs", "sm"]}>
+                  pt
+                </Text>
+              </HStack>
+            </HStack>
+          </Box>
+
+          <Table
+            as="div"
+            borderRadius={["sm", "md"]}
+            bg="neutral.100"
+            boxShadow="lg"
+            overflow="hidden">
+            <Thead as="div">
+              <HStack gap="0" align="stretch">
+                <Th
+                  as="div"
+                  px="0"
+                  w={["10", "16"]}
+                  borderColor="secondary.50"
+                  borderBottom=""
+                  borderRightWidth="1.5px"
+                />
+
+                <SimpleGrid as="div" columns={mahjongSession.mahjongParticipants.length} w="full">
+                  {mahjongSession.mahjongParticipants.map(participant => (
+                    <Th
+                      as="div"
+                      key={participant.id}
+                      textAlign="center"
+                      m="0"
+                      px="1"
+                      py="2"
+                      w="full"
+                      borderColor="secondary.50"
+                      borderBottom=""
+                      _even={{ bg: "neutral.300" }}>
+                      <VStack spacing="2" w="full">
+                        <Avatar
+                          size={["sm", "md"]}
+                          name={participant.user.name}
+                          src={participant.user.avatarUrl}
+                        />
+                        <Text
+                          fontSize={["sm", "md"]}
+                          fontWeight="bold"
+                          noOfLines={1}
+                          color="primary.500"
+                          overflow="hidden"
+                          whiteSpace="nowrap"
+                          w="full"
+                          textTransform="none"
+                          textOverflow="ellipsis">
+                          {participant.name}
+                        </Text>
+                      </VStack>
+                    </Th>
+                  ))}
+                </SimpleGrid>
+              </HStack>
             </Thead>
 
-            <VStack
-              as={Tbody}
-              gap="0"
+            <Divider borderWidth="2px" borderColor="#060" />
+
+            <Tbody
+              as={VStack}
               align="stretch"
-              w="full"
-              borderTop="2px"
-              borderColor="green.500">
-              {mahjongSession.mahjongGames.map((mahjongGame, index) => (
-                <Tr key={mahjongGame.id} display="flex" className="divide-x" alignItems="stretch">
-                  <Td textAlign="center" scope="row" px="0" w={["13", "16"]}>
-                    <Text as="span" fontWeight="bold">
-                      {index + 1}
-                    </Text>
-                  </Td>
+              spacing="0"
+              divider={<Divider borderColor="secondary.50" borderBottomWidth="1.5px" />}>
+              {mahjongSession.mahjongGames.map((game, gameIndex) => (
+                <Tr as={HStack} gap="0" key={game.id} align="stretch" borderBottom="0">
+                  <Th
+                    key={game.id}
+                    as={VStack}
+                    px="0"
+                    py="4"
+                    w={["10", "16"]}
+                    fontSize={["md", "xl"]}
+                    borderBottom=""
+                    color="primary.500"
+                    borderColor="secondary.50"
+                    borderRightWidth="1.5px">
+                    <Text>{gameIndex + 1}</Text>
+                  </Th>
 
-                  {mahjongSession.mahjongParticipants.map(participant => {
-                    const participantResult = mahjongGame.mahjongResults.find(result => {
-                      return result.mahjongParticipantId == participant.id;
-                    });
+                  <SimpleGrid
+                    as="div"
+                    columns={mahjongSession.mahjongParticipants.length}
+                    w="full"
+                    alignItems="stretch">
+                    {mahjongSession.mahjongParticipants.map(participant => {
+                      const participantResult = game.mahjongResults.find(
+                        result => result.mahjongParticipantId === participant.id,
+                      );
 
-                    return (
-                      <Td
-                        key={participant.id}
-                        textAlign="center"
-                        flex="1"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        p="0"
-                        position="relative"
-                        _even={{ bg: "neutral.200" }}>
-                        {participantResult ? (
+                      return (
+                        <Td
+                          as={VStack}
+                          key={participant.id}
+                          px="1"
+                          py="2"
+                          borderBottom=""
+                          justify="center"
+                          _even={{ bg: "neutral.300" }}>
                           <Text
-                            as="span"
-                            fontSize={["lg", "2xl"]}
                             fontWeight="bold"
+                            fontSize={["xl", "2xl"]}
                             color={
                               participantResult.resultPoints > 0
-                                ? "blue.600"
+                                ? "blue.500"
                                 : participantResult.resultPoints < 0
                                   ? "red.500"
-                                  : "primary.500"
+                                  : "inherit"
                             }>
                             {participantResult.resultPoints}
                           </Text>
-                        ) : (
-                          <Text as="span">観戦</Text>
-                        )}
-                      </Td>
-                    );
-                  })}
+                        </Td>
+                      );
+                    })}
+                  </SimpleGrid>
                 </Tr>
               ))}
 
-              <Tr display="flex" className="divide-x">
-                <Td textAlign="center" scope="row" px="0" w={["13", "16"]}>
-                  <Text as="span" fontWeight="bold">
-                    {mahjongSession.mahjongGames.length + 1}
-                  </Text>
-                </Td>
+              <Tr as={HStack} gap="0" align="stretch" borderBottom="0">
+                <Th
+                  as={VStack}
+                  px="0"
+                  py="4"
+                  w={["10", "16"]}
+                  fontSize={["md", "xl"]}
+                  borderBottom=""
+                  borderColor="secondary.50"
+                  color="primary.500"
+                  borderRightWidth="1.5px">
+                  <Text>{mahjongSession.mahjongGames.length + 1}</Text>
+                </Th>
 
-                {mahjongSession.mahjongParticipants.map(participant => (
-                  <Td
-                    key={participant.id}
-                    textAlign="center"
-                    flex="1"
-                    _even={{ bg: "neutral.200" }}>
-                    <Text as="span" />
-                  </Td>
-                ))}
-              </Tr>
-            </VStack>
-
-            <Tfoot borderTop="4px" borderColor="green.500">
-              <Tr display="flex" className="divide-x" borderTop="1px">
-                <Td textAlign="center" scope="row" w={["13", "16"]}>
-                  <Text as="span" fontWeight="bold" fontSize={["2xs", "xs"]}>
-                    計
-                  </Text>
-                </Td>
-
-                {mahjongSession.mahjongParticipants.map(participant => (
-                  <Td
-                    key={participant.id}
-                    textAlign="center"
-                    flex="1"
-                    _even={{ bg: "neutral.200" }}>
-                    <Text
+                <SimpleGrid as="div" columns={mahjongSession.mahjongParticipants.length} w="full">
+                  {mahjongSession.mahjongParticipants.map(participant => (
+                    <Td
                       as="span"
-                      fontSize={["lg", "xl"]}
+                      key={participant.id}
+                      textAlign="center"
+                      px="1"
+                      py="2"
+                      borderBottom=""
                       fontWeight="bold"
-                      color={
-                        participant.totalPoints > 0
-                          ? "blue.600"
-                          : participant.totalPoints < 0
-                            ? "red.500"
-                            : "primary.500"
-                      }>
-                      {participant.totalPoints}
-                    </Text>
+                      fontSize={["lg", "2xl"]}
+                      _even={{ bg: "neutral.300" }}
+                    />
+                  ))}
+                </SimpleGrid>
+              </Tr>
+            </Tbody>
 
-                    <Text as="span" fontSize="2xs" ml="1">
-                      pt
-                    </Text>
-                  </Td>
-                ))}
+            <Divider borderWidth="2px" borderColor="#060" />
+
+            <Tfoot as="div">
+              <Tr as={HStack} gap="0" align="stretch">
+                <Th
+                  as={Center}
+                  p="0"
+                  w={["10", "16"]}
+                  borderColor="secondary.50"
+                  borderBottom=""
+                  borderRightWidth="1.5px"
+                  color="primary.500"
+                  fontSize={["xs", "sm"]}>
+                  <Text>合計</Text>
+                </Th>
+
+                <SimpleGrid as="div" columns={mahjongSession.mahjongParticipants.length} w="full">
+                  {mahjongSession.mahjongParticipants.map(participant => (
+                    <Td
+                      as={VStack}
+                      key={participant.id}
+                      px="1"
+                      py="4"
+                      w="full"
+                      borderBottom=""
+                      _even={{ bg: "neutral.300" }}>
+                      <Text
+                        fontWeight="bold"
+                        fontSize={["xl", "2xl"]}
+                        color={
+                          participant.totalPoints > 0
+                            ? "blue.500"
+                            : participant.totalPoints < 0
+                              ? "red.500"
+                              : "inherit"
+                        }>
+                        {participant.totalPoints}
+                      </Text>
+                    </Td>
+                  ))}
+                </SimpleGrid>
               </Tr>
 
-              <Tr display="flex" className="divide-x">
-                <Td textAlign="center" scope="row" w={["13", "16"]}>
-                  <Text fontSize={["2xs", "xs"]} lineHeight="1" as="span" fontWeight="bold">
+              <Divider borderColor="secondary.50" />
+
+              <Tr as={HStack} gap="0" align="stretch">
+                <Th
+                  as={Center}
+                  px="0"
+                  w={["10", "16"]}
+                  py="0"
+                  borderBottom=""
+                  borderColor="secondary.50"
+                  color="primary.500"
+                  borderRightWidth="1.5px">
+                  <Text fontSize={["xs", "sm"]}>
                     平均
                     <br />
                     順位
                   </Text>
-                </Td>
+                </Th>
 
-                {mahjongSession.mahjongParticipants.map(participant => (
-                  <Td
-                    key={participant.id}
-                    textAlign="center"
-                    flex="1"
-                    _even={{ bg: "neutral.200" }}>
-                    <Text fontSize={["lg", "xl"]} display="inline-block" as="span">
-                      {participant.averageRanking}
-                    </Text>
-                    <Text as="span" fontSize="2xs" ml="1">
-                      位
-                    </Text>
-                  </Td>
-                ))}
+                <SimpleGrid as="div" columns={mahjongSession.mahjongParticipants.length} w="full">
+                  {mahjongSession.mahjongParticipants.map(participant => (
+                    <Td
+                      as={VStack}
+                      key={participant.id}
+                      textAlign="center"
+                      px="1"
+                      py="4"
+                      fontSize={["lg", "xl"]}
+                      borderBottom=""
+                      _even={{ bg: "neutral.300" }}>
+                      <Text fontSize={["xl", "2xl"]}>{participant.averageRanking}</Text>
+                    </Td>
+                  ))}
+                </SimpleGrid>
               </Tr>
 
-              <Tr display="flex" className="divide-x">
-                <Td textAlign="center" scope="row" px="0" w={["13", "16"]}>
-                  <Text fontSize="2xs" as="span" fontWeight="bold">
-                    収支
-                  </Text>
-                </Td>
+              <Divider borderColor="secondary.50" />
 
-                {mahjongSession.mahjongParticipants.map(participant => (
-                  <Td
-                    key={participant.id}
-                    textAlign="center"
-                    flex="1"
-                    px="0"
-                    _even={{ bg: "neutral.200" }}>
-                    <Text
-                      as="span"
-                      fontSize={["lg", "xl"]}
-                      fontWeight="bold"
-                      color={
-                        participant.totalProfits > 0
-                          ? "blue.600"
-                          : participant.totalProfits < 0
-                            ? "red.500"
-                            : "primary.500"
-                      }>
-                      {participant.totalProfits}
-                    </Text>
-                    <Text as="span" fontSize="2xs" ml="1" display="inline-block">
-                      pt
-                    </Text>
-                  </Td>
-                ))}
+              <Tr as={HStack} gap="0" align="stretch">
+                <Th
+                  as={Center}
+                  px="0"
+                  w={["10", "16"]}
+                  py="4"
+                  borderBottom=""
+                  borderColor="secondary.50"
+                  color="primary.500"
+                  borderRightWidth="1.5px">
+                  <Text fontSize={["xs", "sm"]}>収支</Text>
+                </Th>
+
+                <SimpleGrid as="div" columns={mahjongSession.mahjongParticipants.length} w="full">
+                  {mahjongSession.mahjongParticipants.map(participant => (
+                    <Td
+                      as={VStack}
+                      key={participant.id}
+                      px="1"
+                      py="4"
+                      borderBottom=""
+                      _even={{ bg: "neutral.300" }}>
+                      <Text
+                        fontSize={["xl", "2xl"]}
+                        fontWeight="bold"
+                        color={
+                          participant.totalProfits > 0
+                            ? "blue.500"
+                            : participant.totalProfits < 0
+                              ? "red.500"
+                              : "inherit"
+                        }>
+                        {participant.totalProfits}
+                      </Text>
+                    </Td>
+                  ))}
+                </SimpleGrid>
               </Tr>
             </Tfoot>
           </Table>
