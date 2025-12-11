@@ -12,7 +12,7 @@ type Props = {
 export default function NavigationItem({ href, icon, text }: Props) {
   return (
     <ListItem>
-      <Link href={href} prefetch={false} className="w-full">
+      <Link href={href} className="w-full">
         <HStack className="py-3 px-4 rounded hover:bg-gray-600 transition-colors">
           <Grid w="full" h="full" templateColumns="repeat(8, 1fr)" alignItems="center">
             <GridItem colSpan={1}>{icon}</GridItem>

@@ -14,7 +14,7 @@ export default function LoginSection() {
     <Fragment>
       {isLoggedIn === false && (
         <ListItem>
-          <Link href="/auth/request" prefetch={false}>
+          <Link href="/auth/request">
             <HStack gap="1">
               <ButtonNeutral>
                 <Text>ログイン / 新規登録</Text>

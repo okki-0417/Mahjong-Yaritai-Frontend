@@ -4,8 +4,8 @@
   "description": "麻雀の「何切る問題」に特化したコミュニティプラットフォーム",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2B6CB0",
+  "background_color": "#365158",
+  "theme_color": "#365158",
   "orientation": "portrait-primary",
   "icons": [
     {

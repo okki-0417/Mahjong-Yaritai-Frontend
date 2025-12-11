@@ -75,7 +75,7 @@ export default function SideNavigation() {
               <VStack alignItems="stretch" w="full" gap="1">
                 {!isLoggedIn && (
                   <ListItem>
-                    <Link href="/auth/request" prefetch={false} className="w-full">
+                    <Link href="/auth/request" className="w-full">
                       <HStack className="py-3 px-4 rounded bg-pink-500/50 hover:bg-pink-300/50 transition-colors">
                         <SlLogin size={20} color="white" />
                         <Text fontWeight="bold">ログイン/新規登録</Text>

@@ -77,19 +77,11 @@ export default function AuthRequestForm() {
           </FormControl>
 
           <Text fontSize="sm">
-            <Link
-              href="/terms"
-              prefetch={false}
-              className="text-blue-200 underline"
-              target="_blank">
+            <Link href="/terms" className="text-blue-200 underline" target="_blank">
               利用規約
             </Link>
             と
-            <Link
-              href="/privacy"
-              prefetch={false}
-              className="text-blue-200 underline"
-              target="_blank">
+            <Link href="/privacy" className="text-blue-200 underline" target="_blank">
               プライバシーポリシー
             </Link>
             に同意の上、ログイン/登録を行ってください。
