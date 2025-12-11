@@ -1,0 +1,29 @@
+{
+  "name": "麻雀ヤリタイ",
+  "short_name": "麻雀ヤリタイ",
+  "description": "麻雀の「何切る問題」に特化したコミュニティプラットフォーム",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2B6CB0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/mahjong-icon.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/mahjong-icon.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "education", "social"],
+  "lang": "ja",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
