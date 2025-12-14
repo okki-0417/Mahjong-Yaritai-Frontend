@@ -6,6 +6,7 @@ import { apiClient } from "@/src/lib/api/client";
 import useGetSession from "@/src/hooks/useGetSession";
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import Fallback from "@/src/components/fallbacks/Fallback";
+import { captureException } from "@sentry/nextjs";
 
 type Props = {
   code: string;
@@ -34,6 +35,7 @@ export default function LineVerification({ code, state }: Props) {
           throw new Error("正常に認証できませんでした。");
         }
       } catch (error) {
+        captureException(error);
         setErrorMessage(error.message || "認証に失敗しました");
       }
     };
