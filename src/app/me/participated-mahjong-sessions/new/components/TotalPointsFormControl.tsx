@@ -6,7 +6,7 @@ export default function TotalPointsFormControl({ participantUserFieldId, totalPo
       as={VStack}
       key={participantUserFieldId}
       px="1"
-      py="4"
+      py={["2", "4"]}
       w="full"
       borderBottom=""
       _even={{ bg: "neutral.300" }}>

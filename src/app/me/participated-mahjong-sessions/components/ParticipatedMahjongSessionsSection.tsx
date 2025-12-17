@@ -1,35 +1,40 @@
-import fetchCurrentSessionAction from "@/src/app/actions/fetchCurrentSessionAction";
-import fetchParticipatedMahjongSessions from "@/src/app/me/participated-mahjong-sessions/actions/fetchParticipatedMahjongSessions";
-import LoadAdditionalParticipatedMahjongSessions from "@/src/app/me/participated-mahjong-sessions/components/LoadAdditionalParticipatedMahjongSessions";
-import MahjongSessionCard from "@/src/app/me/participated-mahjong-sessions/components/MahjongSessionCard";
+import MahjongSessionsList from "@/src/app/me/participated-mahjong-sessions/components/MahjongSessionsList";
 import ErrorPage from "@/src/components/errors/ErrorPage";
-import { UnorderedList } from "@chakra-ui/react";
+import {
+  CurrentSessionDocument,
+  ParticipatedMahjongSessionsDocument,
+} from "@/src/generated/graphql";
+import { getClient } from "@/src/lib/apollo/server";
 import { captureException } from "@sentry/nextjs";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 export default async function ParticipatedMahjongSessionsSection() {
   try {
-    const session = await fetchCurrentSessionAction();
-    if (session.isLoggedIn == false) {
+    const client = getClient();
+    const { data: sessionData } = await client.query({
+      query: CurrentSessionDocument,
+      fetchPolicy: "network-only",
+    });
+
+    if (sessionData.currentSession.isLoggedIn == false) {
       redirect("/auth/request");
     }
 
-    const { mahjongSessions, pageInfo } = await fetchParticipatedMahjongSessions({
-      pageInfo: null,
+    const { data, error } = await client.query({
+      query: ParticipatedMahjongSessionsDocument,
+      variables: { after: null, first: 10 },
+      fetchPolicy: "network-only",
     });
 
-    return (
-      <div>
-        <UnorderedList styleType="none" m={0} p={0} spacing={4}>
-          {mahjongSessions.map(mahjongSession => (
-            <MahjongSessionCard key={mahjongSession.id} mahjongSession={mahjongSession} />
-          ))}
-        </UnorderedList>
+    if (error) {
+      throw new Error(error.message || "参加した麻雀セッションの取得に失敗しました");
+    }
 
-        <LoadAdditionalParticipatedMahjongSessions initialPageInfo={pageInfo} />
-      </div>
-    );
+    const mahjongSessions = data.participatedMahjongSessions.edges.map(edge => edge.node);
+    const pageInfo = data.participatedMahjongSessions.pageInfo;
+
+    return <MahjongSessionsList initialSessions={mahjongSessions} initialPageInfo={pageInfo} />;
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

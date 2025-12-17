@@ -8,7 +8,7 @@ import tslint from "typescript-eslint";
 
 const config = defineConfig([
   {
-    ignores: [".next/**", "node_modules/**", ".git/**", "src/generated/**"],
+    ignores: [".next/**", "node_modules/**", ".git/**", "src/generated/**", "next-env.d.ts"],
   },
   {
     files: ["./src/**/*.{tsx,ts}", "./*.ts"],

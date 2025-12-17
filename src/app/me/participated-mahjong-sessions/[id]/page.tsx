@@ -3,6 +3,8 @@ import Fallback from "@/src/components/fallbacks/Fallback";
 import { Container } from "@chakra-ui/react";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{
     id: string;

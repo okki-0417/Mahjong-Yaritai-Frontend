@@ -28,6 +28,7 @@ export default async function fetchParticipatedMahjongSessions({
       after: pageInfo?.endCursor ?? null,
       first: 10,
     },
+    fetchPolicy: "network-only",
   });
 
   if (error) {

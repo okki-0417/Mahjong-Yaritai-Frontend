@@ -1,76 +1,24 @@
-import {
-  GameSessionFormType,
-  GameType,
-  ParticipantUserType,
-} from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
+"use client";
+
 import { SimpleGrid, Td, Text, VStack } from "@chakra-ui/react";
-import { FieldArrayWithId } from "react-hook-form";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 
-type Props = {
-  participantUsers: ParticipantUserType[];
-  games: GameType[];
-  participantUserFields: FieldArrayWithId<GameSessionFormType, "participantUsers", "id">[];
-};
+export default function AverageRakingFormControls() {
+  const { participantUserFields, watch } = useMahjongSessionForm();
+  const games = watch("games");
 
-export default function AverageRakingFormControls({
-  participantUsers,
-  games,
-  participantUserFields,
-}: Props) {
-  const averageRankingByParticipant = participantUsers.map((_, participantIndex) => {
-    let validGameCount = 0;
+  const averageRankingByParticipant = participantUserFields.map((_, participantIndex) => {
+    // 各ゲームから該当参加者の ranking を取得
+    const rankings = games
+      .map(game => game.results[participantIndex]?.ranking)
+      .filter(ranking => ranking !== null && ranking !== undefined && !Number.isNaN(ranking));
 
-    const totalRanking = games.reduce((acc, game) => {
-      // 各参加者の結果と元のインデックスを保持
-      const resultsWithOriginalIndex = game.results.map((result, index) => ({
-        originalIndex: index,
-        resultPoints: result.resultPoints,
-      }));
+    // 有効なゲームがない場合
+    if (rankings.length === 0) return 0;
 
-      // valueAsNumber: true により、未入力フィールドはNaNになる
-      // NaNの結果を除外して、入力済みのゲームのみを対象とする
-      const filteredResults = resultsWithOriginalIndex.filter(
-        result => !isNaN(result.resultPoints),
-      );
-
-      if (filteredResults.length === 0) {
-        return acc;
-      }
-
-      const sortedGameResultsByResultPoints = filteredResults.sort(
-        (a, b) => b.resultPoints - a.resultPoints,
-      );
-
-      // participantUsersの並び順と各ゲームの結果の並び順は同じなので、
-      // participantUserのindexと各ゲームの結果のindexは対応しており、
-      // participantIndexを使って各ゲームの結果から自分の順位を特定できる
-      const participantResultIndex = sortedGameResultsByResultPoints.findIndex(
-        sortedResult => sortedResult.originalIndex === participantIndex,
-      );
-
-      const currentResultPoints =
-        sortedGameResultsByResultPoints[participantResultIndex]?.resultPoints;
-
-      if (currentResultPoints == null) {
-        return acc;
-      }
-
-      // 自分より上位（高得点）で、自分と異なる得点の人数を数える
-      // 同点の場合は同じ順位とするため、自分と同じ得点の人はカウントしないため
-      const greaterPointsParticipantsCount = sortedGameResultsByResultPoints.filter(
-        result => result.resultPoints > currentResultPoints,
-      ).length;
-
-      const ranking = greaterPointsParticipantsCount + 1;
-
-      validGameCount++;
-
-      return acc + ranking;
-    }, 0);
-
-    if (validGameCount === 0) return 0;
-
-    const rawAverageRanking = totalRanking / validGameCount;
+    // 平均順位を計算（小数点2桁まで）
+    const totalRanking = rankings.reduce((acc, ranking) => acc + ranking, 0);
+    const rawAverageRanking = totalRanking / rankings.length;
     const multiplied = rawAverageRanking * 100;
     return Math.round(multiplied) / 100;
   });
@@ -83,7 +31,7 @@ export default function AverageRakingFormControls({
           key={participant.id}
           textAlign="center"
           px="1"
-          py="4"
+          py={["2", "4"]}
           fontSize={["lg", "xl"]}
           borderBottom=""
           _even={{ bg: "neutral.300" }}>

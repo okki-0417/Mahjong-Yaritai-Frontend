@@ -11,7 +11,7 @@ export default async function AuthVerificationSection() {
   try {
     const { data } = await client.query({ query: CurrentUserProfileDocument });
 
-    if (data?.currentSession?.isLoggedIn) redirect("/what-to-discard-problems");
+    if (data?.currentSession?.isLoggedIn) redirect("/me");
 
     return <AuthVerificationForm />;
   } catch (error) {

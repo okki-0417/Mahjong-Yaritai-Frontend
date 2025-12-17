@@ -1,22 +1,23 @@
-import { GameSessionFormType } from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
+"use client";
+
 import { FormControl, Input } from "@chakra-ui/react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 
-type Props = {
-  register: UseFormRegister<GameSessionFormType>;
-  errors: FieldErrors<GameSessionFormType>;
-};
+export default function CreatedDateFormControl() {
+  const { register, errors } = useMahjongSessionForm();
 
-export default function CreatedDateFormControl({ register, errors }: Props) {
   return (
     <FormControl isInvalid={Boolean(errors.createdDate)}>
       <Input
-        fontSize={["2xl", "3xl"]}
-        value={new Date().toLocaleDateString("ja-JP", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
+        type="date"
+        size="md"
+        fontSize={["lg", "xl"]}
+        w="1/2"
+        sx={{
+          "&::-webkit-calendar-picker-indicator": {
+            filter: "invert(1)",
+          },
+        }}
         {...register("createdDate")}
       />
     </FormControl>

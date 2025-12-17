@@ -12,7 +12,7 @@ export default async function AuthRequestSection() {
   try {
     const { data } = await client.query({ query: CurrentUserProfileDocument });
 
-    if (data.currentSession.isLoggedIn) redirect("/what-to-discard-problems");
+    if (data.currentSession.isLoggedIn) redirect("/me");
 
     return (
       <>

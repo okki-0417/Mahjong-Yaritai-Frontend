@@ -2,42 +2,76 @@
 
 import GameResultFormControl from "@/src/app/me/participated-mahjong-sessions/new/components/GameResultFormControl";
 import {
-  GameSessionFormType,
-  GameType,
-} from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
-import { HStack, SimpleGrid, Text, Th, Tr, VStack } from "@chakra-ui/react";
-import { FieldArrayWithId, FieldErrors } from "react-hook-form";
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  SimpleGrid,
+  Text,
+  Th,
+  Tooltip,
+  Tr,
+  VStack,
+} from "@chakra-ui/react";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 
 type Props = {
-  gameResultPoints: GameType["results"];
-  gameFieldId: string;
   gameIndex: number;
-  participantUserFields: FieldArrayWithId<GameSessionFormType, "participantUsers", "id">[];
-  gameError?: FieldErrors<GameSessionFormType>["games"][number];
-  register: any;
 };
 
-export default function GameFormControl({
-  gameFieldId,
-  gameResultPoints,
-  gameIndex,
-  participantUserFields,
-  gameError,
-  register,
-}: Props) {
+export default function GameFormControl({ gameIndex }: Props) {
+  const { participantUserFields, errors, watch, register, removeGame } = useMahjongSessionForm();
+  const gameResultPoints = watch(`games.${gameIndex}.results`);
+  const gameError = errors.games?.[gameIndex];
+
+  const totalPoints = gameResultPoints.reduce((sum, result) => {
+    const points = result?.resultPoints;
+    if (typeof points === "number" && !Number.isNaN(points)) {
+      return sum + points;
+    }
+    return sum;
+  }, 0);
+
+  const isBalanced = totalPoints === 0;
+
   return (
-    <Tr as={HStack} gap="0" key={gameFieldId} align="stretch" borderBottom="0">
+    <Tr as={HStack} gap="0" align="stretch" borderBottom="0">
       <Th
         as={VStack}
-        px="0"
-        py="4"
         w={["10", "16"]}
-        fontSize={["md", "xl"]}
+        p="0"
         borderBottom=""
         color="primary.500"
+        alignItems="stretch"
+        justifyContent="center"
         borderColor="secondary.50"
-        borderRightWidth="1.5px">
-        <Text>{gameIndex + 1}</Text>
+        borderRightWidth="1.5px"
+        bg={isBalanced ? undefined : "yellow.200"}>
+        <Menu>
+          <Tooltip
+            label={
+              isBalanced
+                ? "クリックで削除"
+                : `収支が合いません (${totalPoints > 0 ? "+" : ""}${totalPoints})`
+            }
+            hasArrow>
+            <MenuButton
+              as={Text}
+              cursor="pointer"
+              _hover={{ opacity: 0.7 }}
+              py={["2", "4"]}
+              fontSize={["md", "xl"]}
+              textAlign="center">
+              {gameIndex + 1}
+            </MenuButton>
+          </Tooltip>
+          <MenuList>
+            <MenuItem color="red.500" onClick={() => removeGame(gameIndex)}>
+              このゲームを削除
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Th>
 
       <SimpleGrid as="div" columns={participantUserFields.length} w="full" alignItems="stretch">

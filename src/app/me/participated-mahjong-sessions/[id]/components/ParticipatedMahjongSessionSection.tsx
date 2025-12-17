@@ -1,6 +1,9 @@
-import fetchCurrentSessionAction from "@/src/app/actions/fetchCurrentSessionAction";
-import fetchParticipatedMahjongSession from "@/src/app/me/participated-mahjong-sessions/actions/fetchParticipatedMahjongSession";
 import ErrorPage from "@/src/components/errors/ErrorPage";
+import {
+  CurrentSessionDocument,
+  ParticipatedMahjongSessionDocument,
+} from "@/src/generated/graphql";
+import { getClient } from "@/src/lib/apollo/server";
 import {
   Avatar,
   Box,
@@ -31,13 +34,27 @@ type Props = {
 };
 
 export default async function ParticipatedMahjongSessionSection({ id }: Props) {
+  const client = getClient();
+
   try {
-    const session = await fetchCurrentSessionAction();
-    if (session.isLoggedIn == false) {
+    const { data: sessionData } = await client.query({
+      query: CurrentSessionDocument,
+    });
+
+    if (sessionData.currentSession.isLoggedIn == false) {
       redirect("/auth/request");
     }
 
-    const { mahjongSession } = await fetchParticipatedMahjongSession({ id });
+    const { data, error } = await client.query({
+      query: ParticipatedMahjongSessionDocument,
+      variables: { id },
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const mahjongSession = data.participatedMahjongSession;
 
     return (
       <Box>
@@ -199,13 +216,13 @@ export default async function ParticipatedMahjongSessionSection({ id }: Props) {
                             fontWeight="bold"
                             fontSize={["xl", "2xl"]}
                             color={
-                              participantResult.resultPoints > 0
+                              participantResult?.resultPoints > 0
                                 ? "blue.500"
-                                : participantResult.resultPoints < 0
+                                : participantResult?.resultPoints < 0
                                   ? "red.500"
                                   : "inherit"
                             }>
-                            {participantResult.resultPoints}
+                            {participantResult?.resultPoints}
                           </Text>
                         </Td>
                       );
@@ -213,37 +230,6 @@ export default async function ParticipatedMahjongSessionSection({ id }: Props) {
                   </SimpleGrid>
                 </Tr>
               ))}
-
-              <Tr as={HStack} gap="0" align="stretch" borderBottom="0">
-                <Th
-                  as={VStack}
-                  px="0"
-                  py="4"
-                  w={["10", "16"]}
-                  fontSize={["md", "xl"]}
-                  borderBottom=""
-                  borderColor="secondary.50"
-                  color="primary.500"
-                  borderRightWidth="1.5px">
-                  <Text>{mahjongSession.mahjongGames.length + 1}</Text>
-                </Th>
-
-                <SimpleGrid as="div" columns={mahjongSession.mahjongParticipants.length} w="full">
-                  {mahjongSession.mahjongParticipants.map(participant => (
-                    <Td
-                      as="span"
-                      key={participant.id}
-                      textAlign="center"
-                      px="1"
-                      py="2"
-                      borderBottom=""
-                      fontWeight="bold"
-                      fontSize={["lg", "2xl"]}
-                      _even={{ bg: "neutral.300" }}
-                    />
-                  ))}
-                </SimpleGrid>
-              </Tr>
             </Tbody>
 
             <Divider borderWidth="2px" borderColor="#060" />

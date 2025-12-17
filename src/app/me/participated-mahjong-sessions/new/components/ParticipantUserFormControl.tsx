@@ -1,52 +1,42 @@
 "use client";
 
-import ParticipantUserModal from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipantUserModal";
-import {
-  GameSessionFormType,
-  ParticipantUserType,
-} from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
-import { Avatar, Input, Th, useDisclosure, VisuallyHiddenInput, VStack } from "@chakra-ui/react";
-import { UseFormRegister } from "react-hook-form";
+import { Avatar, Box, Button, Input, VisuallyHiddenInput, VStack } from "@chakra-ui/react";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
+import { useParticipantUsersModal } from "@/src/app/me/participated-mahjong-sessions/new/contexts/ParticipantUsersModalContextProvider";
 
 type Props = {
   participantUserIndex: number;
-  register: UseFormRegister<GameSessionFormType>;
-  participantUser: ParticipantUserType;
 };
 
-export default function ParticipantUserFormControl({
-  participantUserIndex,
-  register,
-  participantUser,
-}: Props) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+export default function ParticipantUserFormControl({ participantUserIndex }: Props) {
+  const { register, watch } = useMahjongSessionForm();
+  const participantUser = watch(`participantUsers.${participantUserIndex}`);
+  const { openModal } = useParticipantUsersModal();
 
   const handleParticipantUserClick = () => {
-    if (!participantUser.userId) return;
-
-    onOpen();
+    openModal(participantUserIndex);
   };
 
+  const isEven = participantUserIndex % 2 === 1;
+
   return (
-    <>
-      <Th
-        as="div"
-        onClick={handleParticipantUserClick}
-        textAlign="center"
-        m="0"
-        px="1"
-        py="2"
+    <Box position="relative">
+      <VisuallyHiddenInput
+        {...register(`participantUsers.${participantUserIndex}.userId` as const)}
+      />
+      <VisuallyHiddenInput
+        {...register(`participantUsers.${participantUserIndex}.avatarUrl` as const)}
+      />
+      <Button
+        minH="fit-content"
         w="full"
-        cursor="pointer"
-        _hover={{ bg: "neutral.300" }}
-        _even={{ bg: "neutral.300", _hover: { bg: "neutral.400" } }}>
-        <VStack spacing="2" w="full">
-          <VisuallyHiddenInput
-            {...register(`participantUsers.${participantUserIndex}.userId` as const)}
-          />
-          <VisuallyHiddenInput
-            {...register(`participantUsers.${participantUserIndex}.avatarUrl` as const)}
-          />
+        borderRadius="0"
+        onClick={handleParticipantUserClick}
+        px="1px"
+        py="2"
+        bg={isEven ? "neutral.300" : "neutral.200"}
+        _hover={{ bg: isEven ? "neutral.400" : "neutral.300" }}>
+        <VStack spacing="2" w="full" overflow="hidden">
           <Avatar size={["sm", "md"]} name={participantUser.name} src={participantUser.avatarUrl} />
           <Input
             readOnly
@@ -54,19 +44,17 @@ export default function ParticipantUserFormControl({
             fontWeight="bold"
             variant="unstyled"
             textAlign="center"
-            noOfLines={1}
             color="primary.500"
             overflow="hidden"
             whiteSpace="nowrap"
             w="full"
+            maxW="full"
             textTransform="none"
             textOverflow="ellipsis"
             {...register(`participantUsers.${participantUserIndex}.name` as const)}
           />
         </VStack>
-      </Th>
-
-      <ParticipantUserModal isOpen={isOpen} onClose={onClose} />
-    </>
+      </Button>
+    </Box>
   );
 }

@@ -1,6 +1,9 @@
 import ParticipatedMahjongSessionForm from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
+import MahjongSessionFormContextProvider from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Container } from "@chakra-ui/react";
 import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export default function NewGameRecordPage() {
   return (
@@ -13,7 +16,9 @@ export default function NewGameRecordPage() {
         </BreadcrumbItem>
 
         <BreadcrumbItem>
-          <BreadcrumbLink href="/me/participated-mahjong-sessions">麻雀戦績</BreadcrumbLink>
+          <BreadcrumbLink as={Link} href="/me/participated-mahjong-sessions">
+            麻雀戦績
+          </BreadcrumbLink>
         </BreadcrumbItem>
 
         <BreadcrumbItem>
@@ -21,7 +26,9 @@ export default function NewGameRecordPage() {
         </BreadcrumbItem>
       </Breadcrumb>
 
-      <ParticipatedMahjongSessionForm />
+      <MahjongSessionFormContextProvider>
+        <ParticipatedMahjongSessionForm />
+      </MahjongSessionFormContextProvider>
     </Container>
   );
 }

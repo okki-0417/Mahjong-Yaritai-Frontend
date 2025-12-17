@@ -1,24 +1,13 @@
-import {
-  GameSessionFormType,
-  GameType,
-  ParticipantUserType,
-} from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
+"use client";
+
 import { SimpleGrid, Td, Text, VStack } from "@chakra-ui/react";
-import { FieldArrayWithId } from "react-hook-form";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 
-type Props = {
-  participantUsers: ParticipantUserType[];
-  games: GameType[];
-  rate: number;
-  participantUserFields: FieldArrayWithId<GameSessionFormType, "participantUsers", "id">[];
-};
-
-export default function TotalProfitsFormControls({
-  participantUsers,
-  games,
-  rate,
-  participantUserFields,
-}: Props) {
+export default function TotalProfitsFormControls() {
+  const { participantUserFields, watch } = useMahjongSessionForm();
+  const participantUsers = watch("participantUsers");
+  const games = watch("games");
+  const rate = watch("rate");
   const totalProfitsByParticipant = participantUsers.map((_, participantIndex) => {
     return games.reduce((acc, game) => {
       const profit = (game.results[participantIndex]?.resultPoints || 0) * rate;
@@ -34,11 +23,11 @@ export default function TotalProfitsFormControls({
           as={VStack}
           key={participantUserFields[index].id}
           px="1"
-          py="4"
+          py={["2", "4"]}
           borderBottom=""
           _even={{ bg: "neutral.300" }}>
           <Text
-            fontSize={["sm", "2xl"]}
+            fontSize={["md", "2xl"]}
             fontWeight="bold"
             color={totalProfit > 0 ? "blue.500" : totalProfit < 0 ? "red.500" : "inherit"}>
             {totalProfit}

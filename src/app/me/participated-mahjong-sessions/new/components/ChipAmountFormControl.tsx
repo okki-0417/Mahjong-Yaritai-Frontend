@@ -1,18 +1,15 @@
-import { GameSessionFormType } from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
+"use client";
+
 import { useNumberInput } from "@/src/hooks/useNumberInput";
 import { FormControl, FormLabel, HStack, Input } from "@chakra-ui/react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 
-type Props = {
-  register: UseFormRegister<GameSessionFormType>;
-  chipAmountError: FieldErrors<GameSessionFormType>["chipAmount"];
-};
-
-export default function ChipAmountFormControl({ register, chipAmountError }: Props) {
+export default function ChipAmountFormControl() {
+  const { register, errors } = useMahjongSessionForm();
   const handleChipAmountInput = useNumberInput({ min: 0, max: 99999 });
 
   return (
-    <HStack as={FormControl} gap="1" w="fit-content" isInvalid={Boolean(chipAmountError)}>
+    <HStack as={FormControl} gap="1" w="fit-content" isInvalid={Boolean(errors.chipAmount)}>
       <FormLabel m="0" htmlFor="chipAmount" fontSize={["sm", "md"]}>
         チップ
       </FormLabel>
@@ -21,11 +18,20 @@ export default function ChipAmountFormControl({ register, chipAmountError }: Pro
         {...register("chipAmount", { valueAsNumber: true })}
         display="inline-block"
         size="sm"
-        fontSize={["md", "2xl"]}
+        fontSize={["lg", "xl"]}
         type="number"
         w="28"
         pr="1"
         onInput={handleChipAmountInput}
+        sx={{
+          "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
+            WebkitAppearance: "none",
+            margin: 0,
+          },
+          "&[type=number]": {
+            MozAppearance: "textfield",
+          },
+        }}
       />
       <FormLabel m="0" htmlFor="chipAmount" fontSize={["sm", "md"]}>
         pt / 1枚

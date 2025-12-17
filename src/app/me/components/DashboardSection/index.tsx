@@ -64,7 +64,7 @@ export default function DashboardSection({ user }: Props) {
               </CardBody>
             </Button>
           </LinkBox>
-          {/* <LinkBox>
+          <LinkBox>
             <Button
               as={Card}
               variant="link"
@@ -78,7 +78,7 @@ export default function DashboardSection({ user }: Props) {
                 </LinkOverlay>
               </CardBody>
             </Button>
-          </LinkBox> */}
+          </LinkBox>
         </VStack>
       </VStack>
     </Container>

@@ -2,21 +2,21 @@
 
 import { Button, HStack, Text } from "@chakra-ui/react";
 import { IoMdAdd } from "react-icons/io";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 
-type Props = {
-  appendParticipantUser: (
-    /* eslint-disable-next-line no-unused-vars */
-    value: {
-      userId: string;
-      avatarUrl: string;
-      name: string;
-    },
-  ) => void;
-};
+export default function AddParticipantUserButton() {
+  const { appendParticipantUser, gameFields, setValue } = useMahjongSessionForm();
 
-export default function AddParticipantUserButton({ appendParticipantUser }: Props) {
   const handleAddParticipantUser = () => {
-    appendParticipantUser({ userId: "", name: "", avatarUrl: "" });
+    appendParticipantUser({ userId: null, name: "NONAME", avatarUrl: null });
+
+    // 各ゲームの結果に新しい参加者のデータを追加
+    gameFields.forEach((_, gameIndex) => {
+      setValue(`games.${gameIndex}.results`, [
+        ...gameFields[gameIndex].results,
+        { resultPoints: null, ranking: null },
+      ]);
+    });
   };
 
   return (
@@ -28,14 +28,16 @@ export default function AddParticipantUserButton({ appendParticipantUser }: Prop
       borderRadius="0"
       borderRightRadius={["sm", "md"]}
       px="0"
-      size="xs"
+      minW={["0", "6"]}
       bg="neutral.100"
       variant="ghost"
       borderLeft="1px solid"
       borderColor="secondary.50"
       onClick={handleAddParticipantUser}>
       <IoMdAdd size={18} />
-      <Text as="span">ユーザーを追加</Text>
+      <Text as="span" fontSize="xs">
+        ユーザーを追加
+      </Text>
     </HStack>
   );
 }

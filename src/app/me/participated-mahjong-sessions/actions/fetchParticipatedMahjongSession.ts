@@ -1,5 +1,3 @@
-"use server";
-
 import {
   ParticipatedMahjongSessionDocument,
   ParticipatedMahjongSessionQuery,
@@ -20,6 +18,7 @@ export default async function fetchParticipatedMahjongSession({ id }: Props): Pr
   const { data, error } = await client.query({
     query: ParticipatedMahjongSessionDocument,
     variables: { id },
+    fetchPolicy: "network-only",
   });
 
   if (error) {

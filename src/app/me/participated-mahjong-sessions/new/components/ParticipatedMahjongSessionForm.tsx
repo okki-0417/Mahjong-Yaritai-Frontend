@@ -7,7 +7,6 @@ import {
   Container,
   Divider,
   HStack,
-  SimpleGrid,
   Stack,
   Table,
   Tbody,
@@ -19,91 +18,75 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { useTransition } from "react";
+import { SubmitHandler } from "react-hook-form";
+import createMahjongSessionAction from "@/src/app/me/participated-mahjong-sessions/new/actions/createMahjongSessionAction";
 import RateFormControl from "@/src/app/me/participated-mahjong-sessions/new/components/RateFormControl";
 import ChipAmountFormControl from "@/src/app/me/participated-mahjong-sessions/new/components/ChipAmountFormControl";
 import CreatedDateFormControl from "@/src/app/me/participated-mahjong-sessions/new/components/CreatedDateFormControl";
-import ParticipantUserFormControl from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipantUserFormControl";
+import ParticipantUsersSection from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipantUsersSection";
 import AddParticipantUserButton from "@/src/app/me/participated-mahjong-sessions/new/components/AddParticipantUserButon";
 import GameFormControl from "@/src/app/me/participated-mahjong-sessions/new/components/GameFormControl";
 import AddGameButton from "@/src/app/me/participated-mahjong-sessions/new/components/AddGameButton";
 import TotalPointsFormControls from "@/src/app/me/participated-mahjong-sessions/new/components/TotalPointsFormControls";
 import AverageRakingFormControls from "@/src/app/me/participated-mahjong-sessions/new/components/AverageRakingFormControls";
 import TotalProfitsFormControls from "@/src/app/me/participated-mahjong-sessions/new/components/TotalProfitsFormControls";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
+import useMahjongSessionDraft from "@/src/app/me/participated-mahjong-sessions/new/hooks/useMahjongSessionDraft";
+import useBeforeUnloadWarning from "@/src/app/me/participated-mahjong-sessions/new/hooks/useBeforeUnloadWarning";
+import { GameSessionFormType } from "@/src/app/me/participated-mahjong-sessions/new/types";
+import { FaCheck } from "react-icons/fa6";
+import { RiResetLeftFill } from "react-icons/ri";
 
-export type GameSessionFormType = {
-  participantUsers: ParticipantUserType[];
-  games: GameType[];
-  rate: number;
-  chipAmount: number;
-  createdDate: string;
-};
-
-export type GameType = {
-  results: {
-    resultPoints: number | null;
-  }[];
-};
-
-export type ParticipantUserType = {
-  userId: string;
-  avatarUrl: string;
-  name: string;
-};
+const isValidResult = (result: { resultPoints: number | null; ranking: number | null }) =>
+  typeof result.resultPoints === "number" &&
+  !Number.isNaN(result.resultPoints) &&
+  typeof result.ranking === "number" &&
+  !Number.isNaN(result.ranking);
 
 export default function ParticipatedMahjongSessionForm() {
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    formState: { errors },
-  } = useForm<GameSessionFormType>({
-    defaultValues: {
-      rate: 100,
-      chipAmount: 0,
-      createdDate: new Date().toISOString().split("T")[0],
-      participantUsers: [
-        { userId: null, name: "NONAME", avatarUrl: null },
-        { userId: null, name: "NONAME", avatarUrl: null },
-        { userId: null, name: "NONAME", avatarUrl: null },
-        { userId: null, name: "NONAME", avatarUrl: null },
-      ],
-      games: [
-        {
-          results: [
-            { resultPoints: null },
-            { resultPoints: null },
-            { resultPoints: null },
-            { resultPoints: null },
-          ],
-        },
-      ],
-    },
-    mode: "onChange",
-  });
-  const { fields: participantUserFields, append: appendParticipantUser } = useFieldArray({
-    control,
-    shouldUnregister: true,
-    name: "participantUsers",
-  });
-  const { fields: gameFields, append: appendGame } = useFieldArray({
-    control,
-    shouldUnregister: true,
-    name: "games",
-  });
-
+  const { handleSubmit, gameFields, participantUserFields, formState, watch, reset } =
+    useMahjongSessionForm();
+  const [isPending, startTransition] = useTransition();
   const toast = useToast();
 
-  const onSubmit: SubmitHandler<GameSessionFormType> = formData => {
-    /* eslint-disable-next-line  no-console */
-    console.log(JSON.stringify(formData, null, 2));
+  const { clearDraft, resetAll, isResetting } = useMahjongSessionDraft({ watch, reset });
+  useBeforeUnloadWarning({ isDirty: formState.isDirty });
 
-    toast({
-      title: "保存しました",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
+  const onSubmit: SubmitHandler<GameSessionFormType> = formData => {
+    const filteredGames = formData.games.map(game => ({
+      results: game.results.filter(isValidResult).map(result => ({
+        resultPoints: result.resultPoints as number,
+        ranking: result.ranking as number,
+      })),
+    }));
+
+    startTransition(async () => {
+      const result = await createMahjongSessionAction({
+        rate: formData.rate,
+        chipAmount: formData.chipAmount,
+        createdDate: formData.createdDate,
+        participantUsers: formData.participantUsers.map(user => ({
+          userId: user.userId,
+          name: user.name,
+          avatarUrl: user.avatarUrl,
+        })),
+        games: filteredGames,
+      });
+
+      if (result.success) {
+        clearDraft();
+        toast({
+          title: "保存しました",
+          status: "success",
+        });
+      } else {
+        toast({
+          title: "保存に失敗しました",
+          description: result.errors.join(", "),
+          status: "error",
+        });
+      }
     });
   };
 
@@ -111,15 +94,15 @@ export default function ParticipatedMahjongSessionForm() {
     <Container px="0" maxW="container.md" mt="2">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box px="1">
-          <CreatedDateFormControl register={register} errors={errors} />
+          <CreatedDateFormControl />
 
           <Stack flexDir={["column", "row"]} gap={["1", "5"]} mt="4" mb="2">
-            <RateFormControl register={register} rateError={errors.rate} />
-            <ChipAmountFormControl register={register} chipAmountError={errors.chipAmount} />
+            <RateFormControl />
+            <ChipAmountFormControl />
           </Stack>
         </Box>
 
-        <HStack gap="0" align="stretch">
+        <HStack gap="0" align="stretch" mt="4">
           <Table
             as="div"
             borderRadius=""
@@ -137,16 +120,7 @@ export default function ParticipatedMahjongSessionForm() {
                   borderBottom=""
                   borderRightWidth="1.5px"
                 />
-                <SimpleGrid as="div" columns={participantUserFields.length} w="full">
-                  {participantUserFields.map((participantUserField, index) => (
-                    <ParticipantUserFormControl
-                      key={participantUserField.id}
-                      participantUserIndex={index}
-                      participantUser={watch(`participantUsers.${index}`)}
-                      register={register}
-                    />
-                  ))}
-                </SimpleGrid>
+                <ParticipantUsersSection />
               </Tr>
             </Thead>
             <Divider borderWidth="2px" borderColor="#060" />
@@ -157,20 +131,9 @@ export default function ParticipatedMahjongSessionForm() {
               position="relative"
               divider={<Divider borderColor="secondary.50" borderBottomWidth="1.5px" />}>
               {gameFields.map((gameField, gameIndex) => (
-                <GameFormControl
-                  key={gameField.id}
-                  gameFieldId={gameField.id}
-                  gameIndex={gameIndex}
-                  participantUserFields={participantUserFields}
-                  gameError={errors.games?.[gameIndex]}
-                  register={register}
-                  gameResultPoints={watch(`games.${gameIndex}.results`)}
-                />
+                <GameFormControl key={gameField.id} gameIndex={gameIndex} />
               ))}
-              <AddGameButton
-                appendGame={appendGame}
-                participantUserFields={participantUserFields}
-              />
+              <AddGameButton />
             </Tbody>
             <Divider borderWidth="2px" borderColor="#060" />
             <Tfoot as="div">
@@ -186,11 +149,7 @@ export default function ParticipatedMahjongSessionForm() {
                   fontSize={["xs", "sm"]}>
                   <Text>合計</Text>
                 </Th>
-                <TotalPointsFormControls
-                  participantUserFields={participantUserFields}
-                  participantUsers={watch("participantUsers")}
-                  games={watch("games")}
-                />
+                <TotalPointsFormControls />
               </Tr>
               <Divider borderColor="secondary.50" />
               <Tr as={HStack} gap="0" align="stretch">
@@ -209,11 +168,7 @@ export default function ParticipatedMahjongSessionForm() {
                     順位
                   </Text>
                 </Th>
-                <AverageRakingFormControls
-                  participantUsers={watch("participantUsers")}
-                  games={watch("games")}
-                  participantUserFields={participantUserFields}
-                />
+                <AverageRakingFormControls />
               </Tr>
               <Divider borderColor="secondary.50" />
               <Tr as={HStack} gap="0" align="stretch">
@@ -221,31 +176,43 @@ export default function ParticipatedMahjongSessionForm() {
                   as={Center}
                   px="0"
                   w={["10", "16"]}
-                  py="4"
+                  py={["2", "4"]}
                   borderBottom=""
                   borderColor="secondary.50"
                   color="primary.500"
                   borderRightWidth="1.5px">
                   <Text fontSize={["xs", "sm"]}>収支</Text>
                 </Th>
-                <TotalProfitsFormControls
-                  participantUserFields={participantUserFields}
-                  participantUsers={watch("participantUsers")}
-                  rate={watch("rate")}
-                  games={watch("games")}
-                />
+                <TotalProfitsFormControls />
               </Tr>
             </Tfoot>
           </Table>
 
-          <AddParticipantUserButton appendParticipantUser={appendParticipantUser} />
+          {participantUserFields.length < 6 && <AddParticipantUserButton />}
         </HStack>
 
-        <Box mt="4">
-          <Button type="submit" colorScheme="pink">
-            保存する
+        <HStack mt="4" gap="2">
+          <Button
+            size={["sm", "md"]}
+            leftIcon={<RiResetLeftFill />}
+            colorScheme="yellow"
+            variant="outline"
+            color="white"
+            _hover={{ bg: "yellow.400", color: "primary.500" }}
+            isLoading={isResetting}
+            onClick={resetAll}>
+            リセット
           </Button>
-        </Box>
+
+          <Button
+            size={["sm", "md"]}
+            leftIcon={<FaCheck />}
+            type="submit"
+            colorScheme="pink"
+            isLoading={isPending}>
+            保存
+          </Button>
+        </HStack>
       </form>
     </Container>
   );

@@ -1,25 +1,14 @@
 "use client";
 
-import {
-  GameSessionFormType,
-  GameType,
-  ParticipantUserType,
-} from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipatedMahjongSessionForm";
 import TotalPointsFormControl from "@/src/app/me/participated-mahjong-sessions/new/components/TotalPointsFormControl";
 import { SimpleGrid } from "@chakra-ui/react";
-import { FieldArrayWithId } from "react-hook-form";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 
-type Props = {
-  participantUserFields: FieldArrayWithId<GameSessionFormType, "participantUsers", "id">[];
-  participantUsers: ParticipantUserType[];
-  games: GameType[];
-};
+export default function TotalPointsFormControls() {
+  const { participantUserFields, watch } = useMahjongSessionForm();
+  const participantUsers = watch("participantUsers");
+  const games = watch("games");
 
-export default function TotalPointsFormControls({
-  participantUserFields,
-  participantUsers,
-  games,
-}: Props) {
   const totalPointsByParticipant = participantUsers.map((_, participantIndex) => {
     return games.reduce((acc, game) => {
       return acc + (game.results[participantIndex]?.resultPoints || 0);
