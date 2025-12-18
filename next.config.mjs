@@ -1,4 +1,5 @@
 import { withSentryConfig } from "@sentry/nextjs";
+import withPWA from "next-pwa";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -14,17 +15,55 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  webpack: (config, { isServer }) => {
-    // Service Workerはクライアントサイドのみ
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
-    }
-    return config;
-  },
 };
+
+// PWA設定
+const pwaConfig = withPWA({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
+  runtimeCaching: [
+    {
+      // 静的アセット（画像など）
+      urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "static-assets",
+        expiration: {
+          maxEntries: 64,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30日
+        },
+      },
+    },
+    {
+      // APIリクエスト
+      urlPattern: /^https?:\/\/.*\/api\/.*/i,
+      handler: "NetworkFirst",
+      options: {
+        cacheName: "api-cache",
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 24 * 60 * 60, // 24時間
+        },
+        networkTimeoutSeconds: 10,
+      },
+    },
+    {
+      // GraphQLリクエスト
+      urlPattern: /^https?:\/\/.*\/graphql/i,
+      handler: "NetworkFirst",
+      options: {
+        cacheName: "graphql-cache",
+        expiration: {
+          maxEntries: 32,
+          maxAgeSeconds: 24 * 60 * 60, // 24時間
+        },
+        networkTimeoutSeconds: 10,
+      },
+    },
+  ],
+});
 
 const sentryConfig = {
   // For all available options, see:
@@ -59,4 +98,4 @@ const sentryConfig = {
   automaticVercelMonitors: true,
 };
 
-export default withSentryConfig(nextConfig, sentryConfig);
+export default withSentryConfig(pwaConfig(nextConfig), sentryConfig);

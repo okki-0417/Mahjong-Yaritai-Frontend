@@ -4,7 +4,6 @@ import Header from "@/src/components/Header";
 import { SessionProvider } from "@/src/contexts/SessionProvider";
 import AppolloProviderWrapper from "@/src/contexts/AppolloProviderWrapper";
 import ChakraCustomProvider from "@/src/contexts/ChakraCustomProvider";
-import ServiceWorkerRegistration from "@/src/components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
   title: {
@@ -50,7 +49,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja" suppressHydrationWarning>
       <body>
-        <ServiceWorkerRegistration />
         <ChakraCustomProvider>
           <AppolloProviderWrapper>
             <SessionProvider>
