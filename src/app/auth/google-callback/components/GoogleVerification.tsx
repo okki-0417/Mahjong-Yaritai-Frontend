@@ -7,7 +7,7 @@ import { apiClient } from "@/src/lib/api/client";
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import Fallback from "@/src/components/fallbacks/Fallback";
 import useGetSession from "@/src/hooks/useGetSession";
-import { Box } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 
 type Props = { code: string };
 
@@ -49,8 +49,8 @@ export default function GoogleVerification({ code }: Props) {
   }
 
   return (
-    <Box mt="20">
+    <Container maxW="container.md" mt="20">
       <Fallback />
-    </Box>
+    </Container>
   );
 }
