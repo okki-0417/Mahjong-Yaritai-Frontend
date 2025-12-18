@@ -17,8 +17,9 @@ export default function BottomNavigation() {
       insetX="0"
       zIndex="50"
       display={{ base: "block", md: "none" }}
-      bg="primary.500">
-      <HStack justify="space-around" py="2">
+      bg="primary.500"
+      pb="env(safe-area-inset-bottom)">
+      <HStack justify="space-around" pt="2" pb="1">
         {isLoggedIn && (
           <Link href="/me">
             <VStack spacing="0.5" color="white">
