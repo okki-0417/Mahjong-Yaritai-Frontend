@@ -2,7 +2,7 @@
   "name": "麻雀ヤリタイ",
   "short_name": "麻雀ヤリタイ",
   "description": "麻雀の「何切る問題」に特化したコミュニティプラットフォーム",
-  "start_url": "/",
+  "start_url": "/what-to-discard-problems",
   "display": "standalone",
   "background_color": "#365158",
   "theme_color": "#365158",
