@@ -5,6 +5,7 @@ import LoginSection from "@/src/components/Header/LoginSection";
 import { Fragment } from "react";
 import SideNavigation from "@/src/components/Header/SideNavigation";
 import LogoLink from "@/src/components/Header/LogoLink";
+import LoginPromptBar from "@/src/components/Header/LoginPromptBar";
 
 export default function Header() {
   return (
@@ -39,6 +40,7 @@ export default function Header() {
         </Center>
 
         <SideNavigation />
+        <LoginPromptBar />
       </Box>
     </Fragment>
   );

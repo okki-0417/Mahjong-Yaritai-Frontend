@@ -5,8 +5,10 @@ import fetchMutualFollowersAction, {
 } from "@/src/app/me/participated-mahjong-sessions/new/actions/fetchMutualFollowersAction";
 import LoadMoreMutualFollowers from "@/src/app/me/participated-mahjong-sessions/new/components/LoadMoreMutualFollowers";
 import ParticipantUserCard from "@/src/app/me/participated-mahjong-sessions/new/components/ParticipantUserCard";
+import { useMahjongSessionForm } from "@/src/app/me/participated-mahjong-sessions/new/contexts/MahjongSessionFormContextProvider";
 import Fallback from "@/src/components/fallbacks/Fallback";
-import { UnorderedList, useToast, VStack } from "@chakra-ui/react";
+import useGetSession from "@/src/hooks/useGetSession";
+import { Divider, Text, UnorderedList, useToast, VStack } from "@chakra-ui/react";
 import { captureException } from "@sentry/nextjs";
 import { useEffect, useState, useTransition } from "react";
 
@@ -24,7 +26,16 @@ export default function ParticipantUserSelection({ participantUserIndex, onClose
     FetchMutualFollowersActionResponse["pageInfoData"] | null
   >(null);
 
+  const { session } = useGetSession();
+  const currentUser = session?.user;
+  const { watch } = useMahjongSessionForm();
+  const participantUsers = watch("participantUsers");
   const toast = useToast();
+
+  // すでに追加されている参加者のuserIdを取得
+  const addedUserIds = new Set(
+    participantUsers.map(p => p.userId).filter((id): id is string => id !== null),
+  );
 
   useEffect(() => {
     const fetchMutualFollowers = () => {
@@ -49,13 +60,43 @@ export default function ParticipantUserSelection({ participantUserIndex, onClose
     fetchMutualFollowers();
   }, [toast]);
 
+  // すでに追加されているユーザーを除外
+  const filteredMutualFollowers = mutualFollowers.filter(user => !addedUserIds.has(user.id));
+
+  // 自分がすでに追加されているかどうか
+  const isCurrentUserAdded = currentUser ? addedUserIds.has(currentUser.id) : false;
+
   return (
     <UnorderedList listStyleType="none" marginInlineStart="0">
       {isPending ? (
         <Fallback />
       ) : (
         <VStack align="stretch" gap="1">
-          {mutualFollowers.map(user => (
+          {/* 自分を一番上に表示（まだ追加されていない場合のみ） */}
+          {currentUser && !isCurrentUserAdded && (
+            <>
+              <Text fontSize="xs" color="gray.500" fontWeight="bold">
+                自分
+              </Text>
+              <ParticipantUserCard
+                key={currentUser.id}
+                user={{
+                  id: currentUser.id,
+                  name: currentUser.name,
+                  avatarUrl: currentUser.avatarUrl ?? null,
+                }}
+                participantUserIndex={participantUserIndex}
+                onClose={onClose}
+              />
+              <Divider my="2" />
+            </>
+          )}
+          {filteredMutualFollowers.length > 0 && (
+            <Text fontSize="xs" color="gray.500" fontWeight="bold">
+              相互フォロー
+            </Text>
+          )}
+          {filteredMutualFollowers.map(user => (
             <ParticipantUserCard
               key={user.id}
               user={user}

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 import {
   Control,
   FieldArrayWithId,
@@ -17,6 +17,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { GameSessionFormType } from "@/src/app/me/participated-mahjong-sessions/new/types";
+import useGetSession from "@/src/hooks/useGetSession";
 
 export const DEFAULT_FORM_VALUES: GameSessionFormType = {
   rate: 100,
@@ -64,6 +65,9 @@ type Props = {
 };
 
 export default function MahjongSessionFormContextProvider({ children }: Props) {
+  const { session } = useGetSession();
+  const hasSetCurrentUser = useRef(false);
+
   const {
     register,
     handleSubmit,
@@ -77,6 +81,19 @@ export default function MahjongSessionFormContextProvider({ children }: Props) {
     defaultValues: DEFAULT_FORM_VALUES,
     mode: "onChange",
   });
+
+  // 初回のみ、最初の参加者を自分に設定
+  useEffect(() => {
+    if (hasSetCurrentUser.current) return;
+    if (!session?.user) return;
+
+    setValue("participantUsers.0", {
+      userId: session.user.id,
+      name: session.user.name,
+      avatarUrl: session.user.avatarUrl ?? null,
+    });
+    hasSetCurrentUser.current = true;
+  }, [session, setValue]);
 
   const {
     fields: participantUserFields,
