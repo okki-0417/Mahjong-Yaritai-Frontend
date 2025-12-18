@@ -52,23 +52,7 @@ export default function SideNavigation() {
         <DrawerContent className="*:bg-primary-light" fontFamily="serif" color="white">
           <DrawerCloseButton onClick={onClose} color="white" size="lg" />
 
-          <DrawerHeader>
-            {isLoggedIn && (
-              <Link href="/me/profile">
-                <HStack className="py-2 px-3 rounded gap-3 hover:bg-gray-600 transition-colors">
-                  <Avatar src={session?.user?.avatarUrl} size="md" />
-                  <VStack alignItems="flex-start" spacing="0">
-                    <Text fontWeight="bold" fontSize="lg">
-                      {session?.user?.name}
-                    </Text>
-                    <Text fontSize="xs" color="gray.300">
-                      プロフィール
-                    </Text>
-                  </VStack>
-                </HStack>
-              </Link>
-            )}
-          </DrawerHeader>
+          <DrawerHeader />
 
           <DrawerBody pl="0" pt="4">
             <UnorderedList listStyleType="none">

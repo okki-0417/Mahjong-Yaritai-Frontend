@@ -30,7 +30,7 @@ export default function ProfileEditModal({ isOpen, onClose, profile }: Props) {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
 
-      <ModalContent bg="neutral.100">
+      <ModalContent bg="neutral.100" fontFamily="PT Serif, serif">
         <ModalHeader>プロフィール編集</ModalHeader>
 
         <ModalCloseButton />

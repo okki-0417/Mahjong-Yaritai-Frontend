@@ -66,8 +66,8 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
     formState: { errors, isSubmitting },
   } = useForm<ProfileEditFormInputs>({
     defaultValues: {
-      name: user.name,
-      profileText: user.profileText || "",
+      name: user?.name,
+      profileText: user?.profileText || "",
       avatar: null,
     },
   });
@@ -101,12 +101,12 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack align="stretch" gap="4">
+      <VStack align="stretch">
         <VStack>
-          <Circle size="200" overflow="hidden">
+          <Circle size="200" overflow="hidden" borderWidth="3px" borderColor="secondary.200">
             <Image
               src={imageUrl || user?.avatarUrl || "/no-image.webp"}
-              alt={user.name}
+              alt={user?.name}
               w="full"
               h="full"
               objectFit="cover"
@@ -143,11 +143,10 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.name)}>
-          <FormLabel color="white">ハンドルネーム</FormLabel>
           <Input
             type="text"
-            placeholder={user.name}
-            fontSize="2xl"
+            placeholder={user?.name}
+            fontSize="xl"
             w="full"
             h="fit-content"
             {...register("name")}
@@ -157,13 +156,13 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.profileText)}>
-          <FormLabel color="white">自己紹介</FormLabel>
           <Textarea
             isInvalid={Boolean(errors.profileText)}
             placeholder="自己紹介を入力してください（500文字まで）"
-            defaultValue={user.profileText || ""}
+            defaultValue={user?.profileText || ""}
             resize="vertical"
             rows={5}
+            fontSize="sm"
             {...register("profileText")}
             isDisabled={isSubmitting}
           />
