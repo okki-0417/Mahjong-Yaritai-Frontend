@@ -33,7 +33,7 @@ export default function DashboardSection({ user }: Props) {
           </HStack>
           <HStack justify="space-between">
             <HStack justify="start" w="full" gap="4">
-              <Center>
+              <Center bg="white" borderRadius="full" borderWidth="3px" borderColor="neutral.100">
                 <Avatar src={user?.avatarUrl || ""} size="lg" />
               </Center>
               <Text fontSize="xl" fontWeight="bold">

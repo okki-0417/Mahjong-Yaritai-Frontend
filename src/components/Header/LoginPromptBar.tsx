@@ -21,8 +21,9 @@ export default function LoginPromptBar() {
 
   const isLoggedIn = session?.isLoggedIn;
   const isAuthPage = pathname?.startsWith("/auth");
+  const isUserNewPage = pathname === "/users/new";
 
-  if (isLoggedIn !== false || isDismissed || isAuthPage) {
+  if (isLoggedIn !== false || isDismissed || isAuthPage || isUserNewPage) {
     return null;
   }
 

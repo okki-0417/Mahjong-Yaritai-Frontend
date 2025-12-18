@@ -20,7 +20,6 @@ export type Scalars = {
   Float: { input: number; output: number };
   /** An ISO 8601-encoded datetime */
   ISO8601DateTime: { input: any; output: any };
-  /** Represents an uploaded file */
   Upload: { input: File; output: File };
 };
 

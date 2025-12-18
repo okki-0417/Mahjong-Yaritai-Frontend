@@ -1,5 +1,6 @@
 "use client";
 
+import { AttachmentIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -13,7 +14,8 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useRef, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
 import {
   UpdateUserInput,
@@ -32,6 +34,9 @@ type ProfileEditFormInputs = UpdateUserInput;
 
 export default function ProfileEditForm({ user, onUpdated }: Props) {
   const toast = useToast();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const previousImageUrlRef = useRef<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
 
   const [updateUser] = useMutation<UpdateUserProfileMutation, UpdateUserProfileMutationVariables>(
     UpdateUserProfileDocument,
@@ -57,6 +62,7 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ProfileEditFormInputs>({
     defaultValues: {
@@ -72,30 +78,26 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
         input: {
           name: formData.name,
           profileText: formData.profileText,
-          // avatar: 一旦無効化
+          avatar: formData.avatar || undefined,
         },
       },
     });
   };
 
-  // const [imageUrl, setImageUrl] = useState<string | null>(null);
-  // const previousImageUrlRef = useRef<string | null>(null);
-  // const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files?.length) return null;
 
-  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   if (files?.length == 0) return null;
+    if (previousImageUrlRef.current) {
+      URL.revokeObjectURL(previousImageUrlRef.current);
+    }
 
-  //   if (previousImageUrlRef.current) {
-  //     URL.revokeObjectURL(previousImageUrlRef.current);
-  //   }
+    const url = URL.createObjectURL(files[0]);
+    previousImageUrlRef.current = url;
 
-  // const url = URL.createObjectURL(files[0]);
-  // previousImageUrlRef.current = url;
-
-  // setImageUrl(url);
-  // return files[0];
-  // };
+    setImageUrl(url);
+    return files[0];
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -103,20 +105,19 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
         <VStack>
           <Circle size="200" overflow="hidden">
             <Image
-              src={user?.avatarUrl || "/no-image.webp"}
+              src={imageUrl || user?.avatarUrl || "/no-image.webp"}
               alt={user.name}
               w="full"
               h="full"
               objectFit="cover"
             />
           </Circle>
-          {/* <Button onClick={() => imageInputRef.current?.click()} isDisabled>
+          <Button onClick={() => imageInputRef.current?.click()}>
             <AttachmentIcon />
-          </Button> */}
+          </Button>
         </VStack>
 
-        {/* 画像アップロード機能は一旦無効化 */}
-        {/* <FormControl>
+        <FormControl isInvalid={Boolean(errors.avatar)}>
           <Controller
             control={control}
             name="avatar"
@@ -136,9 +137,10 @@ export default function ProfileEditForm({ user, onUpdated }: Props) {
               />
             )}
           />
-
-          <FormErrorMessage>{String(errors.avatar?.message)}</FormErrorMessage>
-        </FormControl> */}
+          <FormErrorMessage>
+            {errors.avatar?.message ? String(errors.avatar?.message) : ""}
+          </FormErrorMessage>
+        </FormControl>
 
         <FormControl isInvalid={Boolean(errors.name)}>
           <FormLabel color="white">ハンドルネーム</FormLabel>
