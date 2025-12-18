@@ -5,7 +5,6 @@ import { SlLogin } from "react-icons/sl";
 import NavigationItem from "@/src/components/Header/SideNavigation/NavigationItem";
 import useGetSession from "@/src/hooks/useGetSession";
 import {
-  Avatar,
   Button,
   Drawer,
   DrawerBody,

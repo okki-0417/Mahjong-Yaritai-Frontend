@@ -7,7 +7,6 @@ import {
   Circle,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Image,
   Input,
   Textarea,
