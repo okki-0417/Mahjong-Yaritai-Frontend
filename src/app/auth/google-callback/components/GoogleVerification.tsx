@@ -7,6 +7,7 @@ import { apiClient } from "@/src/lib/api/client";
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import Fallback from "@/src/components/fallbacks/Fallback";
 import useGetSession from "@/src/hooks/useGetSession";
+import { Box } from "@chakra-ui/react";
 
 type Props = { code: string };
 
@@ -47,5 +48,9 @@ export default function GoogleVerification({ code }: Props) {
     return <ErrorPage message={errorMessage} />;
   }
 
-  return <Fallback />;
+  return (
+    <Box mt="20">
+      <Fallback />
+    </Box>
+  );
 }

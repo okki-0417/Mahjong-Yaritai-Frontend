@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, HStack, Text, CloseButton, Button } from "@chakra-ui/react";
+import { Box, HStack, Text, CloseButton, Button, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -32,23 +32,23 @@ export default function LoginPromptBar() {
   };
 
   return (
-    <Box w="full" py="1" px="4" bg="secondary.300" borderBottom="1px" borderColor="gray.200">
+    <Box
+      w="full"
+      py="1"
+      px="1"
+      bg="neutral.100"
+      color="primary.500"
+      position="relative"
+      boxShadow="sm">
       <HStack justifyContent="center" position="relative">
-        <Text fontSize="sm" color="white">
-          <Button as={Link} href="/auth/request" colorScheme="pink" size="sm" mr="2">
-            ログイン / 新規登録
-          </Button>
-          して、投票やコメントに参加しよう！
-        </Text>
-        <CloseButton
-          size="sm"
-          color="white"
-          position="absolute"
-          right="0"
-          onClick={handleDismiss}
-          aria-label="閉じる"
-        />
+        <Button as={Link} href="/auth/request" colorScheme="pink" size="sm">
+          ログイン / 新規登録
+        </Button>
+        <Text fontSize="sm">でさらに便利に使えます</Text>
       </HStack>
+      <VStack position="absolute" right="0" insetY="0" justifyContent="center">
+        <CloseButton size="sm" color="primary.500" onClick={handleDismiss} aria-label="閉じる" />
+      </VStack>
     </Box>
   );
 }

@@ -7,6 +7,7 @@ import useGetSession from "@/src/hooks/useGetSession";
 import ErrorPage from "@/src/components/errors/ErrorPage";
 import Fallback from "@/src/components/fallbacks/Fallback";
 import { captureException } from "@sentry/nextjs";
+import { Box } from "@chakra-ui/react";
 
 type Props = {
   code: string;
@@ -48,5 +49,9 @@ export default function LineVerification({ code, state }: Props) {
     return <ErrorPage message={errorMessage} />;
   }
 
-  return <Fallback />;
+  return (
+    <Box mt="20">
+      <Fallback />
+    </Box>
+  );
 }

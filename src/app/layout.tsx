@@ -1,6 +1,7 @@
 import "@/src/styles/globals.css";
 import { Metadata } from "next";
 import Header from "@/src/components/Header";
+import BottomNavigation from "@/src/components/BottomNavigation";
 import { SessionProvider } from "@/src/contexts/SessionProvider";
 import AppolloProviderWrapper from "@/src/contexts/AppolloProviderWrapper";
 import ChakraCustomProvider from "@/src/contexts/ChakraCustomProvider";
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
                 <div className="flex-grow w-screen flex items-stretch">{children}</div>
               </main>
+              <BottomNavigation />
             </SessionProvider>
           </AppolloProviderWrapper>
         </ChakraCustomProvider>

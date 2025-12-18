@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  overscroll-behavior: none;
+}
+
 @theme {
   --color-primary: #171923;
   --color-primary-light: #272933;
